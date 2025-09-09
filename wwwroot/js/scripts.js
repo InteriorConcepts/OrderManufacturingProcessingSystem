@@ -31,5 +31,5 @@ window.sqlFetch = async function (method, limit, ...params) {
 	return dictArr;
 };
 
-console.log(await sqlFetch("GetRecentOrders", "J000035601", 10));
+console.log(await sqlFetch("GetRecentOrders", 10));
 //console.log(await sqlFetch("GetJobOrderLines", ["JobNbr", "ItemNbr", "Description", "Qty"], ["JobNbr='J000035601'"], 1000));
