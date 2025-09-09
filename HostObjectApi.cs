@@ -1,42 +1,95 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
 {
-    [ComVisible(true)]
-    public class HostObjectApi
+    public partial class JobNumberAttribute : ValidationAttribute
     {
-        static int MAX_LIMIT = int.MaxValue;
-        public async Task<Dictionary<string, string>[]> GetOrders(string job, int limit = 0)
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
-            if (limit is 0)
+            if (value is string strValue && !Regex.IsMatch(strValue, @"^[JS]\d{9}$"))
             {
-                limit = MAX_LIMIT;
-            }
-            return null;
-        }
-
-        public async Task<int> Test(IList<string> fields)
-        {
-            return 123;
-        }
-
-        public async Task<string?> GetJobOrderLines(object[] fields, object[] filters, int limit = 0)
-        {
-            var resp = await SqlMethods.GetJobOrderLines(fields, filters, limit);
-            //MessageBox.Show(resp.ToString());
-            if (resp is null)
+                return new ValidationResult(
+                    ErrorMessage ??
+                    "Job number must start with an J or S and be followed by all 9 digits."
+                );
+            } else if (value is not string)
             {
-                return null;
+                return new ValidationResult(
+                    ErrorMessage ??
+                    "Parameter must be a string"
+                );
             }
-            return JsonSerializer.Serialize(resp);
+            return ValidationResult.Success;
         }
+    }
+
+    public class PositiveNumberAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+        {
+            if (value is int intValue && intValue < 0)
+            {
+                return new ValidationResult(ErrorMessage ?? "Value must be positive.");
+            }
+            else if (value is not int)
+            {
+                return new ValidationResult(
+                    ErrorMessage ??
+                    "Parameter must be an int"
+                );
+            }
+            return ValidationResult.Success;
+        }
+    }
+
+    public interface IHostObjectApi
+    {
+        public Task<string?> GetRecentOrders(int limit);
+        public Task<string?> GetOrderColorSet(string job, int limit = 0);
+        public Task<string?> GetOrderData(string job, int limit = 0);
+        public Task<string?> GetJobOrderLines(string job, int limit = 0);
+    }
+
+    [ComVisible(true)]
+    public class HostObjectApi: IHostObjectApi
+    {
+
+        public static readonly int MAX_LIMIT = int.MaxValue;
+        public async Task<string?> GetRecentOrders(
+            [PositiveNumberAttribute]
+            int limit = 0) =>
+            JsonSerializer.Serialize(await GlobalObjects.SqlMethods.GetRecentOrders(limit));
+
+        public async Task<string?> GetOrderColorSet(
+            [JobNumberAttribute]
+            string job,
+            [PositiveNumberAttribute]
+            int limit = 0) =>
+            JsonSerializer.Serialize(await GlobalObjects.SqlMethods.GetOrderColorSet(job, limit));
+
+        public async Task<string?> GetOrderData(
+            [JobNumberAttribute]
+            string job,
+            [PositiveNumberAttribute]
+            int limit = 0) =>
+            JsonSerializer.Serialize(await GlobalObjects.SqlMethods.GetOrderData(job, limit));
+
+        public async Task<string?> GetJobOrderLines(
+            [JobNumberAttribute]
+            string job,
+            [PositiveNumberAttribute]
+            int limit = 0) =>
+            JsonSerializer.Serialize(await GlobalObjects.SqlMethods.GetJobOrderLines(job, limit));
     }
 }

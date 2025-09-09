@@ -18,10 +18,15 @@ namespace OMPS
 
         }
 
-        public FileInfo ExeFileInfo = new (Application.ExecutablePath);
-        public string? CurrentWorkingDirectory()
+        public static FileInfo ExeFileInfo = new (Application.ExecutablePath);
+        public static string? CurrentWorkingDirectory()
         {
             return ExeFileInfo?.Directory?.FullName;
+        }
+
+        public static string? WWWRootDirectory()
+        {
+            return $"{CurrentWorkingDirectory()}/wwwroot";
         }
 
         private async Task<CoreWebView2Environment> WebView_InitEnvironment()
@@ -50,14 +55,20 @@ namespace OMPS
                 this.webView21.CoreWebView2.Settings.IsZoomControlEnabled = false;
             }
 
-            var cwd = this.CurrentWorkingDirectory();
+            var cwd = CurrentWorkingDirectory();
             if (cwd is null)
             {
                 MessageBox.Show("Couldn't get exe current directory or returned null. Exiting..");
                 return;
             }
-            this.webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("wwwroot", $"{cwd}/wwwroot/", CoreWebView2HostResourceAccessKind.Allow);
-            this.webView21.CoreWebView2.Navigate($"{cwd}/wwwroot/html/index.html");
+            var wwwroot = WWWRootDirectory();
+            if (cwd is null)
+            {
+                MessageBox.Show("Couldn't get wwwroot directory or returned null. Exiting..");
+                return;
+            }
+            this.webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("wwwroot", $"{wwwroot}/", CoreWebView2HostResourceAccessKind.Allow);
+            this.webView21.CoreWebView2.Navigate($"{wwwroot}/html/index.html");
         }
     }
 }
