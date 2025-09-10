@@ -9,5 +9,6 @@ namespace OMPS
     public class GlobalObjects
     {
         public static readonly SqlMethods SqlMethods = new();
+        public static readonly MyApp.DataAccess.Generated.example_queriesQueries GeneratedQueries = new();
     }
 }

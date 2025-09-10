@@ -23,27 +23,7 @@ namespace OMPS
         [STAThread]
         static void Main()
         {
-            /*
-            var parser = new SqlQueryParser();
-            var ast = parser.Parse(@""
-            );
-            
-            foreach (var stmt in ast)
-            {
-                MessageBox.Show(stmt.ToSql());
-                if (stmt is null) continue;
-                var bar = stmt.AsSelect();
-                bar.Deconstruct(out Query query);
-                List<string> selectNames = [];
-                foreach (var names in query.Body.AsSelect().Projection)
-                {
-                    MessageBox.Show(names.ToSql());
-                    selectNames.Add("> " + names.AsUnnamed().Expression.AsIdentifier().Ident.Value);// (names as Expression).AsIdentifier().Ident.Value;
-                }
-                MessageBox.Show(string.Join("\n", selectNames));
-            }
-            */
-
+            Debug.WriteLine("[load config]");
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
@@ -53,12 +33,15 @@ namespace OMPS
                 MessageBox.Show(initRes.Item2.Message + "\n" + initRes.Item2.StackTrace);
                 Application.Exit();
             }
+            Debug.WriteLine("[loaded]");
             //
 
+            //ExportHostObjectJS().Wait();
 
             //
-            ExportHostObjectJS().Wait();
 
+            /*
+            Debug.WriteLine("[load sql templates]");
             List<(string, bool, Exception?)> SqlLoadErrors = [];
             Parallel.ForEach(new DirectoryInfo($"{SCH.Global.Config["sql.query-files-dir"]}").GetFiles("*.toml", SearchOption.TopDirectoryOnly), o =>
             {
@@ -78,9 +61,11 @@ namespace OMPS
                     SqlLoadErrors.Add((name, false, ex));
                 }
             });
+            Debug.WriteLine("[loaded]");
             if (SqlLoadErrors.Count is not 0) {
                 MessageBox.Show(String.Join("\n\n", SqlLoadErrors.Select(i => i.Item3?.Message)));
             }
+            */
 
             Application.Run(new Form1());
         }
@@ -120,7 +105,7 @@ namespace OMPS
         }
 
 
-
+        /*
         // https://stackoverflow.com/a/64023495
         public static string FromSqlType(string sqlTypeString)
         {
@@ -222,11 +207,18 @@ namespace OMPS
         }
 
         class DbNull() { };
+        */
 
         static async Task ExportHostObjectJS()
         {
-
-            await GlobalObjects.SqlMethods.GetTypes("aIC_IceManuf");
+#if false
+            Debug.WriteLine("[start]");
+            var res = GlobalObjects.GeneratedQueries.GetItemLinesByJobAndDesc("J000035601", "%tube%");
+            Debug.WriteLine("[-]");
+            res = GlobalObjects.GeneratedQueries.GetItemLinesByJobAndDesc("J000035602", "%tube%");
+            Debug.WriteLine("[done]");
+            //MessageBox.Show(String.Join("\n", res.Select(r => r.Description)));
+#endif
             return;
             //
             var v = await RunAll();

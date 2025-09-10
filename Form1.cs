@@ -40,7 +40,7 @@ namespace OMPS
         {
             webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             await webView.EnsureCoreWebView2Async(await WebView_InitEnvironment());
-            webView.CoreWebView2.AddHostObjectToScript("BackendApi", new HostObjectApi());
+            webView.CoreWebView2.AddHostObjectToScript("BackendApi", GlobalObjects.GeneratedQueries);
         }
 
         private void WebView_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)

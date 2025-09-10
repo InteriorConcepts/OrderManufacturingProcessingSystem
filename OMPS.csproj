@@ -30,11 +30,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3485.44" />
     <PackageReference Include="SqlParserCS" Version="0.6.5" />
+    <PackageReference Include="System.Data.Odbc" Version="9.0.9" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.8" />
     <PackageReference Include="Tomlyn" Version="0.19.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="GeneratedQueries">
+      <HintPath>..\QueryProcessorAndCodeBuilder\bin\Debug\net10.0-windows10.0.26100.0\GeneratedQueries\GeneratedQueries.dll</HintPath>
+    </Reference>
     <Reference Include="SQL_And_Config_Handler .Net8">
       <HintPath>SQL_And_Config_Handler .Net8.dll</HintPath>
     </Reference>

@@ -36,6 +36,7 @@ namespace OMPS
 
     public class SqlMethods: ISqlMethods
     {
+        /*
         public async Task<Dictionary<string, Dictionary<string, object>>?> GetTypes(string tableName)
         {
             var res = await SCH.SQLDatabaseConnection.QueryOldCRM(@$"
@@ -49,6 +50,7 @@ namespace OMPS
             var typeInfo = res.ToDictionary(d => $"{d["COLUMN_NAME"] ?? "--"}", d => d) ?? [];
             return typeInfo;
         }
+        */
 
         public async Task<List<Dictionary<string, object?>>?> GetSql(string templateName, object[] fields, object[] filters, Dictionary<string, string> @params, int limit = 0)
         {
