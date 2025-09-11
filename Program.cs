@@ -2,6 +2,7 @@
 using SQL_And_Config_Handler;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,8 +10,6 @@ using Windows.Graphics.Printing.Workflow;
 using Windows.Media.Protection.PlayReady;
 using SCH = SQL_And_Config_Handler;
 
-using SqlParser;
-using SqlParser.Ast;
 
 
 namespace OMPS

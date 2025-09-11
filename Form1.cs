@@ -1,6 +1,11 @@
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using System.Diagnostics;
+using System.IO;
+using System.Web;
 using System.Windows.Forms.Design;
+
+using GO = OMPS.GlobalObjects;
 
 namespace OMPS
 {
@@ -38,12 +43,12 @@ namespace OMPS
 
         private async void WebView_Init(WebView2 webView)
         {
-            webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
+            webView.CoreWebView2InitializationCompleted += this.WebView_CoreWebView2InitializationCompleted;
             await webView.EnsureCoreWebView2Async(await WebView_InitEnvironment());
-            webView.CoreWebView2.AddHostObjectToScript("BackendApi", GlobalObjects.GeneratedQueries);
+            webView.CoreWebView2.AddHostObjectToScript("BackendApi", GO.GeneratedQueries);
         }
 
-        private void WebView_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        private void WebView_CoreWebView2InitializationCompleted(object? sender, CoreWebView2InitializationCompletedEventArgs e)
         {
             if (!e.IsSuccess)
             {
@@ -69,6 +74,11 @@ namespace OMPS
             }
             this.webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("wwwroot", $"{wwwroot}/", CoreWebView2HostResourceAccessKind.Allow);
             this.webView21.CoreWebView2.Navigate($"{wwwroot}/html/index.html");
+            this.webView21.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
+            this.webView21.CoreWebView2.WebMessageReceived += GO.WV_EventHandler.CoreWebView2_WebMessageReceived;
+            this.webView21.CoreWebView2.WebResourceRequested += GO.WV_EventHandler.CoreWebView2_WebResourceRequested;
         }
+
+        
     }
 }

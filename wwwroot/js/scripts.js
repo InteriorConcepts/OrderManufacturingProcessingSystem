@@ -34,12 +34,9 @@ window.sqlFetch = async function (method, limit, ...params) {
 //console.log(await sqlFetch("GetRecentOrders", 10));
 //console.log(await sqlFetch("GetJobOrderLines", ["JobNbr", "ItemNbr", "Description", "Qty"], ["JobNbr='J000035601'"], 1000));
 
-let table = null;
-document.addEventListener('DOMContentLoaded', (ev) => {
-	
-	/** @type {example_queries_GetItemLinesByJobResult[]?} */
-	let data = JSON.parse(window.chrome.webview.hostObjects.sync.BackendApi.GetItemLinesByJob_Web("J000035601"));
-	table = new DataTable('#dataframe', {
+
+function initDataTable(selector, data) {
+	$(selector).DataTable({
 		fixedHeader: {
         headerOffset: 50
     },
@@ -50,10 +47,101 @@ document.addEventListener('DOMContentLoaded', (ev) => {
 		deferRender: true,
 		autoWidth: false,
 		ordering: true,
-		data: data,
-		columns: Object.keys(data[0]).filter(k => !k.endsWith("ID")).map(k => ({ data: k, title: k }))
+		data: data, // Assuming your JSON has a key for the data array
+		columns: Object.keys(data[0]).filter(k => !k.endsWith("ID")).map(c => ({data: c, title: c}))
 	});
+}
+
+function updateaDataTable(selector, data) {
+	const table = $(selector).DataTable();
+	table.clear().rows.add(data).draw();
+}
+
+async function gzipDecompressBlob(compressedBlob) {
+
+	// Using DecompressionStream (requires browser support for Compression Streams API)
+	const decompressedStream = compressedBlob.stream().pipeThrough(new DecompressionStream('gzip'));
+	const decompressedResponse = new Response(decompressedStream);
+	const json = await decompressedResponse.json();
+	return json;
+}
+
+async function apiFetch(path, params) {
+	if (typeof path !== 'string') {
+		return null;
+	}
+	if (typeof params === 'undefined' || params == null || (typeof params == 'object' && typeof params.length !== 'number')) {
+		params = [];
+	}
+	const res = await fetch(
+		`/api/${path}?${(params.join('&'))}`, {
+			method: "GET",
+			headers: {
+				"Accept": "application/json",
+				"Accept-Encoding": "gzip, deflate"
+			}
+		}
+	);
+	if (res == null) {
+		return null;
+	}
+	if (!res.ok || res.status !== 200) {
+		return null;
+	}
+	
+	const blob = await res.blob();
+	if (typeof blob === 'undefined' || blob == null) {
+		return null;
+	}
+	alert(blob.type);
+	if (blob.type !== 'application/json') {
+		return null;
+	}
+
+	const json = await gzipDecompressBlob(blob);
+	if (!(typeof json === 'object' && typeof json.length === 'number')) {
+		return null;
+	}
+
+	return json;
+}
+
+let table = null;
+document.addEventListener('DOMContentLoaded', async (ev) => {
+	initDataTable(
+		'#dataframe',
+		await apiFetch('getItemLinesByJob', ['id=123'])
+	);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class example_queries_GetItemLinesByJobResult {
 	/** @type {string} */
