@@ -1,0 +1,384 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OMPS"
+        xmlns:Components="clr-namespace:OMPS.Components" x:Class="OMPS.MainWindow"
+        mc:Ignorable="d" UseLayoutRounding="False"
+        Title="MainWindow" Height="450" Width="800" MinHeight="300" MinWidth="450"
+        Background="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+        Foreground="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="toolbar" Grid.Row="0" HorizontalAlignment="Stretch" Background="#333">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Label Content="JobNbr:" VerticalAlignment="Center" Foreground="#EEE"/>
+                <TextBox x:Name="Txtbx_Job" IsReadOnly="False" Text="J000035601" Width="137" Height="22"
+                         PreviewKeyDown="Txtbx_Job_PreviewKeyDown" TabIndex="0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button x:Name="Btn_SaveHeader" Width="18" Height="18" Style="{StaticResource SaveBtn}"
+                        Padding="0" Margin="0" Background="Transparent" Cursor="Hand">
+                    <Image x:Name="Img_SaveHeader" Width="18" Height="18"
+                           SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
+                           RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
+                </Button>
+                <Button x:Name="Btn_CollapseTopBar" Content="Toggle Header" Height="22"
+                        Width="Auto" Padding="4 0" Margin="1 0" Click="Btn_CollapseTopBar_Click"/>
+                <Button x:Name="Btn_CollapseSideGrid" Content="Toggle Row Edit Pane"
+                        Height="22" Width="Auto" Padding="4 0" Margin="1 0" Click="Btn_CollapseSideGrid_Click"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="grid_header" Grid.Row="1">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" TabStripPlacement="Right" Background="#212121" Foreground="#CCC">
+                <TabItem Header="General">
+                    <!--
+                    Use Grid for vertical stacks, then nested StackPanels for further splitting
+                    -->
+                    <Grid Height="220" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <!--Column 1 : General Info-->
+                            <StackPanel Width="150" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputPair LabelText="OrderNbr" InputText="C000025332" InputReadOnly="True" FontSize="10"/>
+                                <Components:LabelInputPair LabelText="LineNbr" InputText="2" InputReadOnly="True"/>
+                                <Components:LabelInputPair LabelText="JobNbr" InputText="J000035597" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelFullWidth="65" LabelText="Quote" InputText="IC025132" InputReadOnly="True"/>
+                                <Components:LabelInputPair LabelText="NetProd" InputText="20,214.00" InputFormat="{}${0}" InputReadOnly="True"/>
+                                <Components:LabelInputPair LabelText="ShipByDate" InputText="10/02/2025" InputReadOnly="True"/>
+                                <Components:LabelInputPair LabelText="Item" InputText="FGF-020M" InputReadOnly="True"/>
+                                <Components:LabelInputPair LabelText="Qty" InputText="1.00" InputReadOnly="True"/>
+                            </StackPanel>
+                            <!--Column 2 : Basic Colors-->
+                            <StackPanel Width="150" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelComboPair LabelText="FrameFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="Metal Comp" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="ShelfFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="GibLegFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="ValBaseFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="77" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputText="" InputReadOnly="True"/>
+                            </StackPanel>
+                            <!--Column 3 : Materials-->
+                            <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputLookupPair LabelText="Fabric" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Edge" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Chase Door" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Lam HC Door" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Curve" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                            </StackPanel>
+                            <!--Column 4 : Buttons-->
+                            <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Button Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" />
+                                <Button Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" />
+                                <Button Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" />
+                                <Button Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" />
+                                <Button Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="wks hgt 29,42" InputReadOnly="True"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Colors+">
+                    <Grid Height="220" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <!--Column 3 : Extra Materials-->
+                            <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputPair LabelText="UnderWsPnl" LabelWidth="80" InputText=""/>
+                            </StackPanel>
+                            <!--Column 3 : Misc Toggles-->
+                            <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Preengined"/>
+                                <Components:LabelCheckPair LabelText="Engined"/>
+                                <Components:LabelCheckPair LabelText="KeyAlike"/>
+                                <Components:LabelCheckPair LabelText="KeyEaStaAlike"/>
+                                <Components:LabelCheckPair LabelText="MasterKey"/>
+                                <Components:LabelCheckPair LabelText="EarlyElectrical"/>
+                                <Components:LabelCheckPair LabelText="XQ"/>
+                                <Components:LabelCheckPair LabelText="UpdateRecord"/>
+                                <Components:LabelCheckPair LabelText="InstallByIC"/>
+                            </StackPanel>
+                            <!--Column 3 : Misc Colors-->
+                            <StackPanel Width="109" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelComboPair LabelText="PmoldFin" LabelWidth="55" InputText=""/>
+                                <Components:LabelComboPair LabelText="AccFin" LabelWidth="55" InputText=""/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Misc">
+                    <Grid Height="220" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="320"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0 0 4 0">
+                            <Components:LabelInputPair LabelWidth="90" LabelText="Name" InputText="C000025332-2"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="CompanyName" InputText="Lone Star Furnishings"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="CompanyID" InputText=""/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="QuoteNbr" InputText=""/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="CustOrderID" InputText="19578-7289"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="OrderType" InputText=""/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="OpportunityNbr" InputText="OP-0120452"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0 0 4 0">
+                            <Components:LabelInputPair LabelWidth="70" LabelText="DropShipID" InputText=""/>
+                            <Components:LabelInputPair LabelWidth="70" LabelText="ExterpriseID" InputText=""/>
+                            <Components:LabelInputPair LabelWidth="70" LabelText="ShiptoName" InputText="Plano ISD Administration Building"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Components:LabelComboPair Grid.Column="0" Grid.Row="0" LabelWidth="70" LabelText="OrderDate" InputText=""/>
+                                <Components:LabelComboPair Grid.Column="0" Grid.Row="1" LabelWidth="70" LabelText="OnSiteDate" InputText=""/>
+                                <Components:LabelComboPair Grid.Column="1" Grid.Row="0" LabelWidth="70" LabelText="CreationDate" InputText=""/>
+                                <Components:LabelComboPair Grid.Column="1" Grid.Row="1" LabelWidth="70" LabelText="ChangeDate" InputText=""/>
+                            </Grid>
+                            <Components:LabelInputPair Grid.Column="1" Grid.Row="5" LabelWidth="70"
+                                                       LabelText="ColorSetID"
+                                                       InputText="{}{F2FE210D-41D1-48DA-B5A8-346C8D75FAA9}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Quote Parts">
+                    <Grid Height="220" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Height="200" VerticalAlignment="Top" Orientation="Horizontal">
+                            <!--Column 1-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 01" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 02" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 03" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 04" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 05" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 06" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 07" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 08" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 09" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 10" InputText=""/>
+                            </StackPanel>
+                            <!--Column 2-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 11" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 12" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 13" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 14" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 15" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 16" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 17" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 18" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 19" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 20" InputText=""/>
+                            </StackPanel>
+                            <!--Column 3-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 21" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 22" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 23" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 24" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 25" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 26" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 27" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 28" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 29" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 30" InputText=""/>
+                            </StackPanel>
+                            <!--Column 4-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 31" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 32" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 33" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 34" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 35" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 36" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 37" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 38" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 39" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 40" InputText=""/>
+                            </StackPanel>
+                            <!--Column 5-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 41" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 42" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 43" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 44" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 45" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 46" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 47" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 48" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 49" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 50" InputText=""/>
+                            </StackPanel>
+                            <!--Column 6-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 51" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 52" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 53" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 54" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 55" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 56" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 57" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 58" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 59" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 60" InputText=""/>
+                            </StackPanel>
+                            <!--Column 7-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 61" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 62" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 63" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 64" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 65" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 66" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 67" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 68" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 69" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 70" InputText=""/>
+                            </StackPanel>
+                            <!--Column 8-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 71" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 72" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 73" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 74" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 75" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 76" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 77" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 78" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 79" InputText=""/>
+                                <Components:LabelCheckPair LabelText="Part 80" InputText=""/>
+                            </StackPanel>
+                            <!--Column 9-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 81" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 82" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 83" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 84" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 85" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 86" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 87" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 88" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 89" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 90" InputText="" IsEnabled="False"/>
+                            </StackPanel>
+                            <!--Column 10-->
+                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Part 91" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 92" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 93" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 94" InputText="" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 95" InputText="" IsEnabled="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Mfg Reports" BorderThickness="0" BorderBrush="Transparent">
+                    <Grid Height="220" VerticalAlignment="Stretch" HorizontalAlignment="Left" Margin="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 4 0">
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__WksSheets" InputText="1"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Worksurfaces" InputText="3"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Frames" InputText="27"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Tubes" InputText="193"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Pmold" InputText="270"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__PnlSheets" InputText="10"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Panels" InputText="75"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__FabricSides" InputText="40"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Doors" InputText="0"/>
+                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__HCDoors" InputText="3"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 4 0">
+                            <Components:LabelInputPair LabelWidth="112" LabelText="Job__TagColor" InputText="Blue"/>
+                            <Components:LabelInputPair LabelWidth="112" LabelText="Job__PartsNote" InputText="-"/>
+                            <Components:LabelInputPair LabelWidth="112" LabelText="Job__ProductionNote" InputText="--"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Pre1">
+                    <Grid Height="220" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        <Grid x:Name="grid_data" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="datagrid_main"
+                      Style="{StaticResource DataGrid_Main_Style}"
+                      AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
+                      LoadingRow="DataGrid_LoadingRow"
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown"/>
+
+            <DockPanel x:Name="pnl_dock" Visibility="Collapsed" LastChildFill="False" Grid.Column="1">
+                <ScrollViewer Name="dataSideGridScrollViewer"
+              Loaded="dataSideGridScrollViewer_Loaded"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Hidden">
+                    <DataGrid x:Name="pnl_side" Style="{StaticResource DataGrid_SidePnl_Style}"
+                              AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"/>
+                </ScrollViewer>
+            </DockPanel>
+        </Grid>
+        <Grid x:Name="statusbar" Grid.Row="3" HorizontalAlignment="Stretch"
+              Background="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Margin="2">
+                <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal" Opacity="0.75">
+                    <Image x:Name="Img_NetworkStatus" SnapsToDevicePixels="True"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           RenderOptions.EdgeMode="Aliased" RenderSize="32,32"
+                           Source="pack://application:,,,/OMPS;component/Images/Network.png"/>
+                    <Label Content="Connected" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                           VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

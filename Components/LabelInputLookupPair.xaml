@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="OMPS.Components.LabelInputLookupPair"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OMPS.Components"
+             mc:Ignorable="d" 
+             x:Name="Root"
+             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22">
+    <Grid HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding LabelWidth}"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Grid.Column="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+        <Button Padding="0 0 2 0" Grid.Column="1" BorderThickness="0" Background="Transparent">
+            <Image Width="20" Height="20" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars-high_contrast.png" HorizontalAlignment="Center" VerticalAlignment="Center">
+            </Image>
+        </Button>
+        <TextBox Grid.Column="2" Text="{Binding Path=InputText, StringFormat=InputFormat}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="11"/>
+    </Grid>
+</UserControl>
