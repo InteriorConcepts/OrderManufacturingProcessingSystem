@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="OMPS.Components.LabelComboPair"
+﻿<UserControl x:Class="OMPS.Components.LabelDatePickPair"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,6 +9,6 @@
              d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22">
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
         <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="11"/>
-        <ComboBox IsReadOnly="{Binding InputReadOnly}" ItemsSource="{Binding ItemSource}" Padding="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" SelectedItem="{Binding InputText}" SelectedValue="{Binding InputText}" FontSize="11"/>
+        <DatePicker IsEnabled="{Binding InputEnabled}" SelectedDate="{Binding SelectedDate}" Padding="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Text="{Binding InputText}" FontSize="11"/>
     </DockPanel>
 </UserControl>

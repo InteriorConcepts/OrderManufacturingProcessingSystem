@@ -34,8 +34,6 @@
     
     <Style TargetType="Label">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static local:MainWindow.Button_BGProperty}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static local:MainWindow.Button_FGProperty}}" />
     </Style>
 
     <Style TargetType="TextBox">

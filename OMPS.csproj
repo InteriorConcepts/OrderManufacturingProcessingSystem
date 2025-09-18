@@ -7,7 +7,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <StartupObject>OMPS.App</StartupObject>
-	  <PublishSingleFile>true</PublishSingleFile>
 	  <PlatformTarget>AnyCPU</PlatformTarget>
 	  <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
@@ -53,24 +52,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.9" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.9" />
     <PackageReference Include="Tomlyn" Version="0.19.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="GeneratedQueries">
-      <HintPath>..\QueryProcessorAndCodeBuilder\bin\Debug\net10.0-windows10.0.26100.0\GeneratedQueries.dll</HintPath>
+    <Reference Include="QueryCompiler">
+      <HintPath>..\QueryCompiler\bin\Debug\net10.0-windows10.0.17763.0\QueryCompiler.dll</HintPath>
     </Reference>
     <Reference Include="SQL_And_Config_Handler .Net8">
-      <HintPath>..\89hgp23489y324f89yb3f4\SQL_And_Config_Handler .Net8.dll</HintPath>
+      <HintPath>..\SQL_And_Config_Handler .Net8\bin\Debug\net8.0-windows10.0.17763.0\SQL_And_Config_Handler .Net8.dll</HintPath>
     </Reference>
     <Reference Include="TOML_Helper_.Net8">
-      <HintPath>TOML_Helper_.Net8.dll</HintPath>
+      <HintPath>..\SQL_And_Config_Handler_.Net8\bin\Debug\net8.0-windows10.0.17763.0\TOML_Helper_.Net8.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Components\LabelDatePickPair.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Components\LabelComboPair.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

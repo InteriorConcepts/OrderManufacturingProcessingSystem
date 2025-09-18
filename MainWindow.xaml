@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OMPS"
-        xmlns:Components="clr-namespace:OMPS.Components" x:Class="OMPS.MainWindow"
+        xmlns:Components="clr-namespace:OMPS.Components" x:Name="MainWin" x:Class="OMPS.MainWindow"
         mc:Ignorable="d" UseLayoutRounding="False"
         Title="MainWindow" Height="450" Width="800" MinHeight="300" MinWidth="450"
         Background="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
@@ -53,38 +53,38 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
                             <StackPanel Width="150" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputPair LabelText="OrderNbr" InputText="C000025332" InputReadOnly="True" FontSize="10"/>
-                                <Components:LabelInputPair LabelText="LineNbr" InputText="2" InputReadOnly="True"/>
-                                <Components:LabelInputPair LabelText="JobNbr" InputText="J000035597" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelFullWidth="65" LabelText="Quote" InputText="IC025132" InputReadOnly="True"/>
-                                <Components:LabelInputPair LabelText="NetProd" InputText="20,214.00" InputFormat="{}${0}" InputReadOnly="True"/>
-                                <Components:LabelInputPair LabelText="ShipByDate" InputText="10/02/2025" InputReadOnly="True"/>
-                                <Components:LabelInputPair LabelText="Item" InputText="FGF-020M" InputReadOnly="True"/>
-                                <Components:LabelInputPair LabelText="Qty" InputText="1.00" InputReadOnly="True"/>
+                                <Components:LabelInputPair x:Name="head_OrderNbr" LabelText="OrderNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.OrderNumber, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputPair LabelText="LineNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineNumber, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputPair LabelText="JobNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.SupplyOrderRef, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelFullWidth="65" LabelText="Quote" LookupEnabled="False" InputText="{Binding ColorSetInfo.QuoteNbr, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputPair LabelText="NetProd" InputFormat="{}${0}" InputReadOnly="True" InputText="{Binding ColorSetInfo.NetProduct, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputPair LabelText="ShipByDate" InputReadOnly="True" InputText="{Binding ColorSetInfo.ShipByDate, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputPair LabelText="Item" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineItem, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputPair LabelText="Qty" InputReadOnly="True" InputText="{Binding ColorSetInfo.Qty, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
                             <StackPanel Width="150" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelComboPair LabelText="FrameFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="Metal Comp" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="ShelfFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="GibLegFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="ValBaseFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="96" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="77" InputText="" InputReadOnly="True"/>
-                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputText="" InputReadOnly="True"/>
+                                <Components:LabelComboPair LabelText="FrameFin" LabelWidth="96" InputReadOnly="False" InputText="PL"/>
+                                <Components:LabelComboPair LabelText="Metal Comp" LabelWidth="96" InputReadOnly="False" InputText="{Binding ColorSetInfo.PedFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="ShelfFin" LabelWidth="96" InputReadOnly="False" InputText="{Binding ColorSetInfo.ShelfFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="GibLegFin" LabelWidth="96" InputReadOnly="False" InputText="{Binding ColorSetInfo.TblLegFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="ValBaseFin" LabelWidth="96" InputReadOnly="False" InputText="{Binding ColorSetInfo.TblBaseFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="96" InputReadOnly="False" InputText="{Binding ColorSetInfo.TblLegBaseFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="96" InputReadOnly="False" InputText="{Binding ColorSetInfo.TblSlimLegFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="77" InputReadOnly="False" InputText="{Binding ColorSetInfo.TangentLegFin, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputReadOnly="False" InputText="{Binding ColorSetInfo.PedCushionColor, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
                             <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Fabric" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Lam" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Edge" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Chase Door" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Acrylic" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Lam HC Door" LabelWidth="80" InputText="" InputReadOnly="True"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Curve" LabelWidth="80" InputText="" InputReadOnly="True"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric" LabelWidth="80" InputText="{Binding ColorSetInfo.Fabric1ID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam" LabelWidth="80" InputText="{Binding ColorSetInfo.WksLamID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Edge" LabelWidth="80" InputText="{Binding ColorSetInfo.WksEdgeID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl" LabelWidth="80" InputText="{Binding ColorSetInfo.MelPnlID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl" LabelWidth="80" InputText="{Binding ColorSetInfo.LamPnlID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Chase Door" LabelWidth="80" InputText="{Binding ColorSetInfo.ChaseDoorID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic" LabelWidth="80" InputText="{Binding ColorSetInfo.AcrylicID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Lam HC Door" LabelWidth="80" InputText="{Binding ColorSetInfo.LamHCDoorID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Curve" LabelWidth="80" InputText="{Binding ColorSetInfo.LamCurveID, ElementName=MainWin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
@@ -95,7 +95,7 @@
                                 <Button Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" />
                             </StackPanel>
                         </StackPanel>
-                        <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="wks hgt 29,42" InputReadOnly="True"/>
+                        <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="wks hgt 29,42" InputReadOnly="False"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Colors+">
@@ -114,7 +114,7 @@
                                 <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputText=""/>
                                 <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
                                 <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
-                                <Components:LabelInputPair LabelText="UnderWsPnl" LabelWidth="80" InputText=""/>
+                                <Components:LabelComboPair LabelText="UnderWsPnl" LabelWidth="80" InputText=""/>
                             </StackPanel>
                             <!--Column 3 : Misc Toggles-->
                             <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
@@ -155,7 +155,7 @@
                             <Components:LabelInputPair LabelWidth="90" LabelText="OpportunityNbr" InputText="OP-0120452"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="0 0 4 0">
-                            <Components:LabelInputPair LabelWidth="70" LabelText="DropShipID" InputText=""/>
+                            <Components:LabelInputPair LabelWidth="70" LabelText="DropShipID" InputText="" InputReadOnly="True"/>
                             <Components:LabelInputPair LabelWidth="70" LabelText="ExterpriseID" InputText=""/>
                             <Components:LabelInputPair LabelWidth="70" LabelText="ShiptoName" InputText="Plano ISD Administration Building"/>
                             <Grid>
@@ -167,14 +167,14 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <Components:LabelComboPair Grid.Column="0" Grid.Row="0" LabelWidth="70" LabelText="OrderDate" InputText=""/>
-                                <Components:LabelComboPair Grid.Column="0" Grid.Row="1" LabelWidth="70" LabelText="OnSiteDate" InputText=""/>
-                                <Components:LabelComboPair Grid.Column="1" Grid.Row="0" LabelWidth="70" LabelText="CreationDate" InputText=""/>
-                                <Components:LabelComboPair Grid.Column="1" Grid.Row="1" LabelWidth="70" LabelText="ChangeDate" InputText=""/>
+                                <Components:LabelDatePickPair Grid.Column="0" Grid.Row="0" LabelWidth="70" LabelText="OrderDate" InputReadOnly="True" InputText=""/>
+                                <Components:LabelDatePickPair Grid.Column="0" Grid.Row="1" LabelWidth="70" LabelText="OnSiteDate" InputReadOnly="True" InputText=""/>
+                                <Components:LabelDatePickPair Grid.Column="1" Grid.Row="0" LabelWidth="70" LabelText="CreationDate" InputReadOnly="True" InputText=""/>
+                                <Components:LabelDatePickPair Grid.Column="1" Grid.Row="1" LabelWidth="70" LabelText="ChangeDate" InputReadOnly="True" InputText=""/>
                             </Grid>
                             <Components:LabelInputPair Grid.Column="1" Grid.Row="5" LabelWidth="70"
                                                        LabelText="ColorSetID"
-                                                       InputText="{}{F2FE210D-41D1-48DA-B5A8-346C8D75FAA9}"/>
+                                                       InputText="{}{F2FE210D-41D1-48DA-B5A8-346C8D75FAA9}" InputReadOnly="True"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -183,9 +183,9 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Height="200" VerticalAlignment="Top" Orientation="Horizontal">
+                        <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Horizontal">
                             <!--Column 1-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 01" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 02" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 03" InputText=""/>
@@ -198,7 +198,7 @@
                                 <Components:LabelCheckPair LabelText="Part 10" InputText=""/>
                             </StackPanel>
                             <!--Column 2-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 11" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 12" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 13" InputText=""/>
@@ -211,7 +211,7 @@
                                 <Components:LabelCheckPair LabelText="Part 20" InputText=""/>
                             </StackPanel>
                             <!--Column 3-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 21" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 22" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 23" InputText=""/>
@@ -224,7 +224,7 @@
                                 <Components:LabelCheckPair LabelText="Part 30" InputText=""/>
                             </StackPanel>
                             <!--Column 4-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 31" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 32" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 33" InputText=""/>
@@ -237,7 +237,7 @@
                                 <Components:LabelCheckPair LabelText="Part 40" InputText=""/>
                             </StackPanel>
                             <!--Column 5-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 41" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 42" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 43" InputText=""/>
@@ -250,7 +250,7 @@
                                 <Components:LabelCheckPair LabelText="Part 50" InputText=""/>
                             </StackPanel>
                             <!--Column 6-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 51" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 52" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 53" InputText=""/>
@@ -263,7 +263,7 @@
                                 <Components:LabelCheckPair LabelText="Part 60" InputText=""/>
                             </StackPanel>
                             <!--Column 7-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 61" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 62" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 63" InputText=""/>
@@ -276,7 +276,7 @@
                                 <Components:LabelCheckPair LabelText="Part 70" InputText=""/>
                             </StackPanel>
                             <!--Column 8-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 71" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 72" InputText=""/>
                                 <Components:LabelCheckPair LabelText="Part 73" InputText=""/>
@@ -289,7 +289,7 @@
                                 <Components:LabelCheckPair LabelText="Part 80" InputText=""/>
                             </StackPanel>
                             <!--Column 9-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 81" InputText="" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 82" InputText="" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 83" InputText="" IsEnabled="False"/>
@@ -302,7 +302,7 @@
                                 <Components:LabelCheckPair LabelText="Part 90" InputText="" IsEnabled="False"/>
                             </StackPanel>
                             <!--Column 10-->
-                            <StackPanel Height="200" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 91" InputText="" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 92" InputText="" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 93" InputText="" IsEnabled="False"/>

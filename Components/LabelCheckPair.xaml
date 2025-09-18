@@ -8,6 +8,6 @@
              x:Name="Root"
             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22">
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
-        <CheckBox Content="{Binding LabelText}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="11"/>
+        <CheckBox Content="{Binding LabelText}" Foreground="{Binding ElementName=Root, Path=Foreground}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="11"/>
     </DockPanel>
 </UserControl>

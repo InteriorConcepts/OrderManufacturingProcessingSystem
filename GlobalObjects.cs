@@ -8,6 +8,6 @@ namespace OMPS
 {
     public class GlobalObjects
     {
-        public static readonly SqlMethods SqlMethods = new();
+        //public static readonly SqlMethods SqlMethods = new();
     }
 }

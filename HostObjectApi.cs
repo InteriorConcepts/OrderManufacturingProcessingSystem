@@ -9,10 +9,10 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
 {
+#if false
     public partial class JobNumberAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
@@ -92,4 +92,5 @@ namespace OMPS
             int limit = 0) =>
             JsonSerializer.Serialize(await GlobalObjects.SqlMethods.GetJobOrderLines(job, limit));
     }
+#endif
 }

@@ -1,88 +1,37 @@
 ﻿using MyApp.DataAccess.Generated;
 using OMPS.Components;
-using System.Buffers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
 {
-
-    public class StyleConfig
-    {
-        public static Color Dark_Button_BG { get; } = Color.FromRgb(20, 20, 20);
-        public static Color Dark_Button_FG { get; } = Color.FromRgb(230, 230, 230);
-        public Color Light_Button_BG { get; } = Color.FromRgb(230, 230, 230);
-        public Color Light_Button_FG { get; } = Color.FromRgb(20, 20, 20);
-    }
-
-    public static class Styles
-    {
-
-        public static readonly DependencyProperty StylesProperty =
-            DependencyProperty.Register("Styles", typeof(StyleConfig), typeof(LabelInputPair),
-                new PropertyMetadata(new StyleConfig()));
-
-        public static StyleConfig GetStyles(DependencyObject obj) => (StyleConfig)obj.GetValue(StylesProperty);
-        public static void SetStyles(DependencyObject obj, StyleConfig value) => obj.SetValue(StylesProperty, value);
-    }
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        /*
-        public static readonly DependencyProperty StylesProperty =
-            DependencyProperty.Register("Styles", typeof(StyleConfig), typeof(LabelInputPair),
-                new PropertyMetadata(new StyleConfig()));
-
-        public StyleConfig Styles
-        {
-            get { return (StyleConfig)GetValue(StylesProperty); }
-            set { SetValue(StylesProperty, value); }
-        }
-        */
-
-        public static readonly DependencyProperty Button_BGProperty =
-            DependencyProperty.Register("Button_BG", typeof(ResourceKey), typeof(MainWindow),
-                new PropertyMetadata(null));
-        public ResourceKey Button_BG
-        {
-            get { return (ResourceKey)GetValue(Button_BGProperty); }
-            set { SetValue(Button_BGProperty, value); }
-        }
-
-        public static readonly DependencyProperty Button_FGProperty =
-            DependencyProperty.Register("Button_FG", typeof(ResourceKey), typeof(MainWindow),
-                new PropertyMetadata(null));
-        public ResourceKey Button_FG
-        {
-            get { return (ResourceKey)GetValue(Button_FGProperty); }
-            set { SetValue(Button_FGProperty, value); }
-        }
-
         public example_queriesQueries Queries = new();
-        public ObservableCollection<example_queries_GetItemLinesByJobResult> MyData { get; set; } = [];
-        //public DataTable MyDataTable = new();
+
+
+        public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
+        public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
+
         public MainWindow()
         {
             InitializeComponent();
             //
+            this.DataContext = this;
             var res = SCH.SQLDatabaseConnection.Init();
-            if (res is not (bool, Exception) ||
-                SCH.Global.Config.IsConfigCompletelyLoaded is false ||
-                (res.Item1 is false || res.Item2 is not null))
+            if (res.Item1 is false || res.Item2 is not null)
             {
                 string msg = "Could not load Config:\n";
                 if (res is (bool, Exception) && res.Item2 is not null)
@@ -96,25 +45,51 @@ namespace OMPS
                 App.Current.Shutdown(-1);
             }
 
-            this.datagrid_main.ItemsSource = MyData;
-            this.MyData.CollectionChanged += this.MyData_CollectionChanged; ;
-            this.DataContext = this;
+
+            this.datagrid_main.ItemsSource = MfgItemLines;
+
+            //MfgItemLines.CollectionChanged += this.MyData_CollectionChanged; ;
         }
 
         public void LoadDataForJob(string job)
         {
-            MyData.Clear();
-            var data = Queries.GetItemLinesByJob(job);
-            this.datagrid_main.BeginEdit();
-            for (int i = 0; i < data.Count; i++)
+
+            MfgItemLines.Clear();
+            var data_info = Queries.GetColorSet(job).First();
+            /*
+            try
             {
-                MyData.Add(data[i]);
+                // Test 1: Direct property assignment (should work)
+                ColorSetInfo.SupplyOrderRef = data_info.SupplyOrderRef;
+
+                // Test 2: Reflection assignment (might not work)
+                var property = typeof(example_queries_GetColorSetResult).GetProperty("SupplyOrderRef");
+                property.SetValue(ColorSetInfo, data_info.SupplyOrderRef);
+
+                // Test 3: Check if values are actually different
+                if (!ColorSetInfo.SupplyOrderRef.Equals(data_info.SupplyOrderRef))
+                {
+                    property.SetValue(ColorSetInfo, data_info.SupplyOrderRef);
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
+            */
+            PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, ColorSetInfo);
+
+            var data_mfglines = Queries.GetItemLinesByJob(job);
+            this.datagrid_main.BeginEdit();
+            for (int i = 0; i < data_mfglines.Count; i++)
+            {
+                MfgItemLines.Add(data_mfglines[i]);
             }
             if (this.datagrid_main.Items.Count is not 0)
             {
                 this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
             }
             this.datagrid_main.EndInit();
+
             //MyDataTable = ConvertListToDataTable(data);
         }
 

@@ -39,9 +39,9 @@ namespace OMPS.Components
             DependencyProperty.Register("InputFormat", typeof(string), typeof(LabelInputLookupPair),
                 new PropertyMetadata("{}"));
 
-        public static readonly DependencyProperty InputReadOnlyProperty =
-            DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(LabelInputLookupPair),
-                new PropertyMetadata(false));
+        public static readonly DependencyProperty LookupEnabledProperty =
+            DependencyProperty.Register("LookupEnabled", typeof(bool), typeof(LabelInputLookupPair),
+                new PropertyMetadata(true));
 
         public string LabelText
         {
@@ -73,10 +73,10 @@ namespace OMPS.Components
             set { SetValue(InputFormatProperty, value); }
         }
 
-        public bool InputReadOnly
+        public bool LookupEnabled
         {
-            get { return (bool)GetValue(InputReadOnlyProperty); }
-            set { SetValue(InputReadOnlyProperty, value); }
+            get { return (bool)GetValue(LookupEnabledProperty); }
+            set { SetValue(LookupEnabledProperty, value); }
         }
     }
 }

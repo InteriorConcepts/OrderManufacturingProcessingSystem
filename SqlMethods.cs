@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
 {
@@ -34,9 +33,9 @@ namespace OMPS
         }
     }
 
+#if false
     public class SqlMethods: ISqlMethods
     {
-        /*
         public async Task<Dictionary<string, Dictionary<string, object>>?> GetTypes(string tableName)
         {
             var res = await SCH.SQLDatabaseConnection.QueryOldCRM(@$"
@@ -52,6 +51,7 @@ namespace OMPS
         }
         */
 
+        /*
         public async Task<List<Dictionary<string, object?>>?> GetSql(string templateName, object[] fields, object[] filters, Dictionary<string, string> @params, int limit = 0)
         {
             if (templateName is "" or null)
@@ -233,5 +233,6 @@ namespace OMPS
             return null;
         }
     }
+#endif
 
 }

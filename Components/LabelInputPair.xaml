@@ -9,6 +9,6 @@
              d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Background="Transparent">
         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
         <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="11"/>
-        <TextBox Text="{Binding Path=InputText, StringFormat=InputFormat}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="11"/>
+        <TextBox Text="{Binding Path=InputText, StringFormat=InputFormat}" VerticalContentAlignment="Center" IsReadOnly="{Binding InputReadOnly}" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="11"/>
     </DockPanel>
 </UserControl>
