@@ -29,7 +29,7 @@ namespace OMPS.Components
 
         public static readonly DependencyProperty InputTextProperty =
             DependencyProperty.Register("InputText", typeof(string), typeof(LabelCheckPair),
-                new PropertyMetadata("Value"));
+                new PropertyMetadata("False"));
 
         public static readonly DependencyProperty InputReadOnlyProperty =
             DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(LabelCheckPair),
@@ -45,6 +45,12 @@ namespace OMPS.Components
         {
             get { return (string)GetValue(InputTextProperty); }
             set { SetValue(InputTextProperty, value); }
+        }
+
+        public bool CheckValue
+        {
+            get { return bool.TryParse((string)GetValue(InputTextProperty), out bool val) && val; }
+            set { SetValue(InputTextProperty, value.ToString()); }
         }
 
         public bool InputReadOnly

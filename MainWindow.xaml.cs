@@ -1,5 +1,5 @@
-﻿using MyApp.DataAccess.Generated;
-using OMPS.Components;
+﻿using Microsoft.Win32;
+using MyApp.DataAccess.Generated;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -19,11 +19,10 @@ namespace OMPS
     /// </summary>
     public partial class MainWindow : Window
     {
-        public example_queriesQueries Queries = new();
+        public Pages.EngOrder Page_EngOrder;
 
-
-        public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
-        public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
+        //public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
+        //public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
 
         public MainWindow()
         {
@@ -44,54 +43,43 @@ namespace OMPS
                 MessageBox.Show(msg);
                 App.Current.Shutdown(-1);
             }
+            var timerid = SystemEvents.CreateTimer(1000);
+            SystemEvents.TimerElapsed += ((object sender, TimerElapsedEventArgs e) =>
+            {
+                if (e.TimerId != timerid) return;
+                this.Lbl_Time.Content = DateTime.Now.ToLongTimeString();
+                this.Lbl_Date.Content = DateTime.Now.ToLongDateString();
+            });
 
+            this.Page_EngOrder = new(this)
+            {
+                JobNbr = "J000035601"
+            };
+            this.MainFrame.Navigate(this.Page_EngOrder);
 
-            this.datagrid_main.ItemsSource = MfgItemLines;
-
-            //MfgItemLines.CollectionChanged += this.MyData_CollectionChanged; ;
         }
 
+        /*
         public void LoadDataForJob(string job)
         {
+            this.Page_EngOrder.MfgItemLines.Clear();
+            var data_info = Ext.Queries.GetColorSet(job).First();
+            PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.Page_EngOrder.ColorSetInfo);
 
-            MfgItemLines.Clear();
-            var data_info = Queries.GetColorSet(job).First();
-            /*
-            try
-            {
-                // Test 1: Direct property assignment (should work)
-                ColorSetInfo.SupplyOrderRef = data_info.SupplyOrderRef;
-
-                // Test 2: Reflection assignment (might not work)
-                var property = typeof(example_queries_GetColorSetResult).GetProperty("SupplyOrderRef");
-                property.SetValue(ColorSetInfo, data_info.SupplyOrderRef);
-
-                // Test 3: Check if values are actually different
-                if (!ColorSetInfo.SupplyOrderRef.Equals(data_info.SupplyOrderRef))
-                {
-                    property.SetValue(ColorSetInfo, data_info.SupplyOrderRef);
-                }
-            } catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
-            */
-            PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, ColorSetInfo);
-
-            var data_mfglines = Queries.GetItemLinesByJob(job);
-            this.datagrid_main.BeginEdit();
+            var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
+            this.Page_EngOrder.datagrid_main.BeginEdit();
             for (int i = 0; i < data_mfglines.Count; i++)
             {
-                MfgItemLines.Add(data_mfglines[i]);
+                this.Page_EngOrder.MfgItemLines.Add(data_mfglines[i]);
             }
-            if (this.datagrid_main.Items.Count is not 0)
+            if (this.Page_EngOrder.datagrid_main.Items.Count is not 0)
             {
-                this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
+                this.Page_EngOrder.datagrid_main.ScrollIntoView(this.Page_EngOrder.datagrid_main.Items[0]);
             }
-            this.datagrid_main.EndInit();
-
-            //MyDataTable = ConvertListToDataTable(data);
+            this.Page_EngOrder.datagrid_main.EndInit();
         }
+        */
+
 
         public static DataTable ConvertListToDataTable<T>(List<T> items)
         {
@@ -167,6 +155,7 @@ namespace OMPS
 
 
         public int RowSpan = 1;
+        /*
         public void ToggleSideGrid()
         {
             this.pnl_dock.Visibility =
@@ -184,6 +173,7 @@ namespace OMPS
                 Visibility.Visible :
                 Visibility.Collapsed;
         }
+        */
 
         public static bool IsJobNumValid(string job)
         {
@@ -200,17 +190,18 @@ namespace OMPS
             }
         }
 
-        private void Btn_CollapseSideGrid_Click(object sender, RoutedEventArgs e)
+        /*
+        public void Btn_CollapseSideGrid_Click(object sender, RoutedEventArgs e)
         {
             this.ToggleSideGrid();
         }
 
-        private void Btn_CollapseTopBar_Click(object sender, RoutedEventArgs e)
+        public void Btn_CollapseTopBar_Click(object sender, RoutedEventArgs e)
         {
             this.ToggleHeader();
         }
 
-        private void Txtbx_Job_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        public void Txtbx_Job_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key is not System.Windows.Input.Key.Enter) return;
             if (sender as TextBox is not TextBox txtbx) return;
@@ -241,24 +232,9 @@ namespace OMPS
             e.Handled = true;
             this.pnl_dock.Focus();
             this.pnl_side.Focus();
-            /*
-            this.pnl_side.SelectAllCells();
-            var cell = this.pnl_side.SelectedCells[0];
-            this.pnl_side.UnselectAllCells();
-            this.pnl_side.CurrentCell = cell;
-            //MessageBox.Show(this.pnl_side.CurrentCell.Item.ToString());
-            this.pnl_side.BeginEdit();
-            //Debug.WriteLine(this.datagrid_main.CurrentCell.Column.DisplayIndex);
-            */
-            /*
-            this.pnl_side.CurrentCell =
-                new DataGridCellInfo(
-                    this.pnl_side.Items[0],
-                    this.pnl_side.Columns[0]
-                );
-            */
 
         }
+        */
 
     }
 }

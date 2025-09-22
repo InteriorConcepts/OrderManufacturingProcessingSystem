@@ -13,11 +13,11 @@
             <ColumnDefinition Width="16"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Grid.Column="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+        <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Grid.Column="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="{Binding FontSize}"/>
         <Button Padding="0 0 2 0" Grid.Column="1" BorderThickness="0" Background="Transparent" IsEnabled="{Binding LookupEnabled}">
             <Image Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Center" VerticalAlignment="Center">
             </Image>
         </Button>
-        <TextBox Grid.Column="2" Text="{Binding Path=InputText, StringFormat=InputFormat}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="11"/>
+        <TextBox Grid.Column="2" Text="{Binding Path=InputText, StringFormat=InputFormat}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="{Binding FontSize}"/>
     </Grid>
 </UserControl>

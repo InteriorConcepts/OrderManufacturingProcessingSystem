@@ -16,14 +16,13 @@ namespace OMPS.Components
 {
 
     /// <summary>
-    /// Interaction logic for LabelInputPair.xaml
+    /// Interaction logic for LabelInputCurrencyPair.xaml
     /// </summary>
-    public partial class LabelInputPair : UserControl
+    public partial class LabelInputCurrencyPair : UserControl
     {
         public const string StringFormat_Currency = "C2";
         public const string StringFormat_Text = "{}";
-        public static string StringFormat_Current = StringFormat_Text;
-        public LabelInputPair()
+        public LabelInputCurrencyPair()
         {
             InitializeComponent();
         }
@@ -40,27 +39,27 @@ namespace OMPS.Components
         }
 
         public static readonly DependencyProperty LabelTextProperty =
-            DependencyProperty.Register("LabelText", typeof(string), typeof(LabelInputPair),
+            DependencyProperty.Register("LabelText", typeof(string), typeof(LabelInputCurrencyPair),
                 new PropertyMetadata("Label:"));
 
         public static readonly DependencyProperty LabelWidthProperty =
-            DependencyProperty.Register("LabelWidth", typeof(int), typeof(LabelInputPair),
+            DependencyProperty.Register("LabelWidth", typeof(int), typeof(LabelInputCurrencyPair),
                 new PropertyMetadata(65));
 
         public static readonly DependencyProperty InputTypeProperty =
-            DependencyProperty.Register("InputType", typeof(InputType), typeof(LabelInputPair),
+            DependencyProperty.Register("InputType", typeof(InputType), typeof(LabelInputCurrencyPair),
                 new PropertyMetadata(InputType.Text));
 
         public static readonly DependencyProperty InputTextProperty =
-            DependencyProperty.Register("InputText", typeof(object), typeof(LabelInputPair),
+            DependencyProperty.Register("InputText", typeof(object), typeof(LabelInputCurrencyPair),
                 new PropertyMetadata(1234));
 
         public static readonly DependencyProperty InputFormatProperty =
-            DependencyProperty.Register("InputFormat", typeof(string), typeof(LabelInputPair),
+            DependencyProperty.Register("InputFormat", typeof(string), typeof(LabelInputCurrencyPair),
                 new PropertyMetadata("{}"));
 
         public static readonly DependencyProperty InputReadOnlyProperty =
-            DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(LabelInputPair),
+            DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(LabelInputCurrencyPair),
                 new PropertyMetadata(false));
 
         

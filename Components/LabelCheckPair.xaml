@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OMPS.Components"
+             xmlns:local="clr-namespace:OMPS"
              mc:Ignorable="d" 
              x:Name="Root"
             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22">
+    <UserControl.Resources>
+        <local:StringToBoolConverter x:Key="StringToBoolConverter" FalseValue="False" TrueValue="True"/>
+    </UserControl.Resources>
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
-        <CheckBox Content="{Binding LabelText}" Foreground="{Binding ElementName=Root, Path=Foreground}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="11"/>
+        <CheckBox IsChecked="{Binding InputText, Converter={StaticResource StringToBoolConverter}}" Content="{Binding LabelText}" Foreground="{Binding ElementName=Root, Path=Foreground}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="{Binding FontSize}"/>
     </DockPanel>
 </UserControl>
