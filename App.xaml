@@ -3,7 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:OMPS"
              StartupUri="MainWindow.xaml"
-             xmlns:helpers="clr-namespace:OMPS">
+             xmlns:helpers="clr-namespace:OMPS"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+            
+             <!---->
     <Application.Resources>
         <ResourceDictionary>
             <!--
@@ -11,10 +14,19 @@
                 <ResourceDictionary Source="Resources/ClassicControlStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             -->
+
+
             <ResourceDictionary.MergedDictionaries>
+                
                 <ResourceDictionary Source="Resources/DataGrid_Main.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid_SidePnl.xaml" />
                 <ResourceDictionary Source="Resources/ClassicDarkStyles.xaml" />
+                
+                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="Blue" SecondaryColor="LightBlue" InvalidatesImplicitDataTemplateResources="True" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+
+                <!--
+                -->
             </ResourceDictionary.MergedDictionaries>
 
             <ObjectDataProvider x:Key="IsDarkTheme"

@@ -19,6 +19,7 @@ namespace OMPS
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Pages.OrderSearch Page_OrderSearch;
         public Pages.EngOrder Page_EngOrder;
 
         //public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
@@ -51,11 +52,10 @@ namespace OMPS
                 this.Lbl_Date.Content = DateTime.Now.ToLongDateString();
             });
 
-            this.Page_EngOrder = new(this)
-            {
-                JobNbr = "J000035601"
-            };
-            this.MainFrame.Navigate(this.Page_EngOrder);
+            this.Page_OrderSearch = new(this);
+            this.Page_EngOrder = new(this) { };
+            this.Page_OrderSearch.LoadRecentOrders();
+            this.MainFrame.Navigate(this.Page_OrderSearch);
 
         }
 
@@ -79,6 +79,25 @@ namespace OMPS
             this.Page_EngOrder.datagrid_main.EndInit();
         }
         */
+
+        public enum PageTypes
+        {
+            OrderSearch = 1,
+            EngOrder = 2
+        }
+
+        public void NavigateToPage(PageTypes pageType)
+        {
+            Page? page = pageType switch
+            {
+                PageTypes.OrderSearch => this.Page_OrderSearch,
+                PageTypes.EngOrder => this.Page_EngOrder,
+                _ => null,
+            };
+            if (page is null || page.Content is null) return;
+            if (this.MainFrame.Content == page.Content) return;
+            this.MainFrame.Navigate(page);
+        }
 
 
         public static DataTable ConvertListToDataTable<T>(List<T> items)
@@ -175,6 +194,7 @@ namespace OMPS
         }
         */
 
+        /*
         public static bool IsJobNumValid(string job)
         {
             if (job[0] is not 'J' && job[0] is not 'S') return false;
@@ -189,6 +209,7 @@ namespace OMPS
                 job = $"{job[0]}{job[(job.Length - 5)..(job.Length)].PadLeft(9, '0')}";
             }
         }
+        */
 
         /*
         public void Btn_CollapseSideGrid_Click(object sender, RoutedEventArgs e)

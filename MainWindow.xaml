@@ -6,18 +6,17 @@
         xmlns:local="clr-namespace:OMPS"
         xmlns:Components="clr-namespace:OMPS.Components" xmlns:Pages="clr-namespace:OMPS.Pages" x:Name="MainWin" x:Class="OMPS.MainWindow"
         mc:Ignorable="d" UseLayoutRounding="False"
-        Title="MainWindow" Height="450" Width="800" MinHeight="450" MinWidth="650"
-        Background="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
-        Foreground="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+        Title="MainWindow" MinHeight="600" MinWidth="1025"
+        Style="{StaticResource MaterialDesignWindow}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Background="#666">
         </Grid>
-        <Frame Grid.Row="1" x:Name="MainFrame"/>
+        <Frame Grid.Row="1" x:Name="MainFrame" NavigationUIVisibility="Visible"/>
         <Grid x:Name="statusbar" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
           Background="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <Grid.ColumnDefinitions>

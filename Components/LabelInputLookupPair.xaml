@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OMPS.Components"
              mc:Ignorable="d" 
              x:Name="Root"
-             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22">
+             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2">
     <Grid HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding LabelWidth}"/>

@@ -7,15 +7,20 @@
       xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
       x:Name="Page_OrderSearch"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="600" d:DesignWidth="1025"
       Title="JobSearch"
-      Background="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
-      Foreground="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+      DataContext="{Binding ElementName=Page_OrderSearch}">
 
-    <Grid DataContext="{Binding ElementName=Page_EngOrder}">
-        <StackPanel>
-            <TextBox></TextBox>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0">
+            
         </StackPanel>
-        <DataGrid IsTextSearchEnabled="True" />
+        <DataGrid Grid.Row="1" x:Name="datagrid_orders" IsReadOnly="True" IsTextSearchEnabled="True" ItemsSource="{Binding ColorSetInfos}" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" EnableColumnVirtualization="True" MouseDoubleClick="datagrid_orders_MouseDoubleClick">
+            
+        </DataGrid>
     </Grid>
 </Page>
