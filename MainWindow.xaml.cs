@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Xml.Linq;
+using Windows.ApplicationModel.Activation;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
@@ -19,17 +21,20 @@ namespace OMPS
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Pages.OrderSearch Page_OrderSearch;
-        public Pages.EngOrder Page_EngOrder;
+        //public Pages.OrderSearch Page_OrderSearch;
+        //public Pages.EngOrder Page_EngOrder;
+
+        public Dictionary<string, string> Tabs = [];
 
         //public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
         //public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
-
+        public string Title_Main_Prefix = "Production Bridge";
         public MainWindow()
         {
             InitializeComponent();
             //
             this.DataContext = this;
+            this.SetWindowTitle("");
             var res = SCH.SQLDatabaseConnection.Init();
             if (res.Item1 is false || res.Item2 is not null)
             {
@@ -52,33 +57,86 @@ namespace OMPS
                 this.Lbl_Date.Content = DateTime.Now.ToLongDateString();
             });
 
-            this.Page_OrderSearch = new(this);
-            this.Page_EngOrder = new(this) { };
-            this.Page_OrderSearch.LoadRecentOrders();
-            this.MainFrame.Navigate(this.Page_OrderSearch);
+            //this.Page_OrderSearch = new(this);
+            //this.Page_EngOrder = new(this) { };
+            //this.Page_OrderSearch.LoadRecentOrders();
+            //this.MainFrame.Navigate(this.Page_OrderSearch);
+            //this.Tab_Create_EngOrder("Job").page?.LoadDataForJob("J000035602");
+            this.Tab_Create_OrderSearch("Order Search").page?.LoadRecentOrders();
 
         }
 
-        /*
-        public void LoadDataForJob(string job)
+        public static readonly DependencyProperty TabControl_SelectedIndex_Property =
+            DependencyProperty.Register(
+                "TabControl_SelectedIndex_Property",
+                typeof(int), typeof(MainWindow),
+                new PropertyMetadata(1)
+            );
+        public int TabControl_SelectedIndex
         {
-            this.Page_EngOrder.MfgItemLines.Clear();
-            var data_info = Ext.Queries.GetColorSet(job).First();
-            PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.Page_EngOrder.ColorSetInfo);
-
-            var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
-            this.Page_EngOrder.datagrid_main.BeginEdit();
-            for (int i = 0; i < data_mfglines.Count; i++)
-            {
-                this.Page_EngOrder.MfgItemLines.Add(data_mfglines[i]);
-            }
-            if (this.Page_EngOrder.datagrid_main.Items.Count is not 0)
-            {
-                this.Page_EngOrder.datagrid_main.ScrollIntoView(this.Page_EngOrder.datagrid_main.Items[0]);
-            }
-            this.Page_EngOrder.datagrid_main.EndInit();
+            get => (int)GetValue(TabControl_SelectedIndex_Property);
+            set => SetValue(TabControl_SelectedIndex_Property, value);
         }
-        */
+
+        public (TabItem? tab, Frame? frame, Page? page) Current()
+        {
+            var tab = this.TabControler.SelectedItem as TabItem;
+            if (tab is null) return (tab, null, null);
+            var frm = this.TabControler.SelectedContent as Frame;
+            if (frm is null) return (tab, frm, null);
+            var page = frm.Content as Page;
+            return (tab, frm, page);
+        }
+
+        public (TabItem tab, Frame frame, Pages.OrderSearch? page) Tab_Create_OrderSearch(string name = "New Tab", bool setCurrent = true)
+        {
+            var (tab, frame, page) = this.Tab_Create(name, Page_Create(PageTypes.OrderSearch), setCurrent);
+            ((Pages.OrderSearch?)page)?.ParentTab = tab;
+            return (tab, frame, (Pages.OrderSearch?)page);
+        }
+
+        public (TabItem tab, Frame frame, Pages.EngOrder? page) Tab_Create_EngOrder(string name = "New Tab", bool setCurrent = true)
+        {
+            var (tab, frame, page) = this.Tab_Create(name, Page_Create(PageTypes.EngOrder), setCurrent);
+            ((Pages.EngOrder?)page)?.ParentTab = tab;
+            return (tab, frame, (Pages.EngOrder?)page);
+        }
+
+        public (TabItem tab, Frame frame, Page? page) Tab_Create(string name = "New Tab", Page? pageToLoad = null, bool setCurrent = true)
+        {
+            string nameSuff = ("_" + DateTime.Now.Ticks),
+                tabName = "TabItem" + nameSuff,
+                frmName = "Frame" + nameSuff;
+            var tab = new TabItem()
+            {
+                Name = tabName,
+                Header = name,
+                Padding = new Thickness(10, 2, 2, 10),
+                VerticalContentAlignment = VerticalAlignment.Top,
+            };
+            var frm = new Frame() {
+                Name = frmName,
+                NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden
+            };
+            tab.Content = frm;
+            this.TabControler.Items.Add(tab);
+            this.Tabs.Add(tabName, frmName);
+            if (setCurrent)
+            {
+                //MessageBox.Show("***");
+                var idx = this.TabControler.Items.IndexOf(tab);
+                Debug.WriteLine(idx);
+                this.Tab_Set(idx);
+            }
+            if (pageToLoad is not Page page) return (tab, frm, null);
+            frm.Navigate(pageToLoad);
+            return (tab, frm, page);
+        }
+
+        public void Tab_Set(int item)
+        {
+            this.TabControl_SelectedIndex = item;
+        }
 
         public enum PageTypes
         {
@@ -86,19 +144,53 @@ namespace OMPS
             EngOrder = 2
         }
 
-        public void NavigateToPage(PageTypes pageType)
+        public Page? Page_Create(PageTypes pageType)
         {
-            Page? page = pageType switch
+            return pageType switch
             {
-                PageTypes.OrderSearch => this.Page_OrderSearch,
-                PageTypes.EngOrder => this.Page_EngOrder,
+                PageTypes.OrderSearch => new Pages.OrderSearch(this),
+                PageTypes.EngOrder => new Pages.EngOrder(this),
                 _ => null,
             };
-            if (page is null || page.Content is null) return;
-            if (this.MainFrame.Content == page.Content) return;
-            this.MainFrame.Navigate(page);
         }
 
+        /*
+        public void NavigateToPage(PageTypes pageType, bool runOnload, params object[] onloadParams)
+        {
+            Page? page = this.Page_Create(pageType);
+            if (page is null || page.Content is null) return;
+            this.Current().frame?.Navigate(page);
+            if (!runOnload) return;
+            if (page is Pages.OrderSearch search)
+            {
+                search.LoadRecentOrders();
+            }
+            else if (page is Pages.EngOrder order)
+            {
+                if (onloadParams.Length is 1 && onloadParams[0] is string job)
+                    order.LoadDataForJob(job);
+            }
+            //if (this.MainFrame.Content == page.Content) return;
+            //this.MainFrame.Navigate(page);
+        }
+        */
+
+        public void SetWindowTitle(string title)
+        {
+            if (string.IsNullOrEmpty(title.Trim()))
+            {
+                this.Title = $"{this.Title_Main_Prefix}";
+            }
+            else
+            {
+                this.Title = $"{this.Title_Main_Prefix} | {title}";
+            }
+        }
+
+        public void SetTabTitle(string title)
+        {
+            this.Current().tab?.Header = title;
+        }
 
         public static DataTable ConvertListToDataTable<T>(List<T> items)
         {
@@ -172,90 +264,9 @@ namespace OMPS
             e.Row.Header = (e.Row.GetIndex()).ToString();
         }
 
-
-        public int RowSpan = 1;
-        /*
-        public void ToggleSideGrid()
+        private void TabControler_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.pnl_dock.Visibility =
-                this.pnl_dock.Visibility is Visibility.Collapsed ?
-                Visibility.Visible :
-                Visibility.Collapsed;
-            this.RowSpan = (this.pnl_dock.Visibility is Visibility.Collapsed ? 2 : 1);
-            Grid.SetColumnSpan(datagrid_main, RowSpan);
+            SetWindowTitle(Current().tab?.Header.ToString() ?? "");
         }
-
-        public void ToggleHeader()
-        {
-            this.grid_header.Visibility =
-                this.grid_header.Visibility is Visibility.Collapsed ?
-                Visibility.Visible :
-                Visibility.Collapsed;
-        }
-        */
-
-        /*
-        public static bool IsJobNumValid(string job)
-        {
-            if (job[0] is not 'J' && job[0] is not 'S') return false;
-            if (!job[1..].All(c => int.TryParse(c.ToString(), out int _))) return false;
-            return true;
-        }
-
-        public static void FormatJobNum(ref string job)
-        {
-            if (job.Length >= (job[0] is 'J' ? 6 : 5) && job.Length is not 10)
-            {
-                job = $"{job[0]}{job[(job.Length - 5)..(job.Length)].PadLeft(9, '0')}";
-            }
-        }
-        */
-
-        /*
-        public void Btn_CollapseSideGrid_Click(object sender, RoutedEventArgs e)
-        {
-            this.ToggleSideGrid();
-        }
-
-        public void Btn_CollapseTopBar_Click(object sender, RoutedEventArgs e)
-        {
-            this.ToggleHeader();
-        }
-
-        public void Txtbx_Job_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key is not System.Windows.Input.Key.Enter) return;
-            if (sender as TextBox is not TextBox txtbx) return;
-            if (txtbx.Text is not string job || job.Length is 0) return;
-            if (!IsJobNumValid(job)) return;
-            FormatJobNum(ref job);
-            LoadDataForJob(job);
-        }
-
-        private void dataSideGridScrollViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.pnl_side.AddHandler(MouseWheelEvent, new RoutedEventHandler(DataGridMouseWheelHorizontal), true);
-        }
-
-        private void DataGridMouseWheelHorizontal(object sender, RoutedEventArgs e)
-        {
-            MouseWheelEventArgs eargs = (MouseWheelEventArgs)e;
-            double x = (double)eargs.Delta;
-            double y = dataSideGridScrollViewer.VerticalOffset;
-            dataSideGridScrollViewer.ScrollToVerticalOffset(y - x);
-        }
-
-        private void datagrid_main_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key is not Key.Enter) return;
-            if (this.pnl_dock.Visibility is Visibility.Collapsed)
-                ToggleSideGrid();
-            e.Handled = true;
-            this.pnl_dock.Focus();
-            this.pnl_side.Focus();
-
-        }
-        */
-
     }
 }

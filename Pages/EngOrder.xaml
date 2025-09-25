@@ -4,13 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OMPS"
-      xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
+      xmlns:Components="clr-namespace:OMPS.Components"
+      xmlns:pages="clr-namespace:OMPS.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       x:Name="Page_EngOrder"
       mc:Ignorable="d" UseLayoutRounding="False"
       d:DesignHeight="600" d:DesignWidth="1025"
       Title="EngOrder"
-      Background="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
-      Foreground="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
       DataContext="{Binding ElementName=Page_EngOrder}"
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
       >
@@ -20,23 +20,26 @@
     </Page.Resources>
 
     <Grid DataContext="{Binding ElementName=Page_EngOrder}">
+        <Grid.CacheMode>
+            <CacheMode>BitmapCache</CacheMode>
+        </Grid.CacheMode>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="toolbar" Grid.Row="0" HorizontalAlignment="Stretch" Background="#333">
+        <Grid x:Name="toolbar" Grid.Row="0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
-                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef}" VerticalAlignment="Center" Foreground="#EEE" FontSize="18"/>
+                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef}" VerticalAlignment="Center" FontSize="20" Margin="20,0,0,0"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button x:Name="Btn_SaveHeader" Width="18" Height="18" Style="{StaticResource SaveBtn}"
-                    Padding="0" Margin="0" Background="Transparent" Cursor="Hand" SourceUpdated="Btn_SaveHeader_SourceUpdated">
+                    Padding="0" Margin="0" Cursor="Hand" SourceUpdated="Btn_SaveHeader_SourceUpdated">
                     <Image x:Name="Img_SaveHeader" Width="18" Height="18"
                        SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
                        RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
@@ -48,7 +51,7 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
-            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" TabStripPlacement="Right" Background="#212121" Foreground="#CCC" FontSize="13">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" TabStripPlacement="Right" FontSize="13">
                 <TabItem Header="General" Height="40">
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
@@ -56,7 +59,7 @@
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="24"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
@@ -65,7 +68,7 @@
                                 <Components:LabelInputPair LabelWidth="85" LabelText="LineNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineNumber, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="JobNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.SupplyOrderRef, Mode=TwoWay}"/>
                                 <Components:LabelInputLookupPair LabelFullWidth="85" LabelText="Quote" LookupEnabled="False" InputText="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
-                                <Components:LabelInputCurrencyPair LabelWidth="85" LabelText="NetProduct" InputReadOnly="True" InputText="{Binding ColorSetInfo.NetProduct, Mode=TwoWay}" Foreground="#FFEEEEEE"/>
+                                <Components:LabelInputCurrencyPair LabelWidth="85" LabelText="NetProduct" InputReadOnly="True" InputText="{Binding ColorSetInfo.NetProduct, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="ShipByDate" InputReadOnly="True" InputText="{Binding ColorSetInfo.ShipByDate, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="Item" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineItem, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="Qty" InputReadOnly="True" InputText="{Binding ColorSetInfo.Qty, Mode=TwoWay}"/>
@@ -351,7 +354,7 @@
                 </TabItem>
             </TabControl>
         </Grid>
-        <DockPanel x:Name="dpnl_DataFilter" Grid.Row="2" Height="48" Visibility="Visible" Background="#304555">
+        <DockPanel x:Name="dpnl_DataFilter" Grid.Row="2" Height="48" Visibility="Visible">
             <Grid Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50*"/>
@@ -372,16 +375,24 @@
                         <ColumnDefinition Width="32"/>
                     </Grid.ColumnDefinitions>
                     <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
-                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="9pt" Background="#222" Foreground="#CCC" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
-                    <Button x:Name="Btn_FilterSave" Grid.Column="2" Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualHeight}" Padding="0" Margin="0" Content="" Background="Transparent" BorderThickness="0" FontSize="9pt" VerticalContentAlignment="Center" FontWeight="Thin" FontFamily="Segoe Fluent Icons" HorizontalContentAlignment="Center" UseLayoutRounding="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" FontSize="9pt" Foreground="DarkGray" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
+                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="9pt" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
+                    <Button x:Name="Btn_FilterSave" Grid.Column="2"
+                              Height="20"
+                              IsEnabled="True"
+                              Style="{StaticResource MaterialDesignIconForegroundButton}"
+                              ToolTip="MaterialDesignFlatButton">
+                        <materialDesign:PackIcon
+                        Kind="Add"
+                        />
+                    </Button>
+                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" FontSize="9pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
                         <TextBlock>
                         Ex:&#x00A0;&#x00A0;<Italic><Underline>Jnt+D&amp;T+yes</Underline></Italic>&#x00A0;&#x00A0;or&#x00A0;&#x00A0;<Italic><Underline>Rivet+300-0</Underline></Italic>
                         </TextBlock>
                     </Label>
-                    <Button x:Name="Btn_FilterClose" Grid.Column="5" Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualHeight}" Padding="0" Margin="0" Content="" Background="Transparent" BorderThickness="0" FontSize="9pt" VerticalContentAlignment="Center" FontWeight="Thin" FontFamily="Segoe Fluent Icons" HorizontalContentAlignment="Center" UseLayoutRounding="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="Btn_FilterClose_Click"/>
+                    <Button x:Name="Btn_FilterClose" Grid.Column="5" Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualHeight}" Padding="0" Margin="0" Content="" BorderThickness="0" FontSize="9pt" VerticalContentAlignment="Center" FontWeight="Thin" FontFamily="Segoe Fluent Icons" HorizontalContentAlignment="Center" UseLayoutRounding="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="Btn_FilterClose_Click"/>
                 </Grid>
-                <Border Grid.Row="1" Background="#333" Margin="0 1"/>
+                <Separator Grid.Row="1" Margin="0 1"/>
                 <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
                 <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                     <WrapPanel Orientation="Horizontal" VerticalAlignment="Stretch">
@@ -426,7 +437,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <DataGrid x:Name="datagrid_main"
+            <DataGrid x:Name="datagrid_main" Grid.Row="0"
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
                       IsReadOnly="True"
                       CellEditEnding="DataGrid_CellEditEnding"
@@ -451,7 +462,8 @@
                     <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="0 0 0 0" Name="dataSideGridScrollViewer" FontSize="14"
                                     Loaded="dataSideGridScrollViewer_Loaded"
                                     VerticalScrollBarVisibility="Auto"
-                                    HorizontalScrollBarVisibility="Hidden">
+                                    HorizontalScrollBarVisibility="Hidden"
+                                  Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
                         <Grid x:Name="grid_dataeditregion" Width="350">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -459,9 +471,9 @@
                             </Grid.ColumnDefinitions>
                         </Grid>
                     </ScrollViewer>
-                    <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" Background="#333" Click="Btn_RevertItemLineEdits_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" Click="Btn_RevertItemLineEdits_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-                            <TextBlock Foreground="LightGray" Margin="0 0 4 0" VerticalAlignment="Center">Revert</TextBlock>
+                            <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Revert</TextBlock>
                             <Viewbox Stretch="Uniform" Width="18" Height="18">
                                 <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="20" Height="20">
                                     <Path Fill="#e80" Data="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z" Canvas.Top="5.5" HorizontalAlignment="Left" Stretch="Fill" VerticalAlignment="Center" Width="17" Canvas.Left="1.5" />
@@ -469,9 +481,9 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" Background="#333" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Foreground="LightGray" Margin="0 0 4 0" VerticalAlignment="Center">Save</TextBlock>
+                            <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Save</TextBlock>
                             <Viewbox Stretch="UniformToFill" Width="18" Height="18">
                                 <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="20" Height="20">
                                     <Path Fill="#1A1" Data="M4 19H10V21H4C2.89 21 2 20.1 2 19V5C2 3.9 2.89 3 4 3H16L20 7V9.12L18 11.12V7.83L15.17 5H4V19M14 10V6H5V10H14M20.42 12.3C20.31 12.19 20.18 12.13 20.04 12.13C19.9 12.13 19.76 12.19 19.65 12.3L18.65 13.3L20.7 15.35L21.7 14.35C21.92 14.14 21.92 13.79 21.7 13.58L20.42 12.3M12 19.94V22H14.06L20.12 15.93L18.07 13.88L12 19.94M14 15C14 13.34 12.66 12 11 12S8 13.34 8 15 9.34 18 11 18C11.04 18 11.08 18 11.13 18L14 15.13C14 15.09 14 15.05 14 15" Canvas.Left="-0.933" Canvas.Top="-1" />
@@ -479,9 +491,9 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" Background="#333" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Foreground="LightGray" Margin="0 0 4 0" VerticalAlignment="Center">Delete</TextBlock>
+                            <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Delete</TextBlock>
                             <Viewbox Stretch="UniformToFill" Width="18" Height="18">
                                 <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="24" Height="24">
                                     <Path Fill="#e44" Data="M14.12,10.47L12,12.59L9.87,10.47L8.46,11.88L10.59,14L8.47,16.12L9.88,17.53L12,15.41L14.12,17.53L15.53,16.12L13.41,14L15.53,11.88L14.12,10.47M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9Z" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Stretch="Fill" Width="18" Canvas.Left="3" Canvas.Top="2" />

@@ -6,18 +6,19 @@
              xmlns:local="clr-namespace:OMPS.Components"
              mc:Ignorable="d" 
              x:Name="Root"
-             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2">
+             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
+             Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <Grid HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding LabelWidth}"/>
             <ColumnDefinition Width="16"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Grid.Column="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="{Binding FontSize}"/>
+        <Label Grid.Column="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="{Binding FontSize}"/>
         <Button Padding="0 0 2 0" Grid.Column="1" BorderThickness="0" Background="Transparent" IsEnabled="{Binding LookupEnabled}">
             <Image Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Center" VerticalAlignment="Center">
             </Image>
         </Button>
-        <TextBox Grid.Column="2" Text="{Binding Path=InputText, StringFormat=InputFormat}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="{Binding FontSize}"/>
+        <TextBox Grid.Column="2" Text="{Binding Path=InputText, StringFormat=InputFormat}" Style="{StaticResource MaterialDesignFilledTextBox}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="{Binding FontSize}"/>
     </Grid>
 </UserControl>

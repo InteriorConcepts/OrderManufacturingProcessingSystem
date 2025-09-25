@@ -9,6 +9,7 @@
     <StartupObject>OMPS.App</StartupObject>
 	  <PlatformTarget>AnyCPU</PlatformTarget>
 	  <GenerateDocumentationFile>False</GenerateDocumentationFile>
+	  <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

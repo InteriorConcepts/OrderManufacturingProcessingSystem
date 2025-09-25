@@ -41,6 +41,8 @@ namespace OMPS.Pages
         #endregion
 
         #region Properties
+        private MainWindow ParentWindow { get; }
+        internal TabItem ParentTab { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
         public string[] Finishes_BS { get; } = ["NA", "SL", "BK"];
@@ -59,7 +61,6 @@ namespace OMPS.Pages
                 this.JobNbrChanged.Invoke(this, this._jobNbr);
             }
         }
-        private MainWindow ParentWindow { get; }
         public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
         public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
         #endregion
@@ -86,20 +87,35 @@ namespace OMPS.Pages
         public void LoadDataForJob(string job)
         {
             this.MfgItemLines.Clear();
-            var data_info = Ext.Queries.GetColorSet(job).First();
-            PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
+            var t = new Task(() =>
+            {
+                try
+                {
+                    var data_info = Ext.Queries.GetColorSet(job).First();
+                    PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
 
-            var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
-            this.datagrid_main.BeginEdit();
-            for (int i = 0; i < data_mfglines.Count; i++)
-            {
-                this.MfgItemLines.Add(data_mfglines[i]);
-            }
-            if (this.datagrid_main.Items.Count is not 0)
-            {
-                this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
-            }
-            this.datagrid_main.EndInit();
+                    var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        this.datagrid_main.BeginEdit();
+                        for (int i = 0; i < data_mfglines.Count; i++)
+                        {
+                            this.MfgItemLines.Add(data_mfglines[i]);
+                        }
+                        if (this.datagrid_main.Items.Count is not 0)
+                        {
+                            this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
+                        }
+                        this.datagrid_main.EndInit();
+                        this.ParentTab.Header = $"Job Mfg Lines\n({this.JobNbr})";
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                }
+            });
+            t.Start();
         }
 
         public void ToggleSideGrid()

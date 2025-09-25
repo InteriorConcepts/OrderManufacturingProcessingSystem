@@ -6,9 +6,10 @@
              xmlns:local="clr-namespace:OMPS.Components"
              mc:Ignorable="d" 
              x:Name="Root"
-             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2">
+             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
+             Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
-        <Label Foreground="{Binding ElementName=Root, Path=Foreground}" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="{Binding FontSize}"/>
-        <DatePicker IsEnabled="{Binding InputEnabled}" SelectedDate="{Binding SelectedDate}" Padding="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Text="{Binding InputText}" FontSize="{Binding FontSize}"/>
+        <Label Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="{Binding FontSize}"/>
+        <DatePicker IsEnabled="{Binding InputEnabled}" Style="{StaticResource MaterialDesignFilledDatePicker}" SelectedDate="{Binding SelectedDate}" Padding="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Text="{Binding InputText}" FontSize="{Binding FontSize}"/>
     </DockPanel>
 </UserControl>

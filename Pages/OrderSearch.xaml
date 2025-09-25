@@ -5,21 +5,63 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OMPS"
       xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       x:Name="Page_OrderSearch"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1025"
       Title="JobSearch"
       DataContext="{Binding ElementName=Page_OrderSearch}">
-
-    <Grid>
+    <Page.Resources>
+        <CollectionViewSource x:Key="OrdersViewSource" Source="{Binding ColorSetInfos}" Filter="OrdersViewSource_Filter"/>
+        <!-- Custom DataGridColumnHeader Style with Search Box -->
+        
+    </Page.Resources>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid.CacheMode>
+            <CacheMode>BitmapCache</CacheMode>
+        </Grid.CacheMode>
         <Grid.RowDefinitions>
-            <RowDefinition Height="36"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0">
-            
+        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="0 0 0 0">
+            <TextBox x:Name="Txt_JobNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Job" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_QuoteNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Quote" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_OrderNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Order" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_OrderName" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Name" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_OppNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Opportunity" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" x:Name="datagrid_orders" IsReadOnly="True" IsTextSearchEnabled="True" ItemsSource="{Binding ColorSetInfos}" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" EnableColumnVirtualization="True" MouseDoubleClick="datagrid_orders_MouseDoubleClick">
+        <DataGrid x:Name="datagrid_orders" Grid.Row="1" IsReadOnly="True" IsTextSearchEnabled="True"
+                  ItemsSource="{Binding Source={StaticResource OrdersViewSource}}" 
+                  AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"
+                  EnableColumnVirtualization="False" MouseDoubleClick="datagrid_orders_MouseDoubleClick"
+                  EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  RowHeaderWidth="14" HeadersVisibility="All">
             
         </DataGrid>
     </Grid>

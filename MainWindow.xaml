@@ -4,38 +4,70 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OMPS"
-        xmlns:Components="clr-namespace:OMPS.Components" xmlns:Pages="clr-namespace:OMPS.Pages" x:Name="MainWin" x:Class="OMPS.MainWindow"
+        xmlns:Components="clr-namespace:OMPS.Components"
+        xmlns:Pages="clr-namespace:OMPS.Pages"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        x:Name="MainWin" x:Class="OMPS.MainWindow"
         mc:Ignorable="d" UseLayoutRounding="False"
         Title="MainWindow" MinHeight="600" MinWidth="1025"
-        Style="{StaticResource MaterialDesignWindow}">
+        Style="{StaticResource MaterialDesignWindow}" WindowStyle="SingleBorderWindow">
     <Grid>
+        <Grid.CacheMode>
+            <CacheMode>BitmapCache</CacheMode>
+        </Grid.CacheMode>
         <Grid.RowDefinitions>
-            <RowDefinition Height="24"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="24"/>
+            <RowDefinition Height="32"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#666">
+        <materialDesign:ColorZone Grid.Row="0" Background="#111" Foreground="#EEE">
+            <Menu materialDesign:MenuAssist.TopLevelMenuItemHeight="30">
+                <MenuItem Header="Test"/>
+                <MenuItem Header="Test"/>
+                <MenuItem Header="Test"/>
+            </Menu>
+        </materialDesign:ColorZone>
+        <Separator Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
+        <!--
+        <Grid Grid.Row="0">
+            <materialDesign:PackIcon Height="Auto" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Kind="HomeOutline"/>
         </Grid>
-        <Frame Grid.Row="1" x:Name="MainFrame" NavigationUIVisibility="Visible"/>
-        <Grid x:Name="statusbar" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-          Background="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="5 0 0 0">
+        -->
+        <materialDesign:ColorZone Grid.Row="2">
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Button Width="100" Content="Test123" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <Border x:Name="Spnl_ContentFrames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            </Grid>
+        </materialDesign:ColorZone>
+
+        <materialDesign:ColorZone Grid.Row="3" Mode="Dark" Background="#111" Foreground="#CCC">
+            <Grid x:Name="statusbar" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Separator Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
+                <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="5 0 0 0">
                     <Image x:Name="Img_NetworkStatus" Margin="3" SnapsToDevicePixels="True"
                        RenderOptions.BitmapScalingMode="HighQuality"
                        RenderOptions.EdgeMode="Aliased" RenderSize="32,32"
                        Source="pack://application:,,,/OMPS;component/Images/Network.png"/>
-                    <Label Content="Connected" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                       VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="9pt" Padding="0,0,0,0"/>
+                    <Label Content="Connected"
+                       VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" Padding="0,0,0,0"/>
                 </StackPanel>
-            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="0 0 5 0">
-                <Label x:Name="Lbl_Date" Content="Monday, September 22, 2025" FontSize="9pt" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center" Panel.ZIndex="9999" HorizontalContentAlignment="Center" Margin="0,0,10,0" Padding="0,0,0,0"/>
-                <Label x:Name="Lbl_Time" Content="11:42:15" FontSize="9pt" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center" Panel.ZIndex="9999" HorizontalContentAlignment="Center" Padding="0,0,0,0"/>
-            </StackPanel>
-        </Grid>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="0 0 5 0">
+                    <Label x:Name="Lbl_Date" Content="Monday, September 22, 2025"  FontSize="14" VerticalContentAlignment="Center" Panel.ZIndex="9999" HorizontalContentAlignment="Center" Margin="0,0,10,0" Padding="0,0,0,0"/>
+                    <Label x:Name="Lbl_Time" Content="11:42:15" FontSize="14" VerticalContentAlignment="Center" Panel.ZIndex="9999" HorizontalContentAlignment="Center" Padding="0,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:ColorZone>
     </Grid>
 
 </Window>

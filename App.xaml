@@ -18,11 +18,13 @@
 
             <ResourceDictionary.MergedDictionaries>
                 
+                <!--
                 <ResourceDictionary Source="Resources/DataGrid_Main.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid_SidePnl.xaml" />
                 <ResourceDictionary Source="Resources/ClassicDarkStyles.xaml" />
+                -->
                 
-                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="Blue" SecondaryColor="LightBlue" InvalidatesImplicitDataTemplateResources="True" />
+                <materialDesign:CustomColorTheme BaseTheme="Inherit" PrimaryColor="DodgerBlue" SecondaryColor="MediumPurple"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
 
                 <!--
