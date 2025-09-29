@@ -4,7 +4,10 @@
              xmlns:local="clr-namespace:OMPS"
              StartupUri="MainWindow.xaml"
              xmlns:helpers="clr-namespace:OMPS"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             xmlns:viewModel="clr-namespace:OMPS.viewModel"
+             xmlns:pages="clr-namespace:OMPS.Pages"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             ThemeMode="Dark">
             
              <!---->
     <Application.Resources>
@@ -28,8 +31,16 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
 
                 <!--
+                <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
+
                 -->
             </ResourceDictionary.MergedDictionaries>
+
+            
+            <DataTemplate DataType="{x:Type viewModel:OrderSearch_ViewModel}">
+                <pages:OrderSearch/>
+            </DataTemplate>
+            
 
             <ObjectDataProvider x:Key="IsDarkTheme"
                         MethodName="CurrentThemeIsDark"

@@ -21,8 +21,9 @@ namespace OMPS.Pages
     /// <summary>
     /// Interaction logic for JobSearch.xaml
     /// </summary>
-    public partial class OrderSearch : Page
+    public partial class OrderSearch : UserControl
     {
+        public OrderSearch() { }
         public OrderSearch(MainWindow parentWindow)
         {
             InitializeComponent();
@@ -38,7 +39,7 @@ namespace OMPS.Pages
 
 
         #region Properties
-        private MainWindow ParentWindow { get; }
+        internal MainWindow ParentWindow { get; set; }
         internal TabItem ParentTab { get; set; }
         public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
         #endregion
@@ -53,11 +54,17 @@ namespace OMPS.Pages
         public void LoadRecentOrders(string filters = "%")
         {
             this.ColorSetInfos.Clear();
+            Debug.WriteLine(filters);
+            this.progbar_orders.Value = 0;
+            this.progbar_orders.Visibility = Visibility.Visible;
+            this.progbar_orders.IsEnabled = true;
             var t = new Task(() =>
             {
                 try
                 {
+                    Debug.WriteLine(0);
                     var data_orders = Ext.Queries.GetColorSets(filters);
+                    Debug.WriteLine(1);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         this.datagrid_orders.BeginEdit();
@@ -70,12 +77,16 @@ namespace OMPS.Pages
                         {
                             this.datagrid_orders.ScrollIntoView(this.datagrid_orders.Items[0]);
                         }
+                        Debug.WriteLine(2);
                         this.datagrid_orders.EndInit();
+                        this.progbar_orders.Value = 0;
+                        this.progbar_orders.Visibility = Visibility.Hidden;
+                        this.progbar_orders.IsEnabled = false;
                     });
                     
+                    /*
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MessageBox.Show("****");
                         var offset = this.GetColumnPositionSimple(this.datagrid_orders, 2);
                         this.Txt_JobNbr.Margin = new Thickness(offset.X, this.Txt_JobNbr.Margin.Top, this.Txt_JobNbr.Margin.Right, this.Txt_JobNbr.Margin.Bottom);
                         this.Txt_JobNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "JobNbr").First().ActualWidth - 1;
@@ -84,6 +95,7 @@ namespace OMPS.Pages
                         this.Txt_OrderName.Width = this.datagrid_orders.Columns.Where(c => c.Header is "Name").First().ActualWidth - 1;
                         this.Txt_OppNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "OpportunityNbr").First().ActualWidth - 1;
                     });
+                    */
                     
                 } catch (Exception ex)
                 {
@@ -94,11 +106,11 @@ namespace OMPS.Pages
             t.Start();
             if (filters is "%")
             {
-                this.ParentTab.Header = "Order Search";
+                //this.ParentTab.Header = "Order Search";
             }
             else
             {
-                this.ParentTab.Header = $"Order Search  ({filters})";
+                //this.ParentTab.Header = $"Order Search  ({filters})";
             }
         }
 
@@ -160,8 +172,10 @@ namespace OMPS.Pages
             if (e.ChangedButton is not MouseButton.Left) return;
             if (datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
             if (!Ext.IsJobNumValid(item.JobNbr)) return;
-            this.ParentWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
+            //this.ParentWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //this.ParentWindow.Page_EngOrder.JobNbr = item.JobNbr;
+            this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+            this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
         }
 
         private void OrdersViewSource_Filter(object sender, FilterEventArgs e)
@@ -187,6 +201,7 @@ namespace OMPS.Pages
         private void Txt_JobNbr_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key is not Key.Enter) return;
+            this.LoadRecentOrders($"%{this.Txt_JobNbr.Text}%");
             var viewSource = (CollectionViewSource)Resources["OrdersViewSource"];
             viewSource?.View?.Refresh();
         }

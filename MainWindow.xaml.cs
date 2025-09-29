@@ -1,10 +1,12 @@
 ﻿using Microsoft.Win32;
 using MyApp.DataAccess.Generated;
+using OMPS.viewModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,6 +18,12 @@ using SCH = SQL_And_Config_Handler;
 namespace OMPS
 {
 
+    public enum PageTypes
+    {
+        OrderSearch = 1,
+        EngOrder = 2
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -23,6 +31,8 @@ namespace OMPS
     {
         //public Pages.OrderSearch Page_OrderSearch;
         //public Pages.EngOrder Page_EngOrder;
+
+        //public ViewController ViewController { get; set; }
 
         public Dictionary<string, string> Tabs = [];
 
@@ -33,8 +43,10 @@ namespace OMPS
         {
             InitializeComponent();
             //
-            this.DataContext = this;
+            this.DataContext = new Main_ViewModel() { ParentWin = this };
             this.SetWindowTitle("");
+            ((Main_ViewModel)this.DataContext)?.ParentWin = this;
+            //this.ViewController = new(this);
             var res = SCH.SQLDatabaseConnection.Init();
             if (res.Item1 is false || res.Item2 is not null)
             {
@@ -57,123 +69,60 @@ namespace OMPS
                 this.Lbl_Date.Content = DateTime.Now.ToLongDateString();
             });
 
-            //this.Page_OrderSearch = new(this);
-            //this.Page_EngOrder = new(this) { };
-            //this.Page_OrderSearch.LoadRecentOrders();
-            //this.MainFrame.Navigate(this.Page_OrderSearch);
-            //this.Tab_Create_EngOrder("Job").page?.LoadDataForJob("J000035602");
-            this.Tab_Create_OrderSearch("Order Search").page?.LoadRecentOrders();
-
+            ((Main_ViewModel)this.DataContext)?.OrderSearch_VM.LoadRecentOrders();
         }
 
-        public static readonly DependencyProperty TabControl_SelectedIndex_Property =
-            DependencyProperty.Register(
-                "TabControl_SelectedIndex_Property",
-                typeof(int), typeof(MainWindow),
-                new PropertyMetadata(1)
-            );
-        public int TabControl_SelectedIndex
+        private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            get => (int)GetValue(TabControl_SelectedIndex_Property);
-            set => SetValue(TabControl_SelectedIndex_Property, value);
-        }
-
-        public (TabItem? tab, Frame? frame, Page? page) Current()
-        {
-            var tab = this.TabControler.SelectedItem as TabItem;
-            if (tab is null) return (tab, null, null);
-            var frm = this.TabControler.SelectedContent as Frame;
-            if (frm is null) return (tab, frm, null);
-            var page = frm.Content as Page;
-            return (tab, frm, page);
-        }
-
-        public (TabItem tab, Frame frame, Pages.OrderSearch? page) Tab_Create_OrderSearch(string name = "New Tab", bool setCurrent = true)
-        {
-            var (tab, frame, page) = this.Tab_Create(name, Page_Create(PageTypes.OrderSearch), setCurrent);
-            ((Pages.OrderSearch?)page)?.ParentTab = tab;
-            return (tab, frame, (Pages.OrderSearch?)page);
-        }
-
-        public (TabItem tab, Frame frame, Pages.EngOrder? page) Tab_Create_EngOrder(string name = "New Tab", bool setCurrent = true)
-        {
-            var (tab, frame, page) = this.Tab_Create(name, Page_Create(PageTypes.EngOrder), setCurrent);
-            ((Pages.EngOrder?)page)?.ParentTab = tab;
-            return (tab, frame, (Pages.EngOrder?)page);
-        }
-
-        public (TabItem tab, Frame frame, Page? page) Tab_Create(string name = "New Tab", Page? pageToLoad = null, bool setCurrent = true)
-        {
-            string nameSuff = ("_" + DateTime.Now.Ticks),
-                tabName = "TabItem" + nameSuff,
-                frmName = "Frame" + nameSuff;
-            var tab = new TabItem()
+            if (msg == 0x84) // WM_NCHITTEST
             {
-                Name = tabName,
-                Header = name,
-                Padding = new Thickness(10, 2, 2, 10),
-                VerticalContentAlignment = VerticalAlignment.Top,
-            };
-            var frm = new Frame() {
-                Name = frmName,
-                NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden
-            };
-            tab.Content = frm;
-            this.TabControler.Items.Add(tab);
-            this.Tabs.Add(tabName, frmName);
-            if (setCurrent)
-            {
-                //MessageBox.Show("***");
-                var idx = this.TabControler.Items.IndexOf(tab);
-                Debug.WriteLine(idx);
-                this.Tab_Set(idx);
+                // Extract mouse coordinates from lParam
+                int x = (int)(lParam.ToInt64() & 0xFFFF);
+                int y = (int)(lParam.ToInt64() >> 16);
+
+                // Convert screen coordinates to client coordinates if needed
+                // Point clientPoint = PointFromScreen(new Point(x, y));
+
+                // Perform custom hit-testing logic based on coordinates
+                // and return the appropriate HT* value (e.g., HTCAPTION, HTMINBUTTON, HTCLOSE)
+                // Example: If the point is within a custom title bar area, return HTCAPTION (0x2)
+
+                // Set handled to true if you've handled the message to prevent default processing
+                handled = true;
+                return new IntPtr(0x2); // Example: Returning HTCAPTION
             }
-            if (pageToLoad is not Page page) return (tab, frm, null);
-            frm.Navigate(pageToLoad);
-            return (tab, frm, page);
+
+            return IntPtr.Zero; // Let other messages be handled by default
         }
 
-        public void Tab_Set(int item)
+        public Main_ViewModel MainViewModel
         {
-            this.TabControl_SelectedIndex = item;
+            get => ((Main_ViewModel)this.DataContext);
         }
 
-        public enum PageTypes
+        public bool IsLoading
         {
-            OrderSearch = 1,
-            EngOrder = 2
-        }
-
-        public Page? Page_Create(PageTypes pageType)
-        {
-            return pageType switch
-            {
-                PageTypes.OrderSearch => new Pages.OrderSearch(this),
-                PageTypes.EngOrder => new Pages.EngOrder(this),
-                _ => null,
-            };
-        }
-
-        /*
-        public void NavigateToPage(PageTypes pageType, bool runOnload, params object[] onloadParams)
-        {
-            Page? page = this.Page_Create(pageType);
-            if (page is null || page.Content is null) return;
-            this.Current().frame?.Navigate(page);
-            if (!runOnload) return;
-            if (page is Pages.OrderSearch search)
-            {
-                search.LoadRecentOrders();
+            get;
+            set {
+                field = value;
+                if (field)
+                {
+                    this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Indeterminate;
+                } else
+                {
+                    this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+                }
             }
-            else if (page is Pages.EngOrder order)
-            {
-                if (onloadParams.Length is 1 && onloadParams[0] is string job)
-                    order.LoadDataForJob(job);
-            }
-            //if (this.MainFrame.Content == page.Content) return;
-            //this.MainFrame.Navigate(page);
         }
-        */
+
+        public System.Windows.Shell.TaskbarItemProgressState LoadingState
+        {
+            get;
+            set {
+                field = value;
+                this.TaskbarItemInfo.ProgressState = value;
+            }
+        }
 
         public void SetWindowTitle(string title)
         {
@@ -189,7 +138,7 @@ namespace OMPS
 
         public void SetTabTitle(string title)
         {
-            this.Current().tab?.Header = title;
+            //this.Current().tab?.Header = title;
         }
 
         public static DataTable ConvertListToDataTable<T>(List<T> items)
@@ -266,7 +215,97 @@ namespace OMPS
 
         private void TabControler_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SetWindowTitle(Current().tab?.Header.ToString() ?? "");
+            //SetWindowTitle(Current().tab?.Header.ToString() ?? "");
+        }
+
+        public void ChangeView(PageTypes pageType)
+        {
+            this.MainViewModel.Current = (pageType) switch
+            {
+                PageTypes.OrderSearch => this.MainViewModel.OrderSearch_VM,
+                PageTypes.EngOrder => this.MainViewModel.EngOrder_VM,
+                _ => null
+            };
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not RadioButton rdiobtn) return;
+            if (rdiobtn.Tag is not PageTypes ptype) return;
+            this.ChangeView(ptype);
+        }
+
+        private void grid_TopBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("Drag");
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                try
+                {
+                    DragMove();
+                    //this.WindowState = WindowState.Normal;
+                }
+                catch (InvalidOperationException _) { }
+            }
+        }
+
+
+
+
+
+
+
+        // Import SendMessage and FindWindow from user32.dll
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        // Constants for minimizing
+        private const uint WM_SYSCOMMAND = 0x0112;
+        private const int SC_MINIMIZE = 0xF020;
+        public const int SC_MAXIMIZE = 0xF030;
+        private const int SC_RESTORE = 0xF120;
+
+        private void Btn_WinMin_Click(object sender, RoutedEventArgs e)
+        {
+            IntPtr hWnd = FindWindow(null, this.Title);
+            if (hWnd != IntPtr.Zero)
+            {
+                // Send the minimize message
+                SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_MINIMIZE, IntPtr.Zero);
+            }
+            //this.WindowState = WindowState.Minimized;
+        }
+
+        private void Btn_WinMax_Click(object sender, RoutedEventArgs e)
+        {
+            IntPtr hWnd = FindWindow(null, this.Title);
+            if (hWnd == IntPtr.Zero)
+            {
+                return;
+            }
+
+            if (this.WindowState == WindowState.Maximized)
+            {
+                SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_RESTORE, IntPtr.Zero);
+            } else
+            {
+
+                SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_MAXIMIZE, IntPtr.Zero);
+            }
+            
+        }
+
+        private void Btn_WinClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Btn_Home_Click(object sender, RoutedEventArgs e)
+        {
+            this.ChangeView(PageTypes.OrderSearch);
         }
     }
 }

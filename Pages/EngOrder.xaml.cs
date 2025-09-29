@@ -23,7 +23,7 @@ namespace OMPS.Pages
     /// <summary>
     /// Interaction logic for EngOrder.xaml
     /// </summary>
-    public partial class EngOrder : Page
+    public partial class EngOrder : UserControl
     {
         public EngOrder(MainWindow parentWindow)
         {
@@ -41,7 +41,7 @@ namespace OMPS.Pages
         #endregion
 
         #region Properties
-        private MainWindow ParentWindow { get; }
+        internal MainWindow ParentWindow { get; set; }
         internal TabItem ParentTab { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
@@ -87,6 +87,9 @@ namespace OMPS.Pages
         public void LoadDataForJob(string job)
         {
             this.MfgItemLines.Clear();
+            this.progbar_itemlines.Value = 0;
+            this.progbar_itemlines.IsEnabled = true;
+            this.progbar_itemlines.Visibility = Visibility.Visible;
             var t = new Task(() =>
             {
                 try
@@ -107,7 +110,10 @@ namespace OMPS.Pages
                             this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
                         }
                         this.datagrid_main.EndInit();
-                        this.ParentTab.Header = $"Job Mfg Lines\n({this.JobNbr})";
+                        //this.ParentTab.Header = $"Job Mfg Lines\n({this.JobNbr})";
+                        this.progbar_itemlines.Value = 0;
+                        this.progbar_itemlines.IsEnabled = false;
+                        this.progbar_itemlines.Visibility = Visibility.Collapsed;
                     });
                 }
                 catch (Exception ex)

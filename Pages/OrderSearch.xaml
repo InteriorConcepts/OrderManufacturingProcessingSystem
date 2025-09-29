@@ -1,4 +1,4 @@
-﻿<Page x:Class="OMPS.Pages.OrderSearch"
+﻿<UserControl x:Class="OMPS.Pages.OrderSearch"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,13 +9,12 @@
       x:Name="Page_OrderSearch"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1025"
-      Title="JobSearch"
       DataContext="{Binding ElementName=Page_OrderSearch}">
-    <Page.Resources>
+    <UserControl.Resources>
         <CollectionViewSource x:Key="OrdersViewSource" Source="{Binding ColorSetInfos}" Filter="OrdersViewSource_Filter"/>
         <!-- Custom DataGridColumnHeader Style with Search Box -->
         
-    </Page.Resources>
+    </UserControl.Resources>
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.CacheMode>
             <CacheMode>BitmapCache</CacheMode>
@@ -56,6 +55,7 @@
                      AcceptsReturn="False" TextWrapping="NoWrap"
                      Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
         </StackPanel>
+        <ProgressBar Panel.ZIndex="99" x:Name="progbar_orders" Height="5" Width="500" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
         <DataGrid x:Name="datagrid_orders" Grid.Row="1" IsReadOnly="True" IsTextSearchEnabled="True"
                   ItemsSource="{Binding Source={StaticResource OrdersViewSource}}" 
                   AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"
@@ -65,4 +65,4 @@
             
         </DataGrid>
     </Grid>
-</Page>
+</UserControl>

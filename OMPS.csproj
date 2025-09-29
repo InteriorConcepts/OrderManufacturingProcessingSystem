@@ -28,12 +28,18 @@
 
   <ItemGroup>
     <None Remove="Binoculars.png" />
+    <None Remove="bridge-custom%281%29.png" />
+    <None Remove="bridge-custom%282%29.png" />
+    <None Remove="bridge-custom%283%29.png" />
+    <None Remove="bridge-custom.png" />
     <None Remove="Images\Binoculars-high_contrast.png" />
     <None Remove="Images\Network-online.png" />
     <None Remove="Network-error.png" />
     <None Remove="Network-out.png" />
     <None Remove="Network-warning.png" />
     <None Remove="Network.png" />
+    <None Remove="office-building-cog-outline-custom.png" />
+    <None Remove="office-building-cog-outline.png" />
     <None Remove="Save-down.png" />
     <None Remove="Save-hover.png" />
     <None Remove="Save.png" />
