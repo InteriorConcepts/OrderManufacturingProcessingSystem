@@ -1,15 +1,27 @@
 ﻿using MyApp.DataAccess.Generated;
+using OMPS.Pages;
 using System;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 
 
 namespace OMPS
 {
+    public enum PageTypes
+    {
+        None = -1,
+        Login = 0,
+        OrderSearch = 1,
+        EngOrder = 2,
+        QuoteOrder = 3
+    }
+
     public static class Ext
     {
         public static string StringFormat_Currency = "{}{0:C2.00}";
@@ -42,6 +54,48 @@ namespace OMPS
             {
                 job = $"{job[0]}{job[(job.Length - 5)..(job.Length)].PadLeft(9, '0')}";
             }
+        }
+
+        #region "Storyboard / Animations"
+
+        public static T SetTarget<T>(this T anim, DependencyProperty prop, DependencyObject obj) where T : AnimationTimeline
+        {
+            return Ext.SetTarget(anim, new PropertyPath(prop), obj);
+        }
+
+        public static T SetTarget<T>(this T anim, PropertyPath path, DependencyObject obj) where T : AnimationTimeline
+        {
+            _ = Ext.SetTargetObject(anim, obj);
+            _ = Ext.SetTargetProperty(anim, path);
+            return anim;
+        }
+
+        public static T SetTargetObject<T>(this T anim, DependencyObject obj) where T : AnimationTimeline
+        {
+            Storyboard.SetTarget(anim, obj);
+            return anim;
+        }
+
+        public static T SetTargetProperty<T>(this T anim, PropertyPath path) where T : AnimationTimeline
+        {
+            Storyboard.SetTargetProperty(anim, path);
+            return anim;
+        }
+
+        #endregion
+
+
+
+        public static PageTypes PageToType<T>(this T page) where T : UserControl
+        {
+            return page switch
+            {
+                Login => PageTypes.Login,
+                OrderSearch => PageTypes.OrderSearch,
+                EngOrder => PageTypes.EngOrder,
+                QuoteOrder => PageTypes.QuoteOrder,
+                _ => PageTypes.None,
+            };
         }
     }
 }

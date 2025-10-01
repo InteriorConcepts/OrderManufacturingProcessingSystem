@@ -7,38 +7,42 @@
         xmlns:Components="clr-namespace:OMPS.Components"
         xmlns:pages="clr-namespace:OMPS.Pages"
         xmlns:viewModel="clr-namespace:OMPS.viewModel"
+        xmlns:Ext="clr-namespace:OMPS"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Name="MainWin" x:Class="OMPS.MainWindow"
         mc:Ignorable="d" UseLayoutRounding="False"
         Title="MainWindow" MinHeight="600" MinWidth="1025"
-        Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip">
+        Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+    <Window.CacheMode>
+        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
+    </Window.CacheMode>
+
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0"
+        <WindowChrome CaptionHeight="4"
                       ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
-                      CornerRadius="1"/>
+                      CornerRadius="1" GlassFrameThickness="40" NonClientFrameEdges="Bottom"/>
     </WindowChrome.WindowChrome>
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo>
             <TaskbarItemInfo.Overlay>
-                <DrawingImage>/Images/Network-online.png</DrawingImage>
+                <DrawingImage>/Images/Interior-Concepts-Logo.png</DrawingImage>
             </TaskbarItemInfo.Overlay>
         </TaskbarItemInfo>
     </Window.TaskbarItemInfo>
     <Window.FocusVisualStyle>
         <Style/>
     </Window.FocusVisualStyle>
+    <!--
     <Window.DataContext>
         <viewModel:Main_ViewModel/>
     </Window.DataContext>
-    <Grid>
-        <Grid.CacheMode>
-            <CacheMode>BitmapCache</CacheMode>
-        </Grid.CacheMode>
+    -->
+    <Grid Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <materialDesign:ColorZone Grid.Row="0" Padding="4 4 4 0" Background="#111" Foreground="#EEE">
             <Grid x:Name="grid_TopBar" MouseDown="grid_TopBar_MouseDown" Background="Transparent" IsHitTestVisible="True">
@@ -57,11 +61,11 @@
                     <Button x:Name="Btn_Home" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_Home_Click">
                         <materialDesign:PackIcon Height="22" Width="22" Kind="HomeCircleOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
-                    <Button x:Name="Btn_Back" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <materialDesign:PackIcon Height="22" Width="22" Kind="ArrowLeftBoldCircleOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Button x:Name="Btn_Back" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" IsEnabled="{Binding DataContext.CanPrevious, ElementName=MainWin, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_Back_Click" MouseEnter="Btn_Back_MouseEnter" MouseLeave="Btn_Back_MouseLeave">
+                        <materialDesign:PackIcon Height="22" Width="22" Kind="SwapHorizontalCircleOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="Bridge" Foreground="DodgerBlue" Height="24" Width="24" VerticalAlignment="Center"/>
                     <Label FontSize="20" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="4 0" HorizontalAlignment="Center" Content="Production Bridge"/>
                 </StackPanel>
@@ -88,20 +92,21 @@
         <materialDesign:ColorZone Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Landing" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="False" IsEnabled="False"/>
                     <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
-                    <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
+                    <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
+                    <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
                 </StackPanel>
-                <ContentControl Grid.Row="1" x:Name="Spnl_ContentFrames" Content="{Binding Current}"/>
+                <ContentControl Grid.Row="1" x:Name="Spnl_ContentFrames" Margin="4" Content="{Binding Current}"/>
             </Grid>
         </materialDesign:ColorZone>
 
         <materialDesign:ColorZone Grid.Row="3" Mode="Dark" Background="#111" Foreground="#CCC">
-            <Grid x:Name="statusbar" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid x:Name="statusbar" Height="32" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -112,7 +117,7 @@
                        RenderOptions.BitmapScalingMode="HighQuality"
                        RenderOptions.EdgeMode="Aliased" RenderSize="32,32"
                        Source="pack://application:,,,/OMPS;component/Images/Network.png"/>
-                    <Label Content="Connected"
+                    <Label Content="Online"
                        VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" Padding="0,0,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="0 0 5 0">

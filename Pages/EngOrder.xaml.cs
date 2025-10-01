@@ -1,4 +1,5 @@
 ﻿using MyApp.DataAccess.Generated;
+using OMPS.Components;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,7 +43,7 @@ namespace OMPS.Pages
 
         #region Properties
         internal MainWindow ParentWindow { get; set; }
-        internal TabItem ParentTab { get; set; }
+        internal DataGrid CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
         public string[] Finishes_BS { get; } = ["NA", "SL", "BK"];
@@ -86,42 +87,94 @@ namespace OMPS.Pages
         #region Methods
         public void LoadDataForJob(string job)
         {
+            try
+            {
+                this.CurrentGrid?.Visibility = Visibility.Collapsed;
+                this.LoadColorSetData(job);
+                if (this.RadioBtn_View_QPO.IsChecked is true)
+                {
+                    this.CurrentGrid = this.datagrid_QPO;
+                    this.LoadQPartsOrdered(job);
+                }
+                else if (this.RadioBtn_View_QDO.IsChecked is true)
+                {
+                    this.CurrentGrid = this.datagrid_QIO;
+                    this.LoadQItemsOrdered(job);
+                }
+                else if (this.RadioBtn_View_M.IsChecked is true)
+                {
+                    this.CurrentGrid = this.datagrid_main;
+                    this.LoadManufData(job);
+                }
+                else if (this.RadioBtn_View_MP.IsChecked is true)
+                {
+                    this.CurrentGrid = this.datagrid_MP;
+                    this.LoadManufParts(job);
+                }
+                this.CurrentGrid?.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
+        }
+
+        public void LoadColorSetData(string job)
+        {
+            var t = new Task(() =>
+            {
+                var data_info = Ext.Queries.GetColorSet(job).First();
+                PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
+            });
+            t.Start();
+        }
+
+        public void LoadQPartsOrdered(string job)
+        {
+
+        }
+
+        public void LoadQItemsOrdered(string job)
+        {
+
+        }
+
+        private DateTime? Last_ManufData = null;
+        public void LoadManufData(string job)
+        {
+            if (Last_ManufData is not null && (DateTime.Now - Last_ManufData.Value).TotalSeconds < 20) return;
             this.MfgItemLines.Clear();
-            this.progbar_itemlines.Value = 0;
+            this.progbar_itemlines.Value = 50;
             this.progbar_itemlines.IsEnabled = true;
             this.progbar_itemlines.Visibility = Visibility.Visible;
             var t = new Task(() =>
             {
-                try
+                var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    var data_info = Ext.Queries.GetColorSet(job).First();
-                    PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
-
-                    var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
-                    Application.Current.Dispatcher.Invoke(() =>
+                    this.datagrid_main.BeginEdit();
+                    for (int i = 0; i < data_mfglines.Count; i++)
                     {
-                        this.datagrid_main.BeginEdit();
-                        for (int i = 0; i < data_mfglines.Count; i++)
-                        {
-                            this.MfgItemLines.Add(data_mfglines[i]);
-                        }
-                        if (this.datagrid_main.Items.Count is not 0)
-                        {
-                            this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
-                        }
-                        this.datagrid_main.EndInit();
-                        //this.ParentTab.Header = $"Job Mfg Lines\n({this.JobNbr})";
-                        this.progbar_itemlines.Value = 0;
-                        this.progbar_itemlines.IsEnabled = false;
-                        this.progbar_itemlines.Visibility = Visibility.Collapsed;
-                    });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-                }
+                        this.MfgItemLines.Add(data_mfglines[i]);
+                    }
+                    if (this.datagrid_main.Items.Count is not 0)
+                    {
+                        this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
+                    }
+                    this.datagrid_main.EndInit();
+                    this.ParentWindow.SetTabTitle($"{this.JobNbr}");
+                    this.progbar_itemlines.Value = 0;
+                    this.progbar_itemlines.IsEnabled = false;
+                    this.progbar_itemlines.Visibility = Visibility.Collapsed;
+                });
+                this.Last_ManufData = DateTime.Now;
             });
             t.Start();
+        }
+
+        public void LoadManufParts(string job)
+        {
+
         }
 
         public void ToggleSideGrid()
@@ -204,6 +257,13 @@ namespace OMPS.Pages
                 }
             }
         }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not RadioButton) return;
+            if (this.JobNbr is null) return;
+            this.LoadDataForJob(this.JobNbr);
+        }
         #endregion
 
 
@@ -215,7 +275,7 @@ namespace OMPS.Pages
 
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex()).ToString();
+            e.Row.Header = (e.Row.GetIndex()).ToString().PadLeft(6, ' ');
         }
 
         public void DataGrid_IceManuf_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -321,6 +381,17 @@ namespace OMPS.Pages
             this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
         }
 
+        public static readonly DependencyProperty Pending_LineChangesProperty =
+            DependencyProperty.Register(
+                "Pending_LineChanges", typeof(bool), typeof(EngOrder),
+                new PropertyMetadata(false)
+            );
+
+        private bool Pending_LineChanges {
+            get => (bool)GetValue(Pending_LineChangesProperty);
+            set => SetValue(Pending_LineChangesProperty, (bool)value);
+        }
+        public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
             this.grid_dataeditregion.RowDefinitions.Clear();
@@ -351,6 +422,7 @@ namespace OMPS.Pages
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                     Mode = BindingMode.OneWay
                 };
+                txt.PreviewKeyDown += this.Txt_PreviewKeyDown;
                 txt.SetBinding(TextBox.TextProperty, bind);
                 this.grid_dataeditregion.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32, GridUnitType.Pixel) });
                 this.grid_dataeditregion.Children.Add(lbl);
@@ -362,6 +434,12 @@ namespace OMPS.Pages
                 rowIdx++;
             }
         }
+
+        private void Txt_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            this.Pending_LineChanges = true;
+        }
+
         private void Btn_SaveHeader_SourceUpdated(object sender, DataTransferEventArgs e)
         {
 
@@ -376,6 +454,7 @@ namespace OMPS.Pages
                 var propertyName = binding.ParentBinding.Path.Path.Split('.').Last();
                 datagrid_main.BeginEdit();
                 UpdateProperty(datagrid_main.SelectedItem, propertyName, item.Text);
+                datagrid_main.CommitEdit();
                 // Trigger Cell & Row Edit events
                 /*
                 item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWayToSource;
@@ -383,11 +462,25 @@ namespace OMPS.Pages
                 item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWay;
                 */
             }
+            this.Pending_LineChanges = false;
         }
 
         private void Btn_RevertItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            foreach (var item in txts)
+            {
+                var binding = item.GetBindingExpression(TextBox.TextProperty);
+                //var propertyName = binding.ParentBinding.Path.Path.Split('.').Last();
+                binding.UpdateTarget();
+                // Trigger Cell & Row Edit events
+                /*
+                item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWayToSource;
+                item.Text = item.Text;
+                item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWay;
+                */
+            }
+            this.Pending_LineChanges = false;
         }
 
         private void Btn_DeleteItemLine_Click(object sender, RoutedEventArgs e)

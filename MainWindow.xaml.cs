@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using MyApp.DataAccess.Generated;
+using OMPS.Pages;
 using OMPS.viewModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,19 +11,18 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Xml.Linq;
 using Windows.ApplicationModel.Activation;
+using Windows.Devices.Radios;
+using Windows.UI.Text;
+using static OMPS.Ext;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
 {
 
-    public enum PageTypes
-    {
-        OrderSearch = 1,
-        EngOrder = 2
-    }
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -34,6 +34,8 @@ namespace OMPS
 
         //public ViewController ViewController { get; set; }
 
+        public required Main_ViewModel _viewModel;
+
         public Dictionary<string, string> Tabs = [];
 
         //public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
@@ -43,9 +45,9 @@ namespace OMPS
         {
             InitializeComponent();
             //
-            this.DataContext = new Main_ViewModel() { ParentWin = this };
+            this._viewModel = new Main_ViewModel(this) { ParentWin = this };
+            this.DataContext = this._viewModel;
             this.SetWindowTitle("");
-            ((Main_ViewModel)this.DataContext)?.ParentWin = this;
             //this.ViewController = new(this);
             var res = SCH.SQLDatabaseConnection.Init();
             if (res.Item1 is false || res.Item2 is not null)
@@ -72,6 +74,7 @@ namespace OMPS
             ((Main_ViewModel)this.DataContext)?.OrderSearch_VM.LoadRecentOrders();
         }
 
+        /*
         private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg == 0x84) // WM_NCHITTEST
@@ -94,6 +97,7 @@ namespace OMPS
 
             return IntPtr.Zero; // Let other messages be handled by default
         }
+        */
 
         public Main_ViewModel MainViewModel
         {
@@ -136,9 +140,17 @@ namespace OMPS
             }
         }
 
+        public void SetUrlRelPath(string path)
+        {
+            this.Txt_Url.Text = $"pbridge://{path}";
+        }
+
         public void SetTabTitle(string title)
         {
-            //this.Current().tab?.Header = title;
+            this.TabBtn_LineItemInfo.Content =
+                this.TabBtn_LineItemInfo.Content.ToString()?.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)[0] +
+                Environment.NewLine +
+                title;
         }
 
         public static DataTable ConvertListToDataTable<T>(List<T> items)
@@ -224,6 +236,7 @@ namespace OMPS
             {
                 PageTypes.OrderSearch => this.MainViewModel.OrderSearch_VM,
                 PageTypes.EngOrder => this.MainViewModel.EngOrder_VM,
+                PageTypes.QuoteOrder => this.MainViewModel.QuoteOrder_VM,
                 _ => null
             };
         }
@@ -242,6 +255,7 @@ namespace OMPS
             {
                 try
                 {
+                    //SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_RESTORE, IntPtr.Zero);
                     DragMove();
                     //this.WindowState = WindowState.Normal;
                 }
@@ -265,47 +279,70 @@ namespace OMPS
         // Constants for minimizing
         private const uint WM_SYSCOMMAND = 0x0112;
         private const int SC_MINIMIZE = 0xF020;
-        public const int SC_MAXIMIZE = 0xF030;
+        private const int HTMINBUTTON = 0x8;
+        private const int SC_MAXIMIZE = 0xF030;
+        private const int HTMAXBUTTON = 0x9;
         private const int SC_RESTORE = 0xF120;
+        private const int HTCLOSE = 0x14;
 
         private void Btn_WinMin_Click(object sender, RoutedEventArgs e)
         {
-            IntPtr hWnd = FindWindow(null, this.Title);
-            if (hWnd != IntPtr.Zero)
-            {
-                // Send the minimize message
-                SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_MINIMIZE, IntPtr.Zero);
-            }
-            //this.WindowState = WindowState.Minimized;
+            SystemCommands.MinimizeWindow(this);
         }
 
         private void Btn_WinMax_Click(object sender, RoutedEventArgs e)
         {
-            IntPtr hWnd = FindWindow(null, this.Title);
-            if (hWnd == IntPtr.Zero)
-            {
-                return;
-            }
-
             if (this.WindowState == WindowState.Maximized)
             {
-                SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_RESTORE, IntPtr.Zero);
+                SystemCommands.RestoreWindow(this);
             } else
             {
 
-                SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_MAXIMIZE, IntPtr.Zero);
+                SystemCommands.MaximizeWindow(this);
             }
-            
         }
 
         private void Btn_WinClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            SystemCommands.CloseWindow(this);
         }
 
         private void Btn_Home_Click(object sender, RoutedEventArgs e)
         {
             this.ChangeView(PageTypes.OrderSearch);
+        }
+
+        private void Btn_Back_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.MainViewModel.Current is null) return;
+            this.Spnl_FrameTabs.Children.OfType<RadioButton>()
+                .LastOrDefault(r =>
+                    (PageTypes)r.Tag == (this.MainViewModel.Previous as UserControl)?.PageToType()
+                )?
+                .ClearValue(RadioButton.FontStyleProperty);
+            this.MainViewModel.Current = this.MainViewModel.Previous;
+        }
+
+        private void Btn_Back_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var prev = this.MainViewModel.Previous as UserControl;
+            if (prev is null) return;
+            var radios = this.Spnl_FrameTabs.Children.OfType<RadioButton>();
+            var curRadio = radios.LastOrDefault(r => r.IsChecked is true);
+            var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == prev.PageToType());
+            if (prevRadio is null) return;
+            prevRadio.FontStyle = FontStyles.Italic;
+        }
+
+        private void Btn_Back_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var prev = this.MainViewModel.Previous as UserControl;
+            if (prev is null) return;
+            var radios = this.Spnl_FrameTabs.Children.OfType<RadioButton>();
+            var curRadio = radios.LastOrDefault(r => r.IsChecked is true);
+            var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == prev.PageToType());
+            if (prevRadio is null) return;
+            prevRadio.ClearValue(RadioButton.FontStyleProperty);
         }
     }
 }

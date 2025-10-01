@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="OMPS.Pages.QuoteOrder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:local="clr-namespace:OMPS"
+            xmlns:Components="clr-namespace:OMPS.Components"
+            xmlns:pages="clr-namespace:OMPS.Pages"
+            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+            x:Name="Page_QuoteOrder"
+            mc:Ignorable="d" UseLayoutRounding="False"
+            d:DesignHeight="600" d:DesignWidth="1025"
+            DataContext="{Binding ElementName=Page_QuoteOrder}">
+    <UserControl.CacheMode>
+        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
+    </UserControl.CacheMode>
+    <Grid DataContext="{Binding ElementName=Page_QuoteOrder}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="toolbar" Grid.Row="0" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef}" VerticalAlignment="Center" FontSize="20" Margin="20,0,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button x:Name="Btn_SaveHeader" Width="18" Height="18" Style="{StaticResource SaveBtn}"
+                Padding="0" Margin="0" Cursor="Hand">
+                    <Image x:Name="Img_SaveHeader" Width="18" Height="18"
+                   SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
+                   RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
+                </Button>
+                <Button x:Name="Btn_CollapseTopBar" Content="Toggle Header" Height="22"
+                Width="Auto" Padding="4 0" Margin="1 0" Style="{StaticResource MaterialDesignPaperButton}"/>
+                <Button x:Name="Btn_CollapseSideGrid" Content="Toggle Row Edit Pane"
+                Height="22" Width="Auto" Padding="4 0" Margin="1 0" Style="{StaticResource MaterialDesignPaperButton}"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="grid_header" Grid.Row="1">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Height="276" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
+                <TabItem Header="General" Height="40">
+                </TabItem>
+                <TabItem Header="Customer" Height="40">
+                </TabItem>
+                <TabItem Header="Misc" Height="40">
+                </TabItem>
+                <TabItem Header="Comments" Height="40">
+                </TabItem>
+                <TabItem Header="Comments2" Height="40">
+                </TabItem>
+                <TabItem Header="Install Frt Dock" Height="40">
+                </TabItem>
+                <TabItem Header="Installation" Height="40">
+                </TabItem>
+            </TabControl>
+        </Grid>
+        <DockPanel x:Name="dpnl_DataFilter" Grid.Row="2" Height="48" Visibility="Visible">
+        </DockPanel>
+        <Grid x:Name="grid_data" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
+
+        </Grid>
+        <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="4" LastChildFill="False">
+            <RadioButton x:Name="RadioBtn_View_QLI"  Content="Quote Line Items" Tag="QuoteLineItems"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 IsChecked="True"/>
+            <RadioButton x:Name="RadioBtn_View_QTasks" Content="Quote Tasks" Tag="QuoteTasks"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+            <RadioButton x:Name="RadioBtn_View_AreaDescr" Content="Area Descirption" Tag="AreaDescr"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+            <RadioButton x:Name="RadioBtn_View_PPLNotes" Content="PPL Notes" Tag="PPLNotes"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+            <RadioButton x:Name="RadioBtn_View_Notes" Content="Notes" Tag="Notes"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+            <RadioButton x:Name="RadioBtn_View_InstallChkList" Content="Install Check List" Tag="InstallChkList"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+            <RadioButton x:Name="RadioBtn_View_QuoteCases" Content="Quote Cases" Tag="QuoteCases"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+            <RadioButton x:Name="RadioBtn_View_DepositeInvoice" Content="Deposit/Invoice" Tag="Deposit/Invoice"
+                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                 VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                 />
+        </DockPanel>
+    </Grid>
+</UserControl>

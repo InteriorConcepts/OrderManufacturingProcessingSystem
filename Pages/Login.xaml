@@ -1,0 +1,101 @@
+﻿<UserControl xmlns:Wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OMPS"
+             xmlns:viewModel="clr-namespace:OMPS.viewModel"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             x:Class="OMPS.Pages.Login"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="600" x:Name="Page_Login">
+    <UserControl.CacheMode>
+        <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
+    </UserControl.CacheMode>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!-- Merge the external dictionary into local resources -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/OMPS;component/Resources/Animations_Login.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="Grid_Main" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="Grid.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource LoginBox_In}"/>
+            </EventTrigger>
+        </Grid.Triggers>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="440"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="420"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border x:Name="Border_LoginBox" Grid.Column="1" Grid.Row="1" ClipToBounds="True" Panel.ZIndex="2" CornerRadius="12" Margin="0 0 0 0" Background="#DD292929">
+            <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="40">
+                <StackPanel x:Name="SPnl_CompanyHeader" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Height="24" Width="Auto" Margin="0 0 0 32">
+                    <Image Source="pack://application:,,,/OMPS;component/Images/Interior-Concepts-Logo.png" VerticalAlignment="Center" />
+                    <Label FontFamily="Segoe UI" FontSize="18px" FontWeight="Normal" Padding="0" Content="Interior Concepts" VerticalContentAlignment="Center" />
+                </StackPanel>
+                <Label x:Name="Lbl_Title" FontSize="24px" FontWeight="SemiBold" Content="Sign in" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Label x:Name="Lbl_SubText" FontSize="14px" FontWeight="Thin" Content="Use your computer login" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0 8 0 0"/>
+                <TextBox x:Name="Txt_User" FontSize="16px" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        materialDesign:HintAssist.Hint=" Username " Margin="0 32 0 0" Padding="10 4"
+                        materialDesign:HintAssist.Background="#292929"
+                        materialDesign:HintAssist.HintPaddingBrush="Transparent"
+                        materialDesign:HintAssist.Foreground="#adadad"
+                        materialDesign:TextFieldAssist.TextFieldCornerRadius="4"
+                        AcceptsReturn="False" TextWrapping="NoWrap"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+
+                <PasswordBox x:Name="Txt_Pass" FontSize="16px" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                        materialDesign:HintAssist.Hint=" Password " Margin="0 12 0 0" Padding="10 4"
+                        materialDesign:HintAssist.Background="#292929"
+                        materialDesign:HintAssist.HintPaddingBrush="Transparent"
+                        materialDesign:HintAssist.Foreground="#adadad"
+                        materialDesign:PasswordBoxAssist.PasswordMaskedIcon="Asterisk"
+                        materialDesign:PasswordBoxAssist.PasswordRevealedIcon="EyeAddOutline"
+                        materialDesign:PasswordBoxAssist.IsPasswordRevealed="True"
+                        Style="{StaticResource MaterialDesignOutlinedPasswordBox}" PasswordChanged="Txt_Pass_TextInput" PreviewKeyDown="Txt_Pass_PreviewKeyDown" TabIndex="0" />
+                <Label x:Name="Btn_Forgot" Visibility="Collapsed" FontSize="14px" FontWeight="Thin" Content="Forgot password" Foreground="RoyalBlue" VerticalAlignment="Center" Padding="0 8 0 0"/>
+                <Button x:Name="Btn_Next" IsEnabled="False" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Width="200" Height="32" Margin="0 32 0 0" Style="{StaticResource MaterialDesignOutlinedButton}" Click="Btn_Next_Click">
+                    <Button.Triggers>
+                        <EventTrigger RoutedEvent="Button.Click">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="Btn_Next" Storyboard.TargetProperty="(FrameworkElement.Height)" From="32" To="64" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <BounceEase Bounces="0" EasingMode="EaseIn" 
+                                                        Bounciness="0" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Button.Triggers>
+                    <Button.Content>
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock x:Name="Txtblk_Next" Visibility="Visible" Text="Next"/>
+                            <StackPanel x:Name="Spnl_Icons" Visibility="Collapsed" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Margin="0 1 0 2" >
+                                <materialDesign:PackIcon x:Name="IcoPak_Acc" Visibility="Visible" Kind="ShieldAccountOutline" VerticalAlignment="Center" Height="24" Width="24" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_Dir" Visibility="Visible" Kind="FolderOutline" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_Config" Visibility="Visible" Kind="FileSettingsCogOutline" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_Db" Visibility="Visible" Kind="DatabaseOutline" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_Webview2" Visibility="Visible" Kind="WebBox" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                            </StackPanel>
+                            <ProgressBar x:Name="Progbar_Next" Visibility="Collapsed" BorderThickness="0" Style="{StaticResource MaterialDesignLinearProgressBar}" Background="Transparent" IsIndeterminate="True" Width="150" Height="2" Margin="1"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+
+        </Border>
+        <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="3" Panel.ZIndex="0" Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Source="pack://application:,,,/OMPS;component/Images/fluent_web_dark_bg.png">
+        </Image>
+    </Grid>
+</UserControl>

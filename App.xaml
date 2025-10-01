@@ -20,14 +20,14 @@
 
 
             <ResourceDictionary.MergedDictionaries>
-                
+
                 <!--
                 <ResourceDictionary Source="Resources/DataGrid_Main.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid_SidePnl.xaml" />
                 <ResourceDictionary Source="Resources/ClassicDarkStyles.xaml" />
                 -->
                 
-                <materialDesign:CustomColorTheme BaseTheme="Inherit" PrimaryColor="DodgerBlue" SecondaryColor="MediumPurple"/>
+                <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="DodgerBlue" SecondaryColor="MediumPurple"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
 
                 <!--

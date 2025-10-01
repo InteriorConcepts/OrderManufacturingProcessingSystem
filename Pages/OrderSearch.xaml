@@ -10,17 +10,17 @@
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1025"
       DataContext="{Binding ElementName=Page_OrderSearch}">
+    <UserControl.CacheMode>
+        <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
+    </UserControl.CacheMode>
     <UserControl.Resources>
         <CollectionViewSource x:Key="OrdersViewSource" Source="{Binding ColorSetInfos}" Filter="OrdersViewSource_Filter"/>
         <!-- Custom DataGridColumnHeader Style with Search Box -->
         
     </UserControl.Resources>
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Grid.CacheMode>
-            <CacheMode>BitmapCache</CacheMode>
-        </Grid.CacheMode>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="0 0 0 0">
@@ -54,8 +54,14 @@
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
                      Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <Button x:Name="Btn_OrdersRefresh" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Height="24" Padding="4 0" Margin="335 0 0 0" Click="Btn_OrdersRefresh_Click">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center">Refresh</TextBlock>
+                    <materialDesign:PackIcon Kind="Refresh" Height="18" Width="18" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
-        <ProgressBar Panel.ZIndex="99" x:Name="progbar_orders" Height="5" Width="500" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
+        <ProgressBar Panel.ZIndex="99" x:Name="progbar_orders" Height="3" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
         <DataGrid x:Name="datagrid_orders" Grid.Row="1" IsReadOnly="True" IsTextSearchEnabled="True"
                   ItemsSource="{Binding Source={StaticResource OrdersViewSource}}" 
                   AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"

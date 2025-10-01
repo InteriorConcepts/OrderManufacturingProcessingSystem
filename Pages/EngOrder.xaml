@@ -13,15 +13,15 @@
       DataContext="{Binding ElementName=Page_EngOrder}"
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
       >
+    <UserControl.CacheMode>
+        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
+    </UserControl.CacheMode>
     <UserControl.Resources>
         <local:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
         <CollectionViewSource x:Key="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
     </UserControl.Resources>
 
     <Grid DataContext="{Binding ElementName=Page_EngOrder}">
-        <Grid.CacheMode>
-            <CacheMode>BitmapCache</CacheMode>
-        </Grid.CacheMode>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="Auto"/>
@@ -45,13 +45,13 @@
                        RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
                 </Button>
                 <Button x:Name="Btn_CollapseTopBar" Content="Toggle Header" Height="22"
-                    Width="Auto" Padding="4 0" Margin="1 0" Click="Btn_CollapseTopBar_Click"/>
+                    Width="Auto" Padding="4 0" Margin="1 0" Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignPaperButton}"/>
                 <Button x:Name="Btn_CollapseSideGrid" Content="Toggle Row Edit Pane"
-                    Height="22" Width="Auto" Padding="4 0" Margin="1 0" Click="Btn_CollapseSideGrid_Click"/>
+                    Height="22" Width="Auto" Padding="4 0" Margin="1 0" Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignPaperButton}"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
-            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" TabStripPlacement="Right" FontSize="13">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
                 <TabItem Header="General" Height="40">
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
@@ -99,17 +99,17 @@
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
-                                <Button Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" />
-                                <Button Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" />
-                                <Button Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" />
-                                <Button Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" />
-                                <Button Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" />
+                                <Button Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
                             </StackPanel>
                         </StackPanel>
                         <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="{Binding ColorSetInfo.Notes, Mode=TwoWay}" InputReadOnly="False"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Colors+" Height="40">
+                <TabItem Header="Colors+" Height="40" Width="100">
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -147,7 +147,7 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Misc" Height="40">
+                <TabItem Header="Misc" Height="40" Width="100">
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="240"/>
@@ -189,7 +189,7 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Quote Parts" Height="40">
+                <TabItem Header="Quote Parts" Height="40" Width="100">
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -323,7 +323,7 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Mfg Reports" BorderThickness="0" BorderBrush="Transparent" Height="40">
+                <TabItem Header="Mfg Reports" Height="40" Width="100">
                     <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"/>
@@ -348,7 +348,7 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Pre1" Height="40">
+                <TabItem Header="Pre1" Height="40" Width="100">
                     <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                     </Grid>
                 </TabItem>
@@ -369,35 +369,44 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="250"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
                     <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="9pt" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
                     <Button x:Name="Btn_FilterSave" Grid.Column="2"
                             Height="20"
+                            Width="20"
+                            Padding="0"
                             IsEnabled="True"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" 
-                            ToolTip="MaterialDesignFlatButton"
+                            ToolTip="Add Filter"
+                            Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
                         <materialDesign:PackIcon
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Kind="Add"/>
+                            Kind="AddBox"/>
                     </Button>
-                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" FontSize="9pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
+                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" Opacity="0.7" FontSize="9pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
                         <TextBlock>
                         Ex:&#x00A0;&#x00A0;<Italic><Underline>Jnt+D&amp;T+yes</Underline></Italic>&#x00A0;&#x00A0;or&#x00A0;&#x00A0;<Italic><Underline>Rivet+300-0</Underline></Italic>
                         </TextBlock>
                     </Label>
                     <Button x:Name="Btn_FilterClose" Grid.Column="5"
-                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
-                            HorizontalAlignment="Center"
+                            Padding="0"
+                            materialDesign:ButtonAssist.CornerRadius="1"
+                            Height="20"
+                            Width="20"
+                            IsEnabled="True"
+                            HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Click="Btn_FilterClose_Click">
+                            ToolTip="Close Filters"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
                         <materialDesign:PackIcon
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
@@ -418,8 +427,29 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="5" Width="500" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
-            <DataGrid x:Name="datagrid_main" Grid.Row="0"
+            <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
+
+            <DataGrid x:Name="datagrid_QPO" Grid.Row="0" Visibility="Collapsed"
+                      IsReadOnly="True"
+                      CellEditEnding="DataGrid_CellEditEnding"
+                      RowEditEnding="DataGrid_RowEditEnding"
+                      IsTextSearchEnabled="True"
+                      AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
+                      LoadingRow="DataGrid_LoadingRow"
+                      Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
+            </DataGrid>
+            <DataGrid x:Name="datagrid_QIO" Grid.Row="0" Visibility="Collapsed"
+                      IsReadOnly="True"
+                      CellEditEnding="DataGrid_CellEditEnding"
+                      RowEditEnding="DataGrid_RowEditEnding"
+                      IsTextSearchEnabled="True"
+                      AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
+                      LoadingRow="DataGrid_LoadingRow"
+                      Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
+            </DataGrid>
+            <DataGrid x:Name="datagrid_main" Grid.Row="0" Visibility="Visible"
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
                       IsReadOnly="True"
                       CellEditEnding="DataGrid_CellEditEnding"
@@ -427,9 +457,19 @@
                       IsTextSearchEnabled="True"
                       AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
                       LoadingRow="DataGrid_LoadingRow"
-                      Loaded="datagrid_main_Loaded"
-                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="14" HeadersVisibility="All"/>
-
+                      Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
+            </DataGrid>
+            <DataGrid x:Name="datagrid_MP" Grid.Row="0" Visibility="Collapsed"
+                      IsReadOnly="True"
+                      CellEditEnding="DataGrid_CellEditEnding"
+                      RowEditEnding="DataGrid_RowEditEnding"
+                      IsTextSearchEnabled="True"
+                      AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
+                      LoadingRow="DataGrid_LoadingRow"
+                      Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
+            </DataGrid>
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -445,15 +485,18 @@
                     <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Margin="0 0 0 0" Name="dataSideGridScrollViewer" FontSize="14"
                                     Loaded="dataSideGridScrollViewer_Loaded"
                                     VerticalScrollBarVisibility="Auto"
-                                    HorizontalScrollBarVisibility="Hidden">
-                        <Grid x:Name="grid_dataeditregion" Width="350">
+                                    HorizontalScrollBarVisibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
+                        <Grid x:Name="grid_dataeditregion" Width="350" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                         </Grid>
                     </ScrollViewer>
-                    <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" Click="Btn_RevertItemLineEdits_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
+                            BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
+                            IsEnabled="{Binding Pending_LineChanges}" Height="24"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
                             <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Revert</TextBlock>
                             <Viewbox Stretch="Uniform" Width="18" Height="18">
@@ -463,7 +506,11 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
+                            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
+                            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Save</TextBlock>
                             <Viewbox Stretch="UniformToFill" Width="18" Height="18">
@@ -473,7 +520,11 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
+                            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
+                            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Delete</TextBlock>
                             <Viewbox Stretch="UniformToFill" Width="18" Height="18">
@@ -483,7 +534,11 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}" Height="24">
+                    <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0"
+                            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
+                            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">New</TextBlock>
                             <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LawnGreen" Kind="Add"/>
@@ -492,11 +547,27 @@
                 </Grid>
             </DockPanel>
         </Grid>
-        <DockPanel x:Name="dpnl_ViewHeader" Grid.Row="4" LastChildFill="False">
-            <RadioButton Content="QuotePartsOrdered" FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Style="{StaticResource MaterialDesignToolRadioButton}" Padding="6 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center" IsChecked="True"/>
-            <RadioButton Content="QuoteDetailOrdered" FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Style="{StaticResource MaterialDesignToolRadioButton}" Padding="6 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-            <RadioButton Content="IceManuf" FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Style="{StaticResource MaterialDesignToolRadioButton}" Padding="6 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-            <RadioButton Content="IceManufParts" FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Style="{StaticResource MaterialDesignToolRadioButton}" Padding="6 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
+        <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="4" LastChildFill="False">
+            <RadioButton x:Name="RadioBtn_View_QPO"  Content="Quote Parts Ordered" Tag="QuotePartsOrdered"
+                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                         VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                         Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="RadioBtn_View_QDO" Content="Quote Items Ordered" Tag="QuoteDetailOrdered"
+                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                         VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                         Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="RadioBtn_View_M" Content="Manuf Items" Tag="IceManuf"
+                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                         VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                         IsChecked="True" Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="RadioBtn_View_MP" Content="Manuf Parts" Tag="IceManufParts"
+                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                         VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                         Checked="RadioButton_Checked"/>
         </DockPanel>
     </Grid>
 </UserControl>

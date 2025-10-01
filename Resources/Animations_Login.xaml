@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Storyboard x:Key="LoginBox_In">
+        <DoubleAnimation Storyboard.TargetName="Border_LoginBox" Storyboard.TargetProperty="(FrameworkElement.Opacity)" To="0" Duration="0:0:0"/>
+        <DoubleAnimation Storyboard.TargetName="Border_LoginBox" Storyboard.TargetProperty="(FrameworkElement.Opacity)" From="0" To="1.0" BeginTime="0:0:0.5" Duration="0:0:0.5">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <ThicknessAnimation Storyboard.TargetName="Border_LoginBox" Storyboard.TargetProperty="(FrameworkElement.Margin)" From="-100.0 0 100.0 0" To="0 0 0 0" BeginTime="0:0:0.5" Duration="0:0:0.5">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+    <Storyboard x:Key="LoginBox_Out">
+        <DoubleAnimation
+            Storyboard.TargetName="Border_LoginBox"
+            Storyboard.TargetProperty="(FrameworkElement.Opacity)"
+            From="1" To="0" 
+            Duration="0:0:0.33"
+            BeginTime="0:0:0.5">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <ThicknessAnimation
+            Storyboard.TargetName="Border_LoginBox"
+            Storyboard.TargetProperty="(FrameworkElement.Margin)"
+            To="100,0,-100,0"
+            Duration="0:0:0.33"
+            BeginTime="0:0:0.5">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseIn"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+</ResourceDictionary>

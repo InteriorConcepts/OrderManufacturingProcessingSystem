@@ -33,6 +33,7 @@
     <None Remove="bridge-custom%283%29.png" />
     <None Remove="bridge-custom.png" />
     <None Remove="Images\Binoculars-high_contrast.png" />
+    <None Remove="Images\fluent_web_dark_bg.png" />
     <None Remove="Images\Network-online.png" />
     <None Remove="Network-error.png" />
     <None Remove="Network-out.png" />
@@ -40,6 +41,8 @@
     <None Remove="Network.png" />
     <None Remove="office-building-cog-outline-custom.png" />
     <None Remove="office-building-cog-outline.png" />
+    <None Remove="Pages\fluent_web_dark_bg.png" />
+    <None Remove="Pages\Interior-Concepts-Logo.png" />
     <None Remove="Save-down.png" />
     <None Remove="Save-hover.png" />
     <None Remove="Save.png" />
@@ -48,6 +51,7 @@
   <ItemGroup>
     <Resource Include="Images\Binoculars-high_contrast.png" />
     <Resource Include="Images\Binoculars.png" />
+    <Resource Include="Images\fluent_web_dark_bg.png" />
     <Resource Include="Images\Network-error.png" />
     <Resource Include="Images\Network-online.png" />
     <Resource Include="Images\Network-out.png" />
@@ -56,13 +60,17 @@
     <Resource Include="Images\Save-down.png" />
     <Resource Include="Images\Save-hover.png" />
     <Resource Include="Images\Save.png" />
+    <Resource Include="Images\Interior-Concepts-Logo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3485.44" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.9" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.9" />
+    <PackageReference Include="System.DirectoryServices" Version="9.0.9" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.9" />
     <PackageReference Include="Tomlyn" Version="0.19.0" />
   </ItemGroup>
 

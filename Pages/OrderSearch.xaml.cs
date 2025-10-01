@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -12,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -28,8 +30,18 @@ namespace OMPS.Pages
         {
             InitializeComponent();
             //
+            this.RefreshDelay.Elapsed += this.RefreshDelay_Elapsed;
             this.DataContext = this;
             this.ParentWindow = parentWindow;
+        }
+
+        private void RefreshDelay_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Btn_OrdersRefresh.IsEnabled = true;
+            });
+            this.RefreshDelay.Stop();
         }
 
 
@@ -39,6 +51,7 @@ namespace OMPS.Pages
 
 
         #region Properties
+        readonly System.Timers.Timer RefreshDelay = new(TimeSpan.FromSeconds(10)) { };
         internal MainWindow ParentWindow { get; set; }
         internal TabItem ParentTab { get; set; }
         public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
@@ -53,9 +66,10 @@ namespace OMPS.Pages
         #region Methods
         public void LoadRecentOrders(string filters = "%")
         {
+            this.Btn_OrdersRefresh.IsEnabled = false;
             this.ColorSetInfos.Clear();
             Debug.WriteLine(filters);
-            this.progbar_orders.Value = 0;
+            this.progbar_orders.Value = 50;
             this.progbar_orders.Visibility = Visibility.Visible;
             this.progbar_orders.IsEnabled = true;
             var t = new Task(() =>
@@ -79,11 +93,11 @@ namespace OMPS.Pages
                         }
                         Debug.WriteLine(2);
                         this.datagrid_orders.EndInit();
-                        this.progbar_orders.Value = 0;
-                        this.progbar_orders.Visibility = Visibility.Hidden;
+                        this.progbar_orders.Visibility = Visibility.Collapsed;
                         this.progbar_orders.IsEnabled = false;
                     });
-                    
+                    this.RefreshDelay.Start();
+
                     /*
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -96,7 +110,7 @@ namespace OMPS.Pages
                         this.Txt_OppNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "OpportunityNbr").First().ActualWidth - 1;
                     });
                     */
-                    
+
                 } catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
@@ -207,5 +221,9 @@ namespace OMPS.Pages
         }
         #endregion
 
+        private void Btn_OrdersRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            this.LoadRecentOrders();
+        }
     }
 }
