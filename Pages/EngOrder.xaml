@@ -51,7 +51,7 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
-            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
                 <TabItem Header="General" Height="40">
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
@@ -454,7 +454,7 @@
                       IsReadOnly="True"
                       CellEditEnding="DataGrid_CellEditEnding"
                       RowEditEnding="DataGrid_RowEditEnding"
-                      IsTextSearchEnabled="True"
+                      IsTextSearchEnabled="True" Background="#292929"
                       AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
                       LoadingRow="DataGrid_LoadingRow"
                       Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"

@@ -9,7 +9,7 @@
       x:Name="Page_OrderSearch"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1025"
-      DataContext="{Binding ElementName=Page_OrderSearch}">
+      DataContext="{Binding ElementName=Page_OrderSearch}" Background="#292929">
     <UserControl.CacheMode>
         <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
     </UserControl.CacheMode>
@@ -67,8 +67,6 @@
                   AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"
                   EnableColumnVirtualization="False" MouseDoubleClick="datagrid_orders_MouseDoubleClick"
                   EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  RowHeaderWidth="14" HeadersVisibility="All">
-            
-        </DataGrid>
+                  RowHeaderWidth="14" HeadersVisibility="All" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"/>
     </Grid>
 </UserControl>

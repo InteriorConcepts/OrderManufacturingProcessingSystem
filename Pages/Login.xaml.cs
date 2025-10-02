@@ -59,6 +59,13 @@ namespace OMPS.Pages
         public SolidColorBrush DefaultBrush_TxtBorder = new((Color)ColorConverter.ConvertFromString("#B2FFFFFF"));
         public async void DoChecks()
         {
+            this.Txt_User.IsEnabled = false;
+            this.Txt_Pass.IsEnabled = false;
+            this.Btn_Next.BeginAnimation(
+                Button.HeightProperty,
+                new DoubleAnimation(64, TimeSpan.FromSeconds(0.25))
+                { EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut } }
+            );
             this.NextClickEnabled = false;
             this.Txt_Pass.BorderBrush = this.DefaultBrush_TxtBorder;
             this.Txtblk_Next.Visibility = Visibility.Collapsed;
@@ -71,12 +78,12 @@ namespace OMPS.Pages
 
             this.Btn_Next.BorderBrush = cleared ? Brushes.ForestGreen : Brushes.IndianRed;
 
-            await Task.Run(() => Thread.Sleep(500));
+            await Task.Delay(750);
             if (cleared)
             {
                 this.Spnl_Icons.Visibility = Visibility.Collapsed;
                 this.Txtblk_Next.Visibility = Visibility.Collapsed;
-                var anim = new DoubleAnimation(32, TimeSpan.FromSeconds(0.15))
+                var anim = new DoubleAnimation(32, TimeSpan.FromSeconds(0.25))
                 { EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut } };
                 anim.Completed += this.NextBtn_ResetAnim_Completed;
                 this.Btn_Next.BeginAnimation(
@@ -85,20 +92,23 @@ namespace OMPS.Pages
             } else
             {
                 this.Progbar_Next.Visibility = Visibility.Collapsed;
-                await Task.Run(() => Thread.Sleep(1500));
+                if (failed.Contains("UnPwValidation"))
+                {
+                    this.Txt_Pass.BorderBrush = Brushes.IndianRed;
+                }
+                await Task.Delay(1750);
                 this.Spnl_Icons.Visibility = Visibility.Collapsed;
                 this.Txtblk_Next.Visibility = Visibility.Visible;
                 this.Btn_Next.BeginAnimation(
                     Button.HeightProperty,
-                    new DoubleAnimation(32, TimeSpan.FromSeconds(0.15))
-                    { EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn } }
+                    new DoubleAnimation(32, TimeSpan.FromSeconds(0.25))
+                    { EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut } }
                 );
                 this.Btn_Next.BorderBrush = this.DefaultBrush_BtnBorder;
                 if (failed.Count() is 1 && failed.Contains("UnPwValidation"))
                 {
-                    this.Txt_Pass.BorderBrush = Brushes.IndianRed;
-                    this.Txt_Pass.Focus();
                     this.ResetLoginBox(true);
+                    this.Txt_Pass.Focus();
                     return;
                 }
                 MessageBox.Show($"The following required checks have failed, the application cannot load any further as a result of any of them failing.\n\n{string.Join(", ", failed)}");
@@ -107,13 +117,21 @@ namespace OMPS.Pages
 
         public void ResetLoginBox(bool skipPwInput = false)
         {
+            this.Txt_Pass.IsEnabled = true;
+            this.Txt_User.IsEnabled = true;
             this.Txtblk_Next.Visibility = Visibility.Visible;
             this.Progbar_Next.Visibility = Visibility.Collapsed;
             this.Spnl_Icons.Visibility = Visibility.Collapsed;
             foreach (var icon in Spnl_Icons.Children.OfType<PackIcon>())
             {
-                icon.Opacity = 0.5;
-                icon.Foreground = this.DefaultBrush_IconForeg;
+                if (icon.Name.EndsWith("Check"))
+                {
+                    icon.Opacity = 0.0;
+                    icon.Foreground = this.DefaultBrush_IconForeg;
+                } else
+                {
+                    icon.Opacity = 0.5;
+                }
             }
             this.NextClickEnabled = true;
             if (skipPwInput is false)
@@ -196,7 +214,7 @@ namespace OMPS.Pages
             var pw = this.Txt_Pass.SecurePassword;
             await Task.Run(async () =>
             {
-                Thread.Sleep(250);
+                await Task.Delay(250);
                 //MessageBox.Show(string.Join(Environment.NewLine, [un, pw, Environment.UserDomainName, Environment.UserName, Environment.MachineName]));
                 var res = false;
                 res = ValidateUsernameAndPassword(un, pw);
@@ -204,7 +222,9 @@ namespace OMPS.Pages
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.IcoPak_Acc.Opacity = 1;
-                    this.IcoPak_Acc.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_AccCheck.Opacity = 1;
+                    this.IcoPak_AccCheck.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_AccCheck.Kind = !res ? PackIconKind.WarningDecagram : PackIconKind.CheckCircle;
                 });
 
                 //
@@ -214,7 +234,9 @@ namespace OMPS.Pages
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.IcoPak_Dir.Opacity = 1;
-                    this.IcoPak_Dir.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_DirCheck.Opacity = 1;
+                    this.IcoPak_DirCheck.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_DirCheck.Kind = !res ? PackIconKind.WarningDecagram : PackIconKind.CheckCircle;
                 });
 
                 //
@@ -224,7 +246,9 @@ namespace OMPS.Pages
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.IcoPak_Config.Opacity = 1;
-                    this.IcoPak_Config.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_ConfigCheck.Opacity = 1;
+                    this.IcoPak_ConfigCheck.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_ConfigCheck.Kind = !res ? PackIconKind.WarningDecagram : PackIconKind.CheckCircle;
                 });
 
                 //
@@ -233,7 +257,9 @@ namespace OMPS.Pages
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.IcoPak_Db.Opacity = 1;
-                    this.IcoPak_Db.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_DbCheck.Opacity = 1;
+                    this.IcoPak_DbCheck.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_DbCheck.Kind = !res ? PackIconKind.WarningDecagram : PackIconKind.CheckCircle;
                 });
 
                 //
@@ -243,7 +269,9 @@ namespace OMPS.Pages
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.IcoPak_Webview2.Opacity = 1;
-                    this.IcoPak_Webview2.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_Webview2Check.Opacity = 1;
+                    this.IcoPak_Webview2Check.Foreground = !res ? Brushes.IndianRed : Brushes.ForestGreen;
+                    this.IcoPak_Webview2Check.Kind = !res ? PackIconKind.WarningDecagram : PackIconKind.CheckCircle;
                 });
 
                 Debug.WriteLine(string.Join(", ", CheckResults.Values));
@@ -337,7 +365,7 @@ namespace OMPS.Pages
                 var winuser = WindowsIdentity.GetCurrent().User;
                 if (winuser is null) return false;
                 var user = winuser.Value;
-                Debug.WriteLine(user);
+                //Debug.WriteLine(user);
                 var accessControlList = new DirectoryInfo(path).GetAccessControl();
                 if (accessControlList == null)
                     return false;
@@ -435,10 +463,8 @@ namespace OMPS.Pages
         private void Txt_Pass_TextInput(object sender, RoutedEventArgs e)
         {
 
-            Debug.WriteLine(e.Source);
             if (e.Source is PasswordBox txtb) 
             {
-                Debug.WriteLine(string.Join("\n", ((List<Regex>)[TwelveChars(), Uppercase(), Lowercase(), Numbers(), Symbols()]).Select(reg => reg.IsMatch(txtb.Password))));
                 if (((List<Regex>)[TwelveChars(), Uppercase(), Lowercase(), Numbers(), Symbols()]).All(reg => reg.IsMatch(txtb.Password)))
                 {
                     this.Btn_Next.IsEnabled = true;

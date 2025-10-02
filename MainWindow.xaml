@@ -11,7 +11,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Name="MainWin" x:Class="OMPS.MainWindow"
         mc:Ignorable="d" UseLayoutRounding="False"
-        Title="MainWindow" MinHeight="600" MinWidth="1025"
+        Title="MainWindow" MinHeight="600" MinWidth="1025" Background="Green"
         Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Window.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
@@ -20,7 +20,7 @@
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="4"
                       ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
-                      CornerRadius="1" GlassFrameThickness="40" NonClientFrameEdges="Bottom"/>
+                      CornerRadius="1" GlassFrameThickness="1" NonClientFrameEdges="Bottom"/>
     </WindowChrome.WindowChrome>
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo>
@@ -37,7 +37,7 @@
         <viewModel:Main_ViewModel/>
     </Window.DataContext>
     -->
-    <Grid Margin="4">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
@@ -89,7 +89,7 @@
             <materialDesign:PackIcon Height="Auto" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Kind="HomeOutline"/>
         </Grid>
         -->
-        <materialDesign:ColorZone Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <materialDesign:ColorZone Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#292929" Margin="0">
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -97,15 +97,15 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Landing" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="False" IsEnabled="False"/>
-                    <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
-                    <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
-                    <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked"/>
+                    <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked" IsEnabled="{Binding OrderSearch_IsEnabled, Mode=OneWay}"/>
+                    <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked" IsEnabled="{Binding EngOrder_IsEnabled, Mode=OneWay}"/>
+                    <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked" IsEnabled="{Binding QuoteOrder_IsEnabled, Mode=OneWay}"/>
                 </StackPanel>
-                <ContentControl Grid.Row="1" x:Name="Spnl_ContentFrames" Margin="4" Content="{Binding Current}"/>
+                <ContentControl Grid.Row="1" x:Name="Spnl_ContentFrames" Content="{Binding Current}"/>
             </Grid>
         </materialDesign:ColorZone>
 
-        <materialDesign:ColorZone Grid.Row="3" Mode="Dark" Background="#111" Foreground="#CCC">
+        <materialDesign:ColorZone Grid.Row="3" Mode="Dark" Background="#111" Foreground="#CCC" Margin="0" Visibility="Collapsed">
             <Grid x:Name="statusbar" Height="32" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

@@ -67,7 +67,8 @@ namespace OMPS.viewModel
             {
                 this._widgetMode = value;
                 this.ParentWin.Spnl_FrameTabs.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                this.ParentWin.statusbar.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                //this.ParentWin.statusbar.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                ((UIElement)this.ParentWin.statusbar.Parent).Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 this.ParentWin.Btn_Home.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 this.ParentWin.Btn_Back.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 //this.ParentWin.MinHeight = 0;
@@ -76,7 +77,7 @@ namespace OMPS.viewModel
                 this.ParentWin.MinWidth = (value is false ? 1025 : 0);
                 this.ParentWin.Height = (value is false ? 620 : 620);
                 this.ParentWin.Width = (value is false ? 1025 : 550);
-                this.ParentWin.ResizeMode = (value is false ? ResizeMode.CanResizeWithGrip : ResizeMode.NoResize);
+                this.ParentWin.ResizeMode = (value is false ? ResizeMode.CanResizeWithGrip : ResizeMode.CanResize);
             }
         }
 
@@ -92,12 +93,14 @@ namespace OMPS.viewModel
         public bool EngOrder_IsSelected { get => Current is not null && Current is EngOrder; }
         public bool QuoteOrder_IsSelected { get => Current is not null && Current is QuoteOrder; }
 
-        private bool _canPrevious = false;
+        public bool EngOrder_IsEnabled { get => this.EngOrder_VM.JobNbr is not null or ""; }
+        public bool OrderSearch_IsEnabled { get => true; }
+        public bool QuoteOrder_IsEnabled { get => !(this.QuoteOrder_VM.Lbl_JobNbr.Content is null or ""); }
+
         public bool CanPrevious {
             get => this._previous is not null;
             set
             {
-                this._canPrevious = value;
                 OnPropertyChanged();
             }
         }
@@ -122,7 +125,7 @@ namespace OMPS.viewModel
             {
                 if (value is null) return;
                 if (value == _current) return;
-                if (_current is not null && this._previous != _current)
+                if (_current is not null && this._previous != _current && this._current is not Login)
                 {
                     this.Previous = _current;
                 }
@@ -131,10 +134,8 @@ namespace OMPS.viewModel
                 Debug.WriteLine(value.GetType().Name);
                 //WidgetMode = this.Login_IsSelected;
                 OnPropertyChanged();
-                OnPropertyChanged("Login_IsSelected");
-                OnPropertyChanged("OrderSearch_IsSelected");
-                OnPropertyChanged("EngOrder_IsSelected");
-                OnPropertyChanged("QuoteOrder_IsSelected");
+                OnPropertyChanged(value.GetType().Name + "_IsSelected");
+                OnPropertyChanged(value.GetType().Name + "_IsEnabled");
             }
         }
 
@@ -144,7 +145,8 @@ namespace OMPS.viewModel
             OrderSearch_VM = new(this.ParentWin);
             EngOrder_VM = new(this.ParentWin);
             QuoteOrder_VM = new(this.ParentWin);
-            _current = OrderSearch_VM;
+            WidgetMode = true;
+            _current = Login_VM;
         }
 
         public Main_ViewModel(MainWindow parentWin)
@@ -154,8 +156,8 @@ namespace OMPS.viewModel
             OrderSearch_VM = new(this.ParentWin);
             EngOrder_VM = new(this.ParentWin);
             QuoteOrder_VM = new(this.ParentWin);
-            WidgetMode = false;
-            _current = OrderSearch_VM;
+            WidgetMode = true;
+            _current = Login_VM;
         }
     }
 }

@@ -7,7 +7,7 @@
              xmlns:viewModel="clr-namespace:OMPS.viewModel"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              x:Class="OMPS.Pages.Login"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Background="Pink"
              d:DesignHeight="650" d:DesignWidth="600" x:Name="Page_Login">
     <UserControl.CacheMode>
         <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
@@ -64,29 +64,20 @@
                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}" PasswordChanged="Txt_Pass_TextInput" PreviewKeyDown="Txt_Pass_PreviewKeyDown" TabIndex="0" />
                 <Label x:Name="Btn_Forgot" Visibility="Collapsed" FontSize="14px" FontWeight="Thin" Content="Forgot password" Foreground="RoyalBlue" VerticalAlignment="Center" Padding="0 8 0 0"/>
                 <Button x:Name="Btn_Next" IsEnabled="False" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Width="200" Height="32" Margin="0 32 0 0" Style="{StaticResource MaterialDesignOutlinedButton}" Click="Btn_Next_Click">
-                    <Button.Triggers>
-                        <EventTrigger RoutedEvent="Button.Click">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetName="Btn_Next" Storyboard.TargetProperty="(FrameworkElement.Height)" From="32" To="64" Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction>
-                                            <BounceEase Bounces="0" EasingMode="EaseIn" 
-                                                        Bounciness="0" />
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Button.Triggers>
                     <Button.Content>
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock x:Name="Txtblk_Next" Visibility="Visible" Text="Next"/>
                             <StackPanel x:Name="Spnl_Icons" Visibility="Collapsed" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Margin="0 1 0 2" >
                                 <materialDesign:PackIcon x:Name="IcoPak_Acc" Visibility="Visible" Kind="ShieldAccountOutline" VerticalAlignment="Center" Height="24" Width="24" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_AccCheck" Visibility="Visible" Kind="CheckCircle" Foreground="LawnGreen" VerticalAlignment="Center" Height="10" Width="10" Margin="-10 0 2 -15" Opacity="0"/>
                                 <materialDesign:PackIcon x:Name="IcoPak_Dir" Visibility="Visible" Kind="FolderOutline" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_DirCheck" Visibility="Visible" Kind="CheckCircle" Foreground="LawnGreen" VerticalAlignment="Center" Height="10" Width="10" Margin="-10 0 2 -15" Opacity="0"/>
                                 <materialDesign:PackIcon x:Name="IcoPak_Config" Visibility="Visible" Kind="FileSettingsCogOutline" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_ConfigCheck" Visibility="Visible" Kind="CheckCircle" Foreground="LawnGreen" VerticalAlignment="Center" Height="10" Width="10" Margin="-10 0 2 -15" Opacity="0"/>
                                 <materialDesign:PackIcon x:Name="IcoPak_Db" Visibility="Visible" Kind="DatabaseOutline" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_DbCheck" Visibility="Visible" Kind="CheckCircle" Foreground="LawnGreen" VerticalAlignment="Center" Height="10" Width="10" Margin="-10 0 2 -15" Opacity="0"/>
                                 <materialDesign:PackIcon x:Name="IcoPak_Webview2" Visibility="Visible" Kind="WebBox" VerticalAlignment="Center" Height="22" Width="22" Margin="2 0" Opacity="0.5"/>
+                                <materialDesign:PackIcon x:Name="IcoPak_Webview2Check" Visibility="Visible" Kind="CheckCircle" Foreground="LawnGreen" VerticalAlignment="Center" Height="10" Width="10" Margin="-10 0 2 -15" Opacity="0"/>
                             </StackPanel>
                             <ProgressBar x:Name="Progbar_Next" Visibility="Collapsed" BorderThickness="0" Style="{StaticResource MaterialDesignLinearProgressBar}" Background="Transparent" IsIndeterminate="True" Width="150" Height="2" Margin="1"/>
                         </StackPanel>

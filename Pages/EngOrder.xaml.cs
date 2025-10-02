@@ -394,6 +394,7 @@ namespace OMPS.Pages
         public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
+            this.grid_dataeditregion.Children.Clear();
             this.grid_dataeditregion.RowDefinitions.Clear();
             if (typeof(example_queries_GetItemLinesByJobResult).GetProperties() is not PropertyInfo[] props) return;
             if (props.Length is 0) return;

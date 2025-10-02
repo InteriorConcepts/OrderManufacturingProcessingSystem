@@ -161,12 +161,27 @@ namespace OMPS.Pages
             [
             "ColorSetID"
             ];
+        private readonly ReadOnlyCollection<string> DataGrid_Orders_ColumnHyperlinks =
+            [
+            "JobNbr", "QuoteNbr", "OrderNumber"
+            ];
 
         private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             if (e.Column.Header.ToString() is not string headerName)
             {
                 return;
+            }
+            if (DataGrid_Orders_ColumnHyperlinks.Contains(headerName))
+            {
+                Style cellStyle = new (typeof(DataGridCell), e.Column.CellStyle);
+                cellStyle.Setters.Add(new Setter(DataGridCell.ForegroundProperty, Brushes.DodgerBlue));
+                cellStyle.Setters.Add(new Setter(DataGridCell.VerticalAlignmentProperty, VerticalAlignment.Center));
+                cellStyle.Setters.Add(new Setter(DataGridCell.VerticalContentAlignmentProperty, VerticalAlignment.Stretch));
+                cellStyle.Setters.Add(new Setter(DataGridCell.HorizontalContentAlignmentProperty, HorizontalAlignment.Left));
+                cellStyle.Setters.Add(new Setter(DataGridCell.CursorProperty, Cursors.Hand));
+                cellStyle.Setters.Add(new Setter(DataGridCell.BackgroundProperty, Brushes.Transparent));
+                e.Column.SetValue(DataGridColumn.CellStyleProperty, cellStyle);
             }
             //Debug.WriteLine(headerName);
             e.Column.Visibility =
@@ -219,11 +234,39 @@ namespace OMPS.Pages
             var viewSource = (CollectionViewSource)Resources["OrdersViewSource"];
             viewSource?.View?.Refresh();
         }
-        #endregion
 
         private void Btn_OrdersRefresh_Click(object sender, RoutedEventArgs e)
         {
             this.LoadRecentOrders();
         }
+
+        private void datagrid_orders_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+
+        }
+
+        private void datagrid_orders_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton is not MouseButton.Left) return;
+            if (this.datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
+            if (this.datagrid_orders.SelectedCells is not IList<DataGridCellInfo> cells || cells.Count is 0) return;
+            var cell = this.datagrid_orders.CurrentCell;
+            Debug.WriteLine(cell.Column.Header.ToString());
+            if (cell.Column.Header.ToString() is "JobNbr")
+            {
+                if (!Ext.IsJobNumValid(item.JobNbr)) return;
+                this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
+                return;
+            }
+            if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
+            {
+                //this.ParentWindow.MainViewModel.QuoteOrder_VM.QuoteNbr = item.QuoteNbr;
+                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.QuoteOrder_VM;
+            }
+            //this.ParentWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
+            //this.ParentWindow.Page_EngOrder.JobNbr = item.JobNbr;
+        }
+        #endregion
     }
 }
