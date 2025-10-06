@@ -1,4 +1,5 @@
-﻿using MyApp.DataAccess.Generated;
+﻿using Microsoft.VisualBasic;
+using MyApp.DataAccess.Generated;
 using OMPS.Components;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Windows.AI.MachineLearning;
+using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Pages
 {
@@ -58,6 +60,7 @@ namespace OMPS.Pages
                 Ext.FormatJobNum(ref value);
                 if (!Ext.IsJobNumValid(value)) return;
                 if (EqualityComparer<string?>.Default.Equals(this._jobNbr, value.ToUpper())) return;
+                this.Last_ManufData = null;
                 this._jobNbr = value.ToUpper();
                 this.JobNbrChanged.Invoke(this, this._jobNbr);
             }
@@ -72,14 +75,17 @@ namespace OMPS.Pages
         public int RowSpan = 1;
         private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsExcludedHidden =
             ["IceManufID", "ColorSetID", "ProductID",
-            "ProductLinkID", "ItemID", "CreatedByID", "ChangedbyID", "ChangedbyIDOffline"];
+            "ProductLinkID", "ItemID", "QuoteNbr", "CustOrderNbr",
+            "BpartnerAvailable", "CustomerAvailable", "CreatedByID",
+            "ChangedbyID", "ChangebyIDOffline"];
         private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsReadonly =
             ["QuoteNbr", "JobNbr", "CustOrderNbr",
-            "Usertag1", "Multiplier", "Area", "CreatedByID",
-            "BpartnerAvailable", "CustomerAvailable", "CreationDate",
-            "ChangeDate", "ChangedbyID", "ChangebyIDOffline"];
+            "Usertag1", "Multiplier", "Area", "CreationDate", "ChangeDate"];
         private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsOrder = [
-            "PartNbr"
+            "JobNbr", "PartNbr", "ItemNbr", "CatalogNbr", "Qty", "Multiplier",
+            "Description", "UofM", "Type", "SubType", "IDNbr", "Explode",
+            "Assembled", "AssyNbr", "TileIndicator", "ItemFin", "ColorBy",
+            "WorkCtr"
             ];
         #endregion
 
@@ -142,7 +148,12 @@ namespace OMPS.Pages
         private DateTime? Last_ManufData = null;
         public void LoadManufData(string job)
         {
-            if (Last_ManufData is not null && (DateTime.Now - Last_ManufData.Value).TotalSeconds < 20) return;
+            if (this.Last_ManufData is not null && (DateTime.Now - this.Last_ManufData.Value).TotalSeconds is double sec && sec < 10)
+            {
+                Debug.WriteLine($"Last update was {sec} sec ago");
+                return;
+            }
+            Debug.WriteLine("Loading Manuf Data");
             this.MfgItemLines.Clear();
             this.progbar_itemlines.Value = 50;
             this.progbar_itemlines.IsEnabled = true;
@@ -240,34 +251,92 @@ namespace OMPS.Pages
             return false;
         }
 
-        private void UpdateProperty(object dataItem, string propertyName, string value)
+        private (string, bool, Type?, object?) UpdateProperty(object dataItem, string propertyName, string value)
         {
             var property = dataItem.GetType().GetProperty(propertyName);
             if (property != null && property.CanWrite)
             {
                 try
                 {
+                    var prevValue = property.GetValue(dataItem);
                     var convertedValue = Convert.ChangeType(value, property.PropertyType);
-                    property.SetValue(dataItem, convertedValue);
+                    //Debug.WriteLine($"{prevValue} | {convertedValue}");
+                    if (!((object?)prevValue as object)?.Equals((object?)convertedValue as object) ?? true)
+                    {
+                        property.SetValue(dataItem, convertedValue);
+                        return (propertyName, true, property.PropertyType, convertedValue);
+                    } else
+                    {
+                        return (propertyName, false, property.PropertyType, null);
+                    }
                 }
                 catch (Exception ex)
                 {
                     // Handle conversion errors
                     System.Diagnostics.Debug.WriteLine($"Error updating property: {ex.Message}");
+                    return (propertyName, false, property.PropertyType, null);
                 }
             }
+            return (propertyName, false, null, null);
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        public bool UpdateItemLineData(Guid manufid, example_queries_GetItemLinesByJobResult item)
         {
-            if (sender is not RadioButton) return;
-            if (this.JobNbr is null) return;
-            this.LoadDataForJob(this.JobNbr);
+            if (item is null) return false;
+            var res = Ext.Queries.SetItemLineByJobAndManufID(
+                item.PartNbr, item.ItemNbr, item.IDNbr, item.CatalogNbr, item.Qty, item.Type,
+                item.SubType, item.Description, item.UofM, item.ItemFin, item.ItemCore, item.ColorBy,
+                item.Dept, item.WorkCtr, item.ScrapFactor, item.SizeDivisor, item.Depth, item.Width, item.Fabwidth,
+                item.Height, item.FabHeight, item.Assembled, item.AssyNbr, item.TileIndicator, item.Explode,
+                item.Option01, item.Option02, item.Option03, item.Option04, item.Option05, item.Option06,
+                item.Option07, item.Option08, item.Option09, item.Option10, item.Usertag1, item.CoreSize,
+                item.Multiplier, item.Area, item.JobNbr, manufid
+            );
+            if (res is null) return false;
+            return true;
+        }
+
+        public bool CopyItemLineData(Guid manufid, example_queries_GetItemLinesByJobResult item)
+        {
+            if (item is null) return false;
+            var res = Ext.Queries.CopyManufItemLineByManufID(" (COPY)", manufid);
+            if (res is null) return false;
+            return true;
+        }
+
+        public bool DeleteItemLine(Guid manufid, string job)
+        {
+            var res = Ext.Queries.DeleteManufItemLineByManufID(job, manufid);
+            if (res is null) return false;
+            return true;
+        }
+
+        public void ToggleFiltersPanel()
+        {
+            Debug.WriteLine("Toggle Filters");
+            if (this.dpnl_DataFilter.Visibility is Visibility.Collapsed)
+            {
+                this.dpnl_DataFilter.Visibility = Visibility.Visible;
+                this.Txt_Filter.Focus();
+            }
+            else
+            {
+                this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
+                this.CurrentGrid.Focus();
+            }
         }
         #endregion
 
 
         #region EventHandlers
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not RadioButton) return;
+            if (this.JobNbr is null) return;
+            Debug.WriteLine("Load Job Data");
+            this.LoadDataForJob(this.JobNbr);
+        }
+
         private void EngOrder_JobNbrChanged(object? sender, string e)
         {
             this.LoadDataForJob(e);
@@ -275,7 +344,15 @@ namespace OMPS.Pages
 
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex()).ToString().PadLeft(6, ' ');
+            e.Row.Header = new TextBlock()
+            {
+                Text = e.Row.GetIndex().ToString(),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Width = 32 - 8 - 1,
+                TextAlignment = TextAlignment.Right,
+                Margin = new (0),
+                Padding = new (0)
+            };
         }
 
         public void DataGrid_IceManuf_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -322,9 +399,8 @@ namespace OMPS.Pages
             }
             if (e.Key is Key.F && (Keyboard.Modifiers & ModifierKeys.Control) is ModifierKeys.Control)
             {
-                this.dpnl_DataFilter.Visibility = Visibility.Visible;
-                this.Txt_Filter.Focus();
-                return;
+                this.ToggleFiltersPanel();
+                e.Handled = true;
             }
         }
 
@@ -332,9 +408,8 @@ namespace OMPS.Pages
         {
             if (e.Key is Key.F && (Keyboard.Modifiers & ModifierKeys.Control) is ModifierKeys.Control)
             {
-                this.dpnl_DataFilter.Visibility = Visibility.Visible;
-                this.Txt_Filter.Focus();
-                return;
+                this.ToggleFiltersPanel();
+                e.Handled = true;
             }
         }
 
@@ -377,8 +452,8 @@ namespace OMPS.Pages
 
         private void Btn_FilterClose_Click(object sender, RoutedEventArgs e)
         {
-            this.datagrid_main.Focus();
-            this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
+            this.ToggleFiltersPanel();
+            e.Handled = true;
         }
 
         public static readonly DependencyProperty Pending_LineChangesProperty =
@@ -448,14 +523,27 @@ namespace OMPS.Pages
 
         private void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
+            if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
             if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            List<(string, bool, Type?, object?)> changes = [];
+            if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
             foreach (var item in txts)
             {
                 var binding = item.GetBindingExpression(TextBox.TextProperty);
                 var propertyName = binding.ParentBinding.Path.Path.Split('.').Last();
-                datagrid_main.BeginEdit();
-                UpdateProperty(datagrid_main.SelectedItem, propertyName, item.Text);
-                datagrid_main.CommitEdit();
+                if (propertyName is null ||
+                    this.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(propertyName) ||
+                    this.DataGrid_IceManuf_ColumnsReadonly.Contains(propertyName))
+                {
+                    continue;
+                }
+                this.datagrid_main.BeginEdit();
+                var propRes = UpdateProperty(line, propertyName, item.Text);
+                this.datagrid_main.CommitEdit();
+                if (propRes.Item2 is true)
+                {
+                    changes.Add(propRes);
+                }
                 // Trigger Cell & Row Edit events
                 /*
                 item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWayToSource;
@@ -463,11 +551,15 @@ namespace OMPS.Pages
                 item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWay;
                 */
             }
+            if (changes.Count is 0) return;
+            this.UpdateItemLineData(line.IceManufID, line);
+            Debug.WriteLine(string.Join("\n", changes.Select(c => $"{c.Item1}: {c.Item3} = {c.Item4}")));
             this.Pending_LineChanges = false;
         }
 
         private void Btn_RevertItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
+            if (Ext.PopupConfirmation("Discard changes made to item line? All unsaved changes will be lost.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) is not MessageBoxResult.Yes) return;
             if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             foreach (var item in txts)
             {
@@ -486,7 +578,33 @@ namespace OMPS.Pages
 
         private void Btn_DeleteItemLine_Click(object sender, RoutedEventArgs e)
         {
+            /*
+            Ext.PopupConfirmation("Astr", "", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
+            Ext.PopupConfirmation("Errr", "", MessageBoxButton.YesNo, MessageBoxImage.Error);
+            Ext.PopupConfirmation("Excl", "", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+            Ext.PopupConfirmation("Hand", "", MessageBoxButton.YesNo, MessageBoxImage.Hand);
+            Ext.PopupConfirmation("Info", "", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            Ext.PopupConfirmation("None", "", MessageBoxButton.YesNo, MessageBoxImage.None);
+            Ext.PopupConfirmation("Ques", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            Ext.PopupConfirmation("Stop", "", MessageBoxButton.YesNo, MessageBoxImage.Stop);
+            Ext.PopupConfirmation("Warn", "", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            */
+            if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
+            if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
+            var res = this.DeleteItemLine(line.IceManufID, line.JobNbr);
+            if (res)
+                this.MfgItemLines.Remove(line);
+            else
+                MessageBox.Show("Deletion failed");
+        }
 
+        private void Btn_NewItemLine_Click(object sender, RoutedEventArgs e)
+        {
+            if (Ext.PopupConfirmation("Are you sure you'd like to create a new line using the current line's values? New line will have \"(COPY)\" append to the end of its description", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
+            if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
+            this.CopyItemLineData(line.IceManufID, line);
+            if (this.JobNbr is null) return;
+            this.LoadManufData(this.JobNbr);
         }
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -522,5 +640,10 @@ namespace OMPS.Pages
             datagrid_main.CancelEdit(DataGridEditingUnit.Cell);
         }
         #endregion
+
+        private void Btn_FilterClose_Click_1(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

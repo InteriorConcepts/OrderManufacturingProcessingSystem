@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Xml.Linq;
 using Windows.ApplicationModel.Activation;
 using Windows.Devices.Radios;
@@ -44,9 +45,11 @@ namespace OMPS
         public MainWindow()
         {
             InitializeComponent();
+            Ext.MainWindow = this;
+            this.DataContext = this._viewModel = new Main_ViewModel();
+            this.MainViewModel.ParentWin = this;
+            this.Closing += this.MainWindow_Closing;
             //
-            this._viewModel = new Main_ViewModel(this) { ParentWin = this };
-            this.DataContext = this._viewModel;
             this.SetWindowTitle("");
             //this.ViewController = new(this);
             var res = SCH.SQLDatabaseConnection.Init();
@@ -72,6 +75,11 @@ namespace OMPS
             });
 
             ((Main_ViewModel)this.DataContext)?.OrderSearch_VM.LoadRecentOrders();
+        }
+
+        private void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+
         }
 
         /*
@@ -294,10 +302,11 @@ namespace OMPS
         {
             if (this.WindowState == WindowState.Maximized)
             {
+                this.Grid_Main.Margin = new(0);
                 SystemCommands.RestoreWindow(this);
             } else
             {
-
+                this.Grid_Main.Margin = new(8, 8, 8, 4);
                 SystemCommands.MaximizeWindow(this);
             }
         }
@@ -343,6 +352,16 @@ namespace OMPS
             var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == prev.PageToType());
             if (prevRadio is null) return;
             prevRadio.ClearValue(RadioButton.FontStyleProperty);
+        }
+
+        public BlurEffect blur = new() { KernelType = KernelType.Gaussian, Radius = 2, RenderingBias = RenderingBias.Performance };
+        private void Btn_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigurationWindow _configWin = new (this._viewModel) { MainVM = this._viewModel };
+            this.Spnl_ContentFrames.Opacity = 0.55;
+            _configWin.Owner = this;
+            _configWin.ShowDialog();
+            this.Spnl_ContentFrames.Opacity = 1.0;
         }
     }
 }

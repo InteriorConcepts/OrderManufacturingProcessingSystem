@@ -11,17 +11,16 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         x:Name="MainWin" x:Class="OMPS.MainWindow"
         mc:Ignorable="d" UseLayoutRounding="False"
-        Title="MainWindow" MinHeight="600" MinWidth="1025" Background="Green"
+        Title="MainWindow" MinHeight="600" MinWidth="1025" Background="#111"
         Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Window.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
     </Window.CacheMode>
-
+    
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="4"
-                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
-                      CornerRadius="1" GlassFrameThickness="1" NonClientFrameEdges="Bottom"/>
+        <WindowChrome CaptionHeight="0" NonClientFrameEdges="Bottom" ResizeBorderThickness="4"/>
     </WindowChrome.WindowChrome>
+    
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo>
             <TaskbarItemInfo.Overlay>
@@ -37,7 +36,7 @@
         <viewModel:Main_ViewModel/>
     </Window.DataContext>
     -->
-    <Grid>
+    <Grid x:Name="Grid_Main" Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
@@ -57,12 +56,37 @@
                     <RowDefinition Height="24"/>
                     <RowDefinition Height="12"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <Button x:Name="Btn_Home" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_Home_Click">
-                        <materialDesign:PackIcon Height="22" Width="22" Kind="HomeCircleOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                            Orientation="Horizontal" HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center">
+                    <Button x:Name="Btn_Home" Height="24" Width="24"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                            Margin="4 0 0 0" Padding="3 3"
+                            VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                            Click="Btn_Home_Click">
+                        <materialDesign:PackIcon Height="22" Width="22" Kind="Home"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
-                    <Button x:Name="Btn_Back" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" IsEnabled="{Binding DataContext.CanPrevious, ElementName=MainWin, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_Back_Click" MouseEnter="Btn_Back_MouseEnter" MouseLeave="Btn_Back_MouseLeave">
-                        <materialDesign:PackIcon Height="22" Width="22" Kind="SwapHorizontalCircleOutline" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Button x:Name="Btn_Back" Height="24" Width="24"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                            Margin="4 0 0 0" Padding="3 3"
+                            IsEnabled="{Binding DataContext.CanPrevious, ElementName=MainWin, UpdateSourceTrigger=PropertyChanged}"
+                            VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                            Click="Btn_Back_Click"
+                            MouseEnter="Btn_Back_MouseEnter" MouseLeave="Btn_Back_MouseLeave">
+                        <materialDesign:PackIcon Height="22" Width="22" Kind="SwapHorizontalBold"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <Button x:Name="Btn_Settings" Height="24" Width="24"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                            Margin="4 0 0 0" Padding="3 3"
+                            VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                            Click="Btn_Settings_Click">
+                        <materialDesign:PackIcon Height="20" Width="22" Kind="ApplicationCogOutline"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -96,16 +120,31 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Landing" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="False" IsEnabled="False"/>
-                    <RadioButton Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked" IsEnabled="{Binding OrderSearch_IsEnabled, Mode=OneWay}"/>
-                    <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked" IsEnabled="{Binding EngOrder_IsEnabled, Mode=OneWay}"/>
-                    <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}" Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" FontSize="14" Padding="6 0" Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}" Checked="RadioButton_Checked" IsEnabled="{Binding QuoteOrder_IsEnabled, Mode=OneWay}"/>
+                    <RadioButton x:Name="TabBtn_Landing" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                 Content="Landing" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
+                                 Height="21" IsChecked="False" IsEnabled="False"
+                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                    <RadioButton x:Name="TabBtn_OrderSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                 Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
+                                 Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}"
+                                 Checked="RadioButton_Checked" IsEnabled="{Binding OrderSearch_IsEnabled, Mode=OneWay}"
+                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                    <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                 Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" Padding="6 0"
+                                 Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}"
+                                 Checked="RadioButton_Checked" IsEnabled="{Binding EngOrder_IsEnabled, Mode=OneWay}"
+                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                    <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                 Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" Padding="6 0"
+                                 Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}"
+                                 Checked="RadioButton_Checked" IsEnabled="{Binding QuoteOrder_IsEnabled, Mode=OneWay}"
+                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
                 </StackPanel>
                 <ContentControl Grid.Row="1" x:Name="Spnl_ContentFrames" Content="{Binding Current}"/>
             </Grid>
         </materialDesign:ColorZone>
 
-        <materialDesign:ColorZone Grid.Row="3" Mode="Dark" Background="#111" Foreground="#CCC" Margin="0" Visibility="Collapsed">
+        <materialDesign:ColorZone Grid.Row="3" Mode="Dark" Background="#111" Foreground="#CCC" Margin="0" Visibility="Visible">
             <Grid x:Name="statusbar" Height="32" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

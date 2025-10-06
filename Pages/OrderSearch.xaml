@@ -9,7 +9,8 @@
       x:Name="Page_OrderSearch"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1025"
-      DataContext="{Binding ElementName=Page_OrderSearch}" Background="#292929">
+      DataContext="{Binding ElementName=Page_OrderSearch}" Background="#292929"
+      FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
     <UserControl.CacheMode>
         <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
     </UserControl.CacheMode>
@@ -18,45 +19,48 @@
         <!-- Custom DataGridColumnHeader Style with Search Box -->
         
     </UserControl.Resources>
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <Grid DataContext="{Binding ElementName=Page_OrderSearch}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="0 0 0 0">
-            <TextBox x:Name="Txt_JobNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Job" Margin="0 12 1 0" Padding="10 0"
+        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="13 0 0 0">
+            <TextBox x:Name="Txt_JobNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Job" Margin="0 12 1 0" Padding="10 4"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
-            <TextBox x:Name="Txt_QuoteNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_QuoteNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                      materialDesign:HintAssist.Hint="Quote" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
-            <TextBox x:Name="Txt_OrderNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="119" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown" Visibility="Collapsed"/>
+            <TextBox x:Name="Txt_OrderNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                      materialDesign:HintAssist.Hint="Order" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
-            <TextBox x:Name="Txt_OrderName" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_OrderName" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                      materialDesign:HintAssist.Hint="Name" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
-            <TextBox x:Name="Txt_OppNbr" FontSize="15" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_OppNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                      materialDesign:HintAssist.Hint="Opportunity" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="120" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
-            <Button x:Name="Btn_OrdersRefresh" Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Height="24" Padding="4 0" Margin="335 0 0 0" Click="Btn_OrdersRefresh_Click">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock VerticalAlignment="Center">Refresh</TextBlock>
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+            <Button x:Name="Btn_OrdersRefresh" Style="{StaticResource MaterialDesignIconButton}"
+                    Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                    Padding="4 1" Margin="0 0 0 0" Click="Btn_OrdersRefresh_Click"
+                    >
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Height="Auto">
+                    <TextBlock VerticalAlignment="Center" Text="" FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
                     <materialDesign:PackIcon Kind="Refresh" Height="18" Width="18" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                 </StackPanel>
             </Button>
@@ -67,6 +71,13 @@
                   AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"
                   EnableColumnVirtualization="False" MouseDoubleClick="datagrid_orders_MouseDoubleClick"
                   EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  RowHeaderWidth="14" HeadersVisibility="All" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"/>
+                  RowHeaderWidth="14" HeadersVisibility="All" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"
+                  FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CanUserResizeColumns="False" CanUserResizeRows="False" LoadingRow="datagrid_orders_LoadingRow" Sorting="datagrid_orders_Sorting">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                    <Setter Property="FontSize" Value="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                </Style>
+            </DataGrid.CellStyle>
+        </DataGrid>
     </Grid>
 </UserControl>

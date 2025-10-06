@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Timers;
 using System.Windows;
@@ -17,6 +19,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace OMPS.Pages
 {
@@ -52,7 +55,16 @@ namespace OMPS.Pages
 
         #region Properties
         readonly System.Timers.Timer RefreshDelay = new(TimeSpan.FromSeconds(10)) { };
-        internal MainWindow ParentWindow { get; set; }
+        internal MainWindow ParentWindow { get; set
+            {
+                field = value;
+                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
+                {
+                    if (e.PropertyName is not "FontSize_DataGrid") return;
+                    this.datagrid_orders.UpdateLayout();
+                });
+            }
+        }
         internal TabItem ParentTab { get; set; }
         public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
         #endregion
@@ -81,6 +93,39 @@ namespace OMPS.Pages
                     Debug.WriteLine(1);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        /*
+                        var CDirs = new DirectoryInfo("C:\\").EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Select(d => d.Name);
+                        var HDirs = new DirectoryInfo("H:\\Engineering").EnumerateDirectories("*", SearchOption.AllDirectories).Select(d => d.Name);
+                        //Debug.WriteLine(string.Join(", ", HDirs));
+                        data_orders.Sort((a, b) =>
+                        {
+                            var aDirC = CDirs.Contains(a.JobNbr);
+                            var bDirC = CDirs.Contains(b.JobNbr);
+                            if (aDirC && !bDirC)
+                            {
+                                //a.JobNbr = "C:/" + a.JobNbr;
+                                return -1000;
+                            }
+                            else if (bDirC && !aDirC)
+                            {
+                                //b.JobNbr = "C:/" + b.JobNbr;
+                                return 1000;
+                            }
+                            var aDirH = HDirs.Contains(a.JobNbr);
+                            var bDirH = HDirs.Contains(b.JobNbr);
+                            if (aDirH && !bDirH)
+                            {
+                                //a.JobNbr = "H:/" + a.JobNbr;
+                                return -500;
+                            }
+                            else if (bDirH && !aDirH)
+                            {
+                                //b.JobNbr = "H:/" + b.JobNbr;
+                                return 500;
+                            }
+                            return b.JobNbr.CompareTo(a.JobNbr);
+                        });
+                        */
                         this.datagrid_orders.BeginEdit();
                         for (int i = 0; i < data_orders.Count; i++)
                         {
@@ -159,11 +204,14 @@ namespace OMPS.Pages
             ];
         private readonly ReadOnlyCollection<string> DataGrid_Orders_ColumnsExcludeHidden =
             [
-            "ColorSetID"
+            "ColorSetID", "QuoteNbr"
             ];
         private readonly ReadOnlyCollection<string> DataGrid_Orders_ColumnHyperlinks =
             [
             "JobNbr", "QuoteNbr", "OrderNumber"
+            ];
+        private readonly ReadOnlyCollection<string> DataGrid_Orders_ColumnsOrder = [
+            "JobNbr", /*"QuoteNbr",*/ "OrderNumber", "Name", "OpportunityNbr"
             ];
 
         private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -174,15 +222,33 @@ namespace OMPS.Pages
             }
             if (DataGrid_Orders_ColumnHyperlinks.Contains(headerName))
             {
-                Style cellStyle = new (typeof(DataGridCell), e.Column.CellStyle);
+                var defaultStyle = (Style)FindResource(typeof(DataGridCell));
+                Style cellStyle = new (typeof(DataGridCell));
+                if (defaultStyle is not null)
+                {
+                    cellStyle.BasedOn = defaultStyle;
+                }
                 cellStyle.Setters.Add(new Setter(DataGridCell.ForegroundProperty, Brushes.DodgerBlue));
                 cellStyle.Setters.Add(new Setter(DataGridCell.VerticalAlignmentProperty, VerticalAlignment.Center));
                 cellStyle.Setters.Add(new Setter(DataGridCell.VerticalContentAlignmentProperty, VerticalAlignment.Stretch));
                 cellStyle.Setters.Add(new Setter(DataGridCell.HorizontalContentAlignmentProperty, HorizontalAlignment.Left));
                 cellStyle.Setters.Add(new Setter(DataGridCell.CursorProperty, Cursors.Hand));
                 cellStyle.Setters.Add(new Setter(DataGridCell.BackgroundProperty, Brushes.Transparent));
+                var bind = new Binding("FontSize_DataGrid")
+                {
+                    Path = new("MainViewModel.FontSize_DataGrid"),
+                    Source = this.ParentWindow,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay
+                };
+                cellStyle.Setters.Add(new Setter(DataGridCell.FontSizeProperty, bind));
                 e.Column.SetValue(DataGridColumn.CellStyleProperty, cellStyle);
             }
+            if (DataGrid_Orders_ColumnsOrder.IndexOf(headerName) is int headerIdx && headerIdx is not -1)
+            {
+                e.Column.DisplayIndex = headerIdx;
+            }
+            e.Column.Width = new DataGridLength(125);
             //Debug.WriteLine(headerName);
             e.Column.Visibility =
                 this.DataGrid_Orders_ColumnsExcludeHidden.Contains(headerName) ?
@@ -242,7 +308,7 @@ namespace OMPS.Pages
 
         private void datagrid_orders_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-
+            if (e.Row.Item is not example_queries_GetColorSetsResult item) return;
         }
 
         private void datagrid_orders_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -268,5 +334,10 @@ namespace OMPS.Pages
             //this.ParentWindow.Page_EngOrder.JobNbr = item.JobNbr;
         }
         #endregion
+
+        private void datagrid_orders_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            
+        }
     }
 }

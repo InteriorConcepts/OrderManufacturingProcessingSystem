@@ -24,6 +24,8 @@ namespace OMPS
 
     public static class Ext
     {
+        public static MainWindow MainWindow;
+
         public static string StringFormat_Currency = "{}{0:C2.00}";
         public static string StringFormat_Text = "{}";
 
@@ -96,6 +98,11 @@ namespace OMPS
                 QuoteOrder => PageTypes.QuoteOrder,
                 _ => PageTypes.None,
             };
+        }
+
+        public static MessageBoxResult PopupConfirmation(string text, string caption, MessageBoxButton btns, MessageBoxImage img)
+        {
+            return MessageBox.Show(text, caption, btns, img);
         }
     }
 }

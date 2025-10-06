@@ -48,24 +48,23 @@ namespace OMPS.viewModel
 
     public class Main_ViewModel: ObservableObject
     {
-        private MainWindow _parentWin;
-        public required MainWindow ParentWin
+        public MainWindow ParentWin
         {
-            get { return this._parentWin; }
-            set {
-                this._parentWin = value;
+            get;
+            set
+            {
+                field = value;
                 this.OrderSearch_VM?.ParentWindow = value;
                 this.EngOrder_VM?.ParentWindow = value;
                 this.Login_VM?.ParentWindow = value;
             }
-        }
+        } = Ext.MainWindow;
 
-        private bool _widgetMode = false;
         public bool WidgetMode {
-            get => this._widgetMode;
+            get;
             set
             {
-                this._widgetMode = value;
+                field = value;
                 this.ParentWin.Spnl_FrameTabs.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 //this.ParentWin.statusbar.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 ((UIElement)this.ParentWin.statusbar.Parent).Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
@@ -79,8 +78,41 @@ namespace OMPS.viewModel
                 this.ParentWin.Width = (value is false ? 1025 : 550);
                 this.ParentWin.ResizeMode = (value is false ? ResizeMode.CanResizeWithGrip : ResizeMode.CanResize);
             }
+        } = false;
+
+        public double FontSize_MAX { get; } = 20;
+        public double FontSize_MIN { get; } = 12;
+
+        private double _fontSize_dataGrid = 14;
+        public double FontSize_DataGrid
+        {
+            get => this._fontSize_dataGrid;
+            set
+            {
+                if (this._fontSize_dataGrid == value) return;
+                if (value > FontSize_MAX || value < FontSize_MIN) return;
+                this._fontSize_dataGrid = value;
+                OnPropertyChanged();
+                OnPropertyChanged("FontSize_CanBeSmaller");
+                OnPropertyChanged("FontSize_CanBeLarger");
+            }
         }
 
+        public bool FontSize_CanBeSmaller
+        {
+            get
+            {
+                return this.FontSize_DataGrid > FontSize_MIN;
+            }
+        }
+
+        public bool FontSize_CanBeLarger
+        {
+            get
+            {
+                return this.FontSize_DataGrid < FontSize_MAX;
+            }
+        }
 
 
         public Login Login_VM { get; set; }
@@ -98,24 +130,23 @@ namespace OMPS.viewModel
         public bool QuoteOrder_IsEnabled { get => !(this.QuoteOrder_VM.Lbl_JobNbr.Content is null or ""); }
 
         public bool CanPrevious {
-            get => this._previous is not null;
+            get => this.Previous is not null;
             set
             {
                 OnPropertyChanged();
             }
         }
 
-        private object? _previous = null;
         public object? Previous
         {
-            get => this._previous;
+            get;
             set
             {
-                this._previous = value;
+                field = value;
                 OnPropertyChanged();
                 CanPrevious = (value != null);
             }
-        }
+        } = null;
 
         private object? _current = null;
         public object? Current
@@ -125,14 +156,11 @@ namespace OMPS.viewModel
             {
                 if (value is null) return;
                 if (value == _current) return;
-                if (_current is not null && this._previous != _current && this._current is not Login)
+                if (_current is not null && this.Previous != _current && this._current is not Login)
                 {
                     this.Previous = _current;
                 }
-                Debug.WriteLine("Current set");
                 _current = value;
-                Debug.WriteLine(value.GetType().Name);
-                //WidgetMode = this.Login_IsSelected;
                 OnPropertyChanged();
                 OnPropertyChanged(value.GetType().Name + "_IsSelected");
                 OnPropertyChanged(value.GetType().Name + "_IsEnabled");
@@ -141,23 +169,13 @@ namespace OMPS.viewModel
 
         public Main_ViewModel()
         {
+            this.ParentWin = Ext.MainWindow;
             Login_VM = new() { ParentWindow = this.ParentWin };
             OrderSearch_VM = new(this.ParentWin);
             EngOrder_VM = new(this.ParentWin);
             QuoteOrder_VM = new(this.ParentWin);
-            WidgetMode = true;
-            _current = Login_VM;
-        }
-
-        public Main_ViewModel(MainWindow parentWin)
-        {
-            this.ParentWin = parentWin;
-            Login_VM = new() { ParentWindow = this.ParentWin };
-            OrderSearch_VM = new(this.ParentWin);
-            EngOrder_VM = new(this.ParentWin);
-            QuoteOrder_VM = new(this.ParentWin);
-            WidgetMode = true;
-            _current = Login_VM;
+            WidgetMode = false;
+            _current = OrderSearch_VM;
         }
     }
 }

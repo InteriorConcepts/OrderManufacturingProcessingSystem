@@ -7,6 +7,28 @@ using System.Windows.Markup;
 
 namespace OMPS
 {
+
+    public class ScalingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double originalValue && parameter is string scaleFactorString)
+            {
+                if (double.TryParse(scaleFactorString, out double scaleFactor))
+                {
+                    return originalValue * scaleFactor;
+                }
+            }
+            return value; // Return original value if conversion fails
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Implement if two-way binding is required
+            throw new NotImplementedException();
+        }
+    }
+
     public class SubtractConverter : MarkupExtension, IValueConverter
     {
         public double Value { get; set; }
