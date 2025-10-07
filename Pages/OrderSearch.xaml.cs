@@ -1,5 +1,9 @@
-﻿using MyApp.DataAccess.Generated;
+﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using MyApp.DataAccess.Generated;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -7,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +23,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace OMPS.Pages
@@ -26,21 +30,42 @@ namespace OMPS.Pages
     /// <summary>
     /// Interaction logic for JobSearch.xaml
     /// </summary>
-    public partial class OrderSearch : UserControl
+    public partial class OrderSearch : UserControl, INotifyPropertyChanged
     {
         public OrderSearch() { }
         public OrderSearch(MainWindow parentWindow)
         {
             InitializeComponent();
             //
-            this.RefreshDelay.Elapsed += this.RefreshDelay_Elapsed;
             this.DataContext = this;
+            this.RefreshDelay.Elapsed += this.RefreshDelay_Elapsed;
             this.ParentWindow = parentWindow;
+        }
+
+        public double DataGridFontSize
+        {
+            get
+            {
+                return this.ParentWindow?.MainViewModel?.FontSize_DataGrid ?? 12.0;
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not "FontSize_DataGrid") return;
+            OnPropertyChanged(nameof(DataGridFontSize));
         }
 
         private void RefreshDelay_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.BeginInvoke(() =>
             {
                 this.Btn_OrdersRefresh.IsEnabled = true;
             });
@@ -60,8 +85,9 @@ namespace OMPS.Pages
                 field = value;
                 value?.MainViewModel?.PropertyChanged += new((sender, e) =>
                 {
-                    if (e.PropertyName is not "FontSize_DataGrid") return;
-                    this.datagrid_orders.UpdateLayout();
+                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_DataGrid)) return;
+                    //this.datagrid_orders.UpdateLayout();
+                    OnPropertyChanged(nameof(DataGridFontSize));
                 });
             }
         }
@@ -91,41 +117,43 @@ namespace OMPS.Pages
                     Debug.WriteLine(0);
                     var data_orders = Ext.Queries.GetColorSets(filters);
                     Debug.WriteLine(1);
-                    Application.Current.Dispatcher.Invoke(() =>
+                    /*
+                    var CDirs = new DirectoryInfo("C:\\").EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Select(d => d.Name);
+                    var HDirs = new DirectoryInfo("H:\\Engineering").EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => d.Name[0] is 'J' or 'S').Select(d => d.Name);
+
+                    Debug.WriteLine(string.Join(", ", HDirs));
+                    data_orders.Sort((a, b) =>
                     {
-                        /*
-                        var CDirs = new DirectoryInfo("C:\\").EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Select(d => d.Name);
-                        var HDirs = new DirectoryInfo("H:\\Engineering").EnumerateDirectories("*", SearchOption.AllDirectories).Select(d => d.Name);
-                        //Debug.WriteLine(string.Join(", ", HDirs));
-                        data_orders.Sort((a, b) =>
+                        var aDirC = CDirs.Contains(a.JobNbr);
+                        var bDirC = CDirs.Contains(b.JobNbr);
+                        if (aDirC && !bDirC)
                         {
-                            var aDirC = CDirs.Contains(a.JobNbr);
-                            var bDirC = CDirs.Contains(b.JobNbr);
-                            if (aDirC && !bDirC)
-                            {
-                                //a.JobNbr = "C:/" + a.JobNbr;
-                                return -1000;
-                            }
-                            else if (bDirC && !aDirC)
-                            {
-                                //b.JobNbr = "C:/" + b.JobNbr;
-                                return 1000;
-                            }
-                            var aDirH = HDirs.Contains(a.JobNbr);
-                            var bDirH = HDirs.Contains(b.JobNbr);
-                            if (aDirH && !bDirH)
-                            {
-                                //a.JobNbr = "H:/" + a.JobNbr;
-                                return -500;
-                            }
-                            else if (bDirH && !aDirH)
-                            {
-                                //b.JobNbr = "H:/" + b.JobNbr;
-                                return 500;
-                            }
-                            return b.JobNbr.CompareTo(a.JobNbr);
-                        });
-                        */
+                            //a.JobNbr = "C:/" + a.JobNbr;
+                            return -1000;
+                        }
+                        else if (bDirC && !aDirC)
+                        {
+                            //b.JobNbr = "C:/" + b.JobNbr;
+                            return 1000;
+                        }
+                        var aDirH = HDirs.Contains(a.JobNbr);
+                        var bDirH = HDirs.Contains(b.JobNbr);
+                        if (aDirH && !bDirH)
+                        {
+                            //a.JobNbr = "H:/" + a.JobNbr;
+                            return -500;
+                        }
+                        else if (bDirH && !aDirH)
+                        {
+                            //b.JobNbr = "H:/" + b.JobNbr;
+                            return 500;
+                        }
+                        return b.OrderDate.CompareTo(a.OrderDate);
+                    });
+                    */
+
+                    Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
                         this.datagrid_orders.BeginEdit();
                         for (int i = 0; i < data_orders.Count; i++)
                         {
@@ -144,7 +172,7 @@ namespace OMPS.Pages
                     this.RefreshDelay.Start();
 
                     /*
-                    Application.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         var offset = this.GetColumnPositionSimple(this.datagrid_orders, 2);
                         this.Txt_JobNbr.Margin = new Thickness(offset.X, this.Txt_JobNbr.Margin.Top, this.Txt_JobNbr.Margin.Right, this.Txt_JobNbr.Margin.Bottom);
@@ -156,7 +184,8 @@ namespace OMPS.Pages
                     });
                     */
 
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
                 }
@@ -259,7 +288,14 @@ namespace OMPS.Pages
 
         private void datagrid_orders_Loaded(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("Grid Loaded");
             if (datagrid_orders.Columns.Count is 0) return;
+            for (short i = 0; i < datagrid_orders.Items.Count; i++)
+            {
+                //Debug.WriteLine(datagrid_orders.Items[i]);
+                var row = (DataGridRow)datagrid_orders.ItemContainerGenerator.ContainerFromIndex(i);
+                this.SetOrdersRowHeader(row);
+            }
         }
 
         private void datagrid_orders_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -306,12 +342,78 @@ namespace OMPS.Pages
             this.LoadRecentOrders();
         }
 
-        private void datagrid_orders_LoadingRow(object sender, DataGridRowEventArgs e)
+        public void SetOrdersRowHeader(DataGridRow row)
         {
-            if (e.Row.Item is not example_queries_GetColorSetsResult item) return;
+            return;
+            if (row.Item is not example_queries_GetColorSetsResult item) return;
+
+            IEnumerable<string>? matchesC = Directory.EnumerateDirectories("C:\\", $"{item.JobNbr}", SearchOption.TopDirectoryOnly);
+            IEnumerable<string>? matchesH = Directory.EnumerateDirectories("H:\\Engineering", $"{item.JobNbr}", SearchOption.AllDirectories);
+            bool foundC = matchesC.Any(),
+                 foundH = matchesH.Any();
+            if (foundC is false && foundH is false) return;
+
+            PackIconKind icon = PackIconKind.None;
+            string text = "";
+            if (foundC && !foundH)
+            {
+                icon = PackIconKind.FolderHome;
+                text = "C";
+                Debug.WriteLine(string.Join(", ", matchesC));
+            }
+            else if (foundH && !foundC)
+            {
+                icon = PackIconKind.FolderNetwork;
+                text = "H";
+                Debug.WriteLine(string.Join(", ", matchesH));
+            }
+            else if (foundC && foundH)
+            {
+                icon = PackIconKind.Folders;
+                Debug.WriteLine(string.Join(", ", matchesH.Concat(matchesC)));
+            }
+            else
+            {
+                return;
+            }
+
+            var grd = new Grid() { VerticalAlignment = VerticalAlignment.Center };
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            var pkicon =
+                new PackIcon()
+                {
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    Margin = new(0),
+                    Kind = icon
+                };
+            var txt =
+                new TextBlock()
+                {
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextAlignment = TextAlignment.Center,
+                    Margin = new(0),
+                    Text = text,
+                    FontFamily = new FontFamily("Consolas"),
+                    Foreground = Brushes.White
+                };
+            grd.Children.Add(pkicon);
+            grd.Children.Add(txt);
+            Grid.SetColumn(pkicon, 0);
+            Grid.SetColumn(txt, 1);
+            row.Header = grd;
         }
 
-        private void datagrid_orders_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void datagrid_orders_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            this.SetOrdersRowHeader(e.Row);
+        }
+
+        private async void datagrid_orders_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton is not MouseButton.Left) return;
             if (this.datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
@@ -321,8 +423,9 @@ namespace OMPS.Pages
             if (cell.Column.Header.ToString() is "JobNbr")
             {
                 if (!Ext.IsJobNumValid(item.JobNbr)) return;
-                this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
                 this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
+                await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
@@ -338,6 +441,11 @@ namespace OMPS.Pages
         private void datagrid_orders_Sorting(object sender, DataGridSortingEventArgs e)
         {
             
+        }
+
+        private void datagrid_orders_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
+        {
+
         }
     }
 }

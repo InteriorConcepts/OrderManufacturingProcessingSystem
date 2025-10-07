@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OMPS.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             x:Name="Root"
+             x:Name="Root" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
              Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
         <Label Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="{Binding FontSize}"/>
-        <ComboBox IsReadOnly="{Binding InputReadOnly}" Style="{StaticResource MaterialDesignFilledComboBox}" ItemsSource="{Binding ItemSource}" Padding="3 0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" SelectedItem="{Binding InputText}" SelectedValue="{Binding InputText}" FontSize="{Binding FontSize}"/>
+        <ComboBox IsReadOnly="{Binding InputReadOnly}" Style="{StaticResource MaterialDesignOutlinedComboBox}" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="0.5" BorderThickness="0.5" ItemsSource="{Binding ItemSource}" Padding="3 0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" SelectedItem="{Binding InputText}" SelectedValue="{Binding InputText}" FontSize="{Binding FontSize}"/>
     </DockPanel>
 </UserControl>

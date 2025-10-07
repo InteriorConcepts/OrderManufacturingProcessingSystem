@@ -9,7 +9,7 @@
         xmlns:viewModel="clr-namespace:OMPS.viewModel"
         xmlns:Ext="clr-namespace:OMPS"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        x:Name="MainWin" x:Class="OMPS.MainWindow"
+        x:Name="MainWin" x:Class="OMPS.MainWindow" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
         mc:Ignorable="d" UseLayoutRounding="False"
         Title="MainWindow" MinHeight="600" MinWidth="1025" Background="#111"
         Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
@@ -44,7 +44,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <materialDesign:ColorZone Grid.Row="0" Padding="4 4 4 0" Background="#111" Foreground="#EEE">
-            <Grid x:Name="grid_TopBar" MouseDown="grid_TopBar_MouseDown" Background="Transparent" IsHitTestVisible="True">
+            <Grid x:Name="grid_TopBar" DataContext="{Binding ElementName=MainWin}" MouseDown="grid_TopBar_MouseDown" Background="Transparent" IsHitTestVisible="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
@@ -123,22 +123,22 @@
                     <RadioButton x:Name="TabBtn_Landing" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Landing" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
                                  Height="21" IsChecked="False" IsEnabled="False"
-                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                                 FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     <RadioButton x:Name="TabBtn_OrderSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
                                  Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked" IsEnabled="{Binding OrderSearch_IsEnabled, Mode=OneWay}"
-                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                                 FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" Padding="6 0"
                                  Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked" IsEnabled="{Binding EngOrder_IsEnabled, Mode=OneWay}"
-                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                                 FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" Padding="6 0"
                                  Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked" IsEnabled="{Binding QuoteOrder_IsEnabled, Mode=OneWay}"
-                                 FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                                 FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                 </StackPanel>
                 <ContentControl Grid.Row="1" x:Name="Spnl_ContentFrames" Content="{Binding Current}"/>
             </Grid>

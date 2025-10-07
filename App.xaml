@@ -46,6 +46,15 @@
             <BitmapImage x:Key="MouseOverButtonImage" UriSource="pack://application:,,,/OMPS;component/Images/Save-hover.png"/>
             <BitmapImage x:Key="MouseDownButtonImage" UriSource="pack://application:,,,/OMPS;component/Images/Save-down.png"/>
 
+            <!--
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Foreground" 
+                Value="{Binding Foreground, 
+                       RelativeSource={RelativeSource AncestorType=FrameworkElement},
+                       FallbackValue=Black}"/>
+            </Style>
+            -->
+
             <Style x:Key="SaveBtn" TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>

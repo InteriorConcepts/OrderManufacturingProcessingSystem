@@ -33,7 +33,7 @@ namespace OMPS.Components
 
         public static readonly DependencyProperty InputTextProperty =
             DependencyProperty.Register("InputText", typeof(string), typeof(LabelDatePickPair),
-                new PropertyMetadata("Value"));
+                new PropertyMetadata("DefaultValue"));
 
         public static readonly DependencyProperty InputFormatProperty =
             DependencyProperty.Register("InputFormat", typeof(string), typeof(LabelDatePickPair),

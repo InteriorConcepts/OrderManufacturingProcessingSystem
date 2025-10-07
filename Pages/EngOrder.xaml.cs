@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -15,6 +16,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -30,10 +32,10 @@ namespace OMPS.Pages
     {
         public EngOrder(MainWindow parentWindow)
         {
+            this.ParentWindow = parentWindow;
             InitializeComponent();
             //
             this.DataContext = this;
-            this.ParentWindow = parentWindow;
             this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
             //this.FrmFin.ItemSource = Finishes_Default;
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
@@ -44,6 +46,12 @@ namespace OMPS.Pages
         #endregion
 
         #region Properties
+
+        public double DataGridFontSize
+        {
+            get =>
+                this.ParentWindow?.MainViewModel?.FontSize_DataGrid ?? 12.0;
+        }
         internal MainWindow ParentWindow { get; set; }
         internal DataGrid CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
@@ -62,7 +70,7 @@ namespace OMPS.Pages
                 if (EqualityComparer<string?>.Default.Equals(this._jobNbr, value.ToUpper())) return;
                 this.Last_ManufData = null;
                 this._jobNbr = value.ToUpper();
-                this.JobNbrChanged.Invoke(this, this._jobNbr);
+                this.JobNbrChanged?.Invoke(this, this._jobNbr);
             }
         }
         public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
@@ -146,7 +154,7 @@ namespace OMPS.Pages
         }
 
         private DateTime? Last_ManufData = null;
-        public void LoadManufData(string job)
+        public async void LoadManufData(string job)
         {
             if (this.Last_ManufData is not null && (DateTime.Now - this.Last_ManufData.Value).TotalSeconds is double sec && sec < 10)
             {
@@ -158,10 +166,10 @@ namespace OMPS.Pages
             this.progbar_itemlines.Value = 50;
             this.progbar_itemlines.IsEnabled = true;
             this.progbar_itemlines.Visibility = Visibility.Visible;
-            var t = new Task(() =>
+            new Task(async () =>
             {
                 var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
-                Application.Current.Dispatcher.Invoke(() =>
+                await Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     this.datagrid_main.BeginEdit();
                     for (int i = 0; i < data_mfglines.Count; i++)
@@ -179,8 +187,7 @@ namespace OMPS.Pages
                     this.progbar_itemlines.Visibility = Visibility.Collapsed;
                 });
                 this.Last_ManufData = DateTime.Now;
-            });
-            t.Start();
+            }).Start();
         }
 
         public void LoadManufParts(string job)
@@ -317,11 +324,13 @@ namespace OMPS.Pages
             if (this.dpnl_DataFilter.Visibility is Visibility.Collapsed)
             {
                 this.dpnl_DataFilter.Visibility = Visibility.Visible;
+                this.Btn_ToggleFiltersPnl.IsChecked = true;
                 this.Txt_Filter.Focus();
             }
             else
             {
                 this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
+                this.Btn_ToggleFiltersPnl.IsChecked = false;
                 this.CurrentGrid.Focus();
             }
         }
@@ -490,14 +499,26 @@ namespace OMPS.Pages
                     VerticalContentAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     IsReadOnly = this.DataGrid_IceManuf_ColumnsReadonly.Contains(prop.Name),
+                    Visibility = Visibility.Visible,
                 };
                 Binding bind = new(prop.Name)
                 {
                     Path = new PropertyPath($"SelectedItem.{prop.Name}"),
                     Source = this.datagrid_main,
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    Mode = BindingMode.OneWay
+                    Mode = BindingMode.OneWay, TargetNullValue = "", FallbackValue = ""
                 };
+                //var datatrigger = new DataTrigger() { Binding = bind, Value = null };
+                //datatrigger.Setters.Add(new Setter(TextBox.VisibilityProperty, Visibility.Collapsed));
+
+                var defaultStyle = (Style)FindResource(typeof(TextBox));
+                Style style = new(typeof(TextBox));
+                if (defaultStyle is not null)
+                {
+                    style.BasedOn = defaultStyle;
+                }
+                //style.Triggers.Add(datatrigger);
+                txt.Style = style;
                 txt.PreviewKeyDown += this.Txt_PreviewKeyDown;
                 txt.SetBinding(TextBox.TextProperty, bind);
                 this.grid_dataeditregion.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32, GridUnitType.Pixel) });
@@ -509,6 +530,12 @@ namespace OMPS.Pages
                 Grid.SetColumn(txt, 1);
                 rowIdx++;
             }
+        }
+
+        private void datagrid_main_Unloaded(object sender, RoutedEventArgs e)
+        {
+            //this.grid_dataeditregion.Children.Clear();
+            //this.grid_dataeditregion.RowDefinitions.Clear();
         }
 
         private void Txt_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -609,6 +636,7 @@ namespace OMPS.Pages
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
+            /*
             if (e.EditAction == DataGridEditAction.Commit)
             {
                 // Cell changes are committed automatically with ObservableCollection
@@ -616,6 +644,7 @@ namespace OMPS.Pages
                 //TrackChange(e.Row.Item);
                 Debug.WriteLine((e.Row.Item as example_queries_GetItemLinesByJobResult).ItemNbr);
             }
+            */
         }
 
         private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
@@ -639,11 +668,57 @@ namespace OMPS.Pages
             datagrid_main.CancelEdit(DataGridEditingUnit.Row);
             datagrid_main.CancelEdit(DataGridEditingUnit.Cell);
         }
-        #endregion
 
         private void Btn_FilterClose_Click_1(object sender, RoutedEventArgs e)
         {
 
         }
+
+        private async void LabelInputLookupPair_LookupButtonPressed(object sender, LabelInputLookupPair.Lookup_EventArgs e)
+        {
+            if (SCH.Global.Config is null || !SCH.Global.Config.InitializationSuccessfull) return;
+            Debug.WriteLine($"Try Query GUID lookup ({e.Lookup})");
+            var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
+            var cmd1 = dbcon1.CreateCommand();
+            cmd1.CommandText = $"SELECT TOP 1 PartID, PartDescription    FROM eCRM_intcon2.dbo.aIC_Product    WHERE (ItemID = '{e.Lookup}')";
+            cmd1.CommandTimeout = 10000;
+            cmd1.Connection = dbcon1;
+            try
+            {
+                await dbcon1.OpenAsync();
+                var reader = await cmd1.ExecuteReaderAsync();
+                List<Dictionary<string, object>> res = [];
+                while (await reader.ReadAsync())
+                {
+                    Debug.WriteLine("\tRow");
+                    Dictionary<string, object> obj = [];
+                    for (int fieldIndex = 0; fieldIndex < reader.FieldCount; fieldIndex++)
+                    {
+                        obj.Add(reader.GetName(fieldIndex), reader.GetValue(fieldIndex));
+                    }
+                    res.Add(obj);
+                }
+                Debug.WriteLine("Query GUID lookup");
+                if (res is null || res.Count is 0 || res[0] is not Dictionary<string, object> item)
+                {
+                    e.Source.InputLookupValue = "-";
+                    return;
+                }
+                e.Source.InputLookupValue = $"{item["PartID"]} - {item["PartDescription"]}" ?? "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error\n" + ex.Message + "\n" + ex.StackTrace, "Error Encountered", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            await cmd1.DisposeAsync();
+            await dbcon1.CloseAsync();
+        }
+
+        private void LabelInputLookupPair_LookupButtonPressed(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
     }
 }

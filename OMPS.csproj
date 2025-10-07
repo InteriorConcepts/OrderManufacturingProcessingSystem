@@ -66,6 +66,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.9" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3485.44" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.9" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.9" />

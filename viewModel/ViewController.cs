@@ -115,6 +115,23 @@ namespace OMPS.viewModel
         }
 
 
+
+        public TimeZoneInfo CurrentTimezone
+        {
+            get;
+            set {
+                field = value;
+                OnPropertyChanged();
+            }
+        } = TimeZoneInfo.Local;
+
+        public DateTime CurrentDatetime
+        {
+            get => TimeZoneInfo.ConvertTime(DateTime.Now, CurrentTimezone);
+        }
+
+
+
         public Login Login_VM { get; set; }
         public OrderSearch OrderSearch_VM { get; set; }
         public EngOrder EngOrder_VM { get; set; }
@@ -147,6 +164,16 @@ namespace OMPS.viewModel
                 CanPrevious = (value != null);
             }
         } = null;
+
+        public PageTypes CurrentPage
+        {
+            get;
+            set
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
 
         private object? _current = null;
         public object? Current

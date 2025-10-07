@@ -2,14 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:OMPS.Components"
              mc:Ignorable="d" 
-             x:Name="Root"
+             x:Name="Root" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
              Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
         <Label Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="{Binding FontSize}"/>
-        <DatePicker IsEnabled="{Binding InputEnabled}" Style="{StaticResource MaterialDesignFilledDatePicker}" SelectedDate="{Binding SelectedDate}" Padding="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Text="{Binding InputText}" FontSize="{Binding FontSize}"/>
+        <DatePicker IsEnabled="{Binding InputEnabled}" Style="{StaticResource MaterialDesignOutlinedDatePicker}" materialDesign:DatePickerAssist.OutlinedBorderActiveThickness="0.5" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" BorderThickness="0.5" SelectedDate="{Binding SelectedDate}" Padding="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Text="{Binding InputText}" FontSize="{Binding FontSize}"/>
     </DockPanel>
 </UserControl>

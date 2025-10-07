@@ -25,11 +25,11 @@ namespace OMPS.Components
 
         public static readonly DependencyProperty LabelTextProperty =
             DependencyProperty.Register("LabelText", typeof(string), typeof(LabelCheckPair),
-                new PropertyMetadata("Label"));
+                new PropertyMetadata("DefaultText"));
 
         public static readonly DependencyProperty InputTextProperty =
             DependencyProperty.Register("InputText", typeof(string), typeof(LabelCheckPair),
-                new PropertyMetadata("False"));
+                new PropertyMetadata("DefaultText"));
 
         public static readonly DependencyProperty InputReadOnlyProperty =
             DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(LabelCheckPair),

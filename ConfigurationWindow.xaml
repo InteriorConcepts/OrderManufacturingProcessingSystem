@@ -11,15 +11,15 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         FontSize="{Binding MainVM.FontSize_DataGrid}" FontWeight="Normal"
-        Style="{StaticResource MaterialDesignWindow}"
-        Title="ConfigurationWindow" Height="300" Width="600" Opacity="1.0"
+        Style="{StaticResource MaterialDesignWindow}" ResizeMode="NoResize"
+        Title="ConfigurationWindow" Height="300" Width="450" Opacity="1.0"
         WindowStyle="None" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
         PreviewKeyDown="ConfigWindow_PreviewKeyDown">
     <Window.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
     </Window.CacheMode>
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="1" NonClientFrameEdges="Bottom" ResizeBorderThickness="4" CornerRadius="2"/>
+        <WindowChrome CaptionHeight="0" NonClientFrameEdges="None" ResizeBorderThickness="0" CornerRadius="2"/>
     </WindowChrome.WindowChrome>
     <Border CornerRadius="2" Background="#292929" BorderBrush="{StaticResource MaterialDesign.Brush.Primary}" BorderThickness="1">
         <StackPanel DataContext="{Binding ElementName=ConfigWindow}">
@@ -56,13 +56,11 @@
                     </GroupBox.Style>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <StackPanel x:Name="SPnl_FontSize" VerticalAlignment="Stretch" Margin="8 8">
-                            <StackPanel Orientation="Horizontal" Height="24" VerticalAlignment="Bottom">
-                                <TextBlock FontSize="{Binding MainVM.FontSize_DataGrid}" Margin="0 0 12 0" VerticalAlignment="Center" Text="Font Size:"/>
-                                <TextBlock Width="38" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Right"
-                                           Text="{Binding MainVM.FontSize_DataGrid}"/>
-                                <TextBlock VerticalAlignment="Center" Text="pt" Margin="0 0 12 0"/>
-                            </StackPanel>
+                            <TextBlock FontSize="{Binding MainVM.FontSize_DataGrid}" Margin="0 0 12 0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Font Size: "/>
                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="45" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Right"
+                                           Text="{Binding MainVM.FontSize_DataGrid}" Margin="12 0 0 0"/>
+                                <TextBlock VerticalAlignment="Center" Text="pt" Margin="0 0 12 0"/>
                                 <Slider HorizontalAlignment="Left" Minimum="{Binding MainVM.FontSize_MIN}" Maximum="{Binding MainVM.FontSize_MAX}" TickFrequency="0.25" Width="150" Height="20"
                                         Value="{Binding MainVM.FontSize_DataGrid}"
                                         Style="{StaticResource MaterialDesign3.MaterialDesignDiscreteHorizontalSlider}"
@@ -74,6 +72,10 @@
                                     <materialDesign:PackIcon Height="20" Width="22" Kind="FormatFontSizeIncrease" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Button>
                             </StackPanel>
+                        </StackPanel>
+                        <StackPanel x:Name="SPnl_Timezone" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="8 8">
+                            <TextBlock FontSize="{Binding MainVM.FontSize_DataGrid}" Margin="0 0 12 0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Time Zone: "/>
+                            <ComboBox x:Name="Cmbx_Tiemzones" Width="Auto" FontSize="{Binding MainVM.FontSize_DataGrid}" Margin="12 2 0 2" SelectionChanged="Cmbx_Tiemzones_SelectionChanged"/>
                         </StackPanel>
                     </StackPanel>
                     

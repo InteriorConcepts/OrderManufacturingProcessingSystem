@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OMPS.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             x:Name="Root"
+             x:Name="Root" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
              Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <Grid HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
@@ -14,11 +15,14 @@
             <ColumnDefinition Width="16"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="{Binding FontSize}"/>
-        <Button Padding="0 0 2 0" Grid.Column="1" BorderThickness="0" Background="Transparent" IsEnabled="{Binding LookupEnabled}">
-            <Image Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" Padding="0 0 2 0" Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="{Binding FontSize}"/>
+        <Button Grid.Column="1" Grid.Row="0" Height="18" Padding="0" Margin="0" BorderThickness="0" Background="Transparent" IsEnabled="{Binding LookupEnabled}" Click="Button_Click">
+            <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
             </Image>
         </Button>
-        <TextBox Grid.Column="2" Text="{Binding Path=InputText, StringFormat=InputFormat}" Style="{StaticResource MaterialDesignFilledTextBox}" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="{Binding FontSize}"/>
+        <TextBox Grid.Column="2" Text="{Binding Path=InputLookupValue}" Style="{StaticResource MaterialDesignOutlinedTextBox}" materialDesign:TextFieldAssist.HasLeadingIcon="True" materialDesign:TextFieldAssist.LeadingIconSize="12" materialDesign:TextFieldAssist.LeadingIcon="LinkVariant" materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="0.5" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" BorderThickness="0.5" VerticalContentAlignment="Center" IsReadOnly="True" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="{Binding FontSize}"/>
     </Grid>
 </UserControl>

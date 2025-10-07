@@ -70,8 +70,8 @@ namespace OMPS
             SystemEvents.TimerElapsed += ((object sender, TimerElapsedEventArgs e) =>
             {
                 if (e.TimerId != timerid) return;
-                this.Lbl_Time.Content = DateTime.Now.ToLongTimeString();
-                this.Lbl_Date.Content = DateTime.Now.ToLongDateString();
+                this.Lbl_Time.Content = this.MainViewModel.CurrentDatetime.ToLongTimeString();
+                this.Lbl_Date.Content = this.MainViewModel.CurrentDatetime.ToLongDateString();
             });
 
             ((Main_ViewModel)this.DataContext)?.OrderSearch_VM.LoadRecentOrders();

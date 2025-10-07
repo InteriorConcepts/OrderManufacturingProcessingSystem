@@ -7,12 +7,12 @@
       xmlns:Components="clr-namespace:OMPS.Components"
       xmlns:pages="clr-namespace:OMPS.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      x:Name="Page_EngOrder"
+      x:Name="Page_EngOrder" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
       mc:Ignorable="d" UseLayoutRounding="False"
       d:DesignHeight="600" d:DesignWidth="1025"
       DataContext="{Binding ElementName=Page_EngOrder}"
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
-      FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+      FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
       >
     <UserControl.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
@@ -73,7 +73,7 @@
                                 <Components:LabelInputPair x:Name="head_OrderNbr" LabelWidth="85" LabelText="OrderNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.OrderNumber, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="LineNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineNumber, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="JobNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.SupplyOrderRef, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelFullWidth="85" LabelText="Quote" LookupEnabled="False" InputText="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
+                                <Components:LabelInputLookupPair LabelFullWidth="85" LabelText="Quote" LookupEnabled="False" InputLookup="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
                                 <Components:LabelInputCurrencyPair LabelWidth="85" LabelText="NetProduct" InputReadOnly="True" InputText="{Binding ColorSetInfo.NetProduct, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="ShipByDate" InputReadOnly="True" InputText="{Binding ColorSetInfo.ShipByDate, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="Item" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineItem, Mode=TwoWay}"/>
@@ -92,16 +92,16 @@
                                 <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputReadOnly="False" InputText="{Binding ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
-                            <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Fabric" LabelWidth="82" InputText="{Binding ColorSetInfo.Fabric1ID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Lam" LabelWidth="82" InputText="{Binding ColorSetInfo.WksLamID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Edge" LabelWidth="82" InputText="{Binding ColorSetInfo.WksEdgeID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl" LabelWidth="82" InputText="{Binding ColorSetInfo.MelPnlID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl" LabelWidth="82" InputText="{Binding ColorSetInfo.LamPnlID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Chase Door" LabelWidth="82" InputText="{Binding ColorSetInfo.ChaseDoorID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Acrylic" LabelWidth="82" InputText="{Binding ColorSetInfo.AcrylicID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Lam HC Door" LabelWidth="82" InputText="{Binding ColorSetInfo.LamHCDoorID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Curve" LabelWidth="82" InputText="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}"/>
+                            <StackPanel Width="415" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputLookupPair LabelText="Fabric" LabelWidth="82" InputLookup="{Binding ColorSetInfo.Fabric1ID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksLamID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Edge" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksEdgeID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl" LabelWidth="82" InputLookup="{Binding ColorSetInfo.MelPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Chase Door" LabelWidth="82" InputLookup="{Binding ColorSetInfo.ChaseDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic" LabelWidth="82" InputLookup="{Binding ColorSetInfo.AcrylicID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam HC Door" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamHCDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Curve" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
@@ -123,12 +123,12 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : Extra Materials-->
                             <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputText="{Binding ColorSetInfo.Acrylic2ID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputText="{Binding ColorSetInfo.Fabric2ID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputText="{Binding ColorSetInfo.Fabric3ID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputText="{Binding ColorSetInfo.WksLam2ID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputText="{Binding ColorSetInfo.LamPnl2ID, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputText="{Binding ColorSetInfo.MelPnl2ID, Mode=TwoWay}"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Acrylic2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric3ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.WksLam2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.LamPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.MelPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
                                 <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
                                 <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
                                 <Components:LabelComboPair LabelText="UnderWsPnl" LabelWidth="80" InputText="{Binding ColorSetInfo.UnderWsPnlType, Mode=TwoWay}"/>
@@ -460,14 +460,14 @@
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
                       IsReadOnly="True"
                       DataContext="Page_EngOrder"
-                      FontSize="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                      FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
                       CellEditEnding="DataGrid_CellEditEnding"
                       RowEditEnding="DataGrid_RowEditEnding"
                       IsTextSearchEnabled="True" Background="#292929"
                       AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
                       LoadingRow="DataGrid_LoadingRow"
                       Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
-                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All" Unloaded="datagrid_main_Unloaded">
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
                         <Setter Property="Background" Value="#222"/>
@@ -483,7 +483,7 @@
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                        <Setter Property="FontSize" Value="{Binding Path=MainViewModel.FontSize_DataGrid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                        <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"/>
                     </Style>
                 </DataGrid.CellStyle>
             </DataGrid>
@@ -499,7 +499,10 @@
             </DataGrid>
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222">
-                    <Grid>
+                    <Grid VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                        <Grid.CacheMode>
+                            <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
+                        </Grid.CacheMode>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
