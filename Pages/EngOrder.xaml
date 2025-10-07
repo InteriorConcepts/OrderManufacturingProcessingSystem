@@ -50,10 +50,10 @@
                         Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
                 <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="True"
                         Height="22" Width="Auto" Padding="4 0" Margin="1 0" FontSize="12"
-                        Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignCheckBox}"/>
+                        Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
                 <CheckBox x:Name="Btn_ToggleFiltersPnl" Content="Filter Bar" IsChecked="False"
                         Height="22" Width="Auto" Padding="4 0" Margin="1 0" FontSize="12"
-                        Click="Btn_FilterClose_Click" Style="{StaticResource MaterialDesignFlatToggleButton}"/>
+                        Click="Btn_FilterClose_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
