@@ -2,7 +2,7 @@
 
 ## Overview
 Replacement for Old CRM system
-![prod-bridge-overview-01](https://github.com/user-attachments/assets/779fc27f-ee85-42ae-ad30-47dbfc07b820)
+![prod-bridge-overview-01-ezgif com-animated-gif-maker](https://github.com/user-attachments/assets/d287c15d-afcc-4b4f-8e98-543716c7e321)
 
 <br/><br/>
 
