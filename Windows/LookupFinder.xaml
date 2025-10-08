@@ -1,0 +1,77 @@
+﻿<Window x:Class="OMPS.Windows.LookupFinder" x:Name="LookupFinderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OMPS.Windows"
+        xmlns:Components="clr-namespace:OMPS.Components"
+        xmlns:pages="clr-namespace:OMPS.Pages"
+        xmlns:viewModel="clr-namespace:OMPS.viewModel"
+        xmlns:Ext="clr-namespace:OMPS"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        DataContext="{Binding ElementName=LookupFinderWindow}"
+        Closing="LookupFinderWindow_Closing"
+        Title="LookupFinder" Height="325" Width="575">
+    <Window.Resources>
+        <CollectionViewSource x:Key="DataViewSource" x:Name="DataViewSource" Source="{Binding Data}" Filter="CollectionViewSource_Filter"/>
+        <!-- Custom DataGridColumnHeader Style with Search Box -->
+
+    </Window.Resources>
+    <Window.CacheMode>
+        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
+    </Window.CacheMode>
+    <Border CornerRadius="2" Background="#292929" BorderBrush="{StaticResource MaterialDesign.Brush.Primary}" BorderThickness="1">
+        <Grid DataContext="LookupFinderWindow">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="{Binding MainVM.FontSize_DataGrid, FallbackValue=16}"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBox x:Name="Txt_FilterPart" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                         materialDesign:HintAssist.Hint="Part Code" Margin="0 12 1 0" Padding="10 4"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         materialDesign:TextFieldAssist.ClearButtonSize="14"
+                         AcceptsReturn="False" TextWrapping="NoWrap"
+                         FontSize="{Binding MainVM.FontSize_DataGrid}"
+                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Style="{StaticResource MaterialDesignFilledTextBox}" Width="125"
+                         PreviewKeyDown="Txt_PreviewKeyDown" />
+                <TextBox x:Name="Txt_FilterDesc" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                         materialDesign:HintAssist.Hint="Description" Margin="0 12 1 0" Padding="10 4"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         materialDesign:TextFieldAssist.ClearButtonSize="14"
+                         AcceptsReturn="False" TextWrapping="NoWrap"
+                         FontSize="{Binding MainVM.FontSize_DataGrid}"
+                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Style="{StaticResource MaterialDesignFilledTextBox}" Width="440"
+                         PreviewKeyDown="Txt_PreviewKeyDown" />
+            </StackPanel>
+            <DataGrid x:Name="DataGrid_Lookup" Grid.Row="1"
+                      FontSize="{Binding MainVM.FontSize_DataGrid}"
+                      ItemsSource="{Binding Source={StaticResource DataViewSource}}"
+                      CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserReorderColumns="False"
+                      AutoGenerateColumns="True"
+                      AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+                      MouseDoubleClick="DataGrid_Lookup_MouseDoubleClick" IsReadOnly="True" LoadingRow="DataGrid_Lookup_LoadingRow" AlternatingRowBackground="#FF191919" RowBackground="#FF2B2B2B" GridLinesVisibility="All">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="Height" Value="Auto"/>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                        <Setter Property="Padding" Value="16 1"/>
+                    </Style>
+                </DataGrid.CellStyle>
+            </DataGrid>
+            <Label x:Name="Lbl_datagrid_count" Grid.Row="2" Padding="4 0 0 0" Margin="0"
+                   VerticalAlignment="Center" HorizontalAlignment="Left"
+                   Foreground="#aaa" FontSize="{Binding MainVM.FontSize_DataGrid, FallbackValue=12}"
+                   Content="{Binding ElementName=DataGrid_Lookup, Path=Items.Count}" ContentStringFormat="Showing {0:N0} items"/>
+        </Grid>
+    </Border>
+</Window>

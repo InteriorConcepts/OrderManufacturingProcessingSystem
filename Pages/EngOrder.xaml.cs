@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualBasic;
 using MyApp.DataAccess.Generated;
 using OMPS.Components;
+using OMPS.viewModel;
+using OMPS.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,7 +30,7 @@ namespace OMPS.Pages
     /// <summary>
     /// Interaction logic for EngOrder.xaml
     /// </summary>
-    public partial class EngOrder : UserControl
+    public partial class EngOrder : UserControl, INotifyPropertyChanged
     {
         public EngOrder(MainWindow parentWindow)
         {
@@ -41,18 +43,47 @@ namespace OMPS.Pages
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
         }
 
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not "FontSize_DataGrid") return;
+            OnPropertyChanged(nameof(DataGridFontSize));
+        }
+
+
         #region Events
         public event EventHandler<string> JobNbrChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         #endregion
 
         #region Properties
+        public Main_ViewModel MainViewModel
+        {
+            get => this.ParentWindow.MainViewModel;
+        }
 
         public double DataGridFontSize
         {
-            get =>
-                this.ParentWindow?.MainViewModel?.FontSize_DataGrid ?? 12.0;
+            get => this.MainViewModel.FontSize_DataGrid;
         }
-        internal MainWindow ParentWindow { get; set; }
+        internal MainWindow ParentWindow
+        {
+            get; set
+            {
+                field = value;
+                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
+                {
+                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_DataGrid)) return;
+                    //this.datagrid_orders.UpdateLayout();
+                    OnPropertyChanged(nameof(DataGridFontSize));
+                });
+            }
+        }
         internal DataGrid CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
@@ -166,28 +197,32 @@ namespace OMPS.Pages
             this.progbar_itemlines.Value = 50;
             this.progbar_itemlines.IsEnabled = true;
             this.progbar_itemlines.Visibility = Visibility.Visible;
-            new Task(async () =>
+            List<example_queries_GetItemLinesByJobResult> data_mfglines = [];
+            await Task.Run(() =>
             {
-                var data_mfglines = Ext.Queries.GetItemLinesByJob(job);
-                await Application.Current.Dispatcher.BeginInvoke(() =>
+                data_mfglines = Ext.Queries.GetItemLinesByJob(job);
+            });
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.datagrid_main.BeginEdit();
+                for (int i = 0; i < data_mfglines.Count; i++)
                 {
-                    this.datagrid_main.BeginEdit();
-                    for (int i = 0; i < data_mfglines.Count; i++)
-                    {
-                        this.MfgItemLines.Add(data_mfglines[i]);
-                    }
-                    if (this.datagrid_main.Items.Count is not 0)
-                    {
-                        this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
-                    }
-                    this.datagrid_main.EndInit();
-                    this.ParentWindow.SetTabTitle($"{this.JobNbr}");
-                    this.progbar_itemlines.Value = 0;
-                    this.progbar_itemlines.IsEnabled = false;
-                    this.progbar_itemlines.Visibility = Visibility.Collapsed;
-                });
-                this.Last_ManufData = DateTime.Now;
-            }).Start();
+                    this.MfgItemLines.Add(data_mfglines[i]);
+                }
+            });
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (this.datagrid_main.Items.Count is not 0)
+                {
+                    this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
+                }
+                this.datagrid_main.EndInit();
+                this.ParentWindow.SetTabTitle($"{this.JobNbr}");
+                this.progbar_itemlines.Value = 0;
+                this.progbar_itemlines.IsEnabled = false;
+                this.progbar_itemlines.Visibility = Visibility.Collapsed;
+            });
+            this.Last_ManufData = DateTime.Now;
         }
 
         public void LoadManufParts(string job)
@@ -674,7 +709,7 @@ namespace OMPS.Pages
 
         }
 
-        private async void LabelInputLookupPair_LookupButtonPressed(object sender, LabelInputLookupPair.Lookup_EventArgs e)
+        private async void LabelInputLookupPair_LookupInputChanged(object sender, LabelInputLookupPair.Lookup_EventArgs e)
         {
             if (SCH.Global.Config is null || !SCH.Global.Config.InitializationSuccessfull) return;
             Debug.WriteLine($"Try Query GUID lookup ({e.Lookup})");
@@ -714,11 +749,33 @@ namespace OMPS.Pages
             await dbcon1.CloseAsync();
         }
 
-        private void LabelInputLookupPair_LookupButtonPressed(object sender, EventArgs e)
-        {
-
-        }
-
         #endregion
+
+        private async void LabelInputLookupPair_LookupButtonPressed(object sender, LabelInputLookupPair.Lookup_EventArgs e)
+        {
+            var (partFilter, descFilter) = e.Source.InputLookupType switch
+            {
+                "fab" => ("%", "Fab%"),
+                "wks" => ("%", "PLW%"),
+                "web" => ("70055%", "%"),
+                "mel" => ("%", "Mel%"),
+                "lam" => ("%", "Pnl%"),
+                "chs" => ("%", "CDmel%"),
+                "acr" => ("338%", "Acr%"),
+                "hcd" => ("%-0508gp", "Lam%"),
+                "crv" => ("%-0508gp", "Lam%"),
+                _ => (null, null)
+            };
+            if (partFilter is null || descFilter is null) return;
+            using var lookup = new LookupFinder(this.ParentWindow.MainViewModel)
+            {
+                MainVM = this.ParentWindow.MainViewModel,
+                Owner = this.ParentWindow
+            };
+            await lookup.LookupMaterials(null, null, partFilter, descFilter);
+            if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;
+            e.Source.InputLookup = obj["ItemID"]?.ToString() ?? "-";
+            //MessageBox.Show(lookup.ReturnObject["ItemID"].ToString());
+        }
     }
 }

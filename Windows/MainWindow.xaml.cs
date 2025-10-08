@@ -21,7 +21,7 @@ using Windows.UI.Text;
 using static OMPS.Ext;
 using SCH = SQL_And_Config_Handler;
 
-namespace OMPS
+namespace OMPS.Windows
 {
 
 
@@ -48,7 +48,6 @@ namespace OMPS
             Ext.MainWindow = this;
             this.DataContext = this._viewModel = new Main_ViewModel();
             this.MainViewModel.ParentWin = this;
-            this.Closing += this.MainWindow_Closing;
             //
             this.SetWindowTitle("");
             //this.ViewController = new(this);
@@ -67,9 +66,10 @@ namespace OMPS
                 App.Current.Shutdown(-1);
             }
             var timerid = SystemEvents.CreateTimer(1000);
-            SystemEvents.TimerElapsed += ((object sender, TimerElapsedEventArgs e) =>
+            SystemEvents.TimerElapsed += (async (object sender, TimerElapsedEventArgs e) =>
             {
                 if (e.TimerId != timerid) return;
+                await Task.Delay(Math.Abs(DateTime.Now.Millisecond - 1000));
                 this.Lbl_Time.Content = this.MainViewModel.CurrentDatetime.ToLongTimeString();
                 this.Lbl_Date.Content = this.MainViewModel.CurrentDatetime.ToLongDateString();
             });
@@ -358,10 +358,10 @@ namespace OMPS
         private void Btn_Settings_Click(object sender, RoutedEventArgs e)
         {
             ConfigurationWindow _configWin = new (this._viewModel) { MainVM = this._viewModel };
-            this.Spnl_ContentFrames.Opacity = 0.55;
+            //this.Spnl_ContentFrames.Opacity = 0.55;
             _configWin.Owner = this;
             _configWin.ShowDialog();
-            this.Spnl_ContentFrames.Opacity = 1.0;
+            //this.Spnl_ContentFrames.Opacity = 1.0;
         }
     }
 }

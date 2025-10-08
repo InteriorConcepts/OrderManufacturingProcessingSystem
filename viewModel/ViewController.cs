@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows;
+using OMPS.Windows;
 
 namespace OMPS.viewModel
 {
@@ -142,7 +143,7 @@ namespace OMPS.viewModel
         public bool EngOrder_IsSelected { get => Current is not null && Current is EngOrder; }
         public bool QuoteOrder_IsSelected { get => Current is not null && Current is QuoteOrder; }
 
-        public bool EngOrder_IsEnabled { get => this.EngOrder_VM.JobNbr is not null or ""; }
+        public bool EngOrder_IsEnabled { get => this.EngOrder_VM is not null && this.EngOrder_VM.JobNbr is not null or ""; }
         public bool OrderSearch_IsEnabled { get => true; }
         public bool QuoteOrder_IsEnabled { get => !(this.QuoteOrder_VM.Lbl_JobNbr.Content is null or ""); }
 
@@ -185,10 +186,28 @@ namespace OMPS.viewModel
                 if (value == _current) return;
                 if (_current is not null && this.Previous != _current && this._current is not Login)
                 {
+                    (_current switch
+                    {
+                        Login => this.ParentWin.CC_Login,
+                        OrderSearch => this.ParentWin.CC_OrderSearch,
+                        EngOrder => this.ParentWin.CC_EngOrder,
+                        QuoteOrder => this.ParentWin.CC_QuoteOrder,
+                        _ => null
+                    })?.Visibility = Visibility.Collapsed;
                     this.Previous = _current;
                 }
                 _current = value;
                 OnPropertyChanged();
+                (_current switch
+                {
+                    Login => this.ParentWin.CC_Login,
+                    OrderSearch => this.ParentWin.CC_OrderSearch,
+                    EngOrder => this.ParentWin.CC_EngOrder,
+                    QuoteOrder => this.ParentWin.CC_QuoteOrder,
+                    _ => null
+                })?.Visibility = Visibility.Visible;
+                OnPropertyChanged(this.Previous?.GetType().Name + "_IsSelected");
+                OnPropertyChanged(this.Previous?.GetType().Name + "_IsEnabled");
                 OnPropertyChanged(value.GetType().Name + "_IsSelected");
                 OnPropertyChanged(value.GetType().Name + "_IsEnabled");
             }
@@ -201,8 +220,8 @@ namespace OMPS.viewModel
             OrderSearch_VM = new(this.ParentWin);
             EngOrder_VM = new(this.ParentWin);
             QuoteOrder_VM = new(this.ParentWin);
-            WidgetMode = false;
-            _current = OrderSearch_VM;
+            WidgetMode = true;
+            Current = Login_VM;
         }
     }
 }

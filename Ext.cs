@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Windows.UI;
 using Windows.UI.ViewManagement;
+using OMPS.Windows;
 
 
 namespace OMPS

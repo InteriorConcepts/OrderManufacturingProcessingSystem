@@ -23,7 +23,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using static MaterialDesignThemes.Wpf.Theme.ToolBar;
+using OMPS.Windows;
+using OMPS.viewModel;
 
 namespace OMPS.Pages
 {
@@ -42,12 +43,14 @@ namespace OMPS.Pages
             this.ParentWindow = parentWindow;
         }
 
+        public Main_ViewModel MainViewModel
+        {
+            get => this.ParentWindow.MainViewModel;
+        }
+
         public double DataGridFontSize
         {
-            get
-            {
-                return this.ParentWindow?.MainViewModel?.FontSize_DataGrid ?? 12.0;
-            }
+            get => this.MainViewModel.FontSize_DataGrid;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -257,7 +260,7 @@ namespace OMPS.Pages
                 {
                     cellStyle.BasedOn = defaultStyle;
                 }
-                cellStyle.Setters.Add(new Setter(DataGridCell.ForegroundProperty, Brushes.DodgerBlue));
+                cellStyle.Setters.Add(new Setter(DataGridCell.ForegroundProperty, new SolidColorBrush(Colors.LightSkyBlue)));
                 cellStyle.Setters.Add(new Setter(DataGridCell.VerticalAlignmentProperty, VerticalAlignment.Center));
                 cellStyle.Setters.Add(new Setter(DataGridCell.VerticalContentAlignmentProperty, VerticalAlignment.Stretch));
                 cellStyle.Setters.Add(new Setter(DataGridCell.HorizontalContentAlignmentProperty, HorizontalAlignment.Left));
@@ -423,9 +426,8 @@ namespace OMPS.Pages
             if (cell.Column.Header.ToString() is "JobNbr")
             {
                 if (!Ext.IsJobNumValid(item.JobNbr)) return;
-                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
-                await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")

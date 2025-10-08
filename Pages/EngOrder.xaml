@@ -93,23 +93,23 @@
                             </StackPanel>
                             <!--Column 3 : Materials-->
                             <StackPanel Width="415" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Fabric" LabelWidth="82" InputLookup="{Binding ColorSetInfo.Fabric1ID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Lam" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksLamID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Edge" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksEdgeID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl" LabelWidth="82" InputLookup="{Binding ColorSetInfo.MelPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Chase Door" LabelWidth="82" InputLookup="{Binding ColorSetInfo.ChaseDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Acrylic" LabelWidth="82" InputLookup="{Binding ColorSetInfo.AcrylicID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam HC Door" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamHCDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Curve" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric" InputLookupType="fab" LabelWidth="82" InputLookup="{Binding ColorSetInfo.Fabric1ID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam" InputLookupType="wks" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksLamID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Edge" InputLookupType="web" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksEdgeID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl" InputLookupType="mel" LabelWidth="82" InputLookup="{Binding ColorSetInfo.MelPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl" InputLookupType="lam" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Chase Door" InputLookupType="chs" LabelWidth="82" InputLookup="{Binding ColorSetInfo.ChaseDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic" InputLookupType="acr" LabelWidth="82" InputLookup="{Binding ColorSetInfo.AcrylicID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam HC Door" InputLookupType="hcd" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamHCDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Curve" InputLookupType="crv" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
-                                <Button Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
                             </StackPanel>
                         </StackPanel>
                         <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="{Binding ColorSetInfo.Notes, Mode=TwoWay}" InputReadOnly="False"/>
@@ -123,12 +123,12 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : Extra Materials-->
                             <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Acrylic2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric3ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.WksLam2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.LamPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.MelPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Acrylic2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric3ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.WksLam2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.LamPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.MelPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
                                 <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
                                 <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
                                 <Components:LabelComboPair LabelText="UnderWsPnl" LabelWidth="80" InputText="{Binding ColorSetInfo.UnderWsPnlType, Mode=TwoWay}"/>
