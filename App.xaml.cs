@@ -1,7 +1,11 @@
 ﻿#pragma warning disable Experimental
+using OMPS.PipeCommunication;
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using System.Windows.Controls;
+using System.Xml.Linq;
+using static OMPS.Ext;
 
 namespace OMPS
 {

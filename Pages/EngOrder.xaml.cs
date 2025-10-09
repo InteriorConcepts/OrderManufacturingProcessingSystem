@@ -41,18 +41,19 @@ namespace OMPS.Pages
             this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
             //this.FrmFin.ItemSource = Finishes_Default;
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
+            this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
         }
 
-
-        protected virtual void OnPropertyChanged(string propertyName)
+        private void ColorSetInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName is not "FontSize_DataGrid") return;
-            OnPropertyChanged(nameof(DataGridFontSize));
+            if (this.IsLoadingJobData) return;
+            if (e.PropertyName is not string propName) return;
+            if (sender is not example_queries_GetColorSetResult obj) return;
+            if (obj.GetType().GetProperty(propName) is not PropertyInfo propInfo) return;
+            if (propInfo.GetValue(obj) is not object val) return;
+            this.ColorSetInfo_Changes[propName] = val;
+            this.Btn_SaveHeader.IsEnabled = true;
+            Debug.WriteLine($"{propName} -> {val}");
         }
 
 
@@ -61,7 +62,9 @@ namespace OMPS.Pages
         public event PropertyChangedEventHandler? PropertyChanged;
         #endregion
 
+
         #region Properties
+        public bool IsLoadingJobData { get; set; } = false;
         public Main_ViewModel MainViewModel
         {
             get => this.ParentWindow.MainViewModel;
@@ -105,6 +108,7 @@ namespace OMPS.Pages
             }
         }
         public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
+        public Dictionary<string, object> ColorSetInfo_Changes { get; set; } = [];
         public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
         #endregion
 
@@ -130,12 +134,13 @@ namespace OMPS.Pages
 
 
         #region Methods
-        public void LoadDataForJob(string job)
+        public async void LoadDataForJob(string job)
         {
             try
             {
+                IsLoadingJobData = true;
                 this.CurrentGrid?.Visibility = Visibility.Collapsed;
-                this.LoadColorSetData(job);
+                await this.LoadColorSetData(job);
                 if (this.RadioBtn_View_QPO.IsChecked is true)
                 {
                     this.CurrentGrid = this.datagrid_QPO;
@@ -149,7 +154,7 @@ namespace OMPS.Pages
                 else if (this.RadioBtn_View_M.IsChecked is true)
                 {
                     this.CurrentGrid = this.datagrid_main;
-                    this.LoadManufData(job);
+                    await this.LoadManufData(job);
                 }
                 else if (this.RadioBtn_View_MP.IsChecked is true)
                 {
@@ -162,30 +167,30 @@ namespace OMPS.Pages
             {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
             }
+            IsLoadingJobData = false;
         }
 
-        public void LoadColorSetData(string job)
+        public async Task LoadColorSetData(string job)
         {
-            var t = new Task(() =>
+            await Task.Run(() =>
             {
                 var data_info = Ext.Queries.GetColorSet(job).First();
                 PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
             });
-            t.Start();
         }
 
-        public void LoadQPartsOrdered(string job)
+        public async Task LoadQPartsOrdered(string job)
         {
 
         }
 
-        public void LoadQItemsOrdered(string job)
+        public async Task LoadQItemsOrdered(string job)
         {
 
         }
 
         private DateTime? Last_ManufData = null;
-        public async void LoadManufData(string job)
+        public async Task LoadManufData(string job)
         {
             if (this.Last_ManufData is not null && (DateTime.Now - this.Last_ManufData.Value).TotalSeconds is double sec && sec < 10)
             {
@@ -238,6 +243,7 @@ namespace OMPS.Pages
                 Visibility.Collapsed;
             this.RowSpan = (this.pnl_dock.Visibility is Visibility.Collapsed ? 2 : 1);
             Grid.SetColumnSpan(datagrid_main, RowSpan);
+            this.Btn_CollapseSideGrid.IsChecked = this.pnl_dock.Visibility is Visibility.Visible;
         }
 
         public void ToggleHeader()
@@ -246,6 +252,7 @@ namespace OMPS.Pages
                 this.grid_header.Visibility is Visibility.Collapsed ?
                 Visibility.Visible :
                 Visibility.Collapsed;
+            this.Btn_CollapseTopBar.IsChecked = this.grid_header.Visibility is Visibility.Visible;
         }
 
         private void DataGridMouseWheelHorizontal(object sender, RoutedEventArgs e)
@@ -373,6 +380,18 @@ namespace OMPS.Pages
 
 
         #region EventHandlers
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not "FontSize_DataGrid") return;
+            OnPropertyChanged(nameof(DataGridFontSize));
+        }
+
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is not RadioButton) return;
@@ -578,11 +597,6 @@ namespace OMPS.Pages
             this.Pending_LineChanges = true;
         }
 
-        private void Btn_SaveHeader_SourceUpdated(object sender, DataTransferEventArgs e)
-        {
-
-        }
-
         private void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
             if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
@@ -749,33 +763,38 @@ namespace OMPS.Pages
             await dbcon1.CloseAsync();
         }
 
-        #endregion
-
         private async void LabelInputLookupPair_LookupButtonPressed(object sender, LabelInputLookupPair.Lookup_EventArgs e)
         {
-            var (partFilter, descFilter) = e.Source.InputLookupType switch
+            var (partFilter, descFilter, partConstraint, descConstraint) = e.Source.InputLookupType switch
             {
-                "fab" => ("%", "Fab%"),
-                "wks" => ("%", "PLW%"),
-                "web" => ("70055%", "%"),
-                "mel" => ("%", "Mel%"),
-                "lam" => ("%", "Pnl%"),
-                "chs" => ("%", "CDmel%"),
-                "acr" => ("338%", "Acr%"),
-                "hcd" => ("%-0508gp", "Lam%"),
-                "crv" => ("%-0508gp", "Lam%"),
-                _ => (null, null)
+                "fab" => (null, null, "%", "Fab%"),
+                "wks" => ("p-0512gp", null, "%", "PLW%"),
+                "web" => (null, null, "70055%", "%"),
+                "mel" => ("p-0512gp", "", "%", "Mel%"),
+                "lam" => ("p-0512gp", "", "%", "Pnl%"),
+                "chs" => (null, null, "%", "CDmel%"),
+                "acr" => (null, null, "338%", "Acr%"),
+                "hcd" => (null, null, "%-0508gp", "Lam%"),
+                "crv" => (null, null, "%-0508gp", "Lam%"),
+                _ => (null, null, null, null)
             };
-            if (partFilter is null || descFilter is null) return;
+            if (partConstraint is null || descConstraint is null) return;
             using var lookup = new LookupFinder(this.ParentWindow.MainViewModel)
             {
                 MainVM = this.ParentWindow.MainViewModel,
                 Owner = this.ParentWindow
             };
-            await lookup.LookupMaterials(null, null, partFilter, descFilter);
+            await lookup.LookupMaterials(partFilter, descFilter, partConstraint, descConstraint);
             if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;
             e.Source.InputLookup = obj["ItemID"]?.ToString() ?? "-";
             //MessageBox.Show(lookup.ReturnObject["ItemID"].ToString());
         }
+
+        private void Btn_SaveHeader_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
+
     }
 }

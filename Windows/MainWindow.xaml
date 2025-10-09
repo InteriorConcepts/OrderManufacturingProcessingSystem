@@ -7,7 +7,7 @@
         xmlns:Components="clr-namespace:OMPS.Components"
         xmlns:pages="clr-namespace:OMPS.Pages"
         xmlns:viewModel="clr-namespace:OMPS.viewModel"
-        xmlns:Ext="clr-namespace:OMPS"
+        xmlns:Ext="clr-namespace:OMPS" Width="1025" Height="600"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
         mc:Ignorable="d" UseLayoutRounding="False" Closing="MainWindow_Closing"
@@ -147,6 +147,23 @@
                 <ContentControl Grid.Row="1" x:Name="CC_OrderSearch" Content="{Binding OrderSearch_VM, Mode=OneWay}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_EngOrder" Content="{Binding EngOrder_VM, Mode=OneWay}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_QuoteOrder" Content="{Binding QuoteOrder_VM, Mode=OneWay}" Visibility="Collapsed"/>
+                <StackPanel Grid.Row="1" Background="#111" Panel.ZIndex="999">
+                    <ListBox Height="400" Grid.Row="1" ItemsSource="{Binding ElementName=MainWin, Path=Messages}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBox PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                    <!--
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Connect" IsEnabled="{Binding ElementName=MainWin, Path=PipeCom.IsDisconnected}"/>
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Disconnect" IsEnabled="{Binding ElementName=MainWin, Path=PipeCom.IsConnected}"/>
+                    -->
+                    <TextBlock x:Name="Txtblk_Status"/>
+                </StackPanel>
             </Grid>
         </materialDesign:ColorZone>
 

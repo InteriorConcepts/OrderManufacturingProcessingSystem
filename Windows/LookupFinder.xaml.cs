@@ -7,6 +7,7 @@ using System.Data.Odbc;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,20 +35,65 @@ namespace OMPS.Windows
             //this.LookupMaterials("%PLW%");
         }
 
-        public async Task LookupMatl_Wks(string partFilter, string descFilter)
+        public async Task LookupItem(string? partFilter = null, string? descFilter = null, string defaultPartContraint = "%", string defaultDescConstraint = "%")
         {
-            await LookupMaterials(partFilter, descFilter, defaultDescConstraint: "PLW%");
+            this.LastLookup = this.LookupItem;
+            await Lookup(
+                partFilter, descFilter,
+                defaultPartContraint, defaultDescConstraint,
+                "PartID asc",
+                ["PartID", "PartDescription", "PartAdditionalDescription", "SellingUOM as UofM", "ProductCategory", "CreateDateTime", "ModifyDateTime"]
+             );
         }
 
         public async Task LookupMaterials(string? partFilter = null, string? descFilter = null, string defaultPartContraint = "%", string defaultDescConstraint = "%")
         {
+            this.LastLookup = this.LookupMaterials;
+            await Lookup(
+                partFilter, descFilter,
+                defaultPartContraint, defaultDescConstraint,
+                "PartDescription asc",
+                ["PartID", "PartDescription"]
+            );
+            /*
+            */
+        }
+
+        public int Total = -1;
+        public string[] LastLookupArgs = [];
+        public Func<string, string, string, string, Task>? LastLookup = null;
+
+        public async Task Lookup(string? partFilter = null, string? descFilter = null, string defaultPartContraint = "%", string defaultDescConstraint = "%", string orderBy = "PartID asc", string[]? fields = null, ushort limit = 25)
+        {
+            if (fields is null) return;
+            this.LastLookupArgs = [
+                partFilter ?? "", descFilter ?? "",
+                defaultPartContraint, defaultDescConstraint
+            ];
             this.Txt_FilterPart.Text = partFilter ?? "";
             this.Txt_FilterDesc.Text = descFilter ?? "";
+            if (Total is -1)
+            {
+                var resTotal = await Query(
+                    $@"
+                       SELECT   COUNT(*) as TOTAL
+                       FROM     eCRM_intcon2.dbo.aIC_Product
+                       WHERE    (PartID like '{defaultPartContraint}' AND PartID like '{(partFilter is null ? "%" : $"%{partFilter}%")}') AND
+                                (PartDescription like '{defaultDescConstraint}' AND PartDescription like '{(descFilter is null ? "%" : $"%{descFilter}%")}')
+                    "
+                    );
+                if (resTotal is null) return;
+                if (resTotal.FirstOrDefault() is not Dictionary<string, object> first) return;
+                if (first.TryGetValue("TOTAL", out object? val) is false || val is not int valInt) return;
+                this.Total = valInt;
+            }
             var res = await Query(
-                @$"SELECT TOP 5000 ItemID, PartID, PartDescription
+                @$"SELECT TOP {limit} ItemID, {string.Join(", ", fields)}
                        FROM eCRM_intcon2.dbo.aIC_Product
                        WHERE (PartID like '{defaultPartContraint}' AND PartID like '{(partFilter is null ? "%" : $"%{partFilter}%")}') AND
-                             (PartDescription like '{defaultDescConstraint}' AND PartDescription like '{(descFilter is null ? "%" : $"%{descFilter}%")}')"
+                             (PartDescription like '{defaultDescConstraint}' AND PartDescription like '{(descFilter is null ? "%" : $"%{descFilter}%")}')
+                       ORDER BY {orderBy}
+                    "
                 );
             if (res is null) return;
             this.Data.Clear();
@@ -59,8 +105,7 @@ namespace OMPS.Windows
             }
             //this.DataGrid_Lookup.ItemsSource = Data;
             this.DataGrid_AutoGeneratingColumn(this.DataGrid_Lookup, null);
-            /*
-            */
+            this.Lbl_datagrid_count.Content = $"Showing {(res.Count < limit ? res.Count : limit)} of {this.Total} items";
         }
 
         public static async Task<List<Dictionary<string, object>>?> Query(string sql)
@@ -156,8 +201,14 @@ namespace OMPS.Windows
         private void Txt_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key is not System.Windows.Input.Key.Enter) return;
+            /*
             var viewSource = (CollectionViewSource)Resources["DataViewSource"];
             viewSource?.View?.Refresh();
+            */
+            this.LastLookup?.DynamicInvoke(
+                this.Txt_FilterPart.Text, this.Txt_FilterDesc.Text,
+                this.LastLookupArgs[2], this.LastLookupArgs[3]
+            );
         }
 
         public void Dispose()

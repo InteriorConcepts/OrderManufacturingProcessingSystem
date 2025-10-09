@@ -39,9 +39,12 @@
                 <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef}" VerticalAlignment="Center" FontSize="20" Margin="20,0,0,0" FontWeight="Medium"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button x:Name="Btn_SaveHeader" Width="18" Height="18" Style="{StaticResource SaveBtn}"
-                    Padding="0" Margin="0" Cursor="Hand" SourceUpdated="Btn_SaveHeader_SourceUpdated">
-                    <Image x:Name="Img_SaveHeader" Width="18" Height="18"
+                <Button x:Name="Btn_SaveHeader" Height="22" Width="Auto"
+                        Style="{StaticResource SaveBtn}" IsEnabled="False"
+                        VerticalContentAlignment="Stretch" VerticalAlignment="Center"
+                        Padding="8 0" Margin="0 0 2 0" Cursor="Hand"
+                        Click="Btn_SaveHeader_Click">
+                    <Image x:Name="Img_SaveHeader" Width="18" Height="18" IsEnabled="False"
                        SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
                        RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
                 </Button>
@@ -464,6 +467,7 @@
                       CellEditEnding="DataGrid_CellEditEnding"
                       RowEditEnding="DataGrid_RowEditEnding"
                       IsTextSearchEnabled="True" Background="#292929"
+                      AlternatingRowBackground="#FF191919" RowBackground="#FF2B2B2B"
                       AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
                       LoadingRow="DataGrid_LoadingRow"
                       Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
@@ -481,8 +485,16 @@
                         <Setter Property="Padding" Value="8 1 1 1"/>
                     </Style>
                 </DataGrid.RowHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="Height" Value="Auto"/>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                        <Setter Property="Padding" Value="16 0"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"/>
                     </Style>
                 </DataGrid.CellStyle>
@@ -499,11 +511,12 @@
             </DataGrid>
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222">
-                    <Grid VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                    <Grid Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <Grid.CacheMode>
                             <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
                         </Grid.CacheMode>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
@@ -517,9 +530,9 @@
                     Loaded="dataSideGridScrollViewer_Loaded"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
-                            <Grid x:Name="grid_dataeditregion" Width="350" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
+                            <Grid x:Name="grid_dataeditregion" Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="140"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                             </Grid>
@@ -565,7 +578,18 @@
                                 </Viewbox>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="1" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0"
+            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
+            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Margin="0 0 4 0" TextAlignment="Center">Lookup</TextBlock>
+                                <materialDesign:PackIcon Kind="TableSearch" VerticalAlignment="Stretch"
+                                                         Foreground="LightSkyBlue"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="4" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
             BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
             VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
             IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"

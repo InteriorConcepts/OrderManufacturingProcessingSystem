@@ -37,6 +37,7 @@
                 -->
             </ResourceDictionary.MergedDictionaries>
 
+            <local:ScalingConverter x:Key="ScalingConverter1"/>
 
             <ObjectDataProvider x:Key="IsDarkTheme"
                         MethodName="CurrentThemeIsDark"
