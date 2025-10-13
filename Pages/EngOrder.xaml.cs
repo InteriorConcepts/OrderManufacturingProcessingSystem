@@ -64,7 +64,23 @@ namespace OMPS.Pages
 
 
         #region Properties
+        public const short DELAY_HEADER_REFRESH = 5000;
+
+        public const string extProc_ImportEngMfg_exe = "P:\\!CRM\\IceMfgImport.exe";
+        public const string extProc_ProcEngMfg_exe = "P:\\!CRM\\IceMfgProcess.exe";
+        public const string extProc_CalcEngMatl_exe = "P:\\!CRM\\IceMatlCalc.exe";
+        public const string extProc_CncCutList_exe = "P:\\!CRM\\IceCNCCutList.exe";
+        public const string extProc_SymEngExp_exe = "P:\\!CRM\\SymIceExp.exe";
+
+        public const string extProc_ColorSet_arg = "iColorSetID={{@ColorSetID}}";
+
+        public Dictionary<string, bool> ExternalProc_GroupActive = new()
+        {
+            { "stdEngProcs", false }
+        };
+
         public bool IsLoadingJobData { get; set; } = false;
+        private DateTime? Last_ManufData = null;
         public Main_ViewModel MainViewModel
         {
             get => this.ParentWindow.MainViewModel;
@@ -87,6 +103,14 @@ namespace OMPS.Pages
                 });
             }
         }
+
+        private bool Pending_LineChanges
+        {
+            get => (bool)GetValue(Pending_LineChangesProperty);
+            set => SetValue(Pending_LineChangesProperty, (bool)value);
+        }
+        public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
+
         internal DataGrid CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
@@ -189,7 +213,6 @@ namespace OMPS.Pages
 
         }
 
-        private DateTime? Last_ManufData = null;
         public async Task LoadManufData(string job)
         {
             if (this.Last_ManufData is not null && (DateTime.Now - this.Last_ManufData.Value).TotalSeconds is double sec && sec < 10)
@@ -376,6 +399,38 @@ namespace OMPS.Pages
                 this.CurrentGrid.Focus();
             }
         }
+
+        public void ResetUI()
+        {
+            this.Btn_ExtProc_ImpMfg.BorderBrush = 
+                this.Btn_ExtProc_EngPrc.BorderBrush =
+                this.Btn_ExtProc_Matl.BorderBrush = 
+                this.Btn_ExtProc_Cutlst.BorderBrush = 
+                this.Btn_ExtProc_SlExp.BorderBrush =
+                Brushes.DodgerBlue;
+        }
+
+        public async Task RunExternal(ProcessStartInfo startInfo)
+        {
+            //MessageBox.Show(startInfo.Arguments);
+            var proc = Process.Start(startInfo);
+            if (proc is null) return;
+            proc.ErrorDataReceived += (ss, ee) =>
+            {
+                Debug.WriteLine("ERR:\n" + ee.Data);
+            };
+            proc.OutputDataReceived += (ss, ee) =>
+            {
+                Debug.WriteLine("OUT:\n" + ee.Data);
+            };
+            proc.Exited += (ss, ee) =>
+            {
+
+            };
+            CancellationToken t = new();
+            await proc.WaitForExitAsync(t);
+            proc.Dispose();
+        }
         #endregion
 
 
@@ -402,6 +457,7 @@ namespace OMPS.Pages
 
         private void EngOrder_JobNbrChanged(object? sender, string e)
         {
+            this.ResetUI();
             this.LoadDataForJob(e);
         }
 
@@ -525,11 +581,6 @@ namespace OMPS.Pages
                 new PropertyMetadata(false)
             );
 
-        private bool Pending_LineChanges {
-            get => (bool)GetValue(Pending_LineChangesProperty);
-            set => SetValue(Pending_LineChangesProperty, (bool)value);
-        }
-        public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
             this.grid_dataeditregion.Children.Clear();
@@ -790,11 +841,160 @@ namespace OMPS.Pages
             //MessageBox.Show(lookup.ReturnObject["ItemID"].ToString());
         }
 
-        private void Btn_SaveHeader_Click(object sender, RoutedEventArgs e)
+        private async void Btn_RefreshHeader_Click(object sender, RoutedEventArgs e)
         {
+            if (this.JobNbr is null) return;
+            this.Btn_RefreshHeader.IsEnabled = false;
+            await this.LoadColorSetData(this.JobNbr);
+            await Task.Run(async () =>
+            {
+                await Task.Delay(DELAY_HEADER_REFRESH);
+                await Dispatcher.BeginInvoke(() =>
+                    this.Btn_RefreshHeader.IsEnabled = true
+                );
+            });
+        }
 
+        private async void Btn_SaveHeader_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.ColorSetInfo_Changes.Count is 0) return;
+            if (this.ColorSetInfo.ColorSetID.ToString().Length < 8) return;
+            var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
+            var cmd1 = dbcon1.CreateCommand();
+            var changes = this.ColorSetInfo_Changes.ToArray();
+            cmd1.CommandText =
+                @$"
+                    UPDATE  eCRM_intcon2.dbo.[aIC_ColorSet]
+                    SET     {string.Join(",", changes.Select(c => $"[{c.Key}]=?"))}
+                    WHERE   (ColorSetID = '{ColorSetInfo.ColorSetID}');
+                ".Trim();
+            cmd1.CommandTimeout = 10000;
+            cmd1.Connection = dbcon1;
+            foreach (var item in changes)
+            {
+                cmd1.Parameters.AddWithValue($"@{item.Key}", item.Value ?? (object)DBNull.Value);
+            }
+            Debug.WriteLine(cmd1.CommandText);
+            this.ColorSetInfo_Changes.Clear();
+            //return;
+            try
+            {
+                await dbcon1.OpenAsync();
+                var res = await cmd1.ExecuteNonQueryAsync();
+                MessageBox.Show(res.ToString());
+            } catch
+            {
+
+            }
+        }
+
+        private async void Btn_ExtProc_ImpMfg_Click(object sender, RoutedEventArgs e)
+        {
+            /*
+            if (System.IO.Directory.Exists($"C:/{JobNbr}") is false)
+            {
+                MessageBox.Show($"Folder 'C:/{JobNbr}' not found", "Local file not found", MessageBoxButton.OK, MessageBoxImage.Stop);
+                return;
+            }
+            */
+            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
+                return;
+            else
+                this.ExternalProc_GroupActive["stdEngProcs"] = true;
+
+            this.ResetUI();
+            ProcessStartInfo psi = new(
+                extProc_ImportEngMfg_exe,
+                extProc_ColorSet_arg.Replace(
+                    "{@ColorSetID}",
+                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
+                )
+            );
+            ((Button)sender).BorderBrush = Brushes.Goldenrod;
+            await RunExternal(psi);
+            ((Button)sender).BorderBrush = Brushes.ForestGreen;
+            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+        }
+
+        private async void Btn_ExtProc_EngPrc_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
+                return;
+            else
+                this.ExternalProc_GroupActive["stdEngProcs"] = true;
+
+            ProcessStartInfo psi = new(
+                extProc_ProcEngMfg_exe,
+                extProc_ColorSet_arg.Replace(
+                    "{@ColorSetID}",
+                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
+                )
+            );
+            ((Button)sender).BorderBrush = Brushes.Goldenrod;
+            await RunExternal(psi);
+            ((Button)sender).BorderBrush = Brushes.ForestGreen;
+            this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
         #endregion
 
+        private async void Btn_ExtProc_Matl_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
+                return;
+            else
+                this.ExternalProc_GroupActive["stdEngProcs"] = true;
+
+            ProcessStartInfo psi = new(
+                extProc_CalcEngMatl_exe,
+                extProc_ColorSet_arg.Replace(
+                    "{@ColorSetID}",
+                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
+                )
+            );
+            ((Button)sender).BorderBrush = Brushes.Goldenrod;
+            await RunExternal(psi);
+            ((Button)sender).BorderBrush = Brushes.ForestGreen;
+            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+        }
+
+        private async void Btn_ExtProc_Cutlst_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
+                return;
+            else
+                this.ExternalProc_GroupActive["stdEngProcs"] = true;
+
+            ProcessStartInfo psi = new(
+                extProc_CncCutList_exe,
+                extProc_ColorSet_arg.Replace(
+                    "{@ColorSetID}",
+                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
+                )
+            );
+            ((Button)sender).BorderBrush = Brushes.Goldenrod;
+            await RunExternal(psi);
+            ((Button)sender).BorderBrush = Brushes.ForestGreen;
+            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+        }
+
+        private async void Btn_ExtProc_SlExp_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
+                return;
+            else
+                this.ExternalProc_GroupActive["stdEngProcs"] = true;
+
+            ProcessStartInfo psi = new(
+                extProc_SymEngExp_exe,
+                extProc_ColorSet_arg.Replace(
+                    "{@ColorSetID}",
+                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
+                )
+            );
+            ((Button)sender).BorderBrush = Brushes.Goldenrod;
+            await RunExternal(psi);
+            ((Button)sender).BorderBrush = Brushes.ForestGreen;
+            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+        }
     }
 }

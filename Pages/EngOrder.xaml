@@ -36,9 +36,16 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
-                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef}" VerticalAlignment="Center" FontSize="20" Margin="20,0,0,0" FontWeight="Medium"/>
+                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef, FallbackValue=J000000000}" VerticalAlignment="Center" FontSize="20" Margin="20,0,0,0" FontWeight="Medium"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button x:Name="Btn_RefreshHeader" Height="18" Width="18"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        VerticalContentAlignment="Stretch" VerticalAlignment="Center"
+                        Padding="0" Margin="0 0 2 0" Cursor="Hand"
+                        Click="Btn_RefreshHeader_Click">
+                    <materialDesign:PackIcon Foreground="LightSkyBlue" Width="18" Height="18" Kind="Reload"/>
+                </Button>
                 <Button x:Name="Btn_SaveHeader" Height="22" Width="Auto"
                         Style="{StaticResource SaveBtn}" IsEnabled="False"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Center"
@@ -81,6 +88,7 @@
                                 <Components:LabelInputPair LabelWidth="85" LabelText="ShipByDate" InputReadOnly="True" InputText="{Binding ColorSetInfo.ShipByDate, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="Item" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineItem, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="Qty" InputReadOnly="True" InputText="{Binding ColorSetInfo.Qty, Mode=TwoWay}"/>
+                                <Components:LabelInputPair LabelWidth="85" LabelText="Engineer" InputReadOnly="False" InputText="{Binding ColorSetInfo.Engineer, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
                             <StackPanel Width="170" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
@@ -108,11 +116,11 @@
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
-                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
-                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" />
+                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
+                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
+                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
+                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
+                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
                             </StackPanel>
                         </StackPanel>
                         <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="{Binding ColorSetInfo.Notes, Mode=TwoWay}" InputReadOnly="False"/>
