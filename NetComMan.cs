@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -21,6 +22,8 @@ namespace OMPS
         public event EventHandler<Exception> ErrorOccurred;
         public event EventHandler ClientConnected;
         public event EventHandler ClientDisconnected;
+
+        public bool isDisposing = false;
 
         public int Port => _port;
         public bool IsRunning => _isRunning;
@@ -192,6 +195,7 @@ namespace OMPS
 
         public void Dispose()
         {
+            this.isDisposing = true;
             _cancellationTokenSource.Cancel();
             _listener?.Stop();
             _client?.Dispose();
@@ -204,6 +208,8 @@ namespace OMPS
         private UdpClient _udpClient;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly int _port;
+
+        public bool isDisposing = false;
 
         public event EventHandler<string>? MessageReceived;
 
@@ -254,6 +260,7 @@ namespace OMPS
 
         public void Dispose()
         {
+            this.isDisposing = true;
             _cancellationTokenSource.Cancel();
             _udpClient?.Dispose();
             _cancellationTokenSource.Dispose();
@@ -273,14 +280,16 @@ namespace OMPS
         private readonly List<string> _knownPeers = [];
         private readonly Dictionary<string, (string machine, string user)> _userLookup = [];
         public Dictionary<string, (string machine, string user)> userLookup { get => this._userLookup; }
-
+        public event EventHandler<PeerDataEventArgs> PeerFound;
         public NetworkCommunicationManager(int tcpPort = 8080, int udpPort = 8081)
         {
-            _tcpManager = new TcpNetworkManager(tcpPort);
-            _udpManager = new UdpNetworkManager(udpPort);
-            _localIp = GetLocalIpAddress();
-            _machine = Environment.MachineName;
-            _user = Environment.UserName;
+            this._tcpManager = new TcpNetworkManager(tcpPort);
+            this._udpManager = new UdpNetworkManager(udpPort);
+            this._localIp = GetLocalIpAddress();
+            this._machine = Environment.MachineName;
+            this._user = Environment.UserName;
+            this._knownPeers.Add(this._localIp);
+            this._userLookup.Add(this._localIp, (this._machine, this._user));
 
             // Wire up events
             _tcpManager.MessageReceived += OnMessageReceived;
@@ -310,11 +319,15 @@ namespace OMPS
             var foundUser = parts[3];
             if (foundMachine == this._machine) return;
             if (foundUser == this._user) return;
+            var newFound = false;
             // New peer discovered
             if (!this._knownPeers.Contains(foundIp))
             {
                 this._knownPeers.Add(foundIp);
-                await ConnectToPeer(foundIp);
+                if (await ConnectToPeer(foundIp))
+                {
+                    newFound = true;
+                }
             }
             if (!this._userLookup.TryGetValue(foundIp, out (string machine, string user) existing) ||
                 existing.machine != foundMachine ||
@@ -322,26 +335,39 @@ namespace OMPS
             {
                 this._userLookup[foundIp] = (foundMachine, foundUser);
             }
+            if (newFound)
+            {
+                this.PeerFound?.Invoke(
+                    this,
+                    new PeerDataEventArgs()
+                    {
+                        ip = foundIp,
+                        machine = foundMachine,
+                        user = foundUser,
+                    }
+                );
+            }
         }
 
         private async Task BroadcastPresence()
         {
-            while (true)
+            while (true && (this._udpManager.isDisposing || this._udpManager is null) is false)
             {
                 await _udpManager.BroadcastMessageAsync($"DISCOVER:{_localIp}:{_machine}:{_user}");
                 await Task.Delay(5000); // Broadcast every 5 seconds
             }
         }
 
-        private async Task ConnectToPeer(string ipAddress)
+        private async Task<bool> ConnectToPeer(string ipAddress)
         {
-            await _tcpManager.ConnectToServerAsync(ipAddress, _tcpManager.Port);
+            return await _tcpManager.ConnectToServerAsync(ipAddress, _tcpManager.Port);
         }
 
         public async Task SendToAllPeers(string message)
         {
             foreach (var peer in _knownPeers)
             {
+                if (peer == _localIp) continue;
                 await _tcpManager.SendMessageAsync($"MSG:{this._localIp}:{message}", peer, _tcpManager.Port);
             }
         }
@@ -355,18 +381,21 @@ namespace OMPS
         {
             foreach (var peer in _knownPeers)
             {
+                if (peer == _localIp) continue;
                 await _tcpManager.SendMessageAsync($"CMD:{this._localIp}:{message}", peer, _tcpManager.Port);
             }
         }
 
         public async Task SendCommandToPeer(string peer, string message)
         {
+            Debug.WriteLine($"SENT:\n{($"CMD:{this._localIp}:{message}")}");
             await _tcpManager.SendMessageAsync($"CMD:{this._localIp}:{message}", peer, _tcpManager.Port);
         }
 
         private void OnMessageReceived(object? sender, string message)
         {
             // Handle TCP messages
+            Debug.WriteLine($"RECIEVED:\n{message}");
             var type = "";
             switch (message[..3].ToLower())
             {
@@ -404,9 +433,11 @@ namespace OMPS
             switch (type)
             {
                 case "msg":
+                    Debug.WriteLine("MSG");
                     this.MessageReceived?.Invoke(this, e);
                     break;
                 case "cmd":
+                    Debug.WriteLine("CMD");
                     this.CommandReveived?.Invoke(this, e);
                     break;
                 default:
@@ -414,12 +445,17 @@ namespace OMPS
             }
         }
 
-        public class MessageReceievedEventArgs
+        public class PeerDataEventArgs
         {
-            public string? message;
             public string? ip;
             public string? machine;
             public string? user;
+        }
+
+
+        public class MessageReceievedEventArgs: PeerDataEventArgs
+        {
+            public string? message;
         }
 
         public event EventHandler<MessageReceievedEventArgs> MessageReceived;

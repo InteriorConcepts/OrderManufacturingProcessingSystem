@@ -1,5 +1,4 @@
 ﻿#pragma warning disable Experimental
-using OMPS.PipeCommunication;
 using System.Configuration;
 using System.Data;
 using System.Windows;
