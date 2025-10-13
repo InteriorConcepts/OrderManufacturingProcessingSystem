@@ -31,7 +31,7 @@ namespace OMPS.Pages
     /// <summary>
     /// Interaction logic for JobSearch.xaml
     /// </summary>
-    public partial class OrderSearch : UserControl, INotifyPropertyChanged
+    public partial class OrderSearch : UserControl, INotifyPropertyChanged, IDisposable
     {
         public OrderSearch() { }
         public OrderSearch(MainWindow parentWindow)
@@ -309,7 +309,7 @@ namespace OMPS.Pages
             //this.ParentWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //this.ParentWindow.Page_EngOrder.JobNbr = item.JobNbr;
             this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
-            this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
+            this.ParentWindow.MainViewModel.CurrentPage = PageTypes.EngOrder;
         }
 
         private void OrdersViewSource_Filter(object sender, FilterEventArgs e)
@@ -427,13 +427,13 @@ namespace OMPS.Pages
             {
                 if (!Ext.IsJobNumValid(item.JobNbr)) return;
                 this.ParentWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
-                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.EngOrder_VM;
+                this.ParentWindow.MainViewModel.CurrentPage = PageTypes.EngOrder;
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
             {
                 //this.ParentWindow.MainViewModel.QuoteOrder_VM.QuoteNbr = item.QuoteNbr;
-                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.QuoteOrder_VM;
+                this.ParentWindow.MainViewModel.CurrentPage = PageTypes.QuoteOrder;
             }
             //this.ParentWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //this.ParentWindow.Page_EngOrder.JobNbr = item.JobNbr;
@@ -448,6 +448,14 @@ namespace OMPS.Pages
         private void datagrid_orders_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
 
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            this.RefreshDelay.Elapsed -= this.RefreshDelay_Elapsed;
+            this.RefreshDelay.Dispose();
+            this.ColorSetInfos.Clear();
         }
     }
 }

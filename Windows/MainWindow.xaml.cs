@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using MyApp.DataAccess.Generated;
 using OMPS.Pages;
-using OMPS.PipeCommunication;
 using OMPS.viewModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,6 +10,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -21,7 +21,6 @@ using Windows.ApplicationModel.Activation;
 using Windows.Devices.Radios;
 using Windows.UI.Text;
 using static OMPS.Ext;
-using static OMPS.NetworkCommunicationManager;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Windows
@@ -33,7 +32,6 @@ namespace OMPS.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
-        public NetworkCommunicationManager NetworkManager { get; set; }
 
         //public Pages.OrderSearch Page_OrderSearch;
         //public Pages.EngOrder Page_EngOrder;
@@ -79,81 +77,17 @@ namespace OMPS.Windows
                 this.Lbl_Date.Content = this.MainViewModel.CurrentDatetime.ToLongDateString();
             });
 
-             this.InitializeNetwork();
+            this.Loaded += MainWindow_Loaded;
 
-            ((Main_ViewModel)this.DataContext)?.OrderSearch_VM.LoadRecentOrders();
+
+
+            //((OrderSearch?)((Main_ViewModel)this.DataContext)["OrderSearch", PageTypes.OrderSearch])?.LoadRecentOrders();
         }
 
-        public ObservableCollection<string> Messages { get; set; } = [];
-
-        private async void InitializeNetwork()
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            this.NetworkManager = new();
-            this.NetworkManager.MessageReceived += this.OnNetworkMessageReceived;
-            this.NetworkManager.CommandReveived += this.OnNetworkCommandReceived;
-            await NetworkManager.InitializeAsync();
-
-            this.Txtblk_Status.Text = "Network communication ready";
-        }
-
-        private void OnNetworkMessageReceived(object? sender, MessageReceievedEventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                var displayName = e.user is null or "?" ? e.ip : e.user;
-                Messages.Add($"[{e.user}]:  {e.message}");
-            });
-        }
-
-        private void OnNetworkCommandReceived(object? sender, MessageReceievedEventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if (e.message is null) return;
-                var displayName = e.user is null or "?" ? e.ip : e.user;
-                var split = e.message.Split(':');
-                if (split.Length < 3) return;
-                var cmd = split[0];
-                var filter = split[1];
-                var fitlers = filter.Split(',');
-                var data = string.Join(":", split[2..]);
-                switch (split[0].ToLower())
-                {
-                    case "notify":
-                        if (filter is not "*" || !fitlers.Contains(this.NetworkManager.LocalIp)) return;
-                        MessageBox.Show(data, $"Notification from [{displayName}]");
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }
-
-        private async void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key is not Key.Enter) return;
-            if ((TextBox)sender is not TextBox txt) return;
-            if (string.IsNullOrWhiteSpace(txt.Text)) return;
-            if (txt.Text.StartsWith("/msg "))
-            {
-                var split = txt.Text.Split(" ");
-                if (this.NetworkManager.userLookup.FirstOrDefault(u => u.Value.user == split[1]) is KeyValuePair<string, (string, string)> found)
-                {
-                    await NetworkManager.SendToPeer(found.Key, string.Join(" ", split[2..]));
-                }
-            } else
-            {
-
-            }
-            await NetworkManager.SendToAllPeers(txt.Text);
-            Messages.Add($"[You]:  {txt.Text}");
-            txt.Clear();
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            this.NetworkManager?.Dispose();
-            base.OnClosed(e);
+            //if (MainViewModel.AddNewPage(PageTypes.OrderSearch) is not string tag) return;
+            (MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
@@ -234,10 +168,12 @@ namespace OMPS.Windows
 
         public void SetTabTitle(string title)
         {
+            /*
             this.TabBtn_LineItemInfo.Content =
                 this.TabBtn_LineItemInfo.Content.ToString()?.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)[0] +
                 Environment.NewLine +
                 title;
+            */
         }
 
         public static DataTable ConvertListToDataTable<T>(List<T> items)
@@ -317,22 +253,12 @@ namespace OMPS.Windows
             //SetWindowTitle(Current().tab?.Header.ToString() ?? "");
         }
 
-        public void ChangeView(PageTypes pageType)
-        {
-            this.MainViewModel.Current = (pageType) switch
-            {
-                PageTypes.OrderSearch => this.MainViewModel.OrderSearch_VM,
-                PageTypes.EngOrder => this.MainViewModel.EngOrder_VM,
-                PageTypes.QuoteOrder => this.MainViewModel.QuoteOrder_VM,
-                _ => null
-            };
-        }
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        public void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is not RadioButton rdiobtn) return;
-            if (rdiobtn.Tag is not PageTypes ptype) return;
-            this.ChangeView(ptype);
+            if (rdiobtn.Tag is not string tag) return;
+            MessageBox.Show(tag);
+            //this.MainViewModel.CurrentPage = ptype;
         }
 
         private void grid_TopBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -397,38 +323,36 @@ namespace OMPS.Windows
 
         private void Btn_Home_Click(object sender, RoutedEventArgs e)
         {
-            this.ChangeView(PageTypes.OrderSearch);
+            this.MainViewModel.CurrentPage = PageTypes.OrderSearch;
         }
 
         private void Btn_Back_Click(object sender, RoutedEventArgs e)
         {
-            if (this.MainViewModel.Current is null) return;
+            if (this.MainViewModel.CurrentPage is PageTypes.None) return;
             this.Spnl_FrameTabs.Children.OfType<RadioButton>()
                 .LastOrDefault(r =>
-                    (PageTypes)r.Tag == (this.MainViewModel.Previous as UserControl)?.PageToType()
+                    (PageTypes)r.Tag == this.MainViewModel.PreviousPage
                 )?
                 .ClearValue(RadioButton.FontStyleProperty);
-            this.MainViewModel.Current = this.MainViewModel.Previous;
+            this.MainViewModel.CurrentPage = this.MainViewModel.PreviousPage;
         }
 
         private void Btn_Back_MouseEnter(object sender, MouseEventArgs e)
         {
-            var prev = this.MainViewModel.Previous as UserControl;
-            if (prev is null) return;
+            if (this.MainViewModel.PreviousPage is PageTypes.None) return;
             var radios = this.Spnl_FrameTabs.Children.OfType<RadioButton>();
             var curRadio = radios.LastOrDefault(r => r.IsChecked is true);
-            var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == prev.PageToType());
+            var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == this.MainViewModel.PreviousPage);
             if (prevRadio is null) return;
             prevRadio.FontStyle = FontStyles.Italic;
         }
 
         private void Btn_Back_MouseLeave(object sender, MouseEventArgs e)
         {
-            var prev = this.MainViewModel.Previous as UserControl;
-            if (prev is null) return;
+            if (this.MainViewModel.PreviousPage is PageTypes.None) return;
             var radios = this.Spnl_FrameTabs.Children.OfType<RadioButton>();
             var curRadio = radios.LastOrDefault(r => r.IsChecked is true);
-            var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == prev.PageToType());
+            var prevRadio = radios.LastOrDefault(r => (PageTypes)r.Tag == this.MainViewModel.PreviousPage);
             if (prevRadio is null) return;
             prevRadio.ClearValue(RadioButton.FontStyleProperty);
         }
@@ -441,6 +365,40 @@ namespace OMPS.Windows
             _configWin.Owner = this;
             _configWin.ShowDialog();
             //this.Spnl_ContentFrames.Opacity = 1.0;
+        }
+
+        private void Btn_Chat_Click(object sender, RoutedEventArgs e)
+        {
+            Chat chatWin = new()
+            {
+                Owner = this
+            };
+            chatWin.ShowDialog();
+        }
+
+        public void TabBtn_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is not RadioButton rdiobtn) return;
+            if (rdiobtn.Content is not StackPanel stkpnl) return;
+            if (stkpnl.Children.OfType<UIElement>().FirstOrDefault(e => e is Button) is not Button btn) return;
+            btn.Visibility = Visibility.Hidden;
+        }
+
+        public void TabBtn_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is not RadioButton rdiobtn) return;
+            if (rdiobtn.Content is not StackPanel stkpnl) return;
+            if (stkpnl.Children.OfType<UIElement>().FirstOrDefault(e => e is Button) is not Button btn) return;
+            btn.Visibility = Visibility.Visible;
+        }
+
+        public void Tab_CloseBtn(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            if (btn.Parent is not StackPanel stkpnl) return;
+            if (stkpnl.Parent is not RadioButton rdiobtn) return;
+            if (rdiobtn.Tag is not PageTypes pageType) return;
+            MessageBox.Show(pageType.ToString());
         }
     }
 }

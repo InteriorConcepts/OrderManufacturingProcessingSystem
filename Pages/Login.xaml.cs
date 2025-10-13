@@ -180,7 +180,7 @@ namespace OMPS.Pages
                 
                 sb.Completed += (ss, ee) =>
                 {
-                this.ParentWindow.MainViewModel.Current = this.ParentWindow.MainViewModel.OrderSearch_VM;
+                    this.ParentWindow.MainViewModel.CurrentPage = PageTypes.OrderSearch;
                     this.ParentWindow.MainViewModel.WidgetMode = false;
                     this.Opacity = 1;
                 };
