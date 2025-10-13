@@ -138,17 +138,17 @@ namespace OMPS.viewModel
         public EngOrder EngOrder_VM { get; set; }
         public QuoteOrder QuoteOrder_VM { get; set; }
 
-        public bool Login_IsSelected { get => Current is not null && Current is Login; }
-        public bool OrderSearch_IsSelected { get => Current is not null && Current is OrderSearch; }
-        public bool EngOrder_IsSelected { get => Current is not null && Current is EngOrder; }
-        public bool QuoteOrder_IsSelected { get => Current is not null && Current is QuoteOrder; }
+        public bool Login_IsSelected { get => this.CurrentPage is PageTypes.Login; }
+        public bool OrderSearch_IsSelected { get => this.CurrentPage is PageTypes.OrderSearch; }
+        public bool EngOrder_IsSelected { get => this.CurrentPage is PageTypes.EngOrder; }
+        public bool QuoteOrder_IsSelected { get => this.CurrentPage is PageTypes.QuoteOrder; }
 
         public bool EngOrder_IsEnabled { get => this.EngOrder_VM is not null && this.EngOrder_VM.JobNbr is not null or ""; }
         public bool OrderSearch_IsEnabled { get => true; }
         public bool QuoteOrder_IsEnabled { get => !(this.QuoteOrder_VM.Lbl_JobNbr.Content is null or ""); }
 
         public bool CanPrevious {
-            get => this.Previous is not null;
+            get => this.PreviousPage is not PageTypes.None or PageTypes.Login;
             set
             {
                 OnPropertyChanged();
@@ -166,61 +166,61 @@ namespace OMPS.viewModel
             }
         } = null;
 
+
+        public PageTypes PreviousPage
+        {
+            get;
+            set
+            {
+                if (value is PageTypes.None) return;
+                field = value;
+                OnPropertyChanged();
+            }
+        } = PageTypes.None;
+
         public PageTypes CurrentPage
         {
             get;
             set
             {
+                if (value == field) return;
+                if (field is not PageTypes.None)
+                {
+                    this.ToggleCurrentContentControl(Visibility.Collapsed);
+                    this.Previous = field;
+                }
                 field = value;
                 OnPropertyChanged();
+                ToggleCurrentContentControl(Visibility.Visible);
+                OnPropertyChanged(this.PreviousPage + "_IsSelected");
+                OnPropertyChanged(this.PreviousPage + "_IsEnabled");
+                OnPropertyChanged(value + "_IsSelected");
+                OnPropertyChanged(value + "_IsEnabled");
             }
-        }
+        } = PageTypes.None;
 
         public void ToggleCurrentContentControl(Visibility state)
         {
-            (this._current switch
+            (this.CurrentPage switch
             {
-                Login => this.ParentWin.CC_Login,
-                OrderSearch => this.ParentWin.CC_OrderSearch,
-                EngOrder => this.ParentWin.CC_EngOrder,
-                QuoteOrder => this.ParentWin.CC_QuoteOrder,
+                PageTypes.Login => this.ParentWin.CC_Login,
+                PageTypes.OrderSearch => this.ParentWin.CC_OrderSearch,
+                PageTypes.EngOrder => this.ParentWin.CC_EngOrder,
+                PageTypes.QuoteOrder => this.ParentWin.CC_QuoteOrder,
                 _ => null
             })?.Visibility = state;
-        }
-
-        private object? _current = null;
-        public object? Current
-        {
-            get => _current;
-            set
-            {
-                if (value is null) return;
-                if (value == _current) return;
-                if (_current is not null && this.Previous != _current && this._current is not Login)
-                {
-                    this.ToggleCurrentContentControl(Visibility.Collapsed);
-                    this.Previous = _current;
-                }
-                _current = value;
-                OnPropertyChanged();
-                ToggleCurrentContentControl(Visibility.Visible);
-                OnPropertyChanged(this.Previous?.GetType().Name + "_IsSelected");
-                OnPropertyChanged(this.Previous?.GetType().Name + "_IsEnabled");
-                OnPropertyChanged(value.GetType().Name + "_IsSelected");
-                OnPropertyChanged(value.GetType().Name + "_IsEnabled");
-            }
         }
 
         public Main_ViewModel()
         {
             this.ParentWin = Ext.MainWindow;
-            Login_VM = new() { ParentWindow = this.ParentWin };
-            OrderSearch_VM = new(this.ParentWin);
-            EngOrder_VM = new(this.ParentWin);
-            QuoteOrder_VM = new(this.ParentWin);
-            this.EngOrder_VM.LoadDataForJob("J000000123");
-            WidgetMode = false;
-            Current = EngOrder_VM;
+            this.Login_VM = new() { ParentWindow = this.ParentWin };
+            this.OrderSearch_VM = new(this.ParentWin);
+            this.EngOrder_VM = new(this.ParentWin);
+            this.QuoteOrder_VM = new(this.ParentWin);
+            this.EngOrder_VM.JobNbr = "J000000123";
+            this.WidgetMode = false;
+            this.CurrentPage = PageTypes.EngOrder;
         }
     }
 }

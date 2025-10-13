@@ -41,6 +41,7 @@ namespace OMPS.Pages
             this.DataContext = this;
             this.RefreshDelay.Elapsed += this.RefreshDelay_Elapsed;
             this.ParentWindow = parentWindow;
+            this.LoadRecentOrders();
         }
 
         public Main_ViewModel MainViewModel

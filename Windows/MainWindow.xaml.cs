@@ -33,9 +33,6 @@ namespace OMPS.Windows
     public partial class MainWindow : Window
     {
 
-        //public Pages.OrderSearch Page_OrderSearch;
-        //public Pages.EngOrder Page_EngOrder;
-
         //public ViewController ViewController { get; set; }
 
         public required Main_ViewModel _viewModel;
@@ -87,7 +84,7 @@ namespace OMPS.Windows
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //if (MainViewModel.AddNewPage(PageTypes.OrderSearch) is not string tag) return;
-            (MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
+            //(MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
@@ -256,9 +253,8 @@ namespace OMPS.Windows
         public void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is not RadioButton rdiobtn) return;
-            if (rdiobtn.Tag is not string tag) return;
-            MessageBox.Show(tag);
-            //this.MainViewModel.CurrentPage = ptype;
+            if (rdiobtn.Tag is not PageTypes ptype) return;
+            this.MainViewModel.CurrentPage = ptype;
         }
 
         private void grid_TopBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -399,6 +395,13 @@ namespace OMPS.Windows
             if (stkpnl.Parent is not RadioButton rdiobtn) return;
             if (rdiobtn.Tag is not PageTypes pageType) return;
             MessageBox.Show(pageType.ToString());
+        }
+
+        private void Btn_ToggleSideNav_Click(object sender, RoutedEventArgs e)
+        {
+            this.Spnl_SideNav.Visibility =
+                this.Spnl_SideNav.Visibility is Visibility.Collapsed ?
+                Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
