@@ -41,7 +41,7 @@ namespace OMPS.Pages
             this.DataContext = this;
             this.RefreshDelay.Elapsed += this.RefreshDelay_Elapsed;
             this.ParentWindow = parentWindow;
-            this.LoadRecentOrders();
+            //this.LoadRecentOrders();
         }
 
         public Main_ViewModel MainViewModel
@@ -433,7 +433,7 @@ namespace OMPS.Pages
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
             {
-                //this.ParentWindow.MainViewModel.QuoteOrder_VM.QuoteNbr = item.QuoteNbr;
+                this.ParentWindow.MainViewModel.QuoteOrder_VM.QuoteNbr = item.QuoteNbr;
                 this.ParentWindow.MainViewModel.CurrentPage = PageTypes.QuoteOrder;
             }
             //this.ParentWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;

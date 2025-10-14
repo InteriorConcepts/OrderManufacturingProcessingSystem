@@ -319,7 +319,7 @@ namespace OMPS.Windows
 
         private void Btn_Home_Click(object sender, RoutedEventArgs e)
         {
-            this.MainViewModel.CurrentPage = PageTypes.OrderSearch;
+            this.MainViewModel.CurrentPage = PageTypes.Home;
         }
 
         private void Btn_Back_Click(object sender, RoutedEventArgs e)
@@ -402,6 +402,13 @@ namespace OMPS.Windows
             this.Spnl_SideNav.Visibility =
                 this.Spnl_SideNav.Visibility is Visibility.Collapsed ?
                 Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void Btn_SideNav_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            if (btn.Tag is not PageTypes pageType) return;
+            this.MainViewModel.CurrentPage = pageType;
         }
     }
 }

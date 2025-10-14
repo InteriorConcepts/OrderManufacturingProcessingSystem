@@ -132,20 +132,21 @@ namespace OMPS.viewModel
         }
 
 
-
+        public Home Landing_VM { get; set; }
         public Login Login_VM { get; set; }
         public OrderSearch OrderSearch_VM { get; set; }
         public EngOrder EngOrder_VM { get; set; }
         public QuoteOrder QuoteOrder_VM { get; set; }
 
+        public bool Home_IsSelected { get => this.CurrentPage is PageTypes.Home; }
         public bool Login_IsSelected { get => this.CurrentPage is PageTypes.Login; }
         public bool OrderSearch_IsSelected { get => this.CurrentPage is PageTypes.OrderSearch; }
         public bool EngOrder_IsSelected { get => this.CurrentPage is PageTypes.EngOrder; }
         public bool QuoteOrder_IsSelected { get => this.CurrentPage is PageTypes.QuoteOrder; }
 
         public bool EngOrder_IsEnabled { get => this.EngOrder_VM is not null && this.EngOrder_VM.JobNbr is not null or ""; }
-        public bool OrderSearch_IsEnabled { get => true; }
-        public bool QuoteOrder_IsEnabled { get => !(this.QuoteOrder_VM.Lbl_JobNbr.Content is null or ""); }
+        public bool OrderSearch_IsEnabled { get => this.OrderSearch_VM is not null && (this.OrderSearch_VM.ColorSetInfos.Count is not 0 || OrderSearch_IsSelected); }
+        public bool QuoteOrder_IsEnabled { get => this.QuoteOrder_VM is not null && this.QuoteOrder_VM.QuoteNbr is not null or ""; }
 
         public bool CanPrevious {
             get => this.PreviousPage is not PageTypes.None or PageTypes.Login;
@@ -203,6 +204,7 @@ namespace OMPS.viewModel
         {
             (this.CurrentPage switch
             {
+                PageTypes.Home => this.ParentWin.CC_Landing,
                 PageTypes.Login => this.ParentWin.CC_Login,
                 PageTypes.OrderSearch => this.ParentWin.CC_OrderSearch,
                 PageTypes.EngOrder => this.ParentWin.CC_EngOrder,
@@ -214,13 +216,14 @@ namespace OMPS.viewModel
         public Main_ViewModel()
         {
             this.ParentWin = Ext.MainWindow;
+            this.Landing_VM = new(this.ParentWin);
             this.Login_VM = new() { ParentWindow = this.ParentWin };
             this.OrderSearch_VM = new(this.ParentWin);
             this.EngOrder_VM = new(this.ParentWin);
             this.QuoteOrder_VM = new(this.ParentWin);
-            this.EngOrder_VM.JobNbr = "J000000123";
+            //this.EngOrder_VM.JobNbr = "J000000123";
             this.WidgetMode = false;
-            this.CurrentPage = PageTypes.EngOrder;
+            this.CurrentPage = PageTypes.Home;
         }
     }
 }

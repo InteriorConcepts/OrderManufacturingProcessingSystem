@@ -17,10 +17,11 @@ namespace OMPS
     public enum PageTypes
     {
         None = -1,
-        Login = 0,
-        OrderSearch = 1,
-        EngOrder = 2,
-        QuoteOrder = 3
+        Home = 0,
+        Login = 1,
+        OrderSearch = 2,
+        EngOrder = 3,
+        QuoteOrder = 4
     }
 
     public static class Ext

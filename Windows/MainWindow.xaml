@@ -15,6 +15,7 @@
         Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <local:ScalingConverter x:Key="ScalingConverter1"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisConverter1"/>
     </Window.Resources>
     <Window.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
@@ -50,7 +51,13 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="2" Padding="4 4 4 0" Background="#F2F0C4" Foreground="#111">
+        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="2" Padding="4 0 4 0" Foreground="#111">
+            <materialDesign:ColorZone.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#eeece6df" Offset="0"/>
+                    <GradientStop Color="#eeffe9c5" Offset="1"/>
+                </LinearGradientBrush>
+            </materialDesign:ColorZone.Background>
             <Grid x:Name="grid_TopBar" DataContext="{Binding ElementName=MainWin}" MouseDown="grid_TopBar_MouseDown" Background="Transparent" IsHitTestVisible="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
@@ -60,8 +67,8 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="24"/>
-                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="28"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                             Orientation="Horizontal" HorizontalAlignment="Stretch"
@@ -70,17 +77,16 @@
                     <Button x:Name="Btn_ToggleSideNav" Width="24" Height="24"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="1"
-                            Foreground="#BC574B"
-                            Margin="4 0 0 0" Padding="3 3"
+                            Margin="4 0 0 0" Padding="3 3" Foreground="#3d3333"
                             Click="Btn_ToggleSideNav_Click">
                         <materialDesign:PackIcon Width="22" Height="22" Kind="DockLeft"
-                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                        </materialDesign:PackIcon>
                     </Button>
-                    
+
                     <Button x:Name="Btn_Home" Height="24" Width="24"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="#C97852"
-                            Margin="4 0 0 0" Padding="3 3"
+                            Margin="4 0 0 0" Padding="3 3" Foreground="#3d3333"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Home_Click">
                         <materialDesign:PackIcon Height="22" Width="22" Kind="Home"
@@ -88,8 +94,7 @@
                     </Button>
                     <Button x:Name="Btn_Back" Height="24" Width="24"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="#DDB65A"
-                            Margin="4 0 0 0" Padding="3 3"
+                            Margin="4 0 0 0" Padding="3 3" Foreground="#3d3333"
                             IsEnabled="{Binding DataContext.CanPrevious, ElementName=MainWin, UpdateSourceTrigger=PropertyChanged}"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Back_Click"
@@ -99,17 +104,15 @@
                     </Button>
                     <Button x:Name="Btn_Settings" Height="24" Width="24"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="#83A99C"
-                            Margin="4 0 0 0" Padding="3 3"
+                            Margin="4 0 0 0" Padding="3 3" Foreground="#3d3333"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Settings_Click">
-                        <materialDesign:PackIcon Height="20" Width="22" Kind="ApplicationCogOutline"
+                        <materialDesign:PackIcon Height="20" Width="22" Kind="Cog"
                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="Btn_Chat" Height="24" Width="24" IsEnabled="True"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="#454167"
-                            Margin="4 0 0 0" Padding="3 3"
+                            Margin="4 0 0 0" Padding="3 3" Foreground="#3d3333"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Chat_Click">
                         <materialDesign:PackIcon Height="20" Width="22" Kind="TerminalNetworkOutline"
@@ -117,22 +120,53 @@
                     </Button>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <materialDesign:PackIcon Kind="HammerWrench" Foreground="#454167" Height="24" Width="24" VerticalAlignment="Center"/>
-                    <Label Foreground="#222" FontSize="20" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="4 0" HorizontalAlignment="Center" Content="Production Bridge"/>
-                    <materialDesign:PackIcon Kind="Bridge" Foreground="#454167" Height="24" Width="24" VerticalAlignment="Center"/>
+                    <Rectangle Width="24" Margin="0">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="pack://application:,,,/OMPS;component/Images/Interior-Concepts-Logo.png" Stretch="Uniform" TileMode="None"/>
+                        </Rectangle.OpacityMask>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.1,0">
+                                <GradientStop Color="#FF50A433" Offset="0.1"/>
+                                <GradientStop Color="#FF466AFF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                        <Rectangle.Effect>
+                            <DropShadowEffect BlurRadius="2" Color="#aaa" ShadowDepth="2" RenderingBias="Performance" Opacity="0.5">
+                            </DropShadowEffect>
+                        </Rectangle.Effect>
+                    </Rectangle>
+                    <Label FontSize="22" FontWeight="Black" Foreground="#3d3333"
+                           VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+                           Padding="4 0" HorizontalAlignment="Center">
+                        <Label.Content>
+                            <StackPanel>
+                                <TextBlock Text="Production Bridge"/>
+                                <Rectangle Margin="0 -6 0 0" Height="2" Fill="#FF9A3B3B" SnapsToDevicePixels="True"/>
+                            </StackPanel>
+                        </Label.Content>
+                    </Label>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Margin="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button x:Name="Btn_WinMin" Click="Btn_WinMin_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#333" Margin="4 0 0 0" Padding="3 0" Width="24" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <materialDesign:PackIcon Kind="WindowMinimize" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Button x:Name="Btn_WinMin" Click="Btn_WinMin_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#3d3333" Margin="4 0 0 0" Padding="3 0" Width="24" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="MinimizE" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
-                    <Button x:Name="Btn_WinMax" Click="Btn_WinMax_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#333" Margin="4 0 0 0" Padding="3 0" Width="24" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <Button x:Name="Btn_WinMax" Click="Btn_WinMax_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#3d3333" Margin="4 0 0 0" Padding="3 0" Width="24" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                         <materialDesign:PackIcon Kind="WindowMaximize" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
-                    <Button x:Name="Btn_WinClose" Click="Btn_WinClose_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#BC574B" Margin="4 0 0 0" Padding="3 0" Width="24" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <materialDesign:PackIcon Kind="Close" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Button x:Name="Btn_WinClose" Click="Btn_WinClose_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#9f3847" Margin="4 0 0 0" Padding="3 0" Width="24" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="CloseBoxOutline" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        </materialDesign:PackIcon>
                     </Button>
                 </StackPanel>
-                <TextBox x:Name="Txt_Url" Grid.Row="1" Background="#33232323" FontSize="8" VerticalAlignment="Top" Foreground="#222" Grid.Column="2" Text="pbridge://order-search" TextAlignment="Center" VerticalContentAlignment="Center" Padding="10 0"/>
+                <TextBox x:Name="Txt_Url" Grid.Row="1" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" Opacity="0.8" FontSize="8" VerticalAlignment="Top" Foreground="#303843" Grid.Column="2" Text="pbridge://order-search" TextAlignment="Center" VerticalContentAlignment="Center" Padding="10 0" Margin="100 0">
+                    <TextBox.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad">
+                            <GradientStop Color="#aabcad9f " Offset="0"/>
+                            <GradientStop Color="#aa87857c" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBox.Background>
+                </TextBox>
             </Grid>
         </materialDesign:ColorZone>
         <Separator Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
@@ -141,48 +175,54 @@
             <materialDesign:PackIcon Height="Auto" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Kind="HomeOutline"/>
         </Grid>
         -->
-        <materialDesign:ColorZone Grid.Row="2" Grid.Column="0" Background="#111">
+        <materialDesign:ColorZone Grid.Row="2" Grid.Column="0" Background="Transparent" VerticalAlignment="Stretch">
             <StackPanel x:Name="Spnl_SideNav" Visibility="Visible" Width="Auto">
-                <Expander HorizontalAlignment="Stretch" Header="Orders" Background="#111">
-                    <StackPanel HorizontalAlignment="Stretch" Background="#333" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                        <Button Foreground="#CCC" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid}" Content="Order Lines" />
+                <Expander FontWeight="DemiBold" Foreground="#e9e9e9" Background="#2c4172" HorizontalAlignment="Stretch" Header="Orders">
+                    <StackPanel HorizontalAlignment="Stretch" Background="#FF273454" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                        <Button Foreground="#eee" FontWeight="Medium" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid}" Tag="{x:Static local:PageTypes.OrderSearch}" Content="Order Lines" Click="Btn_SideNav_Click" />
                     </StackPanel>
                 </Expander>
-                <Expander HorizontalAlignment="Stretch" Header="Marketing" Background="#111">
-                    <StackPanel HorizontalAlignment="Stretch" Background="#333" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                        <Button Foreground="#CCC" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid}" Content="Product Catalog" />
-                        <Button Foreground="#CCC" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid}" Content="Manuf Lines" />
+                <Expander FontWeight="DemiBold" Foreground="#e9e9e9" Background="#2c4172" HorizontalAlignment="Stretch" Header="Marketing">
+                    <StackPanel HorizontalAlignment="Stretch" Background="#FF273454" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                        <Button Foreground="#eee" FontWeight="Medium" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid}" Tag="{x:Static local:PageTypes.None}" Content="Product Catalog" Click="Btn_SideNav_Click" />
+                        <Button Foreground="#eee" FontWeight="Medium" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid}" Tag="{x:Static local:PageTypes.None}" Content="Manuf Lines" Click="Btn_SideNav_Click" />
                     </StackPanel>
                 </Expander>
             </StackPanel>
         </materialDesign:ColorZone>
-        <materialDesign:ColorZone Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#292929" Margin="0">
+        <materialDesign:ColorZone Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#151515" Margin="0">
             <Grid x:Name="Grid_Contents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <StackPanel Grid.Row="0" x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#111">
                     <RadioButton x:Name="TabBtn_Landing" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
-                                 Content="Landing" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
-                                 Height="21" IsChecked="False" IsEnabled="False"
+                                 Content="Landing" Tag="{x:Static local:PageTypes.Home}" Padding="6 0"
+                                 Visibility="{Binding Home_IsEnabled, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
+                                 Height="21" IsChecked="{Binding Home_IsSelected, Mode=OneWay}"
+                                 Checked="RadioButton_Checked"
                                  FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     <RadioButton x:Name="TabBtn_OrderSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
+                                 Visibility="{Binding OrderSearch_IsEnabled, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}"
-                                 Checked="RadioButton_Checked" IsEnabled="{Binding OrderSearch_IsEnabled, Mode=OneWay}"
+                                 Checked="RadioButton_Checked"
                                  FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" Padding="6 0"
+                                 Visibility="{Binding EngOrder_IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}"
-                                 Checked="RadioButton_Checked" IsEnabled="{Binding EngOrder_IsEnabled, Mode=OneWay}"
+                                 Checked="RadioButton_Checked"
                                  FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                     <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" Padding="6 0"
+                                 Visibility="{Binding QuoteOrder_IsEnabled, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}"
-                                 Checked="RadioButton_Checked" IsEnabled="{Binding QuoteOrder_IsEnabled, Mode=OneWay}"
+                                 Checked="RadioButton_Checked"
                                  FontSize="{Binding ElementName=MainWin, Path=MainViewModel.FontSize_DataGrid, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                 </StackPanel>
+                <ContentControl Grid.Row="1" x:Name="CC_Landing" Content="{Binding Landing_VM, Mode=OneWay}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_Login" Content="{Binding Login_VM, Mode=OneWay}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_OrderSearch" Content="{Binding OrderSearch_VM, Mode=OneWay}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_EngOrder" Content="{Binding EngOrder_VM, Mode=OneWay}" Visibility="Collapsed"/>
@@ -190,7 +230,7 @@
             </Grid>
         </materialDesign:ColorZone>
 
-        <materialDesign:ColorZone Grid.Row="3" Grid.ColumnSpan="2" Mode="Dark" Background="#111" Foreground="#CCC" Margin="0" VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible">
+        <materialDesign:ColorZone Grid.Row="3" Grid.ColumnSpan="2" Mode="Dark" Background="#191818" Foreground="#CCC" Margin="0" VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible">
             <Grid x:Name="statusbar" Height="{Binding FontSize_DataGrid, FallbackValue=32, Converter={StaticResource ScalingConverter1}, ConverterParameter=2.25}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

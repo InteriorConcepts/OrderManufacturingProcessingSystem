@@ -28,7 +28,7 @@
                 <ResourceDictionary Source="Resources/ClassicDarkStyles.xaml" />
                 -->
 
-                <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="DodgerBlue" SecondaryColor="MediumPurple"/>
+                <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="DodgerBlue" SecondaryColor="AntiqueWhite"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
 
                 <!--

@@ -27,9 +27,11 @@ namespace OMPS.Pages
         public QuoteOrder(MainWindow parentWin)
         {
             InitializeComponent();
+            //
             this.ParentWindow = parentWin;
         }
 
         internal MainWindow? ParentWindow { get; set; }
+        public string? QuoteNbr { get; set; }
     }
 }
