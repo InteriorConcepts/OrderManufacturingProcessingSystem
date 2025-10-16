@@ -42,18 +42,18 @@ namespace OMPS.Windows
 
         private void MainVM_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName is not "FontSize_DataGrid") return;
-            this.Txtblk_Title.FontSize = this.MainVM.FontSize_DataGrid * 1.25;
+            if (e.PropertyName is not "FontSize_Base") return;
+            this.Txtblk_Title.FontSize = this.MainVM.FontSize_Base * 1.25;
         }
 
         private void Btn_FontSizeDown_Click(object sender, RoutedEventArgs e)
         {
-            this.MainVM.FontSize_DataGrid -= 1;
+            this.MainVM.FontSize_Base -= 1;
         }
 
         private void Btn_FontSizeUp_Click(object sender, RoutedEventArgs e)
         {
-            this.MainVM.FontSize_DataGrid += 1;
+            this.MainVM.FontSize_Base += 1;
         }
 
         private void Btn_CloseConfigWin_Click(object sender, RoutedEventArgs e)

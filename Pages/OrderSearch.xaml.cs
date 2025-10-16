@@ -36,22 +36,22 @@ namespace OMPS.Pages
         public OrderSearch() { }
         public OrderSearch(MainWindow parentWindow)
         {
+            this.ParentWindow = parentWindow;
             InitializeComponent();
             //
             this.DataContext = this;
             this.RefreshDelay.Elapsed += this.RefreshDelay_Elapsed;
-            this.ParentWindow = parentWindow;
             //this.LoadRecentOrders();
         }
 
         public Main_ViewModel MainViewModel
         {
-            get => this.ParentWindow.MainViewModel;
+            get => Ext.MainWindow.MainViewModel;
         }
 
         public double DataGridFontSize
         {
-            get => this.MainViewModel.FontSize_DataGrid;
+            get => MainViewModel.FontSize_Base;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -59,12 +59,6 @@ namespace OMPS.Pages
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName is not "FontSize_DataGrid") return;
-            OnPropertyChanged(nameof(DataGridFontSize));
         }
 
         private void RefreshDelay_Elapsed(object? sender, ElapsedEventArgs e)
@@ -89,13 +83,12 @@ namespace OMPS.Pages
                 field = value;
                 value?.MainViewModel?.PropertyChanged += new((sender, e) =>
                 {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_DataGrid)) return;
+                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
                     //this.datagrid_orders.UpdateLayout();
                     OnPropertyChanged(nameof(DataGridFontSize));
                 });
             }
         }
-        internal TabItem ParentTab { get; set; }
         public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
         #endregion
 
@@ -158,9 +151,10 @@ namespace OMPS.Pages
 
                     Application.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.datagrid_orders.BeginEdit();
+                        //this.datagrid_orders.BeginEdit();
                         for (int i = 0; i < data_orders.Count; i++)
                         {
+                            Debug.WriteLine("Order");
                             this.ColorSetInfos.Add(data_orders[i]);
                         }
 
@@ -169,7 +163,7 @@ namespace OMPS.Pages
                             this.datagrid_orders.ScrollIntoView(this.datagrid_orders.Items[0]);
                         }
                         Debug.WriteLine(2);
-                        this.datagrid_orders.EndInit();
+                        //this.datagrid_orders.EndInit();
                         this.progbar_orders.Visibility = Visibility.Collapsed;
                         this.progbar_orders.IsEnabled = false;
                     });
@@ -267,9 +261,9 @@ namespace OMPS.Pages
                 cellStyle.Setters.Add(new Setter(DataGridCell.HorizontalContentAlignmentProperty, HorizontalAlignment.Left));
                 cellStyle.Setters.Add(new Setter(DataGridCell.CursorProperty, Cursors.Hand));
                 cellStyle.Setters.Add(new Setter(DataGridCell.BackgroundProperty, Brushes.Transparent));
-                var bind = new Binding("FontSize_DataGrid")
+                var bind = new Binding("FontSize_Base")
                 {
-                    Path = new("MainViewModel.FontSize_DataGrid"),
+                    Path = new("MainViewModel.FontSize_Base"),
                     Source = this.ParentWindow,
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                     Mode = BindingMode.OneWay

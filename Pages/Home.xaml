@@ -5,15 +5,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OMPS"
              xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:sys="clr-namespace:System;assembly=System.Runtime" d:DataContext="{d:DesignInstance Type=pages:Home}"
              x:Name="Page_Home" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1025"
+             d:DesignHeight="1000" d:DesignWidth="1525"
              DataContext="{Binding ElementName=Page_Home}"
              FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
     <UserControl.Resources>
-        <local:ScalingConverter x:Key="ScalingConverter1"/>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisConverter1"/>
+        <ContextMenu x:Name="CtxMnu_EngRightClick" x:Key="CtxMnu_EngRightClick">
+            <MenuItem Header="Actions for selected item" IsEnabled="False"/>
+            <MenuItem x:Name="Ctx_Job_OpenInApp" Click="Ctx_Job_OpenInApp_Click">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="OpenInApp" Padding="1" Margin="0 0 4 0"/>
+                        <TextBlock Text="Open in OrderLines"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="Ctx_Job_OpenFolderInExplorer" Click="Ctx_Job_OpenFolderInExplorer_Click">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ExternalLink" Padding="1" Margin="0 0 4 0"/>
+                        <TextBlock Text="Open with Explorer"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="Ctx_Job_OpenContainingFolderInExplorer" Click="Ctx_Job_OpenContainingFolderInExplorer_Click">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="FolderArrowUp" Padding="1" Margin="0 0 4 0"/>
+                        <TextBlock Text="Open Conntaining Folder"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+        </ContextMenu>
     </UserControl.Resources>
     <UserControl.Background>
         <LinearGradientBrush EndPoint="0,0" StartPoint="1,1">
@@ -21,216 +46,511 @@
             <GradientStop Color="#FF111111" Offset="0"/>
         </LinearGradientBrush>
     </UserControl.Background>
-    <ScrollViewer>
-        <WrapPanel Orientation="Horizontal" >
-            <WrapPanel.Background>
+    <ScrollViewer DataContext="{Binding ElementName=Page_Home}">
+        <StackPanel Orientation="Vertical" >
+            <StackPanel.Background>
                 <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                    <GradientStop Color="#FF343434" Offset="0"/>
-                    <GradientStop Color="#FF151515" Offset="1"/>
                     <GradientStop Color="#FF1F1F1F"/>
                 </LinearGradientBrush>
-            </WrapPanel.Background>
-            <Border Width="262" Height="300" Margin="12" CornerRadius="4" Background="#292929"
-                    BorderBrush="#556a97" BorderThickness="0" Padding="6 4">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="2" Color="#aaa" Direction="-45" Opacity="1" ShadowDepth="2" />
-                </Border.Effect>
-                <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" FontSize="{Binding FontSize_DataGrid, FallbackValue=20, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}"
-                               FontWeight="Bold" Padding="0" Foreground="#d7d7d7">
-                            <Label.Content>
-                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <materialDesign:PackIcon Kind="PaperAdd"/>
-                                    <TextBlock Text="New Orders" VerticalAlignment="Top" TextAlignment="Left"/>
-                                    <Rectangle Height="3" Fill="#0a89ff">
-                                        <Rectangle.OpacityMask>
-                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                <GradientStop Color="Black"/>
-                                                <GradientStop Color="Transparent" Offset="5"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
-                                </StackPanel>
-                            </Label.Content>
-                        </Label>
-                        <DataGrid x:Name="DataGrid_NewOrders" Grid.Row="1" IsReadOnly="True"
-                                  FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                                  Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
-                                  ItemsSource="{Binding NewOrders, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                    <Setter Property="Height" Value="Auto"/>
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                                    <Setter Property="Padding" Value="16 0"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=8}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                        </DataGrid>
+            </StackPanel.Background>
+            <StackPanel Margin="12 0" Background="Transparent">
+                <Label Foreground="#e9e9e5" Background="#353535" FontWeight="Bold"
+                       FontSize="{Binding MainViewModel.FontSize_H1, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Label.Content>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Fill="#FF6CB8FF" Margin="0 0 2 0"/>
+                            <TextBlock Text="Orders"/>
+                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="800" Margin="2 0 0 0">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                        <GradientStop Color="#FF6CB8FF"/>
+                                        <GradientStop Color="#006CB8FF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Label.Content>
+                    <Label.Effect>
+                        <DropShadowEffect BlurRadius="18" Color="#000" Direction="-45" Opacity="0.9" ShadowDepth="3" />
+                    </Label.Effect>
+                </Label>
+                <WrapPanel Orientation="Horizontal" Height="260" Margin="4">
+                    <Border MinWidth="340" Width="Auto" Height="244"
+                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                            Margin="8" Padding="6 4" CornerRadius="1">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                        </Border.Effect>
+                        <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0" Foreground="#d7d7d7">
+                                    <Label.Content>
+                                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <materialDesign:PackIcon Kind="Papers"/>
+                                            <TextBlock Text="New Orders" VerticalAlignment="Top" TextAlignment="Left"/>
+                                            <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                <Rectangle.OpacityMask>
+                                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                        <GradientStop Color="Black"/>
+                                                        <GradientStop Color="Transparent" Offset="5"/>
+                                                    </LinearGradientBrush>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </StackPanel>
+                                    </Label.Content>
+                                </Label>
+                                <DataGrid x:Name="DataGrid_NewOrders" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
+                                          FontSize="{Binding MainViewModel.FontSize_H2, FallbackValue=12}" Foreground="#ccc"
+                                          Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
+                                          ItemsSource="{Binding NewOrders, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                            <Setter Property="Height" Value="Auto"/>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                            <Setter Property="Padding" Value="16 0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                </DataGrid>
 
-                    </Grid>
-                </materialDesign:ColorZone>
-            </Border>
-            <Border Width="265" Height="300" Margin="12" CornerRadius="4" Background="#292929"
-                    BorderBrush="#556a97" BorderThickness="0" Padding="6 4">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="2" Color="#aaa" Direction="-45" Opacity="1" ShadowDepth="2" />
-                </Border.Effect>
-                <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" FontSize="{Binding FontSize_DataGrid, FallbackValue=20, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}"
-                               FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
-                            <Label.Content>
-                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <materialDesign:PackIcon Kind="Wrench"/>
-                                    <TextBlock Text="Eng Working" VerticalAlignment="Top" TextAlignment="Left"/>
-                                    <Rectangle Height="3" Fill="#0a89ff">
-                                        <Rectangle.OpacityMask>
-                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                <GradientStop Color="Black"/>
-                                                <GradientStop Color="Transparent" Offset="5"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
-                                </StackPanel>
-                            </Label.Content>
-                        </Label>
-                        <DataGrid x:Name="DataGrid_EngFolders" Grid.Row="1" IsReadOnly="True"
-                                  FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                                  Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
-                                  ItemsSource="{Binding EngWorking, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                    <Setter Property="Height" Value="Auto"/>
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                                    <Setter Property="Padding" Value="16 0"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=8}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                        </DataGrid>
-                    </Grid>
-                </materialDesign:ColorZone>
-            </Border>
-            <Border Width="262" Height="300" Margin="12" CornerRadius="4" Background="#292929"
-                    BorderBrush="#556a97" BorderThickness="0" Padding="6 4">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="2" Color="#aaa" Direction="-45" Opacity="1" ShadowDepth="2" />
-                </Border.Effect>
-                <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" FontSize="{Binding FontSize_DataGrid, FallbackValue=20, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}"
-                               FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
-                            <Label.Content>
-                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <materialDesign:PackIcon Kind="ZipBox"/>
-                                    <TextBlock Text="Eng Archive" VerticalAlignment="Top" TextAlignment="Left"/>
-                                    <Rectangle Height="3" Fill="#0a89ff">
-                                        <Rectangle.OpacityMask>
-                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                <GradientStop Color="Black"/>
-                                                <GradientStop Color="Transparent" Offset="5"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
-                                </StackPanel>
-                            </Label.Content>
-                        </Label>
-                        <DataGrid x:Name="DataGrid_EngArchive" Grid.Row="1" IsReadOnly="True"
-                                  FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                                  Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
-                                  ItemsSource="{Binding EngArchive, UpdateSourceTrigger=PropertyChanged}"
-                                  CanUserResizeRows="False" GridLinesVisibility="None"
-                                  PreviewKeyDown="DataGrid_EngArchive_PreviewKeyDown"
-                                  MouseDoubleClick="DataGrid_EngArchive_MouseDoubleClick">
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                    <Setter Property="Height" Value="Auto"/>
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                                    <Setter Property="Padding" Value="16 0"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=8}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                        </DataGrid>
-                    </Grid>
-                </materialDesign:ColorZone>
-            </Border>
-            <Border Width="262" Height="300" Margin="12" CornerRadius="4" Background="#292929"
-                    BorderBrush="#556a97" BorderThickness="0" Padding="6 4">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="2" Color="#aaa" Direction="-45" Opacity="1" ShadowDepth="2" />
-                </Border.Effect>
-                <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" FontSize="{Binding FontSize_DataGrid, FallbackValue=20, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}"
-                               FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
-                            <Label.Content>
-                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <materialDesign:PackIcon Kind="SawBlade"/>
-                                    <TextBlock Text="CNC Working" VerticalAlignment="Top" TextAlignment="Left"/>
-                                    <Rectangle Height="3" Fill="#0a89ff">
-                                        <Rectangle.OpacityMask>
-                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                <GradientStop Color="Black"/>
-                                                <GradientStop Color="Transparent" Offset="5"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
-                                </StackPanel>
-                            </Label.Content>
-                        </Label>
-                        <DataGrid x:Name="DataGrid_CncFolders" Grid.Row="1" IsReadOnly="True"
-                                  FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                                  Background="Transparent" HeadersVisibility="None" SelectionMode="Single" SnapsToDevicePixels="False"
-                                  ItemsSource="{Binding CncEntries, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                    <Setter Property="Height" Value="Auto"/>
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                                    <Setter Property="Padding" Value="16 0"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=8}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-                        </DataGrid>
-                    </Grid>
-                </materialDesign:ColorZone>
-            </Border>
-        </WrapPanel>
+                            </Grid>
+                        </materialDesign:ColorZone>
+                    </Border>
+                </WrapPanel>
+            </StackPanel>
+
+            <StackPanel Margin="12 0" Background="Transparent">
+                <Label Foreground="#e9e9e5" Background="#353535" FontWeight="Bold"
+                       FontSize="{Binding MainViewModel.FontSize_H1, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Label.Content>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Fill="#FF6CB8FF" Margin="0 0 1 0"/>
+                            <TextBlock Text="Engineering"/>
+                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="800" Margin="2 0 0 0">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                        <GradientStop Color="#FF6CB8FF"/>
+                                        <GradientStop Color="#006CB8FF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Label.Content>
+                    <Label.Effect>
+                        <DropShadowEffect BlurRadius="18" Color="#000" Direction="-45" Opacity="0.9" ShadowDepth="3" />
+                    </Label.Effect>
+                </Label>
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel Orientation="Horizontal" Height="260" Margin="4">
+                        <Border MinWidth="340" Width="Auto" Height="244"
+                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                            Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                            </Border.Effect>
+                            <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                        <Label.Content>
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <materialDesign:PackIcon Kind="Wrench"/>
+                                                <TextBlock Text="Working" VerticalAlignment="Top" TextAlignment="Left"/>
+                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <DataGrid x:Name="DataGrid_EngFolders" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
+                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
+                                          ItemsSource="{Binding EngWorking, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                <Setter Property="Padding" Value="16 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            </Style>
+                                        </DataGrid.CellStyle>
+                                    </DataGrid>
+                                </Grid>
+                            </materialDesign:ColorZone>
+                        </Border>
+                        <Border MinWidth="220" Width="Auto" Height="244"
+                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                            Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                            </Border.Effect>
+                            <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                        <Label.Content>
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <materialDesign:PackIcon Kind="FormatListChecks"/>
+                                                <TextBlock Text="Checking 1" VerticalAlignment="Top" TextAlignment="Left"/>
+                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <DataGrid x:Name="DataGrid_EngChecks1" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
+                                              FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                              Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
+                                              ItemsSource="{Binding EngCheck1, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
+                                              >
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="ContextMenu" Value="{StaticResource CtxMnu_EngRightClick}"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                <Setter Property="Padding" Value="16 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            </Style>
+                                        </DataGrid.CellStyle>
+                                    </DataGrid>
+                                </Grid>
+                            </materialDesign:ColorZone>
+                        </Border>
+                        <Border MinWidth="220" Width="Auto" Height="244"
+                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                            Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                            </Border.Effect>
+                            <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                        <Label.Content>
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <materialDesign:PackIcon Kind="FormatListChecks"/>
+                                                <TextBlock Text="Checking 2" VerticalAlignment="Top" TextAlignment="Left"/>
+                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <DataGrid x:Name="DataGrid_EngChecks2" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
+                                              FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                              Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
+                                              ItemsSource="{Binding EngCheck2, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
+                                              >
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="ContextMenu" Value="{StaticResource CtxMnu_EngRightClick}"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                <Setter Property="Padding" Value="16 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            </Style>
+                                        </DataGrid.CellStyle>
+                                    </DataGrid>
+                                </Grid>
+                            </materialDesign:ColorZone>
+                        </Border>
+                        <Border MinWidth="340" Width="Auto" Height="244"
+        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+        Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                            </Border.Effect>
+                            <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                   FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                   FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                        <Label.Content>
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <materialDesign:PackIcon Kind="TaskAuto"/>
+                                                <TextBlock Text="Releasing" VerticalAlignment="Top" TextAlignment="Left"/>
+                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <DataGrid x:Name="DataGrid_EngRelease" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
+                                              FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                              Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
+                                              ItemsSource="{Binding EngReleases, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="ContextMenu" Value="{StaticResource CtxMnu_EngRightClick}"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                <Setter Property="Padding" Value="16 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            </Style>
+                                        </DataGrid.CellStyle>
+                                    </DataGrid>
+                                </Grid>
+                            </materialDesign:ColorZone>
+                        </Border>
+                        <Border MinWidth="340" Width="Auto" Height="244"
+                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                            Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                            </Border.Effect>
+                            <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
+                                        <Label.Content>
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <materialDesign:PackIcon Kind="ZipBox"/>
+                                                <TextBlock Text="Eng Archive" VerticalAlignment="Top" TextAlignment="Left"/>
+                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <DataGrid x:Name="DataGrid_EngArchive" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
+                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
+                                          ItemsSource="{Binding EngArchive, UpdateSourceTrigger=PropertyChanged}"
+                                          CanUserResizeRows="False" GridLinesVisibility="None"
+                                          PreviewKeyDown="DataGrid_EngArchive_PreviewKeyDown"
+                                          MouseDoubleClick="DataGrid_EngArchive_MouseDoubleClick">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                                <Setter Property="Height" Value="Auto"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                <Setter Property="Padding" Value="16 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            </Style>
+                                        </DataGrid.CellStyle>
+                                    </DataGrid>
+                                </Grid>
+                            </materialDesign:ColorZone>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Margin="12 0" Background="Transparent">
+                <Label Foreground="#e9e9e5" Background="#353535" FontWeight="Bold"
+                       FontSize="{Binding MainViewModel.FontSize_H1, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Label.Content>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Fill="#FF6CB8FF" Margin="0 0 2 0"/>
+                            <TextBlock Text="CNC"/>
+                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="800" Margin="4 0 0 0">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                        <GradientStop Color="#FF6CB8FF"/>
+                                        <GradientStop Color="#006CB8FF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Label.Content>
+                    <Label.Effect>
+                        <DropShadowEffect BlurRadius="18" Color="#000" Direction="-45" Opacity="0.9" ShadowDepth="3" />
+                    </Label.Effect>
+                </Label>
+                <WrapPanel Orientation="Horizontal" Height="260" Margin="4">
+                    <Border MinWidth="340" Width="Auto" Height="244"
+                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                            Margin="8" Padding="6 4" CornerRadius="1">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                        </Border.Effect>
+                        <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
+                                    <Label.Content>
+                                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <materialDesign:PackIcon Kind="SawBlade"/>
+                                            <TextBlock Text="Wks Working" VerticalAlignment="Top" TextAlignment="Left"/>
+                                            <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                <Rectangle.OpacityMask>
+                                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                        <GradientStop Color="Black"/>
+                                                        <GradientStop Color="Transparent" Offset="5"/>
+                                                    </LinearGradientBrush>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </StackPanel>
+                                    </Label.Content>
+                                </Label>
+                                <DataGrid x:Name="DataGrid_CncWorkingWks" Grid.Row="1" IsReadOnly="True"
+                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          Background="Transparent" HeadersVisibility="None" SelectionMode="Single" SnapsToDevicePixels="False"
+                                          ItemsSource="{Binding CncWksEntries, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
+                                          MouseDoubleClick="BrowsableListItem_DoubleClick">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                            <Setter Property="Height" Value="Auto"/>
+                                            <Setter Property="ContextMenu" Value="{StaticResource CtxMnu_EngRightClick}"/>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                            <Setter Property="Padding" Value="16 0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                </DataGrid>
+                            </Grid>
+                        </materialDesign:ColorZone>
+                    </Border>
+                    <Border MinWidth="340" Width="Auto" Height="244"
+        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+        Margin="8" Padding="6 4" CornerRadius="1">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0" ShadowDepth="3" />
+                        </Border.Effect>
+                        <materialDesign:ColorZone Foreground="#ffe9c5" Background="Transparent" FontFamily="Lucida Sans Typewriter" VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
+                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
+                                    <Label.Content>
+                                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <materialDesign:PackIcon Kind="SawBlade"/>
+                                            <TextBlock Text="Pnl Working" VerticalAlignment="Top" TextAlignment="Left"/>
+                                            <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                                <Rectangle.OpacityMask>
+                                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                        <GradientStop Color="Black"/>
+                                                        <GradientStop Color="Transparent" Offset="5"/>
+                                                    </LinearGradientBrush>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </StackPanel>
+                                    </Label.Content>
+                                </Label>
+                                <DataGrid x:Name="DataGrid_CncWorkingPnl" Grid.Row="1" IsReadOnly="True"
+                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          Background="Transparent" HeadersVisibility="None" SelectionMode="Single" SnapsToDevicePixels="False"
+                                          ItemsSource="{Binding CncPnlEntries, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
+                                          >
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                            <Setter Property="Height" Value="Auto"/>
+                                            <Setter Property="ContextMenu" Value="{StaticResource CtxMnu_EngRightClick}"/>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                            <Setter Property="Padding" Value="16 0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                </DataGrid>
+                            </Grid>
+                        </materialDesign:ColorZone>
+                    </Border>
+                </WrapPanel>
+            </StackPanel>
+        </StackPanel>
     </ScrollViewer>
     
 </UserControl>

@@ -1,12 +1,14 @@
 ﻿using OMPS.Core;
 using OMPS.Pages;
+using OMPS.Windows;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
-using System.Windows.Controls;
 using System.Windows;
-using OMPS.Windows;
+using System.Windows.Controls;
+using System.Reflection;
 
 namespace OMPS.viewModel
 {
@@ -47,7 +49,7 @@ namespace OMPS.viewModel
         }
     }
 
-    public class Main_ViewModel: ObservableObject
+    public class Main_ViewModel : ObservableObject
     {
         public MainWindow ParentWin
         {
@@ -71,6 +73,9 @@ namespace OMPS.viewModel
                 ((UIElement)this.ParentWin.statusbar.Parent).Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 this.ParentWin.Btn_Home.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 this.ParentWin.Btn_Back.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                this.ParentWin.Btn_Chat.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                this.ParentWin.Btn_Settings.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                this.ParentWin.Btn_ToggleSideNav.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 //this.ParentWin.MinHeight = 0;
                 //this.ParentWin.MinWidth = 0;
                 this.ParentWin.MinHeight = (value is false ? 600 : 0);
@@ -81,21 +86,82 @@ namespace OMPS.viewModel
             }
         } = false;
 
-        public double FontSize_MAX { get; } = 20;
+        public double FontSize_MAX { get; } = 18;
         public double FontSize_MIN { get; } = 12;
 
-        private double _fontSize_dataGrid = 14;
-        public double FontSize_DataGrid
+        private double _fontSize_base = 12;
+        public double FontSize_Base
         {
-            get => this._fontSize_dataGrid;
+            get => this._fontSize_base;
             set
             {
-                if (this._fontSize_dataGrid == value) return;
+                if (this._fontSize_base == value) return;
                 if (value > FontSize_MAX || value < FontSize_MIN) return;
-                this._fontSize_dataGrid = value;
+                this._fontSize_base = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FontSize_H1));
+                OnPropertyChanged(nameof(FontSize_H1_1));
+                OnPropertyChanged(nameof(FontSize_H1_2));
+                OnPropertyChanged(nameof(FontSize_H1_3));
+                OnPropertyChanged(nameof(FontSize_H1));
+                OnPropertyChanged(nameof(FontSize_H1));
+                OnPropertyChanged(nameof(FontSize_H2));
+                OnPropertyChanged(nameof(FontSize_H3));
+                OnPropertyChanged(nameof(FontSize_H4));
+                OnPropertyChanged(nameof(FontSize_H5));
+                OnPropertyChanged(nameof(FontSize_H6));
+                OnPropertyChanged(nameof(FontSize_H7));
+                OnPropertyChanged(nameof(FontSize_H8));
+                OnPropertyChanged(nameof(FontSize_H9));
+                OnPropertyChanged(nameof(FontSize_H10));
                 OnPropertyChanged("FontSize_CanBeSmaller");
                 OnPropertyChanged("FontSize_CanBeLarger");
+            }
+        }
+
+        private readonly double FontSize_H1_scale   = (2 / Math.Sqrt(1));
+        private readonly double FontSize_H1_1_scale = (2 / Math.Sqrt(1.25));
+        private readonly double FontSize_H1_2_scale = (2 / Math.Sqrt(1.5));
+        private readonly double FontSize_H1_3_scale = (2 / Math.Sqrt(1.75));
+        private readonly double FontSize_H2_scale   = (2 / Math.Sqrt(2));
+        private readonly double FontSize_H3_scale   = (2 / Math.Sqrt(3));
+        private readonly double FontSize_H4_scale   = (2 / Math.Sqrt(4));
+        private readonly double FontSize_H5_scale   = (2 / Math.Sqrt(5));
+        private readonly double FontSize_H6_scale   = (2 / Math.Sqrt(6));
+        private readonly double FontSize_H7_scale   = (2 / Math.Sqrt(7));
+        private readonly double FontSize_H8_scale   = (2 / Math.Sqrt(8));
+        private readonly double FontSize_H9_scale   = (2 / Math.Sqrt(9));
+        private readonly double FontSize_H10_scale  = (2 / Math.Sqrt(10));
+        public double FontSize_H1 { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H1_1 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
+        public double FontSize_H1_2 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
+        public double FontSize_H1_3 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
+        public double FontSize_H2   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H3   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H4   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H5   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H6   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H7   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H8   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H9   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H10  { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+
+        private const double FONTSIZE_DEFAULT_SCALE = 1.0;
+        private double GetFontScaler([CallerMemberName] string? propName = null)
+        {
+            try
+            {
+                if (propName is null or "") return FONTSIZE_DEFAULT_SCALE;
+                var name = $"{propName}_scale";
+                var bindFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+                var field = this.GetType().GetField(name, bindFlags);
+                if (field is null) return FONTSIZE_DEFAULT_SCALE;
+                if (field.FieldType != typeof(double)) return FONTSIZE_DEFAULT_SCALE;
+                if (field.GetValue(this) is not double val) return FONTSIZE_DEFAULT_SCALE;
+                return val;
+            } catch
+            {
+                return FONTSIZE_DEFAULT_SCALE;
             }
         }
 
@@ -103,7 +169,7 @@ namespace OMPS.viewModel
         {
             get
             {
-                return this.FontSize_DataGrid > FontSize_MIN;
+                return this.FontSize_Base > FontSize_MIN;
             }
         }
 
@@ -111,7 +177,7 @@ namespace OMPS.viewModel
         {
             get
             {
-                return this.FontSize_DataGrid < FontSize_MAX;
+                return this.FontSize_Base < FontSize_MAX;
             }
         }
 
@@ -132,7 +198,7 @@ namespace OMPS.viewModel
         }
 
 
-        public Home Landing_VM { get; set; }
+        public Home Home_VM { get; set; }
         public Login Login_VM { get; set; }
         public OrderSearch OrderSearch_VM { get; set; }
         public EngOrder EngOrder_VM { get; set; }
@@ -192,13 +258,36 @@ namespace OMPS.viewModel
                 }
                 field = value;
                 OnPropertyChanged();
+                this.WidgetMode = value is PageTypes.Login;
                 ToggleCurrentContentControl(Visibility.Visible);
+                RunPageDefaultFirstBehaviour(value);
                 OnPropertyChanged(this.PreviousPage + "_IsSelected");
                 OnPropertyChanged(this.PreviousPage + "_IsEnabled");
                 OnPropertyChanged(value + "_IsSelected");
                 OnPropertyChanged(value + "_IsEnabled");
             }
         } = PageTypes.None;
+
+        public void RunPageDefaultFirstBehaviour(PageTypes pageType)
+        {
+            switch (pageType)
+            {
+                case PageTypes.Home:
+                    break;
+                case PageTypes.Login:
+                    break;
+                case PageTypes.OrderSearch:
+                    Debug.WriteLine("Load Orders");
+                    this.OrderSearch_VM.LoadRecentOrders();
+                    break;
+                case PageTypes.EngOrder:
+                    break;
+                case PageTypes.QuoteOrder:
+                    break;
+                default:
+                    break;
+            }
+        }
 
         public void ToggleCurrentContentControl(Visibility state)
         {
@@ -215,15 +304,19 @@ namespace OMPS.viewModel
 
         public Main_ViewModel()
         {
+            //this.EngOrder_VM.JobNbr = "J000000123";
+            this.WidgetMode = false;
+            //this.CurrentPage = PageTypes.OrderSearch;
+        }
+
+        public void Init()
+        {
             this.ParentWin = Ext.MainWindow;
-            this.Landing_VM = new(this.ParentWin);
-            this.Login_VM = new() { ParentWindow = this.ParentWin };
+            this.Home_VM = new(this.ParentWin);
+            this.Login_VM = new(this.ParentWin);
             this.OrderSearch_VM = new(this.ParentWin);
             this.EngOrder_VM = new(this.ParentWin);
             this.QuoteOrder_VM = new(this.ParentWin);
-            //this.EngOrder_VM.JobNbr = "J000000123";
-            this.WidgetMode = false;
-            this.CurrentPage = PageTypes.Home;
         }
     }
 }

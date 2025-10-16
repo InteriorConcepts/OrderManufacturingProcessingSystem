@@ -85,7 +85,7 @@
             </StackPanel>
 
         </Border>
-        <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="3" Panel.ZIndex="0" Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Source="pack://application:,,,/OMPS;component/Images/fluent_web_dark_bg.png">
+        <Image x:Name="Img_BG" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="3" Panel.ZIndex="0" Stretch="UniformToFill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Source="pack://application:,,,/OMPS;component/Images/fluent_web_dark_bg.png">
         </Image>
     </Grid>
 </UserControl>

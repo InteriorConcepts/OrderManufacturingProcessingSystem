@@ -48,6 +48,7 @@ namespace OMPS.Windows
             Ext.MainWindow = this;
             this.DataContext = this._viewModel = new Main_ViewModel();
             this.MainViewModel.ParentWin = this;
+            this.MainViewModel.Init();
             //
             this.SetWindowTitle("");
             //this.ViewController = new(this);
@@ -76,7 +77,7 @@ namespace OMPS.Windows
 
             this.Loaded += MainWindow_Loaded;
 
-
+            this.MainViewModel.CurrentPage = PageTypes.Home;
 
             //((OrderSearch?)((Main_ViewModel)this.DataContext)["OrderSearch", PageTypes.OrderSearch])?.LoadRecentOrders();
         }

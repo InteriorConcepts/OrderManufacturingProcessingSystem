@@ -1,6 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using OMPS.viewModel;
+using OMPS.Windows;
 using System;
 using System.Diagnostics;
 using System.DirectoryServices.AccountManagement;
@@ -17,8 +18,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
 using SCH = SQL_And_Config_Handler;
-using OMPS.Windows;
 
 namespace OMPS.Pages
 {
@@ -29,13 +30,20 @@ namespace OMPS.Pages
     {
         public Login_ViewModel _viewModel = new();
         public MainWindow? ParentWindow;
-        public Login()
+        public Login(MainWindow parentWindow)
         {
+            this.ParentWindow = parentWindow;
             InitializeComponent();
-            //this.DataContext = this._viewModel;
-            //
-            //this.WV_Login.CoreWebView2InitializationCompleted += this.WV_Login_CoreWebView2InitializationCompleted;
-            //this.Init();
+
+#if false
+                // Image palette shift test
+                var b = ColorPaletteHandler.ConvertImageFromUri(
+                    "pack://application:,,,/OMPS;component/Images/fluent_web_dark_bg.png",
+                    ColorPaletteHandler.Palettes.rct2
+                );
+                b.SaveToFile("C:\\test\\img.png");
+#endif
+
             this.Txt_User.Text = UserName[0].ToString().ToUpper() + UserName[1..];
             this.Txt_User.IsReadOnly = true;
             this.Loaded += this.Login_Loaded;
@@ -180,7 +188,7 @@ namespace OMPS.Pages
                 
                 sb.Completed += (ss, ee) =>
                 {
-                    this.ParentWindow.MainViewModel.CurrentPage = PageTypes.OrderSearch;
+                    this.ParentWindow.MainViewModel.CurrentPage = PageTypes.Home;
                     this.ParentWindow.MainViewModel.WidgetMode = false;
                     this.Opacity = 1;
                 };

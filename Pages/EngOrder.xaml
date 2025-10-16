@@ -18,7 +18,7 @@
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
     </UserControl.CacheMode>
     <UserControl.Resources>
-        <local:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+        <!--<local:NullToBooleanConverter x:Key="NullToBooleanConverter"/>-->
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
     </UserControl.Resources>
 
@@ -483,13 +483,13 @@
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
                         <Setter Property="Background" Value="#222"/>
-                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontWeight" Value="DemiBold"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
                 <DataGrid.RowHeaderStyle>
                     <Style TargetType="DataGridRowHeader" BasedOn="{StaticResource {x:Type DataGridRowHeader}}">
                         <Setter Property="Background" Value="#222"/>
-                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontWeight" Value="DemiBold"/>
                         <Setter Property="Padding" Value="8 1 1 1"/>
                     </Style>
                 </DataGrid.RowHeaderStyle>
@@ -518,7 +518,8 @@
                       PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
             </DataGrid>
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
-                <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222">
+                <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
+                                          FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
                     <Grid Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <Grid.CacheMode>
                             <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
@@ -534,10 +535,23 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="24"/>
                         </Grid.RowDefinitions>
-                        <ScrollViewer Grid.Column="0" Grid.Row="0" Width="414" Grid.ColumnSpan="4" Margin="0 0 0 0" Name="dataSideGridScrollViewer" FontSize="14"
-                    Loaded="dataSideGridScrollViewer_Loaded"
-                    VerticalScrollBarVisibility="Auto"
-                    HorizontalScrollBarVisibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
+                        <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Margin="0" Padding="0"
+                                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                            <WrapPanel x:Name="WPnl_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                       Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+
+                                </WrapPanel>
+                                <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+
+                                </WrapPanel>
+                            </WrapPanel>
+                        </ScrollViewer>
+                        <!--
+                        <ScrollViewer Name="dataSideGridScrollViewer" Grid.Column="0" Grid.Row="0" Width="414" Grid.ColumnSpan="5" Margin="0 0 0 0"
+                                      Loaded="dataSideGridScrollViewer_Loaded" FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
+                                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
+                                      VirtualizingPanel.IsVirtualizing="True">
                             <Grid x:Name="grid_dataeditregion" Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150"/>
@@ -545,10 +559,11 @@
                                 </Grid.ColumnDefinitions>
                             </Grid>
                         </ScrollViewer>
+                        -->
                         <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
-            BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
-            IsEnabled="{Binding Pending_LineChanges}" Height="24"
-            Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
+                                IsEnabled="{Binding Pending_LineChanges}" Height="24"
+                                Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Revert</TextBlock>
                                 <Viewbox Stretch="Uniform" Width="18" Height="18">
@@ -559,10 +574,10 @@
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
-            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-            IsEnabled="{Binding Pending_LineChanges}"
-            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
+                                IsEnabled="{Binding Pending_LineChanges}"
+                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Save</TextBlock>
                                 <Viewbox Stretch="UniformToFill" Width="18" Height="18">
@@ -573,10 +588,10 @@
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
-            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
-            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
-            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
+                                IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Delete</TextBlock>
                                 <Viewbox Stretch="UniformToFill" Width="18" Height="18">
@@ -587,10 +602,10 @@
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0"
-            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
-            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
+                                IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Margin="0 0 4 0" TextAlignment="Center">Lookup</TextBlock>
                                 <materialDesign:PackIcon Kind="TableSearch" VerticalAlignment="Stretch"
@@ -598,10 +613,10 @@
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="4" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
-            BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
-            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
-            Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
+                                IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">New</TextBlock>
                                 <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#718141" Kind="AddBold"/>

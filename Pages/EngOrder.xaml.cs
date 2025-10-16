@@ -83,12 +83,12 @@ namespace OMPS.Pages
         private DateTime? Last_ManufData = null;
         public Main_ViewModel MainViewModel
         {
-            get => this.ParentWindow.MainViewModel;
+            get => Ext.MainWindow.MainViewModel;
         }
 
         public double DataGridFontSize
         {
-            get => this.MainViewModel.FontSize_DataGrid;
+            get => MainViewModel.FontSize_Base;
         }
         internal MainWindow ParentWindow
         {
@@ -97,7 +97,7 @@ namespace OMPS.Pages
                 field = value;
                 value?.MainViewModel?.PropertyChanged += new((sender, e) =>
                 {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_DataGrid)) return;
+                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
                     //this.datagrid_orders.UpdateLayout();
                     OnPropertyChanged(nameof(DataGridFontSize));
                 });
@@ -198,6 +198,7 @@ namespace OMPS.Pages
         {
             await Task.Run(() =>
             {
+                Debug.WriteLine("Loading Color Set Data");
                 var data_info = Ext.Queries.GetColorSet(job).First();
                 PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
             });
@@ -229,26 +230,24 @@ namespace OMPS.Pages
             await Task.Run(() =>
             {
                 data_mfglines = Ext.Queries.GetItemLinesByJob(job);
-            });
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                this.datagrid_main.BeginEdit();
-                for (int i = 0; i < data_mfglines.Count; i++)
+                this.Dispatcher.BeginInvoke(() =>
                 {
-                    this.MfgItemLines.Add(data_mfglines[i]);
-                }
-            });
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if (this.datagrid_main.Items.Count is not 0)
-                {
-                    this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
-                }
-                this.datagrid_main.EndInit();
-                this.ParentWindow.SetTabTitle($"{this.JobNbr}");
-                this.progbar_itemlines.Value = 0;
-                this.progbar_itemlines.IsEnabled = false;
-                this.progbar_itemlines.Visibility = Visibility.Collapsed;
+                    //this.datagrid_main.BeginEdit();
+                    for (int i = 0; i < data_mfglines.Count; i++)
+                    {
+                        Debug.WriteLine(i);
+                        this.MfgItemLines.Add(data_mfglines[i]);
+                    }
+                    if (this.datagrid_main.Items.Count is not 0)
+                    {
+                        this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
+                    }
+                    //this.datagrid_main.EndInit();
+                    this.ParentWindow.SetTabTitle($"{this.JobNbr}");
+                    this.progbar_itemlines.Value = 0;
+                    this.progbar_itemlines.IsEnabled = false;
+                    this.progbar_itemlines.Visibility = Visibility.Collapsed;
+                });
             });
             this.Last_ManufData = DateTime.Now;
         }
@@ -280,10 +279,12 @@ namespace OMPS.Pages
 
         private void DataGridMouseWheelHorizontal(object sender, RoutedEventArgs e)
         {
+            /*
             MouseWheelEventArgs eargs = (MouseWheelEventArgs)e;
             double x = (double)eargs.Delta;
             double y = dataSideGridScrollViewer.VerticalOffset;
             dataSideGridScrollViewer.ScrollToVerticalOffset(y - x);
+            */
         }
 
         public bool MfgItems_Filter(example_queries_GetItemLinesByJobResult item, string filterText)
@@ -443,7 +444,7 @@ namespace OMPS.Pages
 
         private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName is not "FontSize_DataGrid") return;
+            if (e.PropertyName is not "FontSize_Base") return;
             OnPropertyChanged(nameof(DataGridFontSize));
         }
 
@@ -508,8 +509,10 @@ namespace OMPS.Pages
                 e.Handled = true;
                 var colIdx = this.datagrid_main.CurrentCell.Column.DisplayIndex;
                 this.pnl_dock.Focus();
-                this.grid_dataeditregion.Focus();
-                if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+                //this.grid_dataeditregion.Focus();
+                this.WPnl_DataEditRegion.Focus();
+                //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+                if (this.WPnl_EditInputs.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
                 Debug.WriteLine(colIdx);
                 if (txts.ElementAt(colIdx) is not TextBox txt) return;
                 txt.Focus();
@@ -583,8 +586,10 @@ namespace OMPS.Pages
 
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
-            this.grid_dataeditregion.Children.Clear();
-            this.grid_dataeditregion.RowDefinitions.Clear();
+            //this.grid_dataeditregion.Children.Clear();
+            //this.grid_dataeditregion.RowDefinitions.Clear();
+            this.WPnl_EditLabels.Children.Clear();
+            this.WPnl_EditInputs.Children.Clear();
             if (typeof(example_queries_GetItemLinesByJobResult).GetProperties() is not PropertyInfo[] props) return;
             if (props.Length is 0) return;
             List<string> cols = [.. this.datagrid_main.Columns.OrderBy(c => c.DisplayIndex).Select(c => c.Header.ToString())];
@@ -594,18 +599,38 @@ namespace OMPS.Pages
             {
                 if (props[i] is not PropertyInfo prop) return;
                 if (this.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(prop.Name)) continue;
-                var lbl = new Label() {
-                    Width = 100,
+                var lbl = new Label()
+                {
+                    Width = 150,
                     Content = prop.Name,
                     VerticalContentAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Right
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Height = 30,
                 };
-                var txt = new TextBox() {
+                var txt = new TextBox()
+                {
                     VerticalContentAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     IsReadOnly = this.DataGrid_IceManuf_ColumnsReadonly.Contains(prop.Name),
                     Visibility = Visibility.Visible,
+                    Width = 414 - 150 - 5,
+                    Height = 30,
                 };
+                /*
+                Binding fontSizeBind = new("FontSize_Base")
+                {
+                    Path = new("MainViewModel.FontSize_Base"),
+                    Source = this,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay,
+                    TargetNullValue = 22d,
+                    FallbackValue = 22d,
+                    Converter = (ScalingConverter)Resources["ScalingConverter1"],
+                    ConverterParameter = 5
+                };
+                txt.SetBinding(TextBox.HeightProperty, fontSizeBind);
+                lbl.SetBinding(Label.HeightProperty, fontSizeBind);
+                */
                 Binding bind = new(prop.Name)
                 {
                     Path = new PropertyPath($"SelectedItem.{prop.Name}"),
@@ -626,13 +651,17 @@ namespace OMPS.Pages
                 txt.Style = style;
                 txt.PreviewKeyDown += this.Txt_PreviewKeyDown;
                 txt.SetBinding(TextBox.TextProperty, bind);
-                this.grid_dataeditregion.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32, GridUnitType.Pixel) });
-                this.grid_dataeditregion.Children.Add(lbl);
-                this.grid_dataeditregion.Children.Add(txt);
+                //this.grid_dataeditregion.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32, GridUnitType.Pixel) });
+                //this.grid_dataeditregion.Children.Add(lbl);
+                //this.grid_dataeditregion.Children.Add(txt);
+                this.WPnl_EditLabels.Children.Add(lbl);
+                this.WPnl_EditInputs.Children.Add(txt);
+                /*
                 Grid.SetRow(lbl, rowIdx);
                 Grid.SetRow(txt, rowIdx);
                 Grid.SetColumn(lbl, 0);
                 Grid.SetColumn(txt, 1);
+                */
                 rowIdx++;
             }
         }
@@ -651,7 +680,8 @@ namespace OMPS.Pages
         private void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
             if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
-            if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            if (this.WPnl_EditInputs.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             List<(string, bool, Type?, object?)> changes = [];
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
             foreach (var item in txts)
@@ -687,7 +717,8 @@ namespace OMPS.Pages
         private void Btn_RevertItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
             if (Ext.PopupConfirmation("Discard changes made to item line? All unsaved changes will be lost.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) is not MessageBoxResult.Yes) return;
-            if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            if (this.WPnl_EditInputs.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             foreach (var item in txts)
             {
                 var binding = item.GetBindingExpression(TextBox.TextProperty);
@@ -776,6 +807,7 @@ namespace OMPS.Pages
 
         private async void LabelInputLookupPair_LookupInputChanged(object sender, LabelInputLookupPair.Lookup_EventArgs e)
         {
+            if (e.Lookup is "00000000-0000-0000-0000-000000000000") return;
             if (SCH.Global.Config is null || !SCH.Global.Config.InitializationSuccessfull) return;
             Debug.WriteLine($"Try Query GUID lookup ({e.Lookup})");
             var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");

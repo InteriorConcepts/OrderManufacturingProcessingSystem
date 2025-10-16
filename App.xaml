@@ -7,6 +7,7 @@
              xmlns:pages="clr-namespace:OMPS.Pages"
              xmlns:windows="clr-namespace:OMPS.Windows"
              StartupUri="windows/MainWindow.xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              ThemeMode="Dark">
             
@@ -31,13 +32,9 @@
                 <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="DodgerBlue" SecondaryColor="AntiqueWhite"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
 
-                <!--
-                <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />-->
 
-                -->
             </ResourceDictionary.MergedDictionaries>
-
-            <local:ScalingConverter x:Key="ScalingConverter1"/>
 
             <ObjectDataProvider x:Key="IsDarkTheme"
                         MethodName="CurrentThemeIsDark"
@@ -48,15 +45,12 @@
             <BitmapImage x:Key="MouseOverButtonImage" UriSource="pack://application:,,,/OMPS;component/Images/Save-hover.png"/>
             <BitmapImage x:Key="MouseDownButtonImage" UriSource="pack://application:,,,/OMPS;component/Images/Save-down.png"/>
 
-            <!--
-            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                <Setter Property="Foreground" 
-                Value="{Binding Foreground, 
-                       RelativeSource={RelativeSource AncestorType=FrameworkElement},
-                       FallbackValue=Black}"/>
-            </Style>
-            -->
 
+            <local:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+            <local:ScalingConverter x:Key="ScalingConverter1" x:Name="ScalingConverter1"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisConverter1"/>
+
+            
             <Style x:Key="SaveBtn" TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>

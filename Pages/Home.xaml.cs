@@ -1,10 +1,13 @@
-﻿using OMPS.viewModel;
+﻿using Humanizer;
+using OMPS.viewModel;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,8 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using Humanizer;
-using System.IO;
+using Windows.Devices.Geolocation;
 
 namespace OMPS.Pages
 {
@@ -24,14 +26,17 @@ namespace OMPS.Pages
     /// </summary>
     public partial class Home : UserControl, INotifyPropertyChanged
     {
+        public Home() { }
         public Home(MainWindow parentWindow)
         {
+            this.ParentWindow = parentWindow;
             InitializeComponent();
             //
             this.DataContext = this;
-            this.ParentWindow = parentWindow;
             this.GetNewOrders();
             this.GetEngWorking();
+            this.GetEngChecks();
+            this.GetEngReleases();
             this.GetEngArchive();
             this.GetCncWorking();
         }
@@ -46,12 +51,12 @@ namespace OMPS.Pages
 
         public Main_ViewModel MainViewModel
         {
-            get => this.ParentWindow.MainViewModel;
+            get => Ext.MainWindow.MainViewModel;
         }
 
         public double DataGridFontSize
         {
-            get => this.MainViewModel.FontSize_DataGrid;
+            get => MainViewModel.FontSize_Base;
         }
 
         internal MainWindow ParentWindow
@@ -61,11 +66,21 @@ namespace OMPS.Pages
                 field = value;
                 value?.MainViewModel?.PropertyChanged += new((sender, e) =>
                 {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_DataGrid)) return;
+                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
                     //this.datagrid_orders.UpdateLayout();
                     OnPropertyChanged(nameof(DataGridFontSize));
                 });
             }
+        }
+
+        public class PathEntry
+        {
+            public string Name { get; set; } = "";
+            private FileSystemInfo Path { get; set; }
+            public void SetPath(FileSystemInfo fsi)
+                => this.Path = fsi;
+            public FileSystemInfo GetPath()
+                => this.Path;
         }
 
         public class RecentOrder
@@ -83,31 +98,41 @@ namespace OMPS.Pages
         }
         public ObservableCollection<EngOrder> EngWorking { get; set; } = [];
 
-        public class EngArchiveEntry
+
+        public ObservableCollection<EngArchiveEntry> EngCheck1 { get; set; } = [];
+        public ObservableCollection<EngArchiveEntry> EngCheck2 { get; set; } = [];
+
+        public class DirEntryWithParentName: PathEntry
         {
-            public string Name { get; set; } = "";
-            private FileSystemInfo Path { get; set; }
-            public FileSystemInfo GetPath()
+            public string Parent { get; set; } = "";
+            public DirEntryWithParentName(string name, DirectoryInfo path)
             {
-                return Path;
+                this.Name = name;
+                this.SetPath(path);
+                this.Parent = path.Parent?.Name ?? "";
             }
+        }
+        public ObservableCollection<DirEntryWithParentName> EngReleases { get; set; } = [];
+
+        public class EngArchiveEntry: PathEntry
+        {
             public EngArchiveEntry(string name, FileSystemInfo path)
             {
                 this.Name = name;
-                this.Path = path;
+                this.SetPath(path);
             }
         }
         public ObservableCollection<EngArchiveEntry> EngArchive { get; set; } = [];
 
-        public class CncEntry(DirectoryInfo Path)
+        public class CncEntry: PathEntry
         {
-            public string Type { get; set; } = "";
-            public string Name { get; set; } = "";
-            private DirectoryInfo? Path { get; set; }
-            public DirectoryInfo? GetPath()
-                => this.Path;
+            public CncEntry(DirectoryInfo path)
+            {
+                this.SetPath(path);
+            }
         }
-        public ObservableCollection<CncEntry> CncEntries { get; set; } = [];
+        public ObservableCollection<CncEntry> CncWksEntries { get; set; } = [];
+        public ObservableCollection<CncEntry> CncPnlEntries { get; set; } = [];
 
 
 
@@ -148,6 +173,49 @@ namespace OMPS.Pages
             //OnPropertyChanged(nameof(EngWorking));
         }
 
+        public const string EngCheck1Root = "H:\\engineering\\4. 1st Check";
+        public const string EngCheck2Root = "H:\\engineering\\5. 2nd Check";
+        public void GetEngChecks()
+        {
+            EngCheck1.Clear();
+            EngCheck2.Clear();
+
+            var dirs1 = new DirectoryInfo(EngCheck1Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            var dirs2 = new DirectoryInfo(EngCheck1Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            foreach (var entry in dirs1)
+            {
+                if (!(entry.Name[..1] is "J" or "S"))
+                {
+                    continue;
+                }
+                EngCheck1.Add(new(entry.Name, entry));
+            }
+            foreach (var entry in dirs2)
+            {
+                if (!(entry.Name[..1] is "J" or "S"))
+                {
+                    continue;
+                }
+                EngCheck2.Add(new(entry.Name, entry));
+            }
+        }
+
+        public const string EngReleaseDir = "H:\\engineering\\Ready to Release";
+        public void GetEngReleases()
+        {
+            var userDirs = new DirectoryInfo(EngReleaseDir).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            var jobDirs = userDirs.SelectMany(d => d.EnumerateDirectories("*", SearchOption.TopDirectoryOnly));
+
+            foreach (var entry in jobDirs)
+            {
+                if (!(entry.Name[..1] is "J" or "S"))
+                {
+                    continue;
+                }
+                EngReleases.Add(new(entry.Name, entry));
+            }
+        }
+
         public const string EngArchiveRoot = "H:\\Zipped Jobs";
         public DirectoryInfo? EngArchiveCurrentPath;
         public void GetEngArchive()
@@ -173,22 +241,25 @@ namespace OMPS.Pages
         public const string CncWorkingPnlRoot = "H:\\CNC JOBS\\_WORK\\PNL Working";
         public void GetCncWorking()
         {
-            CncEntries.Clear();
-            foreach (var entry in new DirectoryInfo(CncWorkingWksRoot).GetDirectories("*", SearchOption.TopDirectoryOnly))
+            CncWksEntries.Clear();
+            CncPnlEntries.Clear();
+            var wksEntries = new DirectoryInfo(CncWorkingWksRoot).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            var pnlEntries = new DirectoryInfo(CncWorkingPnlRoot).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            foreach (var entry in wksEntries)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                CncEntries.Add(new(entry) { Name = entry.Name, Type = "Wks" });
+                CncWksEntries.Add(new(entry) { Name = entry.Name });
             }
-            foreach (var entry in new DirectoryInfo(CncWorkingPnlRoot).GetDirectories("*", SearchOption.TopDirectoryOnly))
+            foreach (var entry in pnlEntries)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                CncEntries.Add(new(entry) { Name = entry.Name, Type = "Pnl" });
+                CncPnlEntries.Add(new(entry) { Name = entry.Name });
             }
         }
 
@@ -201,6 +272,24 @@ namespace OMPS.Pages
 
         public void ChangeEngArchivePath(FileSystemInfo newPath)
             => this.ChangeEngArchivePath(newPath.FullName);
+
+        public void BrowsableListItem_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton is not MouseButton.Left) return;
+            if (sender is not DataGrid dg) return;
+            if (dg.SelectedItem is not object item) return;
+            if (item.GetType().GetMethod("GetPath", BindingFlags.Public | BindingFlags.Instance) is not MethodInfo meth) return;
+            var obj = meth.Invoke(item, []);
+            if (obj is null) return;
+            if (obj is FileSystemInfo fsi)
+            {
+                Process.Start("explorer.exe", "/select," + fsi.FullName);
+            }
+            else if (obj is DirectoryInfo di)
+            {
+                Process.Start("explorer.exe", "/select," + di.FullName);
+            }
+        }
 
         public void ChangeEngArchivePath(string newPath)
         {
@@ -251,6 +340,40 @@ namespace OMPS.Pages
                 if (newDir is null) return;
                 this.ChangeEngArchivePath(newDir);
             }
+        }
+
+        private void Ctx_Job_OpenInApp_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is null) return;
+            if (sender is not MenuItem mi ||
+                mi.Parent is not ContextMenu cm ||
+                cm.PlacementTarget is not object obj ||
+                obj is not DataGridRow dgr) return;
+            if (dgr.DataContext is not PathEntry pe) return;
+            this.MainViewModel.CurrentPage = PageTypes.EngOrder;
+            this.MainViewModel.EngOrder_VM.JobNbr = pe.Name;
+        }
+
+        private void Ctx_Job_OpenFolderInExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is null) return;
+            if (sender is not MenuItem mi ||
+                mi.Parent is not ContextMenu cm ||
+                cm.PlacementTarget is not object obj ||
+                obj is not DataGridRow dgr) return;
+            if (dgr.DataContext is not PathEntry pe) return;
+            Process.Start("explorer.exe", pe.GetPath().FullName);
+        }
+
+        private void Ctx_Job_OpenContainingFolderInExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is null) return;
+            if (sender is not MenuItem mi ||
+                mi.Parent is not ContextMenu cm ||
+                cm.PlacementTarget is not object obj ||
+                obj is not DataGridRow dgr) return;
+            if (dgr.DataContext is not PathEntry pe) return;
+            Process.Start("explorer.exe", "/select," + pe.GetPath().FullName);
         }
     }
 }
