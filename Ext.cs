@@ -1,7 +1,9 @@
 ﻿using MyApp.DataAccess.Generated;
 using OMPS.Pages;
+using OMPS.Windows;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Windows;
@@ -9,7 +11,6 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using OMPS.Windows;
 
 
 namespace OMPS
@@ -21,11 +22,27 @@ namespace OMPS
         Login = 1,
         OrderSearch = 2,
         EngOrder = 3,
-        QuoteOrder = 4
+        QuoteOrder = 4,
+        ProductCatalogSearch = 5,
+        ProductCatalogDetails = 6
     }
 
     public static class Ext
     {
+
+        public static IEnumerable<FileInfo> MultiEnumerateFiles(this DirectoryInfo di, string patterns, SearchOption sOpts = SearchOption.TopDirectoryOnly)
+        {
+            foreach (var pattern in patterns.Split('|'))
+                foreach (var file in di.EnumerateFiles(pattern, sOpts))
+                    yield return file;
+        }
+        public static IEnumerable<DirectoryInfo> MultiEnumerateDirectories(this DirectoryInfo di, string patterns, SearchOption sOpts = SearchOption.TopDirectoryOnly)
+        {
+            foreach (var pattern in patterns.Split('|'))
+                foreach (var file in di.EnumerateDirectories(pattern, sOpts))
+                    yield return file;
+        }
+
         public static MainWindow MainWindow;
 
         public static string StringFormat_Currency = "{}{0:C2.00}";

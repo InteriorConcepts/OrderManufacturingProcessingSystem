@@ -32,9 +32,8 @@ namespace OMPS.Pages
     /// </summary>
     public partial class EngOrder : UserControl, INotifyPropertyChanged
     {
-        public EngOrder(MainWindow parentWindow)
+        public EngOrder()
         {
-            this.ParentWindow = parentWindow;
             InitializeComponent();
             //
             this.DataContext = this;
@@ -55,6 +54,10 @@ namespace OMPS.Pages
             this.Btn_SaveHeader.IsEnabled = true;
             Debug.WriteLine($"{propName} -> {val}");
         }
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
 
         #region Events
@@ -64,6 +67,28 @@ namespace OMPS.Pages
 
 
         #region Properties
+        public double DataGridFontSize
+        {
+            get => MainViewModel.FontSize_Base;
+        }
+        public Main_ViewModel MainViewModel
+        {
+            get => Ext.MainWindow.MainViewModel;
+        }
+        public MainWindow? ParentWindow
+        {
+            get; set
+            {
+                field = value;
+                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
+                {
+                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
+                    //this.datagrid_orders.UpdateLayout();
+                    OnPropertyChanged(nameof(DataGridFontSize));
+                });
+            }
+        }
+
         public const short DELAY_HEADER_REFRESH = 5000;
 
         public const string extProc_ImportEngMfg_exe = "P:\\!CRM\\IceMfgImport.exe";
@@ -81,28 +106,6 @@ namespace OMPS.Pages
 
         public bool IsLoadingJobData { get; set; } = false;
         private DateTime? Last_ManufData = null;
-        public Main_ViewModel MainViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
-
-        public double DataGridFontSize
-        {
-            get => MainViewModel.FontSize_Base;
-        }
-        internal MainWindow ParentWindow
-        {
-            get; set
-            {
-                field = value;
-                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
-                {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
-                    //this.datagrid_orders.UpdateLayout();
-                    OnPropertyChanged(nameof(DataGridFontSize));
-                });
-            }
-        }
 
         private bool Pending_LineChanges
         {
@@ -243,7 +246,7 @@ namespace OMPS.Pages
                         this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
                     }
                     //this.datagrid_main.EndInit();
-                    this.ParentWindow.SetTabTitle($"{this.JobNbr}");
+                    Ext.MainWindow.SetTabTitle($"{this.JobNbr}");
                     this.progbar_itemlines.Value = 0;
                     this.progbar_itemlines.IsEnabled = false;
                     this.progbar_itemlines.Visibility = Visibility.Collapsed;
@@ -436,11 +439,6 @@ namespace OMPS.Pages
 
 
         #region EventHandlers
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -862,10 +860,10 @@ namespace OMPS.Pages
                 _ => (null, null, null, null)
             };
             if (partConstraint is null || descConstraint is null) return;
-            using var lookup = new LookupFinder(this.ParentWindow.MainViewModel)
+            using var lookup = new LookupFinder(this.MainViewModel)
             {
-                MainVM = this.ParentWindow.MainViewModel,
-                Owner = this.ParentWindow
+                MainVM = this.MainViewModel,
+                Owner = Ext.MainWindow
             };
             await lookup.LookupMaterials(partFilter, descFilter, partConstraint, descConstraint);
             if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;

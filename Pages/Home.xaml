@@ -54,26 +54,29 @@
                 </LinearGradientBrush>
             </StackPanel.Background>
             <StackPanel Margin="12 0" Background="Transparent">
-                <Label Foreground="#e9e9e5" Background="#353535" FontWeight="Bold"
-                       FontSize="{Binding MainViewModel.FontSize_H1, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Label.Content>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Fill="#FF6CB8FF" Margin="0 0 2 0"/>
-                            <TextBlock Text="Orders"/>
-                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="800" Margin="2 0 0 0">
-                                <Rectangle.Fill>
-                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                        <GradientStop Color="#FF6CB8FF"/>
-                                        <GradientStop Color="#006CB8FF" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </StackPanel>
-                    </Label.Content>
-                    <Label.Effect>
-                        <DropShadowEffect BlurRadius="18" Color="#000" Direction="-45" Opacity="0.9" ShadowDepth="3" />
-                    </Label.Effect>
-                </Label>
+                <Border Background="#353535" BorderBrush="#FF70FF6C" BorderThickness="0 0 0 2" CornerRadius="1">
+                    <Label Foreground="#FFEFEFEF"  FontWeight="Bold"
+                       FontSize="{Binding MainViewModel.FontSize_H2, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <Label.Content>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Visibility="Hidden" Fill="#FF6CB8FF" Margin="0 0 2 0"/>
+                                <TextBlock Text="Orders"/>
+                                <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="1200" Margin="2 0 0 0" Visibility="Hidden">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                            <GradientStop Color="#FF6CB8FF"/>
+                                            <GradientStop Color="#006CB8FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </StackPanel>
+                        </Label.Content>
+                        <Label.Effect>
+                            <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.3" ShadowDepth="3" />
+                        </Label.Effect>
+                    </Label>
+                </Border>
+                
                 <WrapPanel Orientation="Horizontal" Height="260" Margin="4">
                     <Border MinWidth="340" Width="Auto" Height="244"
                             BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
@@ -88,25 +91,36 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                                       FontWeight="Bold" Padding="0" Foreground="#d7d7d7">
+                                       FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0" Foreground="#e9e9e5">
                                     <Label.Content>
-                                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                            <materialDesign:PackIcon Kind="Papers"/>
-                                            <TextBlock Text="New Orders" VerticalAlignment="Top" TextAlignment="Left"/>
-                                            <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                <Rectangle.OpacityMask>
-                                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                        <GradientStop Color="Black"/>
-                                                        <GradientStop Color="Transparent" Offset="5"/>
-                                                    </LinearGradientBrush>
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-                                        </StackPanel>
+                                        <Border Background="#4470FF6C" CornerRadius="1" BorderBrush="#FF70FF6C" BorderThickness="0">
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <StackPanel.Effect>
+                                                    <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                </StackPanel.Effect>
+                                                <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                    <Label.Content>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="NewReleases" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="New"/>
+                                                        </StackPanel>
+                                                    </Label.Content>
+                                                </Label>
+                                                <Rectangle Height="0" Fill="#FF70FF6C">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Border>
                                     </Label.Content>
                                 </Label>
                                 <DataGrid x:Name="DataGrid_NewOrders" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
-                                          FontSize="{Binding MainViewModel.FontSize_H2, FallbackValue=12}" Foreground="#ccc"
+                                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                           Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
                                           ItemsSource="{Binding NewOrders, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
                                     <DataGrid.RowStyle>
@@ -119,7 +133,7 @@
                                             <Setter Property="Padding" Value="16 0"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                         </Style>
                                     </DataGrid.CellStyle>
                                 </DataGrid>
@@ -131,27 +145,29 @@
             </StackPanel>
 
             <StackPanel Margin="12 0" Background="Transparent">
-                <Label Foreground="#e9e9e5" Background="#353535" FontWeight="Bold"
-                       FontSize="{Binding MainViewModel.FontSize_H1, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Label.Content>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Fill="#FF6CB8FF" Margin="0 0 1 0"/>
-                            <TextBlock Text="Engineering"/>
-                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="800" Margin="2 0 0 0">
-                                <Rectangle.Fill>
-                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                        <GradientStop Color="#FF6CB8FF"/>
-                                        <GradientStop Color="#006CB8FF" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </StackPanel>
-                    </Label.Content>
-                    <Label.Effect>
-                        <DropShadowEffect BlurRadius="18" Color="#000" Direction="-45" Opacity="0.9" ShadowDepth="3" />
-                    </Label.Effect>
-                </Label>
-                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Visible">
+                <Border Background="#353535" BorderBrush="#FF6CB8FF" BorderThickness="0 0 0 2" CornerRadius="2">
+                    <Label Foreground="#FFEFEFEF" FontWeight="Bold"
+                       FontSize="{Binding MainViewModel.FontSize_H2, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <Label.Content>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Visibility="Hidden" Fill="#FF6C89FF" Margin="0 0 1 0"/>
+                                <TextBlock Text="Engineering"/>
+                                <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="1200" Margin="2 0 0 0" Visibility="Hidden">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                            <GradientStop Color="#FF6C89FF" Offset="0.006"/>
+                                            <GradientStop Color="#006C89FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </StackPanel>
+                        </Label.Content>
+                        <Label.Effect>
+                            <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.3" ShadowDepth="3" />
+                        </Label.Effect>
+                    </Label>
+                </Border>
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Visible" BorderBrush="#353535" BorderThickness="2">
                     <StackPanel Orientation="Horizontal" Height="260" Margin="4">
                         <Border MinWidth="340" Width="Auto" Height="244"
                             BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
@@ -166,25 +182,36 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                           FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                           FontWeight="Bold" Padding="0 0 0 8" Foreground="#e9e9e5 ">
                                         <Label.Content>
-                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <materialDesign:PackIcon Kind="Wrench"/>
-                                                <TextBlock Text="Working" VerticalAlignment="Top" TextAlignment="Left"/>
-                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                    <Rectangle.OpacityMask>
-                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                            <GradientStop Color="Black"/>
-                                                            <GradientStop Color="Transparent" Offset="5"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </StackPanel>
+                                            <Border Background="#446C89FF" CornerRadius="1" BorderBrush="#FF6C89FF" BorderThickness="0">
+                                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <StackPanel.Effect>
+                                                        <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                    </StackPanel.Effect>
+                                                    <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                        <Label.Content>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <materialDesign:PackIcon Kind="Wrench" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Working"/>
+                                                            </StackPanel>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Rectangle Height="0" Fill="#FF6C89FF">
+                                                        <Rectangle.OpacityMask>
+                                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                                <GradientStop Color="Black"/>
+                                                                <GradientStop Color="Transparent" Offset="5"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Border>
                                         </Label.Content>
                                     </Label>
                                     <DataGrid x:Name="DataGrid_EngFolders" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
-                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                           Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
                                           ItemsSource="{Binding EngWorking, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
                                         <DataGrid.RowStyle>
@@ -197,7 +224,7 @@
                                                 <Setter Property="Padding" Value="16 0"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                             </Style>
                                         </DataGrid.CellStyle>
                                     </DataGrid>
@@ -217,25 +244,36 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                           FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                           FontWeight="Bold" Padding="0 0 0 8" Foreground="#e9e9e5 ">
                                         <Label.Content>
-                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <materialDesign:PackIcon Kind="FormatListChecks"/>
-                                                <TextBlock Text="Checking 1" VerticalAlignment="Top" TextAlignment="Left"/>
-                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                    <Rectangle.OpacityMask>
-                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                            <GradientStop Color="Black"/>
-                                                            <GradientStop Color="Transparent" Offset="5"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </StackPanel>
+                                            <Border Background="#446C89FF" CornerRadius="1" BorderBrush="#FF6C89FF" BorderThickness="0">
+                                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <StackPanel.Effect>
+                                                        <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                    </StackPanel.Effect>
+                                                    <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                        <Label.Content>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <materialDesign:PackIcon Kind="FormatListChecks" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Checking 1"/>
+                                                            </StackPanel>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Rectangle Height="0" Fill="#FF6C89FF">
+                                                        <Rectangle.OpacityMask>
+                                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                                <GradientStop Color="Black"/>
+                                                                <GradientStop Color="Transparent" Offset="5"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Border>
                                         </Label.Content>
                                     </Label>
                                     <DataGrid x:Name="DataGrid_EngChecks1" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
-                                              FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc" AutoGenerateColumns="False"
                                               Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
                                               ItemsSource="{Binding EngCheck1, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
                                               >
@@ -250,9 +288,33 @@
                                                 <Setter Property="Padding" Value="16 0"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                             </Style>
                                         </DataGrid.CellStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Name}"  Cursor="Hand" Background="Transparent"
+                                                                       VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
+                                                                       FontSize="{Binding ElementName=Page_Home, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Click="Ctx_Job_OpenInApp_Click">
+                                                                <materialDesign:PackIcon Kind="OpenInApp" ToolTip="Open on EngOrder"/>
+                                                            </Button>
+                                                            
+                                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Click="Ctx_Job_OpenFolderInExplorer_Click">
+                                                                <materialDesign:PackIcon Kind="ExternalLink" ToolTip="Open in Explorer"/>
+                                                            </Button>
+
+                                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Click="Ctx_Job_OpenContainingFolderInExplorer_Click">
+                                                                <materialDesign:PackIcon Kind="FolderArrowUp" ToolTip="Open Containing Folder"/>
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
                             </materialDesign:ColorZone>
@@ -270,25 +332,36 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                           FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                           FontWeight="Bold" Padding="0 0 0 8" Foreground="#e9e9e5 ">
                                         <Label.Content>
-                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <materialDesign:PackIcon Kind="FormatListChecks"/>
-                                                <TextBlock Text="Checking 2" VerticalAlignment="Top" TextAlignment="Left"/>
-                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                    <Rectangle.OpacityMask>
-                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                            <GradientStop Color="Black"/>
-                                                            <GradientStop Color="Transparent" Offset="5"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </StackPanel>
+                                            <Border Background="#446C89FF" CornerRadius="1" BorderBrush="#FF6C89FF" BorderThickness="0">
+                                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <StackPanel.Effect>
+                                                        <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                    </StackPanel.Effect>
+                                                    <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                        <Label.Content>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <materialDesign:PackIcon Kind="FormatListChecks" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Checking 2"/>
+                                                            </StackPanel>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Rectangle Height="0" Fill="#FF6C89FF">
+                                                        <Rectangle.OpacityMask>
+                                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                                <GradientStop Color="Black"/>
+                                                                <GradientStop Color="Transparent" Offset="5"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Border>
                                         </Label.Content>
                                     </Label>
                                     <DataGrid x:Name="DataGrid_EngChecks2" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
-                                              FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                               Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
                                               ItemsSource="{Binding EngCheck2, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
                                               >
@@ -303,7 +376,7 @@
                                                 <Setter Property="Padding" Value="16 0"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                             </Style>
                                         </DataGrid.CellStyle>
                                     </DataGrid>
@@ -323,25 +396,36 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                   FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                   FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7 ">
+                                           FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                           FontWeight="Bold" Padding="0 0 0 8" Foreground="#e9e9e5 ">
                                         <Label.Content>
-                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <materialDesign:PackIcon Kind="TaskAuto"/>
-                                                <TextBlock Text="Releasing" VerticalAlignment="Top" TextAlignment="Left"/>
-                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                    <Rectangle.OpacityMask>
-                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                            <GradientStop Color="Black"/>
-                                                            <GradientStop Color="Transparent" Offset="5"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </StackPanel>
+                                            <Border Background="#446C89FF" CornerRadius="1" BorderBrush="#FF6C89FF" BorderThickness="0">
+                                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <StackPanel.Effect>
+                                                        <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                    </StackPanel.Effect>
+                                                    <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                        <Label.Content>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <materialDesign:PackIcon Kind="TaskAuto" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Releasing"/>
+                                                            </StackPanel>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Rectangle Height="0" Fill="#FF6C89FF">
+                                                        <Rectangle.OpacityMask>
+                                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                                <GradientStop Color="Black"/>
+                                                                <GradientStop Color="Transparent" Offset="5"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Border>
                                         </Label.Content>
                                     </Label>
                                     <DataGrid x:Name="DataGrid_EngRelease" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
-                                              FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                               Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
                                               ItemsSource="{Binding EngReleases, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None">
                                         <DataGrid.RowStyle>
@@ -355,7 +439,7 @@
                                                 <Setter Property="Padding" Value="16 0"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                             </Style>
                                         </DataGrid.CellStyle>
                                     </DataGrid>
@@ -375,25 +459,36 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
+                                           FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                           FontWeight="Bold" Padding="0 0 0 8" Foreground="#e9e9e5">
                                         <Label.Content>
-                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <materialDesign:PackIcon Kind="ZipBox"/>
-                                                <TextBlock Text="Eng Archive" VerticalAlignment="Top" TextAlignment="Left"/>
-                                                <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                    <Rectangle.OpacityMask>
-                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                            <GradientStop Color="Black"/>
-                                                            <GradientStop Color="Transparent" Offset="5"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.OpacityMask>
-                                                </Rectangle>
-                                            </StackPanel>
+                                            <Border Background="#446C89FF" CornerRadius="1" BorderBrush="#FF6C89FF" BorderThickness="0">
+                                                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <StackPanel.Effect>
+                                                        <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                    </StackPanel.Effect>
+                                                    <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                        <Label.Content>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <materialDesign:PackIcon Kind="ZipBoxOutline" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Archive"/>
+                                                            </StackPanel>
+                                                        </Label.Content>
+                                                    </Label>
+                                                    <Rectangle Height="0" Fill="#FF6C89FF">
+                                                        <Rectangle.OpacityMask>
+                                                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                                <GradientStop Color="Black"/>
+                                                                <GradientStop Color="Transparent" Offset="5"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Border>
                                         </Label.Content>
                                     </Label>
                                     <DataGrid x:Name="DataGrid_EngArchive" Grid.Row="1" IsReadOnly="True" DataContext="{Binding ElementName=Page_Home}"
-                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                           Background="Transparent" HeadersVisibility="Column" SelectionMode="Single" SnapsToDevicePixels="False"
                                           ItemsSource="{Binding EngArchive, UpdateSourceTrigger=PropertyChanged}"
                                           CanUserResizeRows="False" GridLinesVisibility="None"
@@ -409,7 +504,7 @@
                                                 <Setter Property="Padding" Value="16 0"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                             </Style>
                                         </DataGrid.CellStyle>
                                     </DataGrid>
@@ -421,26 +516,28 @@
             </StackPanel>
 
             <StackPanel Margin="12 0" Background="Transparent">
-                <Label Foreground="#e9e9e5" Background="#353535" FontWeight="Bold"
-                       FontSize="{Binding MainViewModel.FontSize_H1, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Label.Content>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Fill="#FF6CB8FF" Margin="0 0 2 0"/>
-                            <TextBlock Text="CNC"/>
-                            <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="800" Margin="4 0 0 0">
-                                <Rectangle.Fill>
-                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                        <GradientStop Color="#FF6CB8FF"/>
-                                        <GradientStop Color="#006CB8FF" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </StackPanel>
-                    </Label.Content>
-                    <Label.Effect>
-                        <DropShadowEffect BlurRadius="18" Color="#000" Direction="-45" Opacity="0.9" ShadowDepth="3" />
-                    </Label.Effect>
-                </Label>
+                <Border Background="#353535" BorderBrush="#FFFFC46C" BorderThickness="0 0 0 2" CornerRadius="3">
+                    <Label Foreground="#FFEFEFEF" FontWeight="Bold"
+                       FontSize="{Binding MainViewModel.FontSize_H2, FallbackValue=22}" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <Label.Content>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="24" Visibility="Hidden" Fill="#FF6CB8FF" Margin="0 0 2 0"/>
+                                <TextBlock Text="CNC"/>
+                                <Rectangle Height="3" RadiusX="0" RadiusY="2" Width="1200" Margin="4 0 0 0" Visibility="Hidden">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                            <GradientStop Color="#FF6CB8FF"/>
+                                            <GradientStop Color="#006CB8FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </StackPanel>
+                        </Label.Content>
+                        <Label.Effect>
+                            <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.3" ShadowDepth="3" />
+                        </Label.Effect>
+                    </Label>
+                </Border>
                 <WrapPanel Orientation="Horizontal" Height="260" Margin="4">
                     <Border MinWidth="340" Width="Auto" Height="244"
                             BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
@@ -455,25 +552,36 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
+                                       FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                        FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
                                     <Label.Content>
-                                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                            <materialDesign:PackIcon Kind="SawBlade"/>
-                                            <TextBlock Text="Wks Working" VerticalAlignment="Top" TextAlignment="Left"/>
-                                            <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
-                                                <Rectangle.OpacityMask>
-                                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                        <GradientStop Color="Black"/>
-                                                        <GradientStop Color="Transparent" Offset="5"/>
-                                                    </LinearGradientBrush>
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-                                        </StackPanel>
+                                        <Border Background="#44FFC46C" CornerRadius="1" BorderBrush="#FFFFC46C" BorderThickness="0">
+                                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <StackPanel.Effect>
+                                                    <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                                </StackPanel.Effect>
+                                                <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                    <Label.Content>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="SawBlade" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="Wks Working"/>
+                                                        </StackPanel>
+                                                    </Label.Content>
+                                                </Label>
+                                                <Rectangle Height="0" Fill="#FFFFC46C">
+                                                    <Rectangle.OpacityMask>
+                                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                            <GradientStop Color="Black"/>
+                                                            <GradientStop Color="Transparent" Offset="5"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </StackPanel>
+                                        </Border>
                                     </Label.Content>
                                 </Label>
                                 <DataGrid x:Name="DataGrid_CncWorkingWks" Grid.Row="1" IsReadOnly="True"
-                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                           Background="Transparent" HeadersVisibility="None" SelectionMode="Single" SnapsToDevicePixels="False"
                                           ItemsSource="{Binding CncWksEntries, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
                                           MouseDoubleClick="BrowsableListItem_DoubleClick">
@@ -488,7 +596,7 @@
                                             <Setter Property="Padding" Value="16 0"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                         </Style>
                                     </DataGrid.CellStyle>
                                 </DataGrid>
@@ -508,13 +616,22 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" HorizontalContentAlignment="Stretch"
-                                       FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=22}"
-                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#d7d7d7">
-                                    <Label.Content>
+                                       FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
+                                       FontWeight="Bold" Padding="0 0 0 8" Foreground="#e9e9e5">
+                                    <Border Background="#44FFC46C" CornerRadius="1" BorderBrush="#FFFFC46C" BorderThickness="0">
                                         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                            <materialDesign:PackIcon Kind="SawBlade"/>
-                                            <TextBlock Text="Pnl Working" VerticalAlignment="Top" TextAlignment="Left"/>
-                                            <Rectangle Height="3" Fill="#FF6CB8FF" RadiusX="1" RadiusY="1">
+                                            <StackPanel.Effect>
+                                                <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="3" />
+                                            </StackPanel.Effect>
+                                            <Label VerticalAlignment="Top" HorizontalAlignment="Stretch" Padding="4 2">
+                                                <Label.Content>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="SawBlade" Margin="0 0 4 0" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="Pnl Working"/>
+                                                    </StackPanel>
+                                                </Label.Content>
+                                            </Label>
+                                            <Rectangle Height="0" Fill="#FFFFC46C">
                                                 <Rectangle.OpacityMask>
                                                     <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
                                                         <GradientStop Color="Black"/>
@@ -523,10 +640,10 @@
                                                 </Rectangle.OpacityMask>
                                             </Rectangle>
                                         </StackPanel>
-                                    </Label.Content>
+                                    </Border>
                                 </Label>
                                 <DataGrid x:Name="DataGrid_CncWorkingPnl" Grid.Row="1" IsReadOnly="True"
-                                          FontSize="{Binding MainViewModel.FontSize_H1_2, FallbackValue=12}" Foreground="#ccc"
+                                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Foreground="#ccc"
                                           Background="Transparent" HeadersVisibility="None" SelectionMode="Single" SnapsToDevicePixels="False"
                                           ItemsSource="{Binding CncPnlEntries, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False" GridLinesVisibility="None"
                                           >
@@ -541,7 +658,7 @@
                                             <Setter Property="Padding" Value="16 0"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_Home, FallbackValue=12}"/>
+                                            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_Home, FallbackValue=12}"/>
                                         </Style>
                                     </DataGrid.CellStyle>
                                 </DataGrid>

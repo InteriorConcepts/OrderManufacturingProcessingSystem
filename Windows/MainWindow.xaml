@@ -10,10 +10,10 @@
         xmlns:viewModel="clr-namespace:OMPS.viewModel"
         xmlns:Ext="clr-namespace:OMPS" Width="1025" Height="600"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-        mc:Ignorable="d" UseLayoutRounding="False" Closing="MainWindow_Closing"
+        UseLayoutRounding="False" Closing="MainWindow_Closing"
         Title="MainWindow" MinHeight="600" MinWidth="1025" Background="#111"
-        Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+        Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
+        StateChanged="Window_StateChanged">
     <Window.Resources>
         <local:ScalingConverter x:Key="ScalingConverter1"/>
         <local:BoolToVisibilityConverter x:Key="BoolToVisConverter1"/>
@@ -21,9 +21,9 @@
     <Window.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
     </Window.CacheMode>
-
+    
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" NonClientFrameEdges="Bottom" ResizeBorderThickness="4"/>
+        <WindowChrome CaptionHeight="0" NonClientFrameEdges="None" ResizeBorderThickness="4"/>
     </WindowChrome.WindowChrome>
 
     <Window.TaskbarItemInfo>
@@ -33,9 +33,6 @@
             </TaskbarItemInfo.Overlay>
         </TaskbarItemInfo>
     </Window.TaskbarItemInfo>
-    <Window.FocusVisualStyle>
-        <Style/>
-    </Window.FocusVisualStyle>
     <!--
     <Window.DataContext>
         <viewModel:Main_ViewModel/>
@@ -51,8 +48,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="2" Padding="0" Foreground="#111">
-            <Grid x:Name="grid_TopBar" DataContext="{Binding ElementName=MainWin}" Height="{Binding DataContext.FontSize_H1, FallbackValue=40, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}" MouseDown="grid_TopBar_MouseDown" Background="FloralWhite" IsHitTestVisible="True">
+        <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="2" Padding="0" Foreground="#eee" >
+            <Grid x:Name="grid_TopBar" Background="#25282E" MouseDown="grid_TopBar_MouseDown" DataContext="{Binding ElementName=MainWin}" Height="{Binding DataContext.FontSize_H1, FallbackValue=40, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1*"/>
@@ -61,63 +58,93 @@
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="10"/>
                 </Grid.RowDefinitions>
                 <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Top" Height="2">
                     <Rectangle.Fill>
                         <ImageBrush ImageSource="pack://application:,,,/OMPS;component/Images/gradient.png" Stretch="Fill"/>
                     </Rectangle.Fill>
                 </Rectangle>
-                <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                
+                <Menu Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                      VerticalContentAlignment="Stretch" Foreground="FloralWhite"
+                      materialDesign:MenuItemAssist.HighlightedBackground="#31353D"
+                      FontSize="{Binding DataContext.FontSize_H5, FallbackValue=11}" Padding="0 2" Margin="0 2 0 0">
+
+                    <MenuItem Header="_File" Padding="8 0" VerticalAlignment="Center" IsEnabled="False"
+                              materialDesign:MenuItemAssist.HighlightedBackground="#31353D"
+                              Height="{Binding DataContext.FontSize_H3, FallbackValue=16}">
+                    </MenuItem>
+                    <MenuItem Header="_View" Padding="8 0" VerticalAlignment="Center" IsEnabled="False"
+                              materialDesign:MenuItemAssist.HighlightedBackground="#31353D"
+                              Height="{Binding DataContext.FontSize_H3, FallbackValue=16}" materialDesign:MenuAssist.TopLevelMenuItemHeight="0">
+                        <MenuItem Height="30" Width="150" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16 0">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                    <TextBlock Width="50" Text="Test 123" TextAlignment="Left"/>
+                                    <TextBlock Width="50" Text="Ctrl+F" TextAlignment="Right"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Header="Test 123" Height="30" Width="150" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16 0"/>
+                        <MenuItem Header="Test 123" Height="30" Width="150" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16 0"/>
+                        <MenuItem Header="Test 123" Height="30" Width="150" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16 0"/>
+                        <MenuItem Header="Test 123" Height="30" Width="150" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16 0"/>
+                        <MenuItem Header="Test 123" Height="30" Width="150" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="16 0"/>
+                    </MenuItem>
+                </Menu>
+                
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Height="Auto"
                             Orientation="Horizontal" HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
+                            VerticalAlignment="Center" Background="Transparent">
                     <Button x:Name="Btn_ToggleSideNav"
                             HorizontalContentAlignment="Center"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ButtonAssist.CornerRadius="1"
-                            Margin="2 0 0 0" Padding="1" Foreground="#3d3333"
+                            Margin="2 0 0 0" Padding="1" Foreground="FloralWhite"
                             Click="Btn_ToggleSideNav_Click">
-                        <materialDesign:PackIcon Kind="DockLeft" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}"/>
+                        <materialDesign:PackIcon Kind="DockLeft" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
 
                     </Button>
 
                     <Button x:Name="Btn_Home"
                             Height="{Binding DataContext.FontSize_H1, FallbackValue=24}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Margin="2 0 0 0" Padding="1" Foreground="#3d3333"
+                            Margin="2 0 0 0" Padding="1" Foreground="FloralWhite"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Home_Click">
-                        <materialDesign:PackIcon Kind="Home" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}"/>
+                        <materialDesign:PackIcon Kind="Home" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
                     </Button>
                     <Button x:Name="Btn_Back"
                             Height="{Binding DataContext.FontSize_H1, FallbackValue=24}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Margin="2 0 0 0" Padding="1" Foreground="#3d3333"
+                            Margin="2 0 0 0" Padding="1" Foreground="FloralWhite"
                             IsEnabled="{Binding DataContext.CanPrevious, ElementName=MainWin, UpdateSourceTrigger=PropertyChanged}"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Back_Click"
                             MouseEnter="Btn_Back_MouseEnter" MouseLeave="Btn_Back_MouseLeave">
-                        <materialDesign:PackIcon Kind="SwapHorizontalBold" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}"/>
+                        <materialDesign:PackIcon Kind="SwapHorizontalBold" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
                     </Button>
                     <Button x:Name="Btn_Settings"
                             Height="{Binding DataContext.FontSize_H1, FallbackValue=24}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Margin="2 0 0 0" Padding="1" Foreground="#3d3333"
+                            Margin="2 0 0 0" Padding="1" Foreground="FloralWhite"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Settings_Click">
-                        <materialDesign:PackIcon Kind="Cog" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}"/>
+                        <materialDesign:PackIcon Kind="Cog" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
                     </Button>
                     <Button x:Name="Btn_Chat"
                             Height="{Binding DataContext.FontSize_H1, FallbackValue=24}"
                             IsEnabled="True"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Margin="2 0 0 0" Padding="1" Foreground="#3d3333"
+                            Margin="2 0 0 0" Padding="1" Foreground="FloralWhite"
                             VerticalAlignment="Center" HorizontalAlignment="Stretch"
                             Click="Btn_Chat_Click">
-                        <materialDesign:PackIcon Kind="TerminalNetworkOutline" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}"/>
+                        <materialDesign:PackIcon Kind="TerminalNetworkOutline" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
                     </Button>
                 </StackPanel>
+                <!--
                 <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Rectangle Width="{Binding DataContext.FontSize_H1, FallbackValue=22}" Margin="0 4 0 2" Fill="#FF2D2E31">
                         <Rectangle.OpacityMask>
@@ -128,7 +155,7 @@
 
                         </Rectangle.Effect>
                     </Rectangle>
-                    <Label FontSize="{Binding DataContext.FontSize_H1, FallbackValue=24}" FontWeight="Black" Foreground="#3d3333"
+                    <Label FontSize="{Binding DataContext.FontSize_H1_1, FallbackValue=22}" FontWeight="Black" Foreground="#3d3333"
                            VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
                            Padding="4 0" HorizontalAlignment="Center">
                         <Label.Content>
@@ -143,31 +170,38 @@
                         </Label.Effect>
                     </Label>
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Margin="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button x:Name="Btn_WinMin" Click="Btn_WinMin_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#3d3333" Margin="4 0 0 0" Padding="3 0"
-                            Width="Auto"
-                            VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <materialDesign:PackIcon Kind="MinimizE" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Button>
-                    <Button x:Name="Btn_WinMax" Click="Btn_WinMax_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#3d3333" Margin="4 0 0 0" Padding="3 0"
-                            Width="Auto"
-                            VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <materialDesign:PackIcon Kind="WindowMaximize" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Button>
-                    <Button x:Name="Btn_WinClose" Click="Btn_WinClose_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#9f3847" Margin="4 0 0 0" Padding="3 0"
-                            Width="Auto" Height="Auto"
-                            VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <materialDesign:PackIcon Kind="CloseBoxOutline" Width="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" Height="{Binding DataContext.FontSize_H1_2, FallbackValue=24}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Button>
-                </StackPanel>
-                <TextBox x:Name="Txt_Url" Grid.Row="1" FontSize="{Binding DataContext.FontSize_H9, FallbackValue=8}" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" Opacity="0.8" VerticalAlignment="Top" Foreground="#303843" Grid.Column="2" Text="pbridge://order-search" TextAlignment="Center" VerticalContentAlignment="Center" Padding="10 0" Margin="100 0">
+                -->
+                <TextBox x:Name="Txt_Url" Grid.Row="1" Grid.Column="2" BorderBrush="#303843" BorderThickness="0.5"
+                         FontSize="{Binding DataContext.FontSize_H10, FallbackValue=7}"
+                         materialDesign:TextFieldAssist.TextFieldCornerRadius="1"
+                         Height="{Binding DataContext.FontSize_H6, FallbackValue=12}"
+                         Opacity="0.8" Foreground="#c9c8c7" Text="pbridge://order-search"
+                         VerticalAlignment="Center" TextAlignment="Center" VerticalContentAlignment="Center"
+                         Padding="10 0" Margin="33 0">
                     <TextBox.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad">
-                            <GradientStop Color="#aabcad9f " Offset="0"/>
-                            <GradientStop Color="#aa87857c" Offset="1"/>
+                            <GradientStop Color="#44bcad9f " Offset="0"/>
+                            <GradientStop Color="#4487857c" Offset="1"/>
                         </LinearGradientBrush>
                     </TextBox.Background>
                 </TextBox>
+                <StackPanel Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Margin="0 2 0 0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Panel.ZIndex="9">
+                    <Button x:Name="Btn_WinMin" Click="Btn_WinMin_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#A0A0A0" Margin="0" Padding="0"
+                            Width="32"
+                            VerticalAlignment="Top" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="Minimize" Height="{Binding DataContext.FontSize_H3, FallbackValue=16}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <Button x:Name="Btn_WinMax" Click="Btn_WinMax_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#A0A0A0" Margin="0" Padding="0"
+                            Width="32"
+                            VerticalAlignment="Top" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="Maximize" Height="{Binding DataContext.FontSize_H3, FallbackValue=16}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <Button x:Name="Btn_WinClose" Click="Btn_WinClose_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#9f3847" Margin="0" Padding="0"
+                            Width="32"
+                            VerticalAlignment="Top" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="Close" Height="{Binding DataContext.FontSize_H3, FallbackValue=16}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
             </Grid>
         </materialDesign:ColorZone>
         <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="2" Fill="#FF2D2E31" VerticalAlignment="Top"/>
@@ -188,35 +222,37 @@
                                  Visibility="{Binding Home_IsEnabled, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding Home_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked"
-                                 FontSize="{Binding FontSize_H4, FallbackValue=12}"/>
+                                 FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                     <RadioButton x:Name="TabBtn_OrderSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="6 0"
                                  Visibility="{Binding OrderSearch_IsEnabled, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked"
-                                 FontSize="{Binding FontSize_H4, FallbackValue=12}"/>
+                                 FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                     <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" Padding="6 0"
                                  Visibility="{Binding EngOrder_IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked"
-                                 FontSize="{Binding FontSize_H4, FallbackValue=12}"/>
+                                 FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                     <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                  Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" Padding="6 0"
                                  Visibility="{Binding QuoteOrder_IsEnabled, Mode=OneWay, Converter={StaticResource BoolToVisConverter1}, ConverterParameter=True}"
                                  Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}"
                                  Checked="RadioButton_Checked"
-                                 FontSize="{Binding FontSize_H4, FallbackValue=12}"/>
+                                 FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                 </StackPanel>
                 <ContentControl Grid.Row="1" x:Name="CC_Landing" Content="{Binding Home_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_Login" Content="{Binding Login_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_OrderSearch" Content="{Binding OrderSearch_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_EngOrder" Content="{Binding EngOrder_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                 <ContentControl Grid.Row="1" x:Name="CC_QuoteOrder" Content="{Binding QuoteOrder_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                <ContentControl Grid.Row="1" x:Name="CC_ProductCatalogSearch" Content="{Binding ProductCatalogSearch_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                <ContentControl Grid.Row="1" x:Name="CC_ProductCatalogDetails" Content="{Binding ProductCatalogDetails_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
             </Grid>
         </materialDesign:ColorZone>
 
-        <DockPanel Grid.Row="2" Grid.Column="1" Margin="0 32 0 0" Width="Auto" MaxWidth="400" HorizontalAlignment="Left" Background="#111">
+        <DockPanel x:Name="Dpnl_SizeNav" Grid.Row="2" Grid.Column="1" Visibility="Collapsed" Margin="0 32 0 0" Width="Auto" MaxWidth="400" HorizontalAlignment="Left" Background="#111">
             <Border Width="Auto" BorderThickness="0 0 2 0" BorderBrush="#FF2D2E31">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0.7" ShadowDepth="3" />
@@ -224,20 +260,24 @@
                 <Border.Background>
                     <ImageBrush ImageSource="pack://application:,,,/OMPS;component/Images/fluent_web_dark_bg.png" Opacity="0.2" TileMode="None" Stretch="UniformToFill"/>
                 </Border.Background>
-                <StackPanel x:Name="Spnl_SideNav" Visibility="Collapsed" Width="Auto">
+                <StackPanel x:Name="Spnl_SideNav" Width="Auto">
                     <Expander FontWeight="DemiBold" Foreground="#e9e9e9" Background="Transparent" HorizontalAlignment="Stretch">
                         <Expander.Header>
                             <StackPanel>
-                                <TextBlock Text="Orders" Padding="0" Margin="0" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}"/>
+                                <TextBlock Text="Orders" Padding="0" Margin="0" FontSize="{Binding DataContext.FontSize_H2, FallbackValue=20}"/>
                                 <Rectangle Height="2" Fill="#FF3B5492"/>
                             </StackPanel>
                         </Expander.Header>
                         <StackPanel HorizontalAlignment="Stretch" Background="#AA3B5492" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                            <Button Foreground="#eee" VerticalAlignment="Center" FontWeight="Medium" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}" Tag="{x:Static local:PageTypes.OrderSearch}" Click="Btn_SideNav_Click">
+                            <Button Foreground="#eee" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}" Tag="{x:Static local:PageTypes.OrderSearch}"
+                                    Click="Btn_SideNav_Click"
+                                    Height="{Binding DataContext.FontSize_H1, FallbackValue=26}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
                                         <TextBlock Text="Order Lines" VerticalAlignment="Center"/>
-                                        <materialDesign:PackIcon Foreground="LightGray" Margin="4 0 0 0" VerticalAlignment="Center" Height="12" Width="12" Kind="ListBoxOutline"/>
+                                        <materialDesign:PackIcon Foreground="LightGray" Margin="4 0 0 0" VerticalAlignment="Center"
+                                                                 Height="{Binding DataContext.FontSize_H3, FallbackValue=16}" Width="{Binding DataContext.FontSize_H3, FallbackValue=16}"
+                                                                 Kind="ListBoxOutline"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -246,24 +286,32 @@
                     <Expander FontWeight="DemiBold" Foreground="#e9e9e9" Background="Transparent" HorizontalAlignment="Stretch">
                         <Expander.Header>
                             <StackPanel>
-                                <TextBlock Text="Marketing" Padding="0" Margin="0" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}"/>
+                                <TextBlock Text="Marketing" Padding="0" Margin="0" FontSize="{Binding DataContext.FontSize_H2, FallbackValue=20}"/>
                                 <Rectangle Height="2" Fill="#FF3B5492"/>
                             </StackPanel>
                         </Expander.Header>
                         <StackPanel HorizontalAlignment="Stretch" Background="#AA3B5492" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                            <Button Foreground="#eee" FontWeight="Medium" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}" Tag="{x:Static local:PageTypes.None}" Click="Btn_SideNav_Click">
+                            <Button Foreground="#eee" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}" Tag="{x:Static local:PageTypes.None}"
+                                    Click="Btn_SideNav_Click"
+                                    Height="{Binding DataContext.FontSize_H1, FallbackValue=26}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
                                         <TextBlock Text="Product Catalog" VerticalAlignment="Center"/>
-                                        <materialDesign:PackIcon Foreground="LightGray" Margin="4 0 0 0" VerticalAlignment="Center" Height="12" Width="12" Kind="LinkBoxVariantOutline"/>
+                                        <materialDesign:PackIcon Foreground="LightGray" Margin="4 0 0 0" VerticalAlignment="Center"
+                                                                 Height="{Binding DataContext.FontSize_H2, FallbackValue=16}" Width="{Binding DataContext.FontSize_H3, FallbackValue=16}"
+                                                                 Kind="LinkBoxVariantOutline"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Foreground="#eee" FontWeight="Medium" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}" Tag="{x:Static local:PageTypes.None}" Click="Btn_SideNav_Click">
+                            <Button Foreground="#eee" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}" Tag="{x:Static local:PageTypes.None}"
+                                    Click="Btn_SideNav_Click"
+                                    Height="{Binding DataContext.FontSize_H1, FallbackValue=26}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
                                         <TextBlock Text="Manuf Lines" VerticalAlignment="Center"/>
-                                        <materialDesign:PackIcon Foreground="LightGray" Margin="4 0 0 0" VerticalAlignment="Center" Height="12" Width="12" Kind="ToolboxOutline"/>
+                                        <materialDesign:PackIcon Foreground="LightGray" Margin="4 0 0 0" VerticalAlignment="Center"
+                                                                 Height="{Binding DataContext.FontSize_H3, FallbackValue=16}" Width="{Binding DataContext.FontSize_H3, FallbackValue=16}"
+                                                                 Kind="ToolboxOutline"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>

@@ -181,7 +181,7 @@ namespace OMPS.Pages
             EngCheck2.Clear();
 
             var dirs1 = new DirectoryInfo(EngCheck1Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
-            var dirs2 = new DirectoryInfo(EngCheck1Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            var dirs2 = new DirectoryInfo(EngCheck2Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
             foreach (var entry in dirs1)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
@@ -368,12 +368,19 @@ namespace OMPS.Pages
         private void Ctx_Job_OpenContainingFolderInExplorer_Click(object sender, RoutedEventArgs e)
         {
             if (sender is null) return;
-            if (sender is not MenuItem mi ||
-                mi.Parent is not ContextMenu cm ||
-                cm.PlacementTarget is not object obj ||
-                obj is not DataGridRow dgr) return;
-            if (dgr.DataContext is not PathEntry pe) return;
-            Process.Start("explorer.exe", "/select," + pe.GetPath().FullName);
+            if (sender is MenuItem mi &&
+                mi.Parent is ContextMenu cm &&
+                cm.PlacementTarget is object obj &&
+                obj is DataGridRow dgr1)
+            {
+                if (dgr1.DataContext is not PathEntry) return;
+                Process.Start("explorer.exe", "/select," + (dgr1.DataContext as PathEntry)?.GetPath().FullName);
+            }
+            if (sender is Button btn)
+            {
+                if (btn.DataContext is not PathEntry) return;
+                Process.Start("explorer.exe", "/select," + (btn.DataContext as PathEntry)?.GetPath().FullName);
+            }
         }
     }
 }

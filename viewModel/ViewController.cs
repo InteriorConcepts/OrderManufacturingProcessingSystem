@@ -58,7 +58,7 @@ namespace OMPS.viewModel
             {
                 field = value;
                 this.OrderSearch_VM?.ParentWindow = value;
-                this.EngOrder_VM?.ParentWindow = value;
+                //this.EngOrder_VM?.ParentWindow = value;
                 this.Login_VM?.ParentWindow = value;
             }
         } = Ext.MainWindow;
@@ -104,8 +104,10 @@ namespace OMPS.viewModel
                 OnPropertyChanged(nameof(FontSize_H1_2));
                 OnPropertyChanged(nameof(FontSize_H1_3));
                 OnPropertyChanged(nameof(FontSize_H1));
-                OnPropertyChanged(nameof(FontSize_H1));
                 OnPropertyChanged(nameof(FontSize_H2));
+                OnPropertyChanged(nameof(FontSize_H2_1));
+                OnPropertyChanged(nameof(FontSize_H2_2));
+                OnPropertyChanged(nameof(FontSize_H2_3));
                 OnPropertyChanged(nameof(FontSize_H3));
                 OnPropertyChanged(nameof(FontSize_H4));
                 OnPropertyChanged(nameof(FontSize_H5));
@@ -121,9 +123,12 @@ namespace OMPS.viewModel
 
         private readonly double FontSize_H1_scale   = (2 / Math.Sqrt(1));
         private readonly double FontSize_H1_1_scale = (2 / Math.Sqrt(1.25));
-        private readonly double FontSize_H1_2_scale = (2 / Math.Sqrt(1.5));
+        private readonly double FontSize_H1_2_scale = (2 / Math.Sqrt(1.50));
         private readonly double FontSize_H1_3_scale = (2 / Math.Sqrt(1.75));
-        private readonly double FontSize_H2_scale   = (2 / Math.Sqrt(2));
+        private readonly double FontSize_H2_scale = (2 / Math.Sqrt(2));
+        private readonly double FontSize_H2_1_scale = (2 / Math.Sqrt(2.25));
+        private readonly double FontSize_H2_2_scale = (2 / Math.Sqrt(2.50));
+        private readonly double FontSize_H2_3_scale = (2 / Math.Sqrt(2.75));
         private readonly double FontSize_H3_scale   = (2 / Math.Sqrt(3));
         private readonly double FontSize_H4_scale   = (2 / Math.Sqrt(4));
         private readonly double FontSize_H5_scale   = (2 / Math.Sqrt(5));
@@ -137,6 +142,9 @@ namespace OMPS.viewModel
         public double FontSize_H1_2 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
         public double FontSize_H1_3 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
         public double FontSize_H2   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H2_1 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
+        public double FontSize_H2_2 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
+        public double FontSize_H2_3 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
         public double FontSize_H3   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
         public double FontSize_H4   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
         public double FontSize_H5   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
@@ -203,16 +211,22 @@ namespace OMPS.viewModel
         public OrderSearch OrderSearch_VM { get; set; }
         public EngOrder EngOrder_VM { get; set; }
         public QuoteOrder QuoteOrder_VM { get; set; }
+        public ProductCatalogSearch ProductCatalogSearch_VM { get; set; }
+        public ProductCatalogDetails ProductCatalogDetails_VM { get; set; }
 
         public bool Home_IsSelected { get => this.CurrentPage is PageTypes.Home; }
         public bool Login_IsSelected { get => this.CurrentPage is PageTypes.Login; }
         public bool OrderSearch_IsSelected { get => this.CurrentPage is PageTypes.OrderSearch; }
         public bool EngOrder_IsSelected { get => this.CurrentPage is PageTypes.EngOrder; }
         public bool QuoteOrder_IsSelected { get => this.CurrentPage is PageTypes.QuoteOrder; }
+        public bool ProductCatalogSearch_IsSelected { get => this.CurrentPage is PageTypes.ProductCatalogSearch; }
+        public bool ProductCatalogDetails_IsSelected { get => this.CurrentPage is PageTypes.ProductCatalogDetails; }
 
         public bool EngOrder_IsEnabled { get => this.EngOrder_VM is not null && this.EngOrder_VM.JobNbr is not null or ""; }
         public bool OrderSearch_IsEnabled { get => this.OrderSearch_VM is not null && (this.OrderSearch_VM.ColorSetInfos.Count is not 0 || OrderSearch_IsSelected); }
         public bool QuoteOrder_IsEnabled { get => this.QuoteOrder_VM is not null && this.QuoteOrder_VM.QuoteNbr is not null or ""; }
+        public bool ProductCatalogSearch_IsEnabled { get => this.ProductCatalogSearch_VM is not null; }
+        public bool ProductCatalogDetails_IsEnabled { get => this.ProductCatalogDetails_VM is not null; }
 
         public bool CanPrevious {
             get => this.PreviousPage is not PageTypes.None or PageTypes.Login;
@@ -284,6 +298,10 @@ namespace OMPS.viewModel
                     break;
                 case PageTypes.QuoteOrder:
                     break;
+                case PageTypes.ProductCatalogSearch:
+                    break;
+                case PageTypes.ProductCatalogDetails:
+                    break;
                 default:
                     break;
             }
@@ -298,6 +316,8 @@ namespace OMPS.viewModel
                 PageTypes.OrderSearch => this.ParentWin.CC_OrderSearch,
                 PageTypes.EngOrder => this.ParentWin.CC_EngOrder,
                 PageTypes.QuoteOrder => this.ParentWin.CC_QuoteOrder,
+                PageTypes.ProductCatalogSearch => this.ParentWin.CC_ProductCatalogSearch,
+                PageTypes.ProductCatalogDetails => this.ParentWin.CC_ProductCatalogDetails,
                 _ => null
             })?.Visibility = state;
         }
@@ -314,9 +334,11 @@ namespace OMPS.viewModel
             this.ParentWin = Ext.MainWindow;
             this.Home_VM = new(this.ParentWin);
             this.Login_VM = new(this.ParentWin);
-            this.OrderSearch_VM = new(this.ParentWin);
-            this.EngOrder_VM = new(this.ParentWin);
+            this.OrderSearch_VM = new() { ParentWindow = this.ParentWin };
+            this.EngOrder_VM = new() { ParentWindow = this.ParentWin };
             this.QuoteOrder_VM = new(this.ParentWin);
+            this.ProductCatalogSearch_VM = new(this.ParentWin);
+            this.ProductCatalogDetails_VM = new(this.ParentWin);
         }
     }
 }

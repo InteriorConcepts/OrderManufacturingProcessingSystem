@@ -24,7 +24,7 @@
 
     <Grid DataContext="{Binding ElementName=Page_EngOrder}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -36,15 +36,17 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
-                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef, FallbackValue=J000000000}" VerticalAlignment="Center" FontSize="20" Margin="20,0,0,0" FontWeight="Medium"/>
+                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef, FallbackValue=J000000000}"
+                       VerticalAlignment="Center" Margin="20,0,0,0" FontWeight="Medium"
+                       FontSize="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button x:Name="Btn_RefreshHeader" Height="18" Width="18"
+                <Button x:Name="Btn_RefreshHeader" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Center"
                         Padding="0" Margin="0 0 2 0" Cursor="Hand"
                         Click="Btn_RefreshHeader_Click">
-                    <materialDesign:PackIcon Foreground="LightSkyBlue" Width="18" Height="18" Kind="Reload"/>
+                    <materialDesign:PackIcon Foreground="LightSkyBlue" Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Kind="Reload"/>
                 </Button>
                 <Button x:Name="Btn_SaveHeader" Height="22" Width="Auto"
                         Style="{StaticResource SaveBtn}" IsEnabled="False"
@@ -56,23 +58,33 @@
                        RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
                 </Button>
                 <CheckBox x:Name="Btn_CollapseTopBar" Content="Header" IsChecked="True"
-                        Height="22" Width="Auto" Padding="4 0" Margin="1 0" FontSize="12"
-                        Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
+                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Padding="4 0" Margin="1 3"
+                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                          Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
                 <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="True"
-                        Height="22" Width="Auto" Padding="4 0" Margin="1 0" FontSize="12"
-                        Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
+                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Padding="4 0" Margin="1 3"
+                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                          Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
                 <CheckBox x:Name="Btn_ToggleFiltersPnl" Content="Filter Bar" IsChecked="False"
-                        Height="22" Width="Auto" Padding="4 0" Margin="1 0" FontSize="12"
-                        Click="Btn_FilterClose_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
+                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Padding="4 0" Margin="1 3"
+                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                          Click="Btn_FilterClose_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
             <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
-                <TabItem Header="General" Height="40">
+                
+                <TabItem Height="40">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="General"/>
+                    </TabItem.Header>
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
                 -->
-                    <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="24"/>
@@ -80,7 +92,7 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
                             <StackPanel Width="180" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputPair x:Name="head_OrderNbr" LabelWidth="85" LabelText="OrderNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.OrderNumber, Mode=TwoWay}"/>
+                                <Components:LabelInputPair x:Name="head_OrderNbr" LabelWidth="85" LabelText="OrderNbr" InputReadOnly="True" FontSize="{Binding DataContext.FontSize_H4, ElementName=Page_EngOrder, FallbackValue=12, UpdateSourceTrigger=PropertyChanged}" InputText="{Binding ColorSetInfo.OrderNumber, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="LineNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineNumber, Mode=TwoWay}"/>
                                 <Components:LabelInputPair LabelWidth="85" LabelText="JobNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.SupplyOrderRef, Mode=TwoWay}"/>
                                 <Components:LabelInputLookupPair LabelFullWidth="85" LabelText="Quote" LookupEnabled="False" InputLookup="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
@@ -115,18 +127,21 @@
                                 <Components:LabelInputLookupPair LabelText="Lam Curve" InputLookupType="crv" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
-                            <StackPanel Width="100" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
-                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
-                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
-                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
-                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
-                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="1" Margin="0 1" FontSize="12" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
+                            <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
+                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
+                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
+                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
+                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
+                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
                             </StackPanel>
                         </StackPanel>
                         <Components:LabelInputPair Grid.Row="1" LabelText="Notes" LabelWidth="43" InputText="{Binding ColorSetInfo.Notes, Mode=TwoWay}" InputReadOnly="False"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Colors+" Height="40" Width="100">
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Colors+"/>
+                    </TabItem.Header>
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -164,7 +179,10 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Misc" Height="40" Width="100">
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Misc"/>
+                    </TabItem.Header>
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="240"/>
@@ -206,7 +224,10 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Quote Parts" Height="40" Width="100">
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Quote Parts"/>
+                    </TabItem.Header>
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -340,7 +361,10 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Mfg Reports" Height="40" Width="100">
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Mfg Reports"/>
+                    </TabItem.Header>
                     <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"/>
@@ -365,7 +389,10 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Pre1" Height="40" Width="100">
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pre1"/>
+                    </TabItem.Header>
                     <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                     </Grid>
                 </TabItem>
@@ -517,10 +544,10 @@
                       Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
             </DataGrid>
-            <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
+            <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
                                           FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
-                    <Grid Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                    <Grid Width="Auto" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <Grid.CacheMode>
                             <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
                         </Grid.CacheMode>
@@ -564,13 +591,12 @@
                                 BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
                                 IsEnabled="{Binding Pending_LineChanges}" Height="24"
                                 Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-                                <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Revert</TextBlock>
-                                <Viewbox Stretch="Uniform" Width="18" Height="18">
-                                    <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="20" Height="20">
-                                        <Path Fill="#d0763e" Data="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z" Canvas.Top="5.5" HorizontalAlignment="Left" Stretch="Fill" VerticalAlignment="Center" Width="17" Canvas.Left="1.5" />
-                                    </Canvas>
-                                </Viewbox>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                           Text="Revert"/>
+                                <materialDesign:PackIcon Kind="Undo" Foreground="#d0763e"
+                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
@@ -578,13 +604,12 @@
                                 VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
                                 IsEnabled="{Binding Pending_LineChanges}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Save</TextBlock>
-                                <Viewbox Stretch="UniformToFill" Width="18" Height="18">
-                                    <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="20" Height="20">
-                                        <Path Fill="#7dadc8" Data="M4 19H10V21H4C2.89 21 2 20.1 2 19V5C2 3.9 2.89 3 4 3H16L20 7V9.12L18 11.12V7.83L15.17 5H4V19M14 10V6H5V10H14M20.42 12.3C20.31 12.19 20.18 12.13 20.04 12.13C19.9 12.13 19.76 12.19 19.65 12.3L18.65 13.3L20.7 15.35L21.7 14.35C21.92 14.14 21.92 13.79 21.7 13.58L20.42 12.3M12 19.94V22H14.06L20.12 15.93L18.07 13.88L12 19.94M14 15C14 13.34 12.66 12 11 12S8 13.34 8 15 9.34 18 11 18C11.04 18 11.08 18 11.13 18L14 15.13C14 15.09 14 15.05 14 15" Canvas.Left="-0.933" Canvas.Top="-1" />
-                                    </Canvas>
-                                </Viewbox>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                           Text="Save"/>
+                                <materialDesign:PackIcon Kind="FloppyDiscEditOutline" Foreground="#7dadc8"
+                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                         Height="{Binding MainViewModel.FontSize_H4, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
@@ -593,23 +618,24 @@
                                 IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">Delete</TextBlock>
-                                <Viewbox Stretch="UniformToFill" Width="18" Height="18">
-                                    <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="24" Height="24">
-                                        <Path Fill="#9f3847" Data="M14.12,10.47L12,12.59L9.87,10.47L8.46,11.88L10.59,14L8.47,16.12L9.88,17.53L12,15.41L14.12,17.53L15.53,16.12L13.41,14L15.53,11.88L14.12,10.47M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9Z" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Stretch="Fill" Width="18" Canvas.Left="3" Canvas.Top="2" />
-                                    </Canvas>
-                                </Viewbox>
+                                <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                           Text="Delete"/>
+                                <materialDesign:PackIcon Kind="TrashOutline" Foreground="#9f3847"
+                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0" DataContext="{x:Reference Page_EngOrder}"
                                 BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
                                 IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Margin="0 0 4 0" TextAlignment="Center">Lookup</TextBlock>
-                                <materialDesign:PackIcon Kind="TableSearch" VerticalAlignment="Stretch"
-                                                         Foreground="#f2d08d"/>
+                                <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                           Text="Lookup"/>
+                                <materialDesign:PackIcon Kind="TableSearch" Foreground="#f2d08d"
+                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="4" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
@@ -618,8 +644,11 @@
                                 IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="0 0 4 0" VerticalAlignment="Center">New</TextBlock>
-                                <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#718141" Kind="AddBold"/>
+                                <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                           Text="New"/>
+                                <materialDesign:PackIcon Kind="AddBold" Foreground="#718141"
+                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -628,22 +657,26 @@
         </Grid>
         <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="4" LastChildFill="False" Background="#222">
             <RadioButton x:Name="RadioBtn_View_QPO"  Content="Quote Parts Ordered" Tag="QuotePartsOrdered"
-                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>
             <RadioButton x:Name="RadioBtn_View_QDO" Content="Quote Items Ordered" Tag="QuoteDetailOrdered"
-                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>
             <RadioButton x:Name="RadioBtn_View_M" Content="Manuf Items" Tag="IceManuf"
-                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          IsChecked="True" Checked="RadioButton_Checked"/>
             <RadioButton x:Name="RadioBtn_View_MP" Content="Manuf Parts" Tag="IceManufParts"
-                         FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>

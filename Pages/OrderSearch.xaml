@@ -84,6 +84,30 @@
                     <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 </Style>
             </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" ToolTip="Open In EngOrder">
+                                <TextBlock Text="{Binding JobNbr}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
+                                           VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="OrderNumber" DisplayIndex="1">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" ToolTip="Open In QuoteOrder">
+                                <TextBlock Text="{Binding OrderNumber}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
+                                           VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

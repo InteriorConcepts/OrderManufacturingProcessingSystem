@@ -12,7 +12,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Xml.Linq;
@@ -21,6 +20,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Devices.Radios;
 using Windows.UI.Text;
 using static OMPS.Ext;
+using System.Windows.Interop;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Windows
@@ -93,30 +93,7 @@ namespace OMPS.Windows
 
         }
 
-        /*
-        private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg == 0x84) // WM_NCHITTEST
-            {
-                // Extract mouse coordinates from lParam
-                int x = (int)(lParam.ToInt64() & 0xFFFF);
-                int y = (int)(lParam.ToInt64() >> 16);
-
-                // Convert screen coordinates to client coordinates if needed
-                // Point clientPoint = PointFromScreen(new Point(x, y));
-
-                // Perform custom hit-testing logic based on coordinates
-                // and return the appropriate HT* value (e.g., HTCAPTION, HTMINBUTTON, HTCLOSE)
-                // Example: If the point is within a custom title bar area, return HTCAPTION (0x2)
-
-                // Set handled to true if you've handled the message to prevent default processing
-                handled = true;
-                return new IntPtr(0x2); // Example: Returning HTCAPTION
-            }
-
-            return IntPtr.Zero; // Let other messages be handled by default
-        }
-        */
+        //public const int WM_NCHITTEST = 0x0084;        
 
         public Main_ViewModel MainViewModel
         {
@@ -260,21 +237,32 @@ namespace OMPS.Windows
 
         private void grid_TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton is not MouseButton.Left) return;
             Debug.WriteLine("Drag");
-            if (e.ChangedButton == MouseButton.Left)
+            try
             {
-                try
-                {
-                    //SendMessage(hWnd, WM_SYSCOMMAND, (IntPtr)SC_RESTORE, IntPtr.Zero);
-                    DragMove();
-                    //this.WindowState = WindowState.Normal;
-                }
-                catch (InvalidOperationException _) { }
+                DragMove();
             }
+            catch (InvalidOperationException _) { }
+
         }
 
 
+        private void Window_StateChanged(object sender, System.EventArgs e)
+        {
+            switch (this.WindowState)
+            {
+                case WindowState.Maximized:
+                    this.Grid_Main.Margin = new(8, 8, 8, 4);
+                    break;
+                case WindowState.Minimized:
 
+                    break;
+                case WindowState.Normal:
+                    this.Grid_Main.Margin = new(0);
+                    break;
+            }
+        }
 
 
 
@@ -302,15 +290,17 @@ namespace OMPS.Windows
 
         private void Btn_WinMax_Click(object sender, RoutedEventArgs e)
         {
+            this.MainViewModel.ToggleCurrentContentControl(Visibility.Collapsed);
+            this.BeginInit();
             if (this.WindowState == WindowState.Maximized)
             {
-                this.Grid_Main.Margin = new(0);
                 SystemCommands.RestoreWindow(this);
             } else
             {
-                this.Grid_Main.Margin = new(8, 8, 8, 4);
                 SystemCommands.MaximizeWindow(this);
             }
+            this.EndInit();
+            this.MainViewModel.ToggleCurrentContentControl(Visibility.Visible);
         }
 
         private void Btn_WinClose_Click(object sender, RoutedEventArgs e)
@@ -400,8 +390,8 @@ namespace OMPS.Windows
 
         private void Btn_ToggleSideNav_Click(object sender, RoutedEventArgs e)
         {
-            this.Spnl_SideNav.Visibility =
-                this.Spnl_SideNav.Visibility is Visibility.Collapsed ?
+            this.Dpnl_SizeNav.Visibility =
+                this.Dpnl_SizeNav.Visibility is Visibility.Collapsed ?
                 Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -409,6 +399,7 @@ namespace OMPS.Windows
         {
             if (sender is not Button btn) return;
             if (btn.Tag is not PageTypes pageType) return;
+            this.Dpnl_SizeNav.Visibility = Visibility.Collapsed;
             this.MainViewModel.CurrentPage = pageType;
         }
     }

@@ -9,9 +9,9 @@
              x:Name="Root" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <DockPanel LastChildFill="True" DataContext="{Binding ElementName=Root}">
-        <Label Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="{Binding FontSize}"/>
+        <Label Content="{Binding LabelText}" ContentStringFormat="{}{0}:" VerticalContentAlignment="Center" Width="{Binding LabelWidth}" HorizontalContentAlignment="Right" Padding="0 0 5 0" FontSize="{Binding FontSize, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBox Text="{Binding Path=InputText}" Style="{StaticResource MaterialDesignOutlinedTextBox}" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="0.5" BorderThickness="0.5" VerticalContentAlignment="Center" IsReadOnly="{Binding InputReadOnly}" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch" FontSize="{Binding FontSize}"/>
+        <TextBox Text="{Binding Path=InputText}" FontSize="{Binding FontSize, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignOutlinedTextBox}" materialDesign:TextFieldAssist.TextFieldCornerRadius="1" materialDesign:TextFieldAssist.OutlinedBorderActiveThickness="0.5" BorderThickness="0.5" VerticalContentAlignment="Center" IsReadOnly="{Binding InputReadOnly}" Padding="0" TextWrapping="NoWrap" HorizontalAlignment="Stretch"/>
   
     </DockPanel>
 </UserControl>
