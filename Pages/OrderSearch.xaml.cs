@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +26,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace OMPS.Pages
 {
@@ -96,15 +96,15 @@ namespace OMPS.Pages
 
 
         #region Methods
-        public void LoadRecentOrders(string filters = "%")
+        public async Task LoadRecentOrders(string filters = "%")
         {
             this.Btn_OrdersRefresh.IsEnabled = false;
             this.ColorSetInfos.Clear();
             Debug.WriteLine(filters);
-            this.progbar_orders.Value = 50;
-            this.progbar_orders.Visibility = Visibility.Visible;
             this.progbar_orders.IsEnabled = true;
-            var t = new Task(() =>
+            this.progbar_orders.Visibility = Visibility.Visible;
+            this.progbar_orders.Value = 50;
+            await Task.Run(() =>
             {
                 try
                 {
@@ -161,8 +161,6 @@ namespace OMPS.Pages
                         }
                         Debug.WriteLine(2);
                         //this.datagrid_orders.EndInit();
-                        this.progbar_orders.Visibility = Visibility.Collapsed;
-                        this.progbar_orders.IsEnabled = false;
                     });
                     this.RefreshDelay.Start();
 
@@ -186,7 +184,8 @@ namespace OMPS.Pages
                 }
             });
             Console.WriteLine("Finished Query");
-            t.Start();
+            this.progbar_orders.Visibility = Visibility.Collapsed;
+            this.progbar_orders.IsEnabled = false;
             if (filters is "%")
             {
                 //this.ParentTab.Header = "Order Search";
@@ -311,13 +310,8 @@ namespace OMPS.Pages
             this.LoadRecentOrders();
         }
 
-        IEnumerable<DirectoryInfo>? JobFoldersC {
-            get => new DirectoryInfo("C:\\").MultiEnumerateDirectories("*", SearchOption.TopDirectoryOnly);
-        }
-        IEnumerable<DirectoryInfo>? JobFoldersH {
-            get => new DirectoryInfo("H:\\Engineering").MultiEnumerateDirectories("*", SearchOption.AllDirectories);
-        }
-
+        IEnumerable<DirectoryInfo>? JobFoldersC = new DirectoryInfo("C:\\").MultiEnumerateDirectories("*", SearchOption.TopDirectoryOnly);
+        IEnumerable<DirectoryInfo>? JobFoldersH = new DirectoryInfo("H:\\Engineering").MultiEnumerateDirectories("*", SearchOption.AllDirectories);
         public void SetupOrderRowHeader(DataGridRow row)
         {
             if (row.Item is not example_queries_GetColorSetsResult item) return;
@@ -358,17 +352,37 @@ namespace OMPS.Pages
                 text = "";
             }
 
+            //row.ApplyTemplate();
+            var rowHeader = FindVisualChild<DataGridRowHeader>(row);
+            rowHeader?.ApplyTemplate();
+            var grid = rowHeader?.Template.FindName("Grid_RowHeader", rowHeader) as Grid;
+            var foo = grid?.Children.OfType<UIElement>();
+            //grid?.Tag = new DirectoryInfo?[] { matchesH, matchesC };
+            foreach (var dir in new[] { matchesH, matchesC })
+            {
+                if (dir is null) continue;
+                var mi = new MenuItem
+                {
+                    Header = TruncatePath(dir.FullName),
+                    FontSize = 12,
+                    Tag = dir,
+                    ContextMenu = new() { }
+                };
+                mi.ContextMenu.Items.Add(dir.FullName);
+                mi.Click += (sender, e) =>
+                {
+                    Process.Start("explorer.exe", dir.FullName);
+                };
+                grid?.ContextMenu?.Items.Add(mi);
+            }
             /*
-            row.ApplyTemplate();
-            var grid = row.Template.FindName("Grid_RowHeader", row) as Grid;
-            grid?.Tag = new DirectoryInfo?[] { matchesH, matchesC };
             var tt = grid?.ToolTip as ToolTip;
             tt?.Content = "Folders\n" + string.Join("\n", (grid?.Tag as DirectoryInfo?[])?.Select(d => d?.Name) ?? []);
-            var ico = row.Template.FindName("PckIco_RowHeader", row) as PackIcon;
-            var txt = row.Template.FindName("TxtBlk_RowHeader", row) as TextBlock;
+            */
+            var ico = grid?.Children[0] as PackIcon;
+            var txt = grid?.Children[1] as TextBlock;
             ico?.Kind = icon;
             txt?.Text = text;
-            */
             /*
             var grd = row.Header as Grid;
             grd?.Tag = new DirectoryInfo?[] { matchesH, matchesC };
@@ -384,17 +398,19 @@ namespace OMPS.Pages
             /////
             // Slow AF!
             /////
+            /////
+            /*
             var grd = new Grid
             {
                 VerticalAlignment = VerticalAlignment.Center,
-                Tag = new DirectoryInfo?[] { matchesH, matchesC }
-            };
-            grd.ContextMenu = new ContextMenu()
-            {
-                Background = new SolidColorBrush(Color.FromRgb(35, 35, 35)),
-                Foreground = Brushes.GhostWhite,
-                BorderBrush = Brushes.White,
-                BorderThickness = new(2),
+                Tag = new DirectoryInfo?[] { matchesH, matchesC },
+                ContextMenu = new ContextMenu()
+                {
+                    Background = new SolidColorBrush(Color.FromRgb(35, 35, 35)),
+                    Foreground = Brushes.GhostWhite,
+                    BorderBrush = Brushes.White,
+                    BorderThickness = new(2),
+                }
             };
             grd.ContextMenu.Items.Add(new MenuItem()
             {
@@ -455,6 +471,7 @@ namespace OMPS.Pages
             Grid.SetColumn(pkicon, 0);
             Grid.SetColumn(txt, 1);
             row.Header = grd;
+            */
         }
 
         public static string TruncatePath(string path, ushort maxLength = 20)

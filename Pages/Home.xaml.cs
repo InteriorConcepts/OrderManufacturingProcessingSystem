@@ -39,6 +39,7 @@ namespace OMPS.Pages
             this.GetEngReleases();
             this.GetEngArchive();
             this.GetCncWorking();
+            //
         }
 
 
@@ -86,13 +87,13 @@ namespace OMPS.Pages
         public class RecentOrder
         {
             public string JobNbr { get; set; } = "";
-            public string QuoteNbr { get; set; } = "";
+            public string OrderNbr { get; set; } = "";
         }
         public ObservableCollection<RecentOrder> NewOrders { get; set; } = [];
 
         public class EngOrder
         {
-            public string JobNbr { get; set; } = "";
+            public string Name { get; set; } = "";
             public bool PreEng { get; set; } = false;
             public bool Eng { get; set; } = false;
         }
@@ -153,7 +154,7 @@ namespace OMPS.Pages
                     Take(20);
             foreach (var item in data_orders)
             {
-                NewOrders.Add(new () { JobNbr = item.JobNbr, QuoteNbr = item.OrderNumber});
+                NewOrders.Add(new () { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber});
             }
             //OnPropertyChanged(nameof(NewOrders));
         }
@@ -168,7 +169,7 @@ namespace OMPS.Pages
                 Where(i => i.Engined is false);
             foreach (var item in colorSetDatas)
             {
-                EngWorking.Add(new EngOrder { JobNbr = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
+                EngWorking.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
             }
             //OnPropertyChanged(nameof(EngWorking));
         }
@@ -345,24 +346,37 @@ namespace OMPS.Pages
         private void Ctx_Job_OpenInApp_Click(object sender, RoutedEventArgs e)
         {
             if (sender is null) return;
-            if (sender is not MenuItem mi ||
-                mi.Parent is not ContextMenu cm ||
-                cm.PlacementTarget is not object obj ||
-                obj is not DataGridRow dgr) return;
-            if (dgr.DataContext is not PathEntry pe) return;
-            this.MainViewModel.CurrentPage = PageTypes.EngOrder;
-            this.MainViewModel.EngOrder_VM.JobNbr = pe.Name;
+            if (sender is MenuItem mi &&
+                mi.Parent is ContextMenu cm &&
+                cm.PlacementTarget is object obj)
+            {
+                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
+                this.MainViewModel.CurrentPage = PageTypes.EngOrder;
+                this.MainViewModel.EngOrder_VM.JobNbr = pe.Name;
+            }
+            if (sender is Button btn)
+            {
+                if (btn.DataContext is not PathEntry pe) return;
+                this.MainViewModel.CurrentPage = PageTypes.EngOrder;
+                this.MainViewModel.EngOrder_VM.JobNbr = pe.Name;
+            }
         }
 
         private void Ctx_Job_OpenFolderInExplorer_Click(object sender, RoutedEventArgs e)
         {
             if (sender is null) return;
-            if (sender is not MenuItem mi ||
-                mi.Parent is not ContextMenu cm ||
-                cm.PlacementTarget is not object obj ||
-                obj is not DataGridRow dgr) return;
-            if (dgr.DataContext is not PathEntry pe) return;
-            Process.Start("explorer.exe", pe.GetPath().FullName);
+            if (sender is MenuItem mi &&
+                mi.Parent is ContextMenu cm &&
+                cm.PlacementTarget is object obj)
+            {
+                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
+                Process.Start("explorer.exe", pe.GetPath().FullName);
+            }
+            if (sender is Button btn)
+            {
+                if (btn.DataContext is not PathEntry pe) return;
+                Process.Start("explorer.exe", pe.GetPath().FullName);
+            }
         }
 
         private void Ctx_Job_OpenContainingFolderInExplorer_Click(object sender, RoutedEventArgs e)
@@ -370,17 +384,23 @@ namespace OMPS.Pages
             if (sender is null) return;
             if (sender is MenuItem mi &&
                 mi.Parent is ContextMenu cm &&
-                cm.PlacementTarget is object obj &&
-                obj is DataGridRow dgr1)
+                cm.PlacementTarget is object obj)
             {
-                if (dgr1.DataContext is not PathEntry) return;
-                Process.Start("explorer.exe", "/select," + (dgr1.DataContext as PathEntry)?.GetPath().FullName);
+                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
+                Process.Start("explorer.exe", "/select," + pe.GetPath().FullName);
             }
             if (sender is Button btn)
             {
-                if (btn.DataContext is not PathEntry) return;
-                Process.Start("explorer.exe", "/select," + (btn.DataContext as PathEntry)?.GetPath().FullName);
+                if (btn.DataContext is not PathEntry pe) return;
+                Process.Start("explorer.exe", "/select," + pe.GetPath().FullName);
             }
+        }
+
+        private void DataGrid_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is null) return;
+            if (sender is not DataGrid dg) return;
+            dg.SelectedIndex = -1;
         }
     }
 }

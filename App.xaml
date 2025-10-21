@@ -27,6 +27,7 @@
                 <ResourceDictionary Source="Resources/DataGrid_Main.xaml" />
                 <ResourceDictionary Source="Resources/DataGrid_SidePnl.xaml" />
                 <ResourceDictionary Source="Resources/ClassicDarkStyles.xaml" />
+                <ResourceDictionary Source="Resources/Landing_DataGrids.xaml" />
                 -->
 
                 <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="DodgerBlue" SecondaryColor="AntiqueWhite"/>

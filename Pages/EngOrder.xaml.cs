@@ -114,7 +114,7 @@ namespace OMPS.Pages
         }
         public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
 
-        internal DataGrid CurrentGrid { get; set; }
+        internal DataGrid? CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
         public string[] Finishes_BS { get; } = ["NA", "SL", "BK"];
@@ -163,6 +163,7 @@ namespace OMPS.Pages
         #region Methods
         public async void LoadDataForJob(string job)
         {
+            string tab = "";
             try
             {
                 IsLoadingJobData = true;
@@ -170,25 +171,30 @@ namespace OMPS.Pages
                 await this.LoadColorSetData(job);
                 if (this.RadioBtn_View_QPO.IsChecked is true)
                 {
+                    tab = this.RadioBtn_View_QPO.Tag.ToString() ?? "";
                     this.CurrentGrid = this.datagrid_QPO;
-                    this.LoadQPartsOrdered(job);
+                    await this.LoadQPartsOrdered(job);
                 }
                 else if (this.RadioBtn_View_QDO.IsChecked is true)
                 {
+                    tab = this.RadioBtn_View_QDO.Tag.ToString() ?? "";
                     this.CurrentGrid = this.datagrid_QIO;
-                    this.LoadQItemsOrdered(job);
+                    await this.LoadQItemsOrdered(job);
                 }
                 else if (this.RadioBtn_View_M.IsChecked is true)
                 {
+                    tab = this.RadioBtn_View_M.Tag.ToString() ?? "";
                     this.CurrentGrid = this.datagrid_main;
                     await this.LoadManufData(job);
                 }
                 else if (this.RadioBtn_View_MP.IsChecked is true)
                 {
+                    tab = this.RadioBtn_View_MP.Tag.ToString() ?? "";
                     this.CurrentGrid = this.datagrid_MP;
-                    this.LoadManufParts(job);
+                    await this.LoadManufParts(job);
                 }
                 this.CurrentGrid?.Visibility = Visibility.Visible;
+                this.ParentWindow?.SetUrlRelPath($"?job={job}&tab={tab}");
             }
             catch (Exception ex)
             {
@@ -255,7 +261,7 @@ namespace OMPS.Pages
             this.Last_ManufData = DateTime.Now;
         }
 
-        public void LoadManufParts(string job)
+        public async Task LoadManufParts(string job)
         {
 
         }
@@ -400,7 +406,7 @@ namespace OMPS.Pages
             {
                 this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
                 this.Btn_ToggleFiltersPnl.IsChecked = false;
-                this.CurrentGrid.Focus();
+                this.CurrentGrid?.Focus();
             }
         }
 

@@ -11,14 +11,15 @@
       d:DesignHeight="600" d:DesignWidth="1025"
       DataContext="{Binding ElementName=Page_OrderSearch}" Background="#292929"
       FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
+    
     <UserControl.CacheMode>
         <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
     </UserControl.CacheMode>
+    
     <UserControl.Resources>
         <CollectionViewSource x:Key="OrdersViewSource" Source="{Binding ColorSetInfos}" Filter="OrdersViewSource_Filter"/>
-        <!-- Custom DataGridColumnHeader Style with Search Box -->
-        
     </UserControl.Resources>
+    
     <Grid DataContext="{Binding ElementName=Page_OrderSearch}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -84,6 +85,30 @@
                     <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 </Style>
             </DataGrid.CellStyle>
+            <DataGrid.RowHeaderStyle>
+                <Style TargetType="DataGridRowHeader">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridRowHeader">
+                                <Grid x:Name="Grid_RowHeader">
+                                    <Grid.ToolTip>
+                                        <ToolTip />
+                                    </Grid.ToolTip>
+                                    <Grid.ContextMenu>
+                                        <ContextMenu Background="#292929" Foreground="GhostWhite"  BorderBrush="White" BorderThickness="1"/>
+                                    </Grid.ContextMenu>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <materialDesign:PackIcon x:Name="PckIco_RowHeader" Grid.Column="0" Margin="0" Kind="None" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtBlk_RowHeader" Grid.Column="1" Margin="0" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="" Foreground="White"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowHeaderStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0">
                     <DataGridTemplateColumn.CellTemplate>

@@ -138,7 +138,7 @@ namespace OMPS.Windows
 
         public void SetUrlRelPath(string path)
         {
-            this.Txt_Url.Text = $"pbridge://{path}";
+            this.MainViewModel.SetUrlRelPath(path);
         }
 
         public void SetTabTitle(string title)

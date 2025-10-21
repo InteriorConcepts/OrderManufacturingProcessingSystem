@@ -205,6 +205,24 @@ namespace OMPS.viewModel
             get => TimeZoneInfo.ConvertTime(DateTime.Now, CurrentTimezone);
         }
 
+        public const string UrlBase = "pbridge://";
+        public string UrlPath
+        {
+            get => field;
+            set
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        } = "";
+        public string Url {
+            get => field;
+            set
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        } = UrlBase;
 
         public Home Home_VM { get; set; }
         public Login Login_VM { get; set; }
@@ -272,6 +290,7 @@ namespace OMPS.viewModel
                 }
                 field = value;
                 OnPropertyChanged();
+                this.UpdateUrl();
                 this.WidgetMode = value is PageTypes.Login;
                 ToggleCurrentContentControl(Visibility.Visible);
                 RunPageDefaultFirstBehaviour(value);
@@ -281,6 +300,47 @@ namespace OMPS.viewModel
                 OnPropertyChanged(value + "_IsEnabled");
             }
         } = PageTypes.None;
+
+        public void UpdateUrl()
+        {
+            this.Url = $"{UrlBase}{GetPageUrlPath(this.CurrentPage)}{GetPageRelUrlPath(this.CurrentPage)}";
+        }
+
+        public void SetUrlRelPath(string rel = "")
+        {
+            this.UrlPath = rel;
+            UpdateUrl();
+        }
+
+        public static string GetPageUrlPath(PageTypes pageType)
+        {
+            return (pageType switch
+            {
+                PageTypes.Home => "home",
+                PageTypes.Login => "login",
+                PageTypes.OrderSearch => "order-search",
+                PageTypes.EngOrder => "eng-order",
+                PageTypes.QuoteOrder => "quote-order",
+                PageTypes.ProductCatalogSearch => "product-catalog",
+                PageTypes.ProductCatalogDetails => "product-catalog",
+                _ => ""
+            });
+        }
+
+        public string GetPageRelUrlPath(PageTypes pageType)
+        {
+            return (pageType switch
+            {
+                PageTypes.Home => "",
+                PageTypes.Login => "",
+                PageTypes.OrderSearch => "",
+                PageTypes.EngOrder => $"?job={this.EngOrder_VM.JobNbr}&tab={this.EngOrder_VM.dpnl_ViewsBar.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked is true)?.Tag}",
+                PageTypes.QuoteOrder => "",
+                PageTypes.ProductCatalogSearch => "",
+                PageTypes.ProductCatalogDetails => "",
+                _ => ""
+            });
+        }
 
         public void RunPageDefaultFirstBehaviour(PageTypes pageType)
         {
@@ -292,6 +352,7 @@ namespace OMPS.viewModel
                     break;
                 case PageTypes.OrderSearch:
                     Debug.WriteLine("Load Orders");
+                    if (this.OrderSearch_VM.ColorSetInfos?.Count is not 0) return;
                     this.OrderSearch_VM.LoadRecentOrders();
                     break;
                 case PageTypes.EngOrder:
@@ -337,7 +398,7 @@ namespace OMPS.viewModel
             this.OrderSearch_VM = new() { ParentWindow = this.ParentWin };
             this.EngOrder_VM = new() { ParentWindow = this.ParentWin };
             this.QuoteOrder_VM = new(this.ParentWin);
-            this.ProductCatalogSearch_VM = new(this.ParentWin);
+            this.ProductCatalogSearch_VM = new() { ParentWindow = this.ParentWin };
             this.ProductCatalogDetails_VM = new(this.ParentWin);
         }
     }
