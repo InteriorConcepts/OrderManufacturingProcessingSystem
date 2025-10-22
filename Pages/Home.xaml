@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OMPS"
              xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:sys="clr-namespace:System;assembly=System.Runtime" d:DataContext="{d:DesignInstance Type=pages:Home}"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              x:Name="Page_Home" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1525"
@@ -283,7 +283,7 @@
 
                                 <DataGrid x:Name="DataGrid_NewOrders" Grid.Row="1" Style="{StaticResource DataGrid_QuickAction_Style}"
                                           DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
-                                          ItemsSource="{Binding NewOrders, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                          ItemsSource="{Binding NewOrders, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
                                           CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}"
                                           RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}">
                                 </DataGrid>
@@ -320,7 +320,7 @@
 
                                     <DataGrid x:Name="DataGrid_EngFolders" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
                                               DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
-                                              ItemsSource="{Binding EngWorking, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                              ItemsSource="{Binding EngWorking, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
                                               RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
                                               CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                     </DataGrid>

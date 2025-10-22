@@ -20,7 +20,7 @@ namespace OMPS.Components
     {
         public LabelCheckPair()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
 
         public static readonly DependencyProperty LabelTextProperty =

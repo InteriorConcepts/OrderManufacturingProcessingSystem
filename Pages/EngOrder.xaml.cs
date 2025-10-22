@@ -22,7 +22,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Windows.AI.MachineLearning;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Pages

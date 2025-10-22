@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OMPS"
              xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" d:DataContext="{d:DesignInstance Type=pages:OrderSearch}"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             d:DataContext="{d:DesignInstance Type=pages:ProductCatalogSearch}"
              x:Name="Page_ProductCatalogSearch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1025"
@@ -17,7 +18,7 @@
     </UserControl.CacheMode>
     
     <UserControl.Resources>
-        <CollectionViewSource x:Key="ProductsViewSource" Source="{Binding ProductInfos}" Filter="ProductsViewSource_Filter"/>
+        <CollectionViewSource x:Key="ProductsViewSource" Source="{Binding Products}" Filter="ProductsViewSource_Filter"/>
     </UserControl.Resources>
     <Grid DataContext="{Binding ElementName=Page_ProductCatalogSearch}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -32,14 +33,19 @@
              AcceptsReturn="False" TextWrapping="NoWrap"
              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
              Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_ProdCode_PreviewKeyDown"/>
+            <Button x:Name="btn_reload" Content="Reload" Click="btn_reload_Click"/>
         </StackPanel>
-        <ProgressBar Panel.ZIndex="99" x:Name="progbar_orders" Height="3" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
-        <DataGrid x:Name="datagrid_orders" Grid.Row="1" IsReadOnly="True" IsTextSearchEnabled="True"
+        <ProgressBar Panel.ZIndex="99" x:Name="progbar" Height="3" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
+        <DataGrid x:Name="datagrid_main" Grid.Row="1" IsReadOnly="True"
                   ItemsSource="{Binding Source={StaticResource ProductsViewSource}}" DataContext="{x:Reference Name=Page_ProductCatalogSearch}"
-                  AutoGenerateColumns="True"
+                  AutoGenerateColumns="False" MouseDoubleClick="datagrid_main_MouseDoubleClick"
                   EnableColumnVirtualization="False" 
                   EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ProductCode" Binding="{Binding ProductCode}"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

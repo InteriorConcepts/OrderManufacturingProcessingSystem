@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OMPS"
         xmlns:Components="clr-namespace:OMPS.Components"
+        xmlns:conv="clr-namespace:OMPS.Converters"
         xmlns:pages="clr-namespace:OMPS.Pages"
         xmlns:viewModel="clr-namespace:OMPS.viewModel"
         xmlns:Ext="clr-namespace:OMPS"
@@ -20,8 +21,7 @@
     <Window.Resources>
         <CollectionViewSource x:Key="DataViewSource" x:Name="DataViewSource" Source="{Binding Data}" Filter="CollectionViewSource_Filter"/>
         <!-- Custom DataGridColumnHeader Style with Search Box -->
-
-        <local:ScalingConverter x:Key="ScalingConverter1"/>
+        
     </Window.Resources>
     <Window.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
@@ -29,15 +29,15 @@
     <Border CornerRadius="2" Background="#292929" BorderBrush="{StaticResource MaterialDesign.Brush.Primary}" BorderThickness="1">
         <Grid DataContext="{Binding ElementName=LookupFinderWindow}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="{Binding MainVM.FontSize_Base, FallbackValue=32, Converter={StaticResource ScalingConverter1}, ConverterParameter=2}"/>
+                <RowDefinition Height="{Binding MainVM.FontSize_Base, FallbackValue=32, Converter={conv:ScalingConverter}, ConverterParameter=2.0}"/>
                 <RowDefinition Height="48"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="{Binding MainVM.FontSize_Base, FallbackValue=16, Converter={StaticResource ScalingConverter1}, ConverterParameter=1}"/>
+                <RowDefinition Height="{Binding MainVM.FontSize_Base, FallbackValue=16, Converter={conv:ScalingConverter}, ConverterParameter=1.0}"/>
             </Grid.RowDefinitions>
             <Label x:Name="Txtblk_Title" Grid.Row="0" Content="Lookup" Margin="0" Padding="0"
                    HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Center" VerticalAlignment="Stretch"
-                   FontWeight="Medium" FontSize="{Binding MainVM.FontSize_Base, FallbackValue=18, Converter={StaticResource ScalingConverter1}, ConverterParameter=1.5}"
+                   FontWeight="Medium" FontSize="{Binding MainVM.FontSize_Base, FallbackValue=18, Converter={conv:ScalingConverter}, ConverterParameter=1.5}"
                    
                    Background="#0066CC"/>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -82,7 +82,7 @@
             </DataGrid>
             <Label x:Name="Lbl_datagrid_count" Grid.Row="3" Padding="4 0 0 0" Margin="0"
                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                   Foreground="#aaa" FontSize="{Binding MainVM.FontSize_Base, FallbackValue=12, Converter={StaticResource ScalingConverter1}, ConverterParameter=0.8}"
+                   Foreground="#aaa" FontSize="{Binding MainVM.FontSize_Base, FallbackValue=12, Converter={conv:ScalingConverter}, ConverterParameter=0.8}"
                    Content="{Binding ElementName=DataGrid_Lookup, Path=Items.Count}" ContentStringFormat="Showing {0:N0} items"/>
         </Grid>
     </Border>

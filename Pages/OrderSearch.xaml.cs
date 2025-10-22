@@ -96,7 +96,7 @@ namespace OMPS.Pages
 
 
         #region Methods
-        public async Task LoadRecentOrders(string filters = "%")
+        public async void LoadRecentOrders(string filters = "%")
         {
             this.Btn_OrdersRefresh.IsEnabled = false;
             this.ColorSetInfos.Clear();

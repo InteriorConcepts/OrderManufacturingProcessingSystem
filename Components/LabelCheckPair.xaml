@@ -3,15 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OMPS"
+             xmlns:local="clr-namespace:OMPS.Components"
+             xmlns:conv="clr-namespace:OMPS.Converters"
              mc:Ignorable="d" 
              x:Name="Root" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
              Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
     <UserControl.Resources>
-        <local:StringToBoolConverter x:Key="StringToBoolConverter" FalseValue="False" TrueValue="True"/>
+        
     </UserControl.Resources>
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
-        <CheckBox IsChecked="{Binding InputText, Converter={StaticResource StringToBoolConverter}}" Content="{Binding LabelText}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="{Binding FontSize}"/>
+        <CheckBox IsChecked="{Binding InputText, Converter={conv:StringToBoolConverter}}" Content="{Binding LabelText, FallbackValue=DefaultValue}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="{Binding FontSize}"/>
     </DockPanel>
 </UserControl>

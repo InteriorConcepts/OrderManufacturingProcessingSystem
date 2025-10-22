@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OMPS"
+      xmlns:conv="clr-namespace:OMPS.Converters"
       xmlns:Components="clr-namespace:OMPS.Components"
       xmlns:pages="clr-namespace:OMPS.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -18,7 +19,6 @@
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
     </UserControl.CacheMode>
     <UserControl.Resources>
-        <!--<local:NullToBooleanConverter x:Key="NullToBooleanConverter"/>-->
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
     </UserControl.Resources>
 
@@ -615,7 +615,7 @@
                         <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
                                 BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
-                                IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                                IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -628,7 +628,7 @@
                         <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0" DataContext="{x:Reference Page_EngOrder}"
                                 BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-                                IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                                IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -641,7 +641,7 @@
                         <Button Grid.Row="1" Grid.Column="4" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
                                 BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
-                                IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=datagrid_main}"
+                                IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"

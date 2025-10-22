@@ -31,14 +31,12 @@ namespace OMPS.viewModel
 
     public class Login_ViewModel : ObservableObject
     {
-        private bool loginCompleted;
-
         public bool LoginCompleted
         {
-            get => this.loginCompleted;
+            get;
             set
             {
-                loginCompleted = value;
+                field = value;
                 OnPropertyChanged();
             }
         }
@@ -89,15 +87,14 @@ namespace OMPS.viewModel
         public double FontSize_MAX { get; } = 18;
         public double FontSize_MIN { get; } = 12;
 
-        private double _fontSize_base = 12;
         public double FontSize_Base
         {
-            get => this._fontSize_base;
+            get;
             set
             {
-                if (this._fontSize_base == value) return;
+                if (field == value) return;
                 if (value > FontSize_MAX || value < FontSize_MIN) return;
-                this._fontSize_base = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(FontSize_H1));
                 OnPropertyChanged(nameof(FontSize_H1_1));
@@ -119,7 +116,7 @@ namespace OMPS.viewModel
                 OnPropertyChanged("FontSize_CanBeSmaller");
                 OnPropertyChanged("FontSize_CanBeLarger");
             }
-        }
+        } = 12;
 
         private readonly double FontSize_H1_scale   = (2 / Math.Sqrt(1));
         private readonly double FontSize_H1_1_scale = (2 / Math.Sqrt(1.25));
@@ -137,22 +134,22 @@ namespace OMPS.viewModel
         private readonly double FontSize_H8_scale   = (2 / Math.Sqrt(8));
         private readonly double FontSize_H9_scale   = (2 / Math.Sqrt(9));
         private readonly double FontSize_H10_scale  = (2 / Math.Sqrt(10));
-        public double FontSize_H1 { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H1_1 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
-        public double FontSize_H1_2 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
-        public double FontSize_H1_3 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
-        public double FontSize_H2   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H2_1 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
-        public double FontSize_H2_2 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
-        public double FontSize_H2_3 { get => Math.Round(this._fontSize_base * GetFontScaler(), 1); }
-        public double FontSize_H3   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H4   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H5   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H6   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H7   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H8   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H9   { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
-        public double FontSize_H10  { get => Math.Round(this._fontSize_base * GetFontScaler(), 0); }
+        public double FontSize_H1 { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H1_1 { get => Math.Round(FontSize_Base * GetFontScaler(), 1); }
+        public double FontSize_H1_2 { get => Math.Round(FontSize_Base * GetFontScaler(), 1); }
+        public double FontSize_H1_3 { get => Math.Round(FontSize_Base * GetFontScaler(), 1); }
+        public double FontSize_H2   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H2_1 { get => Math.Round(FontSize_Base * GetFontScaler(), 1); }
+        public double FontSize_H2_2 { get => Math.Round(FontSize_Base * GetFontScaler(), 1); }
+        public double FontSize_H2_3 { get => Math.Round(FontSize_Base * GetFontScaler(), 1); }
+        public double FontSize_H3   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H4   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H5   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H6   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H7   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H8   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H9   { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
+        public double FontSize_H10  { get => Math.Round(FontSize_Base * GetFontScaler(), 0); }
 
         private const double FONTSIZE_DEFAULT_SCALE = 1.0;
         private double GetFontScaler([CallerMemberName] string? propName = null)
@@ -360,6 +357,7 @@ namespace OMPS.viewModel
                 case PageTypes.QuoteOrder:
                     break;
                 case PageTypes.ProductCatalogSearch:
+                    this.ProductCatalogSearch_VM.LoadProducts();
                     break;
                 case PageTypes.ProductCatalogDetails:
                     break;

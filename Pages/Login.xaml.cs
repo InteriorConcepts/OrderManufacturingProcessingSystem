@@ -54,7 +54,7 @@ namespace OMPS.Pages
             this.Txt_Pass.Focus();
         }
 
-        public static string UserName = Environment.UserName;
+        public static readonly string UserName = Environment.UserName;
 
         private void Btn_Next_Click(object sender, RoutedEventArgs e)
         {
@@ -151,7 +151,7 @@ namespace OMPS.Pages
             this.Txt_Pass.Clear();
         }
 
-        public DoubleAnimation FadeOut<T>(T ele, DependencyProperty dep, double durationInSec, double delay = 0, EasingMode easeMode = EasingMode.EaseInOut) where T : FrameworkElement
+        public static DoubleAnimation FadeOut<T>(T ele, DependencyProperty dep, double durationInSec, double delay = 0, EasingMode easeMode = EasingMode.EaseInOut) where T : FrameworkElement
         {
             var anim = new DoubleAnimation(ele.Opacity, 0, TimeSpan.FromSeconds(durationInSec))
             {
@@ -164,6 +164,7 @@ namespace OMPS.Pages
 
         private void NextBtn_ResetAnim_Completed(object? sender, EventArgs e)
         {
+            if (this.ParentWindow is null) return;
             var storyboard = (Storyboard)this.Resources["LoginBox_Out"];
             Storyboard.SetTarget(storyboard, this.Border_LoginBox);
             storyboard.Completed += (ss, ee) =>
@@ -214,7 +215,7 @@ namespace OMPS.Pages
         }
 
 
-        public static Dictionary<string, bool> CheckResults = [];
+        public readonly static Dictionary<string, bool> CheckResults = [];
         public async Task RunAllChecks()
         {
             CheckResults.Clear();
@@ -313,13 +314,11 @@ namespace OMPS.Pages
 
             try
             {
-                using (PrincipalContext principalContext = new PrincipalContext(contextType))
-                {
-                    result = principalContext.ValidateCredentials(
-                        userName,
-                        new NetworkCredential(string.Empty, securePassword).Password
-                    );
-                }
+                using PrincipalContext principalContext = new(contextType);
+                result = principalContext.ValidateCredentials(
+                    userName,
+                    new NetworkCredential(string.Empty, securePassword).Password
+                );
             }
             catch (PrincipalOperationException)
             {
@@ -404,7 +403,7 @@ namespace OMPS.Pages
 
                 return readAllow && !readDeny;
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
                 return false;
             }

@@ -23,6 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Program.cs" />
     <Compile Remove="WebView_EventsHandler.cs" />
   </ItemGroup>
 
@@ -50,14 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Remove="Components\LabelCheckPair.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DesignData Include="Components\LabelCheckPair.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Images\Binoculars-high_contrast.png" />
     <Resource Include="Images\Binoculars.png" />
     <Resource Include="Images\fluent_web_dark_bg.png" />
@@ -78,17 +71,11 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.3" />
-    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.10" />
-    <PackageReference Include="System.Data.Odbc" Version="9.0.10" />
-    <PackageReference Include="System.Data.OleDb" Version="9.0.10" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.9" />
+    <PackageReference Include="System.Data.Odbc" Version="9.0.9" />
+    <PackageReference Include="System.Data.OleDb" Version="9.0.9" />
+    <PackageReference Include="System.DirectoryServices" Version="9.0.9" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.9" />
     <PackageReference Include="Tomlyn" Version="0.19.0" />
   </ItemGroup>
 
@@ -114,18 +101,6 @@
     <Compile Update="Components\LabelInputCurrencyPair.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{3259aa49-8aa1-44d3-9025-a0b520596a8c}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="App.xaml" />
   </ItemGroup>
 
 </Project>

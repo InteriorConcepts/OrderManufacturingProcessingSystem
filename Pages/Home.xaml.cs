@@ -1,4 +1,6 @@
 ﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
+using OMPS.Models;
 using OMPS.viewModel;
 using OMPS.Windows;
 using System;
@@ -7,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -17,7 +20,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using Windows.Devices.Geolocation;
 
 namespace OMPS.Pages
 {
@@ -33,13 +35,18 @@ namespace OMPS.Pages
             InitializeComponent();
             //
             this.DataContext = this;
-            this.GetNewOrders();
-            this.GetEngWorking();
+            //
+            this.LoadData();
+        }
+
+        public async void LoadData()
+        {
+            await this.GetNewOrders();
+            await this.GetEngWorking();
             this.GetEngChecks();
             this.GetEngReleases();
             this.GetEngArchive();
             this.GetCncWorking();
-            //
         }
 
 
@@ -89,7 +96,10 @@ namespace OMPS.Pages
             public string JobNbr { get; set; } = "";
             public string OrderNbr { get; set; } = "";
         }
-        public ObservableCollection<RecentOrder> NewOrders { get; set; } = [];
+
+
+        private List<RecentOrder> _newOrders = [];
+        public IReadOnlyList<RecentOrder> NewOrders => _newOrders;
 
         public class EngOrder
         {
@@ -97,7 +107,8 @@ namespace OMPS.Pages
             public bool PreEng { get; set; } = false;
             public bool Eng { get; set; } = false;
         }
-        public ObservableCollection<EngOrder> EngWorking { get; set; } = [];
+        public List<EngOrder> _engWorking = [];
+        public IReadOnlyList<EngOrder> EngWorking => _engWorking;
 
 
         public ObservableCollection<EngArchiveEntry> EngCheck1 { get; set; } = [];
@@ -140,13 +151,36 @@ namespace OMPS.Pages
 
         //
 
-
-
-
-        public void GetNewOrders()
+        public async Task<List<RecentOrder>> LoadColorSetsAsync()
         {
-            NewOrders.Clear();
+            using var context = new IcEmqContext();
             var now = DateTime.Now;
+            var cutoff = DateTime.Now.AddDays(-30);
+
+            // Safe read-only query
+            return await context.AIcColorSets
+                .Where(o => o.OrderDate <= cutoff)
+                .Where(o => o.SupplyOrderRef.Substring(0, 1) == "S" || o.SupplyOrderRef.Substring(0, 1) == "J")
+                .OrderByDescending(o => o.OrderDate)
+                .Take(25)
+                .AsNoTracking() // No change tracking
+                .AsSplitQuery()
+                .Select(o => new RecentOrder
+                {
+                    JobNbr = o.SupplyOrderRef ?? "",
+                    OrderNbr = o.OrderNumber ?? ""
+                })
+                .ToListAsync();
+        }
+
+        public async Task GetNewOrders()
+        {
+            //this.DataGrid_NewOrders.BeginInit();
+            _newOrders = await this.LoadColorSetsAsync();
+
+            OnPropertyChanged(nameof(NewOrders));
+            //this.DataGrid_NewOrders.EndInit();
+            /*
             var data_orders =
                 Ext.Queries.GetColorSets("%").
                     Where(i => (now - i.OrderDate).TotalDays <= 30).
@@ -156,12 +190,33 @@ namespace OMPS.Pages
             {
                 NewOrders.Add(new () { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber});
             }
-            //OnPropertyChanged(nameof(NewOrders));
+            OnPropertyChanged(nameof(NewOrders));
+            */
         }
 
-        public void GetEngWorking()
+        public async Task GetEngWorking()
         {
-            EngWorking.Clear();
+            using var context = new IcEmqContext();
+            var now = DateTime.Now;
+            var cutoff = DateTime.Now.AddDays(-30);
+
+            _engWorking = await context.AIcColorSets
+                .Where(o => o.OrderDate <= cutoff)
+                .Where(o => o.SupplyOrderRef.Substring(0, 1) == "S" || o.SupplyOrderRef.Substring(0, 1) == "J")
+                .OrderByDescending(o => o.OrderDate)
+                .Take(25)
+                .AsNoTracking() // No change tracking
+                .AsSplitQuery()
+                .Where(o => o.Engined == false)
+                .Select(o => new EngOrder
+                {
+                    Name = o.SupplyOrderRef ?? "",
+                    PreEng = o.Preengined,
+                    Eng = o.Engined
+                }).ToListAsync();
+            OnPropertyChanged(nameof(EngWorking));
+            /*
+            //EngWorking.Clear();
             var now = DateTime.Now;
             var jobs = Ext.Queries.GetColorSets("%").Select(i => i.JobNbr);
             var colorSetDatas =
@@ -171,7 +226,7 @@ namespace OMPS.Pages
             {
                 EngWorking.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
             }
-            //OnPropertyChanged(nameof(EngWorking));
+            */
         }
 
         public const string EngCheck1Root = "H:\\engineering\\4. 1st Check";

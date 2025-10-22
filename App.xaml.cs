@@ -1,10 +1,7 @@
-﻿#pragma warning disable Experimental
-using System.Configuration;
-using System.Data;
+﻿using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
-using static OMPS.Ext;
 
 namespace OMPS
 {
@@ -15,12 +12,9 @@ namespace OMPS
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-#pragma warning disable WPF0001 
-            ThemeMode = ThemeMode.None;
-#pragma warning restore WPF0001
+            Ext.ValidateAppSettings();
             base.OnStartup(e);
         }
     }
 
 }
-#pragma warning restore Experimental

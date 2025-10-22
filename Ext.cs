@@ -1,16 +1,18 @@
-﻿using MyApp.DataAccess.Generated;
+﻿using Humanizer;
+using MyApp.DataAccess.Generated;
+using OMPS.Models;
 using OMPS.Pages;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.IO;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using Windows.UI;
-using Windows.UI.ViewManagement;
 
 
 namespace OMPS
@@ -29,6 +31,73 @@ namespace OMPS
 
     public static class Ext
     {
+        public static void ValidateAppSettings()
+        {
+            try
+            {
+                NameValueCollection? appSettings = ConfigurationManager.AppSettings;
+                if (appSettings is null)
+                {
+                    MessageBox.Show("AppSettings not loaded correctly.");
+                    return;
+                }
+                if (appSettings.Count is 0)
+                {
+                    MessageBox.Show("AppSettings is empty.");
+                    return;
+                }
+#if false
+                for (byte i = 0; i < ConfigurationManager.ConnectionStrings.Count; i++)
+                {
+                    var cs = ConfigurationManager.ConnectionStrings[i];
+                    MessageBox.Show("Key: {0} Value: {1}".FormatWith(cs.Name, cs.ConnectionString));
+                }
+                foreach (var key in appSettings.AllKeys)
+                {
+                    MessageBox.Show("Key: {0} Value: {1}".FormatWith(key, appSettings[key]));
+                }
+#endif
+            }
+            catch (ConfigurationErrorsException)
+            {
+                MessageBox.Show("Error reading AppSettings");
+            }
+        }
+        public static void ReadSetting(string key)
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "Not Found";
+                MessageBox.Show(result);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                MessageBox.Show("Error reading app settings");
+            }
+        }
+        public static void AddUpdateAppSettings(string key, string value)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+                if (settings[key] == null)
+                {
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    settings[key].Value = value;
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                MessageBox.Show("Error writing AppSettings");
+            }
+        }
 
         public static IEnumerable<FileInfo> MultiEnumerateFiles(this DirectoryInfo di, string patterns, SearchOption sOpts = SearchOption.TopDirectoryOnly)
         {
@@ -47,7 +116,7 @@ namespace OMPS
 
         public static string StringFormat_Currency = "{}{0:C2.00}";
         public static string StringFormat_Text = "{}";
-
+        /*
         public static readonly UISettings UISettings = new();
         public static bool IsDark()
         {
@@ -59,6 +128,7 @@ namespace OMPS
         public static bool CurrentThemeIsDark() =>
             IsDark();
 #pragma warning restore WPF0001
+        */
 
         public static readonly example_queriesQueries Queries = new();
 

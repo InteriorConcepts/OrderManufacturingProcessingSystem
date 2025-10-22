@@ -3,10 +3,224 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OMPS.Pages"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:local="clr-namespace:OMPS"
+             xmlns:conv="clr-namespace:OMPS.Converters"
+             xmlns:Components="clr-namespace:OMPS.Components"
+             xmlns:pages="clr-namespace:OMPS.Pages"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             x:Name="Page_ProductCatalogDetails" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+             mc:Ignorable="d" UseLayoutRounding="False"
+             d:DesignHeight="600" d:DesignWidth="1025">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="toolbar" Grid.Row="0" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef, FallbackValue=J000000000}"
+                       VerticalAlignment="Center" Margin="20,0,0,0" FontWeight="Medium"
+                       FontSize="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button x:Name="Btn_RefreshHeader" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        VerticalContentAlignment="Stretch" VerticalAlignment="Center"
+                        Padding="0" Margin="0 0 2 0" Cursor="Hand"
+                        Click="Btn_RefreshHeader_Click">
+                    <materialDesign:PackIcon Foreground="LightSkyBlue" Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Kind="Reload"/>
+                </Button>
+                <Button x:Name="Btn_SaveHeader" Height="22" Width="Auto"
+                        Style="{StaticResource SaveBtn}" IsEnabled="False"
+                        VerticalContentAlignment="Stretch" VerticalAlignment="Center"
+                        Padding="8 0" Margin="0 0 2 0" Cursor="Hand"
+                        Click="Btn_SaveHeader_Click">
+                    <Image x:Name="Img_SaveHeader" Width="18" Height="18" IsEnabled="False"
+                       SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
+                       RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
+                </Button>
+                <CheckBox x:Name="Btn_CollapseTopBar" Content="Header" IsChecked="True"
+                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Padding="4 0" Margin="1 3"
+                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                          Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
+                <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="True"
+                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Padding="4 0" Margin="1 3"
+                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                          Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="grid_header" Grid.Row="1">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
+
+                <TabItem Height="40">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="General"/>
+                    </TabItem.Header>
+                    <!--
+                Use Grid for vertical stacks, then nested StackPanels for further splitting
+                -->
+                    <Grid Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <!--Column 1 : General Info-->
+                            <!--
+                            <StackPanel Width="180" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputPair LabelWidth="85" LabelText="ProductCode" InputReadOnly="True" FontSize="{Binding , ElementName=Page_ProductCatalogDetails, FallbackValue=12, UpdateSourceTrigger=PropertyChanged}" InputText="{Binding ColorSetInfo.OrderNumber, Mode=TwoWay}"/>
+                                <Components:LabelInputPair LabelWidth="85" LabelText="Status" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelWidth="85" LabelText="Type" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelWidth="85" LabelText="SubType" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelInputPair LabelWidth="85" LabelText="Width" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelInputPair LabelWidth="85" LabelText="Depth" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelInputPair LabelWidth="85" LabelText="Height" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelWidth="85" LabelText="ClorBy" InputReadOnly="True" InputText="{Binding , Mode=TwoWay}"/>
+                                <StackPanel Orientation="Horizontal" Height="35">
+                                    <Components:LabelCheckPair LabelText="Engineer" InputText="{Binding , Mode=TwoWay}"/>
+                                    <Components:LabelCheckPair LabelText="Engineer" InputText="{Binding , Mode=TwoWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            -->
+                            <!--Column 2 : Basic Colors-->
+                            <!--
+                            <StackPanel Width="170" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelComboPair x:Name="FrmFin" LabelText="FrameFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Path=Finishes_Default}" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="Metal Comp" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="ShelfFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="GibLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="ValBaseFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_BS}" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="100" InputReadOnly="False" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="100" InputReadOnly="False" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="90" InputReadOnly="False" InputText="{Binding , Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputReadOnly="False" InputText="{Binding , Mode=TwoWay}"/>
+                            </StackPanel>
+                            -->
+                            <!--Column 3 : Materials-->
+                            <!--
+                            <StackPanel Width="415" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputLookupPair LabelText="Fabric" InputLookupType="fab" LabelWidth="82" InputLookup="{Binding ColorSetInfo.Fabric1ID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam" InputLookupType="wks" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksLamID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Edge" InputLookupType="web" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksEdgeID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl" InputLookupType="mel" LabelWidth="82" InputLookup="{Binding ColorSetInfo.MelPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl" InputLookupType="lam" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Chase Door" InputLookupType="chs" LabelWidth="82" InputLookup="{Binding ColorSetInfo.ChaseDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Acrylic" InputLookupType="acr" LabelWidth="82" InputLookup="{Binding ColorSetInfo.AcrylicID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam HC Door" InputLookupType="hcd" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamHCDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Curve" InputLookupType="crv" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                            </StackPanel>
+                            -->
+                            <!--Column 4 : Buttons-->
+                            <!--
+                            <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
+                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
+                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
+                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
+                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
+                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
+                            </StackPanel>
+                            -->
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Categories"/>
+                    </TabItem.Header>
+                    <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <!--Column 1 : Extra Materials-->
+                            <!--
+                            <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Acrylic2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric3ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.WksLam2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.LamPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.MelPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
+                                <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
+                                <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
+                                <Components:LabelComboPair LabelText="UnderWsPnl" LabelWidth="80" InputText="{Binding ColorSetInfo.UnderWsPnlType, Mode=TwoWay}"/>
+                            </StackPanel>
+                            -->
+                            <!--Column 2 : Misc Toggles-->
+                            <!--<StackPanel Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelCheckPair LabelText="Preengined" InputText="{Binding ColorSetInfo.Preengined, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Engined" InputText="{Binding ColorSetInfo.Engined, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="KeyAlike" InputText="{Binding ColorSetInfo.KeyAlike, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="KeyEaStaAlike" InputText="{Binding ColorSetInfo.KeyEaStaAlike, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="MasterKey" InputText="{Binding ColorSetInfo.MasterKey, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="EarlyElectrical" InputText="{Binding ColorSetInfo.EarlyElectrical, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="XQ" InputText="{Binding ColorSetInfo.XQ, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="UpdateRecord" InputText="{Binding ColorSetInfo.UpdateRecord, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="InstallByIC" InputText="{Binding ColorSetInfo.InstallByIC, Mode=TwoWay}"/>
+                            </StackPanel>-->
+                            <!--Column 3 : Misc Colors-->
+                            <!--<StackPanel Width="116" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                <Components:LabelComboPair LabelText="PmoldFin" LabelWidth="62" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.PmoldFin, Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="AccFin" LabelWidth="62" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.AccFin, Mode=TwoWay}"/>
+                            </StackPanel>-->
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Height="40" Width="100">
+                    <TabItem.Header>
+                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pricing+"/>
+                    </TabItem.Header>
+                    <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="320"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!--<StackPanel Grid.Column="0" Margin="0 0 4 0">
+                            <Components:LabelInputPair LabelWidth="90" LabelText="Name" InputText="{Binding ColorSetInfo.Name, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="CompanyName" InputText="{Binding ColorSetInfo.CompanyName, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="CompanyID" InputText="{Binding ColorSetInfo.CompanyID, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="QuoteNbr" InputText="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="CustOrderID" InputText="{Binding ColorSetInfo.CustOrderID, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="OrderType" InputText="{Binding ColorSetInfo.OrderType, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="90" LabelText="OpportunityNbr" InputText="{Binding ColorSetInfo.OpportunityNbr, Mode=TwoWay}"/>
+                        </StackPanel>-->
+                        <!--<StackPanel Grid.Column="1" Margin="0 0 4 0">
+                            <Components:LabelInputPair LabelWidth="70" LabelText="DropShipID" InputText="{Binding ColorSetInfo.DropShipID, Mode=TwoWay}" InputReadOnly="True"/>
+                            <Components:LabelInputPair LabelWidth="70" LabelText="ExterpriseID" InputText="{Binding ColorSetInfo.EnterpriseID, Mode=TwoWay}"/>
+                            <Components:LabelInputPair LabelWidth="70" LabelText="ShiptoName" InputText="{Binding ColorSetInfo.ShiptoName, Mode=TwoWay}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Components:LabelDatePickPair Grid.Column="0" Grid.Row="0" LabelWidth="70" LabelText="OrderDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.OrderDate, Mode=TwoWay}" InputText=""/>
+                                <Components:LabelDatePickPair Grid.Column="0" Grid.Row="1" LabelWidth="70" LabelText="OnSiteDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.OnSiteDate, Mode=TwoWay}"/>
+                                <Components:LabelDatePickPair Grid.Column="1" Grid.Row="0" LabelWidth="70" LabelText="CreationDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.CreationDate, Mode=TwoWay}"/>
+                                <Components:LabelDatePickPair Grid.Column="1" Grid.Row="1" LabelWidth="70" LabelText="ChangeDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.ChangeDate, Mode=TwoWay}"/>
+                            </Grid>
+                            <Components:LabelInputPair Grid.Column="1" Grid.Row="5" LabelWidth="70"
+                                                   LabelText="ColorSetID"
+                                                   InputText="{Binding ColorSetInfo.ColorSetID, Mode=OneWay}" InputReadOnly="True"/>
+                        </StackPanel>-->
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        
     </Grid>
 </UserControl>
