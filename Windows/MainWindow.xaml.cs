@@ -73,13 +73,13 @@ namespace OMPS.Windows
 
             this.Loaded += MainWindow_Loaded;
 
-            this.MainViewModel.CurrentPage = PageTypes.Home;
 
             //((OrderSearch?)((Main_ViewModel)this.DataContext)["OrderSearch", PageTypes.OrderSearch])?.LoadRecentOrders();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            this.MainViewModel.CurrentPage = PageTypes.Home;
             //if (MainViewModel.AddNewPage(PageTypes.OrderSearch) is not string tag) return;
             //(MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
         }

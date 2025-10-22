@@ -10,10 +10,10 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       x:Name="Page_EngOrder" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
       mc:Ignorable="d" UseLayoutRounding="False"
-      d:DesignHeight="600" d:DesignWidth="1025"
+      d:DesignHeight="2400" d:DesignWidth="1025"
       DataContext="{Binding ElementName=Page_EngOrder}"
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
-      FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
+      FontSize="{Binding DataGridFontSize, ElementName=Page_EngOrder, FallbackValue=12}"
       >
     <UserControl.CacheMode>
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
@@ -161,15 +161,15 @@
                             </StackPanel>
                             <!--Column 2 : Misc Toggles-->
                             <StackPanel Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Preengined" InputText="{Binding ColorSetInfo.Preengined, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Engined" InputText="{Binding ColorSetInfo.Engined, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="KeyAlike" InputText="{Binding ColorSetInfo.KeyAlike, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="KeyEaStaAlike" InputText="{Binding ColorSetInfo.KeyEaStaAlike, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="MasterKey" InputText="{Binding ColorSetInfo.MasterKey, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="EarlyElectrical" InputText="{Binding ColorSetInfo.EarlyElectrical, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="XQ" InputText="{Binding ColorSetInfo.XQ, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="UpdateRecord" InputText="{Binding ColorSetInfo.UpdateRecord, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="InstallByIC" InputText="{Binding ColorSetInfo.InstallByIC, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Preengined" CheckValue="{Binding ColorSetInfo.Preengined, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Engined" CheckValue="{Binding ColorSetInfo.Engined, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="KeyAlike" CheckValue="{Binding ColorSetInfo.KeyAlike, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="KeyEaStaAlike" CheckValue="{Binding ColorSetInfo.KeyEaStaAlike, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="MasterKey" CheckValue="{Binding ColorSetInfo.MasterKey, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="EarlyElectrical" CheckValue="{Binding ColorSetInfo.EarlyElectrical, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="XQ" CheckValue="{Binding ColorSetInfo.XQ, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="UpdateRecord" CheckValue="{Binding ColorSetInfo.UpdateRecord, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="InstallByIC" CheckValue="{Binding ColorSetInfo.InstallByIC, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3 : Misc Colors-->
                             <StackPanel Width="116" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
@@ -235,128 +235,128 @@
                         <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Horizontal">
                             <!--Column 1-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 01" InputText="{Binding ColorSetInfo.Part01, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 02" InputText="{Binding ColorSetInfo.Part02, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 03" InputText="{Binding ColorSetInfo.Part03, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 04" InputText="{Binding ColorSetInfo.Part04, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 05" InputText="{Binding ColorSetInfo.Part05, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 06" InputText="{Binding ColorSetInfo.Part06, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 07" InputText="{Binding ColorSetInfo.Part07, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 08" InputText="{Binding ColorSetInfo.Part08, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 09" InputText="{Binding ColorSetInfo.Part09, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 10" InputText="{Binding ColorSetInfo.Part10, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 01" CheckValue="{Binding ColorSetInfo.Part01, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 02" CheckValue="{Binding ColorSetInfo.Part02, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 03" CheckValue="{Binding ColorSetInfo.Part03, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 04" CheckValue="{Binding ColorSetInfo.Part04, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 05" CheckValue="{Binding ColorSetInfo.Part05, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 06" CheckValue="{Binding ColorSetInfo.Part06, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 07" CheckValue="{Binding ColorSetInfo.Part07, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 08" CheckValue="{Binding ColorSetInfo.Part08, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 09" CheckValue="{Binding ColorSetInfo.Part09, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 10" CheckValue="{Binding ColorSetInfo.Part10, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 2-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 11" InputText="{Binding ColorSetInfo.Part11, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 12" InputText="{Binding ColorSetInfo.Part12, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 13" InputText="{Binding ColorSetInfo.Part13, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 14" InputText="{Binding ColorSetInfo.Part14, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 15" InputText="{Binding ColorSetInfo.Part15, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 16" InputText="{Binding ColorSetInfo.Part16, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 17" InputText="{Binding ColorSetInfo.Part17, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 18" InputText="{Binding ColorSetInfo.Part18, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 19" InputText="{Binding ColorSetInfo.Part19, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 20" InputText="{Binding ColorSetInfo.Part20, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 11" CheckValue="{Binding ColorSetInfo.Part11, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 12" CheckValue="{Binding ColorSetInfo.Part12, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 13" CheckValue="{Binding ColorSetInfo.Part13, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 14" CheckValue="{Binding ColorSetInfo.Part14, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 15" CheckValue="{Binding ColorSetInfo.Part15, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 16" CheckValue="{Binding ColorSetInfo.Part16, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 17" CheckValue="{Binding ColorSetInfo.Part17, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 18" CheckValue="{Binding ColorSetInfo.Part18, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 19" CheckValue="{Binding ColorSetInfo.Part19, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 20" CheckValue="{Binding ColorSetInfo.Part20, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 21" InputText="{Binding ColorSetInfo.Part21, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 22" InputText="{Binding ColorSetInfo.Part22, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 23" InputText="{Binding ColorSetInfo.Part23, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 24" InputText="{Binding ColorSetInfo.Part24, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 25" InputText="{Binding ColorSetInfo.Part25, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 26" InputText="{Binding ColorSetInfo.Part26, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 27" InputText="{Binding ColorSetInfo.Part27, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 28" InputText="{Binding ColorSetInfo.Part28, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 29" InputText="{Binding ColorSetInfo.Part29, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 30" InputText="{Binding ColorSetInfo.Part30, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 21" CheckValue="{Binding ColorSetInfo.Part21, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 22" CheckValue="{Binding ColorSetInfo.Part22, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 23" CheckValue="{Binding ColorSetInfo.Part23, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 24" CheckValue="{Binding ColorSetInfo.Part24, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 25" CheckValue="{Binding ColorSetInfo.Part25, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 26" CheckValue="{Binding ColorSetInfo.Part26, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 27" CheckValue="{Binding ColorSetInfo.Part27, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 28" CheckValue="{Binding ColorSetInfo.Part28, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 29" CheckValue="{Binding ColorSetInfo.Part29, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 30" CheckValue="{Binding ColorSetInfo.Part30, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 4-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 31" InputText="{Binding ColorSetInfo.Part31, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 32" InputText="{Binding ColorSetInfo.Part32, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 33" InputText="{Binding ColorSetInfo.Part33, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 34" InputText="{Binding ColorSetInfo.Part34, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 35" InputText="{Binding ColorSetInfo.Part35, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 36" InputText="{Binding ColorSetInfo.Part36, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 37" InputText="{Binding ColorSetInfo.Part37, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 38" InputText="{Binding ColorSetInfo.Part38, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 39" InputText="{Binding ColorSetInfo.Part39, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 40" InputText="{Binding ColorSetInfo.Part40, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 31" CheckValue="{Binding ColorSetInfo.Part31, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 32" CheckValue="{Binding ColorSetInfo.Part32, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 33" CheckValue="{Binding ColorSetInfo.Part33, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 34" CheckValue="{Binding ColorSetInfo.Part34, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 35" CheckValue="{Binding ColorSetInfo.Part35, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 36" CheckValue="{Binding ColorSetInfo.Part36, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 37" CheckValue="{Binding ColorSetInfo.Part37, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 38" CheckValue="{Binding ColorSetInfo.Part38, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 39" CheckValue="{Binding ColorSetInfo.Part39, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 40" CheckValue="{Binding ColorSetInfo.Part40, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 5-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 41" InputText="{Binding ColorSetInfo.Part41, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 42" InputText="{Binding ColorSetInfo.Part42, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 43" InputText="{Binding ColorSetInfo.Part43, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 44" InputText="{Binding ColorSetInfo.Part44, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 45" InputText="{Binding ColorSetInfo.Part45, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 46" InputText="{Binding ColorSetInfo.Part46, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 47" InputText="{Binding ColorSetInfo.Part47, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 48" InputText="{Binding ColorSetInfo.Part48, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 49" InputText="{Binding ColorSetInfo.Part49, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 50" InputText="{Binding ColorSetInfo.Part50, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 41" CheckValue="{Binding ColorSetInfo.Part41, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 42" CheckValue="{Binding ColorSetInfo.Part42, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 43" CheckValue="{Binding ColorSetInfo.Part43, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 44" CheckValue="{Binding ColorSetInfo.Part44, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 45" CheckValue="{Binding ColorSetInfo.Part45, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 46" CheckValue="{Binding ColorSetInfo.Part46, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 47" CheckValue="{Binding ColorSetInfo.Part47, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 48" CheckValue="{Binding ColorSetInfo.Part48, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 49" CheckValue="{Binding ColorSetInfo.Part49, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 50" CheckValue="{Binding ColorSetInfo.Part50, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 6-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 51" InputText="{Binding ColorSetInfo.Part51, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 52" InputText="{Binding ColorSetInfo.Part52, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 53" InputText="{Binding ColorSetInfo.Part53, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 54" InputText="{Binding ColorSetInfo.Part54, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 55" InputText="{Binding ColorSetInfo.Part55, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 56" InputText="{Binding ColorSetInfo.Part56, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 57" InputText="{Binding ColorSetInfo.Part57, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 58" InputText="{Binding ColorSetInfo.Part58, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 59" InputText="{Binding ColorSetInfo.Part59, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 60" InputText="{Binding ColorSetInfo.Part60, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 51" CheckValue="{Binding ColorSetInfo.Part51, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 52" CheckValue="{Binding ColorSetInfo.Part52, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 53" CheckValue="{Binding ColorSetInfo.Part53, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 54" CheckValue="{Binding ColorSetInfo.Part54, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 55" CheckValue="{Binding ColorSetInfo.Part55, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 56" CheckValue="{Binding ColorSetInfo.Part56, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 57" CheckValue="{Binding ColorSetInfo.Part57, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 58" CheckValue="{Binding ColorSetInfo.Part58, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 59" CheckValue="{Binding ColorSetInfo.Part59, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 60" CheckValue="{Binding ColorSetInfo.Part60, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 7-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 61" InputText="{Binding ColorSetInfo.Part61, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 62" InputText="{Binding ColorSetInfo.Part62, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 63" InputText="{Binding ColorSetInfo.Part63, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 64" InputText="{Binding ColorSetInfo.Part64, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 65" InputText="{Binding ColorSetInfo.Part65, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 66" InputText="{Binding ColorSetInfo.Part66, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 67" InputText="{Binding ColorSetInfo.Part67, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 68" InputText="{Binding ColorSetInfo.Part68, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 69" InputText="{Binding ColorSetInfo.Part69, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 70" InputText="{Binding ColorSetInfo.Part70, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 61" CheckValue="{Binding ColorSetInfo.Part61, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 62" CheckValue="{Binding ColorSetInfo.Part62, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 63" CheckValue="{Binding ColorSetInfo.Part63, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 64" CheckValue="{Binding ColorSetInfo.Part64, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 65" CheckValue="{Binding ColorSetInfo.Part65, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 66" CheckValue="{Binding ColorSetInfo.Part66, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 67" CheckValue="{Binding ColorSetInfo.Part67, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 68" CheckValue="{Binding ColorSetInfo.Part68, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 69" CheckValue="{Binding ColorSetInfo.Part69, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 70" CheckValue="{Binding ColorSetInfo.Part70, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 8-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 71" InputText="{Binding ColorSetInfo.Part71, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 72" InputText="{Binding ColorSetInfo.Part72, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 73" InputText="{Binding ColorSetInfo.Part73, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 74" InputText="{Binding ColorSetInfo.Part74, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 75" InputText="{Binding ColorSetInfo.Part75, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 76" InputText="{Binding ColorSetInfo.Part76, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 77" InputText="{Binding ColorSetInfo.Part77, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 78" InputText="{Binding ColorSetInfo.Part78, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 79" InputText="{Binding ColorSetInfo.Part79, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 80" InputText="{Binding ColorSetInfo.Part80, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 71" CheckValue="{Binding ColorSetInfo.Part71, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 72" CheckValue="{Binding ColorSetInfo.Part72, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 73" CheckValue="{Binding ColorSetInfo.Part73, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 74" CheckValue="{Binding ColorSetInfo.Part74, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 75" CheckValue="{Binding ColorSetInfo.Part75, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 76" CheckValue="{Binding ColorSetInfo.Part76, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 77" CheckValue="{Binding ColorSetInfo.Part77, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 78" CheckValue="{Binding ColorSetInfo.Part78, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 79" CheckValue="{Binding ColorSetInfo.Part79, Mode=TwoWay}"/>
+                                <Components:LabelCheckPair LabelText="Part 80" CheckValue="{Binding ColorSetInfo.Part80, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 9-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 81" InputText="{Binding ColorSetInfo.Part81, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 82" InputText="{Binding ColorSetInfo.Part82, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 83" InputText="{Binding ColorSetInfo.Part83, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 84" InputText="{Binding ColorSetInfo.Part84, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 85" InputText="{Binding ColorSetInfo.Part85, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 86" InputText="{Binding ColorSetInfo.Part86, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 87" InputText="{Binding ColorSetInfo.Part87, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 88" InputText="{Binding ColorSetInfo.Part88, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 89" InputText="{Binding ColorSetInfo.Part89, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 90" InputText="{Binding ColorSetInfo.Part90, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 81" CheckValue="{Binding ColorSetInfo.Part81, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 82" CheckValue="{Binding ColorSetInfo.Part82, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 83" CheckValue="{Binding ColorSetInfo.Part83, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 84" CheckValue="{Binding ColorSetInfo.Part84, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 85" CheckValue="{Binding ColorSetInfo.Part85, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 86" CheckValue="{Binding ColorSetInfo.Part86, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 87" CheckValue="{Binding ColorSetInfo.Part87, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 88" CheckValue="{Binding ColorSetInfo.Part88, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 89" CheckValue="{Binding ColorSetInfo.Part89, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 90" CheckValue="{Binding ColorSetInfo.Part90, Mode=TwoWay}" IsEnabled="False"/>
                             </StackPanel>
                             <!--Column 10-->
                             <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 91" InputText="{Binding ColorSetInfo.Part91, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 92" InputText="{Binding ColorSetInfo.Part92, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 93" InputText="{Binding ColorSetInfo.Part93, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 94" InputText="{Binding ColorSetInfo.Part94, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 95" InputText="{Binding ColorSetInfo.Part95, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 91" CheckValue="{Binding ColorSetInfo.Part91, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 92" CheckValue="{Binding ColorSetInfo.Part92, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 93" CheckValue="{Binding ColorSetInfo.Part93, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 94" CheckValue="{Binding ColorSetInfo.Part94, Mode=TwoWay}" IsEnabled="False"/>
+                                <Components:LabelCheckPair LabelText="Part 95" CheckValue="{Binding ColorSetInfo.Part95, Mode=TwoWay}" IsEnabled="False"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -459,8 +459,8 @@
                     </Button>
                 </Grid>
                 <Separator Grid.Row="1" Margin="0 1"/>
-                <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
-                <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0" Visibility="Collapsed"/>
+                <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
                     <WrapPanel Orientation="Horizontal" VerticalAlignment="Stretch">
                         <Button Content="Assembled" Padding="2 1" Margin="0 0 3 1" Height="20" Width="Auto" FontSize="10" BorderThickness="0"/>
                     </WrapPanel>
@@ -530,7 +530,9 @@
                         <Setter Property="Padding" Value="16 0"/>
                         <Setter Property="VerticalAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <!--
                         <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"/>
+                        -->
                     </Style>
                 </DataGrid.CellStyle>
             </DataGrid>
@@ -556,7 +558,6 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -567,10 +568,112 @@
                             <WrapPanel x:Name="WPnl_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                        Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                                 <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-
+                                    <Label Height="30" Content="JobNbr"/>
+                                    <Label Height="30" Content="PartNbr"/>
+                                    <Label Height="30" VerticalContentAlignment="Center">
+                                        <Label.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="ItemNbr"/>
+                                                <Button Grid.Column="1" Grid.Row="0" Height="18" Tag="ItemNbr"
+                                                        Padding="0" Margin="0" BorderThickness="0"
+                                                        Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                    <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                    </Image>
+                                                </Button>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <Label Height="30" Content="CatalogNbr"/>
+                                    <Label Height="30" Content="Qty"/>
+                                    <Label Height="30" Content="Multiplier"/>
+                                    <Label Height="30" VerticalContentAlignment="Center">
+                                        <Label.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Description"/>
+                                                <Button Grid.Column="1" Grid.Row="0" Height="18" Tag="Description"
+                                                        Padding="0" Margin="0" BorderThickness="0"
+                                                        Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                    <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                    </Image>
+                                                </Button>
+                                            </StackPanel>
+                                        </Label.Content>
+                                    </Label>
+                                    <Label Height="30" Content="UofM"/>
+                                    <Label Height="30" Content="Type"/>
+                                    <Label Height="30" Content="SubType"/>
+                                    <Label Height="30" Content="IDNbr"/>
+                                    <Label Height="30" Content="Explode"/>
+                                    <Label Height="30" Content="Assembled"/>
+                                    <Label Height="30" Content="AssyNbr"/>
+                                    <Label Height="30" Content="TileIndicator"/>
+                                    <Label Height="30" Content="ItemFin"/>
+                                    <Label Height="30" Content="ColorBy"/>
+                                    <Label Height="30" Content="WorkCtr"/>
+                                    <Label Height="30" Content="ItemCore"/>
+                                    <Label Height="30" Content="Dept"/>
+                                    <Label Height="30" Content="ScrapFactor"/>
+                                    <Label Height="30" Content="SizeDivisor"/>
+                                    <Label Height="30" Content="FabWidth"/>
+                                    <Label Height="30" Content="Depth"/>
+                                    <Label Height="30" Content="Width"/>
+                                    <Label Height="30" Content="Height"/>
+                                    <Label Height="30" Content="FabWidth"/>
+                                    <Label Height="30" Content="FabHeight"/>
+                                    <Label Height="30" Content="Option01"/>
+                                    <Label Height="30" Content="Option02"/>
+                                    <Label Height="30" Content="Option03"/>
+                                    <Label Height="30" Content="Option04"/>
+                                    <Label Height="30" Content="Option05"/>
+                                    <Label Height="30" Content="Option06"/>
+                                    <Label Height="30" Content="Option07"/>
+                                    <Label Height="30" Content="Option08"/>
+                                    <Label Height="30" Content="Option09"/>
+                                    <Label Height="30" Content="Option10"/>
+                                    <Label Height="30" Content="CoreSize"/>
+                                    <Label Height="30" Content="Area"/>
                                 </WrapPanel>
                                 <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.JobNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Padding="4 0" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ElementName=datagrid_main, Path=SelectedItem.Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ElementName=datagrid_main, Path=SelectedItem.SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.IDNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <CheckBox Height="30" Width="247" IsChecked="{Binding ElementName=datagrid_main, Path=SelectedItem.Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.FabWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.FabWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>
@@ -594,7 +697,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                                            Text="Revert"/>
-                                <materialDesign:PackIcon Kind="Undo" Foreground="#d0763e"
+                                <materialDesign:PackIcon Kind="UndoVariant" Foreground="#d0763e"
                                                          Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
                                                          Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
@@ -607,7 +710,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                                            Text="Save"/>
-                                <materialDesign:PackIcon Kind="FloppyDiscEditOutline" Foreground="#7dadc8"
+                                <materialDesign:PackIcon Kind="FloppyDiscEditOutline" Foreground="#FF7EB750"
                                                          Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
                                                          Height="{Binding MainViewModel.FontSize_H4, FallbackValue=16}"/>
                             </StackPanel>
@@ -625,20 +728,7 @@
                                                          Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="1" Grid.Column="3" Padding="4 1" Margin="4 0 4 0" DataContext="{x:Reference Page_EngOrder}"
-                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-                                IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
-                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                                           Text="Lookup"/>
-                                <materialDesign:PackIcon Kind="TableSearch" Foreground="#f2d08d"
-                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
-                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Grid.Row="1" Grid.Column="4" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="1" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
                                 BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
                                 IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
@@ -646,7 +736,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                                            Text="New"/>
-                                <materialDesign:PackIcon Kind="AddBold" Foreground="#718141"
+                                <materialDesign:PackIcon Kind="AddBold" Foreground="#7dadc8"
                                                          Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
                                                          Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
@@ -656,13 +746,13 @@
             </DockPanel>
         </Grid>
         <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="4" LastChildFill="False" Background="#222">
-            <RadioButton x:Name="RadioBtn_View_QPO"  Content="Quote Parts Ordered" Tag="QuotePartsOrdered"
+            <RadioButton x:Name="RadioBtn_View_QPO" Content="Quote Parts Ordered" Tag="QuotePartsOrdered" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                          Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>
-            <RadioButton x:Name="RadioBtn_View_QDO" Content="Quote Items Ordered" Tag="QuoteDetailOrdered"
+            <RadioButton x:Name="RadioBtn_View_QDO" Content="Quote Items Ordered" Tag="QuoteDetailOrdered" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                          Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
@@ -674,7 +764,7 @@
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          IsChecked="True" Checked="RadioButton_Checked"/>
-            <RadioButton x:Name="RadioBtn_View_MP" Content="Manuf Parts" Tag="IceManufParts"
+            <RadioButton x:Name="RadioBtn_View_MP" Content="Manuf Parts" Tag="IceManufParts" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                          Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"

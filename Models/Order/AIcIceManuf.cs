@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models;
+namespace OMPS.Models.Order;
 
 public partial class AIcIceManuf
 {

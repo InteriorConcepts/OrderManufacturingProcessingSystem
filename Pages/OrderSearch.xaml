@@ -72,19 +72,22 @@
             </Button>
         </StackPanel>
         <ProgressBar Panel.ZIndex="99" x:Name="progbar_orders" Height="3" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
-        <DataGrid x:Name="datagrid_orders" Grid.Row="1" IsReadOnly="True" IsTextSearchEnabled="True"
+        <DataGrid x:Name="datagrid_orders" Grid.Row="1" IsReadOnly="True" IsTextSearchEnabled="True" AutoGenerateColumns="False"
                   ItemsSource="{Binding Source={StaticResource OrdersViewSource}}" DataContext="{x:Reference Name=Page_OrderSearch}"
                   AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"
                   EnableColumnVirtualization="False" MouseDoubleClick="datagrid_orders_MouseDoubleClick"
-                  EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  EnableRowVirtualization="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   RowHeaderWidth="36" HeadersVisibility="All" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"
                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" CanUserResizeColumns="False" CanUserResizeRows="False"
                   LoadingRow="datagrid_orders_LoadingRow" Sorting="datagrid_orders_Sorting" InitializingNewItem="datagrid_orders_InitializingNewItem">
+            
+            <!--
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
                     <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 </Style>
             </DataGrid.CellStyle>
+            -->
             <DataGrid.RowHeaderStyle>
                 <Style TargetType="DataGridRowHeader">
                     <Setter Property="Template">
@@ -114,7 +117,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" ToolTip="Open In EngOrder">
-                                <TextBlock Text="{Binding JobNbr}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
+                                <TextBlock Text="{Binding SupplyOrderRef}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
                                            FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>

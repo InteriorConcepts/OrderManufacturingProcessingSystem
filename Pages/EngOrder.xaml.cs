@@ -1,6 +1,8 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using MyApp.DataAccess.Generated;
 using OMPS.Components;
+using OMPS.Models;
 using OMPS.viewModel;
 using OMPS.Windows;
 using System;
@@ -50,7 +52,10 @@ namespace OMPS.Pages
             if (obj.GetType().GetProperty(propName) is not PropertyInfo propInfo) return;
             if (propInfo.GetValue(obj) is not object val) return;
             this.ColorSetInfo_Changes[propName] = val;
-            this.Btn_SaveHeader.IsEnabled = true;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Btn_SaveHeader.IsEnabled = true;
+            });
             Debug.WriteLine($"{propName} -> {val}");
         }
         protected virtual void OnPropertyChanged(string propertyName)
@@ -111,11 +116,25 @@ namespace OMPS.Pages
             get => (bool)GetValue(Pending_LineChangesProperty);
             set => SetValue(Pending_LineChangesProperty, (bool)value);
         }
+        private byte Pending_LineChangesCount {
+            get => field;
+            set
+            {
+                if (field == value) return;
+                field = value;
+                OnPropertyChanged(nameof(Pending_LineChangesCount));
+                this.Pending_LineChanges = (value is not 0);
+            }
+        } = 0;
         public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
 
         internal DataGrid? CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
         public string[] Finishes_Default { get; } = ["NA", "CH", "DB", "GY", "PL", "TP"];
+        public string[] ColorByValues { get; } = ["NA", "AccFin", "Aveera-TopFin", "FrmFin", "PmoldFin", "PedFin", "ShelfFin", "TangentLegFin", "TblBaseFin", "TblLegFin", "TblLegBaseFin", "TblLegExtraFin", "TblSlimLegFin", "Chase", "Fab", "FabChase", "FabLam", "FabMel", "Acrylic", "AcrylicFab", "AcrylicLam", "AcrylicMel", "Lam", "LamChase", "Mel", "MelChase", "MelLam", "WSEfin"];
+        public string[] TypeValues { get; } = ["Acc", "Accessory", "Acclaim", "Assy", "Aveera Collection", "Catch-All", "CC", "Ch", "Dtr", "Ergo", "Ergonomic Accessories", "Fab", "Frame", "Jnt", "Manuf", "Matl", "Met", "Metal Products", "Ped", "Pedestal", "Pmd", "Pnl", "Pre", "Project Board", "Seating", "She", "Shelf", "Soft Seating", "Special", "Storage Cabinet", "Symmetry", "Table", "Tableo", "Tbl", "Til", "Tile", "Tub", "Type", "WBB", "Wks", "Wsta", "WTil"];
+        public string[] SubTypeValues { get; } = ["Acc", "Accessory", "Accessory-Pnl", "Accessory-She", "Adj Ht Base", "Arch-Leg", "Arch-leg Flip-top", "Arch-leg Flip-top Pin-clip", "Arch-leg Pin-clip", "Arch-leg X-base", "Arch-leg X-base Flip-top", "aStatic", "BOM", "Book Case", "Bookcase", "BORCO", "Cabinet", "Cart", "C-Bal", "C-Balance", "CC", "CCC", "CCL", "CCLC", "CCS", "CCSC", "Center Drawer", "Chase Panel Powered", "Clamp Mount", "Collaboration", "Conference Chair", "Configurable", "Connector", "CPU", "CPU Holder", "Crank2", "Crank3", "Cushion", "Deck", "DK", "Door", "Dot", "Down Under Unit", "Drafting", "Dtr", "edge", "Electrical", "Executive Chair", "Fastener", "File Center", "Fixed Pedestal", "Footrest", "Frame", "Freestanding", "GLASS", "Glass Tile", "Guest Chair", "Hanging Pedestal", "HCDoor", "H-leg", "Insert", "Jnt", "Keyboard", "Keyboard Platform", "Lateral", "Lateral File", "Lateral File-Open Shelves", "Lateral File-Storage Cab", "Leg", "Leg Arch", "Leg Arch X", "Leg H", "Leg Post", "Leg T", "Leg T X", "LegPost", "Lighting", "Locker", "Lounge", "Matl", "Media Cabinet", "MFG", "Mi", "Misc", "Mobile Pedestal", "Monitor", "Monitor Arm", "Motion", "Note", "OMD", "Open", "Open Front", "Option", "Ottoman", "Paper Management", "PaperManagement", "Ped", "Pin-clip", "Pmd", "Pnl", "Post Leg", "Post-leg", "Post-leg Pin-clip", "Project Board", "Reach", "Recon Part", "ReconPart", "Shelf", "Slim Post-leg Pin-clip Ht Adj 24-34", "Special", "SST", "Stackable Multi-Purpose", "Stick", "Stool Chair", "Storage", "Storage Cabinet", "SubType", "Table", "Tangent", "Task Chair", "TBL", "Teacher Desk", "Technology Ed Furniture", "Tedge", "T-edge", "TIL", "Tile", "T-leg", "T-leg Flip-top", "T-leg Flip-top Pin-clip", "T-leg Pin-clip", "T-leg X-base", "Tote", "Tote Storage", "TRESPA", "Trough", "Tub", "tun", "Unique Shape", "Vertical File", "Wardrobe", "WBT", "WCA", "WCF", "WCL", "WCS", "WDR", "WHR", "Wire Management", "WireManagement", "wkd", "wks", "WksDeckShelf", "WKSEDGE", "WKSP", "WksShelvesDecks", "worksurcae", "Worksurface", "WRD", "wrks", "WRT", "WS12", "WS89", "WSA", "WSB", "WSB12", "WSB9", "WSC", "WSD", "WSE", "WSEdge", "WSF", "WSL", "WSP", "WSR", "WstaClusterCoreRing", "WstaClusterCoreRings", "WSVEM", "WVCAL", "WVCAR", "WVCCL", "WVCCR", "WVCEM", "WVCFM", "WVCPM", "WVCQL", "WVCQR", "WVCRL", "WVCRR", "WVCTM", "WVSAM", "WVSEM", "WVSRL", "WVSRR", "WVVEM", "WVVFM", "WVVPM", "WVVQL", "WVVQR", "WVVRL", "WVVRR", "WVVTM", "WXA", "WXC"];
+        public string[] WorkCtrValues { get; } = ["300-00", "300-01", "300-02", "300-04", "300-05", "300-06", "300-07", "310-00", "310-01", "310-02", "310-03", "310-04", "320-00", "330-00", "330-01", "330-02", "340-00", "340-01", "600-00", "600-01", "600-02", "600-03", "600-04", "600-05", "610-00", "620-00", "620-01", "620-02", "850-00", "850-01"];
         public string[] Finishes_BS { get; } = ["NA", "SL", "BK"];
 
         private string? _jobNbr;
@@ -135,7 +154,12 @@ namespace OMPS.Pages
         }
         public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
         public Dictionary<string, object> ColorSetInfo_Changes { get; set; } = [];
+#if NEWDBSQL
+        public List<Models.Order.AIcIceManuf> _mfgItemLines = [];
+        public IReadOnlyCollection<Models.Order.AIcIceManuf> MfgItemLines => this._mfgItemLines;
+#else
         public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
+#endif
         #endregion
 
 
@@ -230,10 +254,22 @@ namespace OMPS.Pages
                 return;
             }
             Debug.WriteLine("Loading Manuf Data");
-            this.MfgItemLines.Clear();
             this.progbar_itemlines.Value = 50;
             this.progbar_itemlines.IsEnabled = true;
             this.progbar_itemlines.Visibility = Visibility.Visible;
+            this.datagrid_main.BeginInit();
+#if NEWDBSQL
+            using (var ctx = new Models.Order.OrderDbCtx())
+            {
+                this._mfgItemLines = await ctx.AIcIceManufs
+                    .Where(p => p.JobNbr == job)
+                    .OrderBy(p => p.IceManufId)
+                    .AsNoTracking() // No change tracking
+                    .AsSingleQuery()
+                    .ToListAsync();
+            }
+#else
+            this.MfgItemLines.Clear();
             List<example_queries_GetItemLinesByJobResult> data_mfglines = [];
             await Task.Run(() =>
             {
@@ -246,17 +282,20 @@ namespace OMPS.Pages
                         Debug.WriteLine(i);
                         this.MfgItemLines.Add(data_mfglines[i]);
                     }
-                    if (this.datagrid_main.Items.Count is not 0)
-                    {
-                        this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
-                    }
                     //this.datagrid_main.EndInit();
                     Ext.MainWindow.SetTabTitle($"{this.JobNbr}");
-                    this.progbar_itemlines.Value = 0;
-                    this.progbar_itemlines.IsEnabled = false;
-                    this.progbar_itemlines.Visibility = Visibility.Collapsed;
                 });
             });
+#endif
+            this.datagrid_main.EndInit();
+            this.progbar_itemlines.Value = 0;
+            this.progbar_itemlines.IsEnabled = false;
+            this.progbar_itemlines.Visibility = Visibility.Collapsed;
+            if (this.datagrid_main.Items.Count is not 0)
+            {
+                this.datagrid_main.ScrollIntoView(this.datagrid_main.Items[0]);
+            }
+            OnPropertyChanged(nameof(this.MfgItemLines));
             this.Last_ManufData = DateTime.Now;
         }
 
@@ -385,11 +424,23 @@ namespace OMPS.Pages
             return true;
         }
 
-        public bool DeleteItemLine(Guid manufid, string job)
+        public async Task<bool> DeleteItemLine(Guid manufid, string job)
         {
+#if NEWDBSQL
+            using (var ctx = new Models.Order.OrderDbCtx())
+            {
+                var txt = await ctx.AIcIceManufs
+                    .Where(p => p.IceManufId == manufid && p.JobNbr == job)
+                    .AsSingleQuery()
+                    .ExecuteDeleteAsync();
+                if (txt is not 1) return false;
+                return true;
+            }
+#else
             var res = Ext.Queries.DeleteManufItemLineByManufID(job, manufid);
             if (res is null) return false;
             return true;
+#endif
         }
 
         public void ToggleFiltersPanel()
@@ -440,7 +491,7 @@ namespace OMPS.Pages
             await proc.WaitForExitAsync(t);
             proc.Dispose();
         }
-        #endregion
+#endregion
 
 
         #region EventHandlers
@@ -591,6 +642,7 @@ namespace OMPS.Pages
         {
             //this.grid_dataeditregion.Children.Clear();
             //this.grid_dataeditregion.RowDefinitions.Clear();
+            /*
             this.WPnl_EditLabels.Children.Clear();
             this.WPnl_EditInputs.Children.Clear();
             if (typeof(example_queries_GetItemLinesByJobResult).GetProperties() is not PropertyInfo[] props) return;
@@ -619,21 +671,6 @@ namespace OMPS.Pages
                     Width = 414 - 150 - 5,
                     Height = 30,
                 };
-                /*
-                Binding fontSizeBind = new("FontSize_Base")
-                {
-                    Path = new("MainViewModel.FontSize_Base"),
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    Mode = BindingMode.OneWay,
-                    TargetNullValue = 22d,
-                    FallbackValue = 22d,
-                    Converter = (ScalingConverter)Resources["ScalingConverter1"],
-                    ConverterParameter = 5
-                };
-                txt.SetBinding(TextBox.HeightProperty, fontSizeBind);
-                lbl.SetBinding(Label.HeightProperty, fontSizeBind);
-                */
                 Binding bind = new(prop.Name)
                 {
                     Path = new PropertyPath($"SelectedItem.{prop.Name}"),
@@ -659,14 +696,9 @@ namespace OMPS.Pages
                 //this.grid_dataeditregion.Children.Add(txt);
                 this.WPnl_EditLabels.Children.Add(lbl);
                 this.WPnl_EditInputs.Children.Add(txt);
-                /*
-                Grid.SetRow(lbl, rowIdx);
-                Grid.SetRow(txt, rowIdx);
-                Grid.SetColumn(lbl, 0);
-                Grid.SetColumn(txt, 1);
-                */
                 rowIdx++;
             }
+            */
         }
 
         private void datagrid_main_Unloaded(object sender, RoutedEventArgs e)
@@ -675,10 +707,6 @@ namespace OMPS.Pages
             //this.grid_dataeditregion.RowDefinitions.Clear();
         }
 
-        private void Txt_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            this.Pending_LineChanges = true;
-        }
 
         private void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
@@ -703,18 +731,13 @@ namespace OMPS.Pages
                 if (propRes.Item2 is true)
                 {
                     changes.Add(propRes);
+                    item.BorderBrush = Brushes.Green;
                 }
-                // Trigger Cell & Row Edit events
-                /*
-                item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWayToSource;
-                item.Text = item.Text;
-                item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWay;
-                */
             }
             if (changes.Count is 0) return;
             this.UpdateItemLineData(line.IceManufID, line);
             Debug.WriteLine(string.Join("\n", changes.Select(c => $"{c.Item1}: {c.Item3} = {c.Item4}")));
-            this.Pending_LineChanges = false;
+            this.Pending_LineChangesCount = 0;
         }
 
         private void Btn_RevertItemLineEdits_Click(object sender, RoutedEventArgs e)
@@ -734,10 +757,10 @@ namespace OMPS.Pages
                 item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWay;
                 */
             }
-            this.Pending_LineChanges = false;
+            this.Pending_LineChangesCount = 0;
         }
 
-        private void Btn_DeleteItemLine_Click(object sender, RoutedEventArgs e)
+        private async void Btn_DeleteItemLine_Click(object sender, RoutedEventArgs e)
         {
             /*
             Ext.PopupConfirmation("Astr", "", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
@@ -751,10 +774,22 @@ namespace OMPS.Pages
             Ext.PopupConfirmation("Warn", "", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             */
             if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
+#if NEWDBSQL
+            if (this.datagrid_main.SelectedItem is not Models.Order.AIcIceManuf line) return;
+            var res = await this.DeleteItemLine(line.IceManufId, line.JobNbr);
+#else
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
             var res = this.DeleteItemLine(line.IceManufID, line.JobNbr);
+#endif
             if (res)
+            {
+#if NEWDBSQL
+                this._mfgItemLines.Remove(line);
+#else
                 this.MfgItemLines.Remove(line);
+#endif
+                OnPropertyChanged(nameof(this.MfgItemLines));
+            }
             else
                 MessageBox.Show("Deletion failed");
         }
@@ -813,6 +848,19 @@ namespace OMPS.Pages
             if (e.Lookup is "00000000-0000-0000-0000-000000000000") return;
             if (SCH.Global.Config is null || !SCH.Global.Config.InitializationSuccessfull) return;
             Debug.WriteLine($"Try Query GUID lookup ({e.Lookup})");
+#if NEWDBSQL
+            using (var ctx = new Models.Product.ProductDbCtx())
+            {
+                /*
+                await ctx.IcProductCatalogs
+                    .Where(p => p.JobNbr == job)
+                    .OrderBy(p => p.IceManufId)
+                    .AsNoTracking() // No change tracking
+                    .AsSplitQuery()
+                    .ToListAsync();
+                */
+            }
+#else
             var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
             var cmd1 = dbcon1.CreateCommand();
             cmd1.CommandText = $"SELECT TOP 1 PartID, PartDescription    FROM eCRM_intcon2.dbo.aIC_Product    WHERE (ItemID = '{e.Lookup}')";
@@ -847,6 +895,7 @@ namespace OMPS.Pages
             }
             await cmd1.DisposeAsync();
             await dbcon1.CloseAsync();
+#endif
         }
 
         private async void LabelInputLookupPair_LookupButtonPressed(object sender, LabelInputLookupPair.Lookup_EventArgs e)
@@ -916,7 +965,7 @@ namespace OMPS.Pages
             {
                 await dbcon1.OpenAsync();
                 var res = await cmd1.ExecuteNonQueryAsync();
-                MessageBox.Show(res.ToString());
+                //MessageBox.Show(res.ToString());
             } catch
             {
 
@@ -970,7 +1019,6 @@ namespace OMPS.Pages
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
-        #endregion
 
         private async void Btn_ExtProc_Matl_Click(object sender, RoutedEventArgs e)
         {
@@ -1030,6 +1078,128 @@ namespace OMPS.Pages
             await RunExternal(psi);
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
+        }
+
+        private async void Btn_rowEdit_Lookup_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is null || sender is not Button btn) return;
+            using var lookup = new LookupFinder(this.MainViewModel)
+            {
+                MainVM = this.MainViewModel,
+                Owner = Ext.MainWindow
+            };
+            await lookup.LookupMaterials();
+            if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;
+            switch (btn.Tag.ToString())
+            {
+                case "ItemNbr":
+                    if (this.Txt_RowEdit_ItemNbr.Text.Equals(obj["PartID"].ToString(), StringComparison.OrdinalIgnoreCase)) return;
+                    this.Txt_RowEdit_ItemNbr.Clear();
+                    this.Txt_RowEdit_ItemNbr.AppendText(obj["PartID"].ToString());
+                    this.Txt_RowEdit_ItemNbr.Select(this.Txt_RowEdit_ItemNbr.Text.Length, 0);
+                    this.Txt_RowEdit_ItemNbr.Focus();
+                    this.TextBox_TextChanged(this.Txt_RowEdit_ItemNbr, new TextChangedEventArgs(null, UndoAction.None));
+                    break;
+                case "Description":
+                    if (this.Txt_RowEdit_Desc.Text.Equals(obj["PartDescription"].ToString(), StringComparison.OrdinalIgnoreCase)) return;
+                    this.Txt_RowEdit_Desc.Clear();
+                    this.Txt_RowEdit_Desc.AppendText(obj["PartDescription"].ToString());
+                    this.Txt_RowEdit_Desc.Select(this.Txt_RowEdit_Desc.Text.Length, 0);
+                    this.Txt_RowEdit_Desc.Focus();
+                    this.TextBox_TextChanged(this.Txt_RowEdit_Desc, new TextChangedEventArgs(null, UndoAction.None));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public bool WaitingForTextChanged = false;
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //if (this.WaitingForTextChanged is false) return;
+            //Debug.WriteLine(sender is TextBox);
+            if (sender is not TextBox txt) return;
+            if (this.datagrid_main.SelectedItem is not object obj ||
+                txt.GetBindingExpression(TextBox.TextProperty) is not BindingExpression be ||
+                be.ParentBinding.Path is not PropertyPath pp ||
+                obj.GetType().GetProperty(pp.Path.Replace("SelectedItem.", "")) is not PropertyInfo pi ||
+                pi.GetValue(obj) is not object value) return;
+            if (txt.Text.Equals(value.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                Debug.WriteLine("Same value as data context object");
+                this.Pending_LineChangesCount -= 1;
+                txt.Background = null;
+                return;
+            }
+            this.Pending_LineChanges = true;
+            this.Pending_LineChangesCount += 1;
+            txt.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
+        }
+
+        private void TextBox_TextChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not ComboBox cmbx) return;
+            if (this.datagrid_main.SelectedItem is not object obj ||
+                cmbx.GetBindingExpression(ComboBox.SelectedValueProperty) is not BindingExpression be ||
+                be.ParentBinding.Path is not PropertyPath pp ||
+                obj.GetType().GetProperty(pp.Path.Replace("SelectedItem.", "")) is not PropertyInfo pi ||
+                pi.GetValue(obj) is not object value) return;
+            if (cmbx.SelectedValue.Equals(value))
+            {
+                Debug.WriteLine("Same value as data context object");
+                this.Pending_LineChangesCount -= 1;
+                cmbx.Background = null;
+                return;
+            }
+            this.Pending_LineChanges = true;
+            this.Pending_LineChangesCount += 1;
+            cmbx.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
+        }
+
+        private void TextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox chkbx) return;
+            if (this.datagrid_main.SelectedItem is not object obj ||
+                chkbx.GetBindingExpression(CheckBox.IsCheckedProperty) is not BindingExpression be ||
+                be.ParentBinding.Path is not PropertyPath pp ||
+                obj.GetType().GetProperty(pp.Path.Replace("SelectedItem.", "")) is not PropertyInfo pi ||
+                pi.GetValue(obj) is not object value) return;
+            if (chkbx.IsChecked.Equals(value))
+            {
+                Debug.WriteLine("Same value as data context object");
+                this.Pending_LineChangesCount -= 1;
+                chkbx.Background = null;
+                return;
+            }
+            this.Pending_LineChanges = true;
+            this.Pending_LineChangesCount += 1;
+            chkbx.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
+        }
+
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            this.WaitingForTextChanged = true;
+        }
+
+        private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (e.NewFocus is TextBox) return;
+            this.WaitingForTextChanged = false;
+        }
+
+#endregion
+
+        private void ComboBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is not ComboBox cmbx) return;
+            if (cmbx.IsDropDownOpen) return;
+            e.Handled = true;
+            var newEventArgs = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+            {
+                RoutedEvent = UIElement.MouseWheelEvent,
+                Source = sender
+            };
+            this.WPnl_DataEditRegion.RaiseEvent(newEventArgs);
         }
     }
 }

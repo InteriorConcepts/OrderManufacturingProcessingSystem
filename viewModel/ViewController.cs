@@ -240,8 +240,8 @@ namespace OMPS.viewModel
         public bool EngOrder_IsEnabled { get => this.EngOrder_VM is not null && this.EngOrder_VM.JobNbr is not null or ""; }
         public bool OrderSearch_IsEnabled { get => this.OrderSearch_VM is not null && (this.OrderSearch_VM.ColorSetInfos.Count is not 0 || OrderSearch_IsSelected); }
         public bool QuoteOrder_IsEnabled { get => this.QuoteOrder_VM is not null && this.QuoteOrder_VM.QuoteNbr is not null or ""; }
-        public bool ProductCatalogSearch_IsEnabled { get => this.ProductCatalogSearch_VM is not null; }
-        public bool ProductCatalogDetails_IsEnabled { get => this.ProductCatalogDetails_VM is not null; }
+        public bool ProductCatalogSearch_IsEnabled { get => this.ProductCatalogSearch_VM is not null && this.ProductCatalogSearch_VM.IsLoaded; }
+        public bool ProductCatalogDetails_IsEnabled { get => this.ProductCatalogDetails_VM is not null && this.ProductCatalogDetails_VM.IsLoaded; }
 
         public bool CanPrevious {
             get => this.PreviousPage is not PageTypes.None or PageTypes.Login;
@@ -344,6 +344,7 @@ namespace OMPS.viewModel
             switch (pageType)
             {
                 case PageTypes.Home:
+                    this.Home_VM.LoadData();
                     break;
                 case PageTypes.Login:
                     break;

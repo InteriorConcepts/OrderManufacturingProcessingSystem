@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models;
+namespace OMPS.Models.Product;
 
 public partial class IcProductCatalog
 {
@@ -324,4 +324,8 @@ public partial class IcProductCatalog
     public bool Manuf { get; set; }
 
     public bool SystemsFurn { get; set; }
+
+    public virtual ICollection<AIcMfgBom> AIcMfgBoms { get; set; } = new List<AIcMfgBom>();
+
+    public virtual ICollection<AIcProdBom> AIcProdBoms { get; set; } = new List<AIcProdBom>();
 }

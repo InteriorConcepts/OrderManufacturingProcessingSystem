@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models;
+namespace OMPS.Models.Material;
 
-public partial class VwTflpnlList
+public partial class VwCurvePnlLamList
 {
     public Guid ItemId { get; set; }
 

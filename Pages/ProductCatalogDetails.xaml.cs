@@ -42,7 +42,7 @@ namespace OMPS.Pages
 
 
         #region "Properties"
-
+        public bool isLoaded { get; set; } = false;
         public Main_ViewModel MainViewModel
         {
             get => Ext.MainWindow.MainViewModel;

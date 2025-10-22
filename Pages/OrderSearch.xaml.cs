@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using MyApp.DataAccess.Generated;
@@ -72,7 +73,12 @@ namespace OMPS.Pages
                 });
             }
         }
+#if NEWDBSQL
+        public List<Models.Order.AIcColorSet> _colorSetInfos = [];
+        public IReadOnlyCollection<Models.Order.AIcColorSet> ColorSetInfos => this._colorSetInfos;
+#else
         public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
+#endif
         #endregion
 
 
@@ -99,11 +105,28 @@ namespace OMPS.Pages
         public async void LoadRecentOrders(string filters = "%")
         {
             this.Btn_OrdersRefresh.IsEnabled = false;
-            this.ColorSetInfos.Clear();
             Debug.WriteLine(filters);
             this.progbar_orders.IsEnabled = true;
             this.progbar_orders.Visibility = Visibility.Visible;
             this.progbar_orders.Value = 50;
+            this.datagrid_orders.BeginEdit();
+
+#if NEWDBSQL
+            using (var ctx = new Models.Order.OrderDbCtx())
+            {
+                var cutoff = DateTime.Now.AddDays(-60);
+                this._colorSetInfos = await ctx.AIcColorSets
+                    .Where(cs => cs.OrderDate >= cutoff)
+                    .Where(cs => (cs.SupplyOrderRef ?? "").Contains(filters.Replace("%", "")))
+                    .OrderBy(cs => cs.OrderDate)
+                    .Take(25)
+                    .AsNoTracking()
+                    .AsSingleQuery()
+                    .ToListAsync();
+            }
+            OnPropertyChanged(nameof(ColorSetInfos));
+#else
+            this.ColorSetInfos.Clear();
             await Task.Run(() =>
             {
                 try
@@ -111,44 +134,9 @@ namespace OMPS.Pages
                     Debug.WriteLine(0);
                     var data_orders = Ext.Queries.GetColorSets(filters);
                     Debug.WriteLine(1);
-                    /*
-                    var CDirs = new DirectoryInfo("C:\\").EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Select(d => d.Name);
-                    var HDirs = new DirectoryInfo("H:\\Engineering").EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => d.Name[0] is 'J' or 'S').Select(d => d.Name);
-
-                    Debug.WriteLine(string.Join(", ", HDirs));
-                    data_orders.Sort((a, b) =>
-                    {
-                        var aDirC = CDirs.Contains(a.JobNbr);
-                        var bDirC = CDirs.Contains(b.JobNbr);
-                        if (aDirC && !bDirC)
-                        {
-                            //a.JobNbr = "C:/" + a.JobNbr;
-                            return -1000;
-                        }
-                        else if (bDirC && !aDirC)
-                        {
-                            //b.JobNbr = "C:/" + b.JobNbr;
-                            return 1000;
-                        }
-                        var aDirH = HDirs.Contains(a.JobNbr);
-                        var bDirH = HDirs.Contains(b.JobNbr);
-                        if (aDirH && !bDirH)
-                        {
-                            //a.JobNbr = "H:/" + a.JobNbr;
-                            return -500;
-                        }
-                        else if (bDirH && !aDirH)
-                        {
-                            //b.JobNbr = "H:/" + b.JobNbr;
-                            return 500;
-                        }
-                        return b.OrderDate.CompareTo(a.OrderDate);
-                    });
-                    */
 
                     Application.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        //this.datagrid_orders.BeginEdit();
                         for (int i = 0; i < data_orders.Count; i++)
                         {
                             Debug.WriteLine("Order");
@@ -160,22 +148,7 @@ namespace OMPS.Pages
                             this.datagrid_orders.ScrollIntoView(this.datagrid_orders.Items[0]);
                         }
                         Debug.WriteLine(2);
-                        //this.datagrid_orders.EndInit();
                     });
-                    this.RefreshDelay.Start();
-
-                    /*
-                    Application.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        var offset = this.GetColumnPositionSimple(this.datagrid_orders, 2);
-                        this.Txt_JobNbr.Margin = new Thickness(offset.X, this.Txt_JobNbr.Margin.Top, this.Txt_JobNbr.Margin.Right, this.Txt_JobNbr.Margin.Bottom);
-                        this.Txt_JobNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "JobNbr").First().ActualWidth - 1;
-                        this.Txt_QuoteNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "QuoteNbr").First().ActualWidth - 1;
-                        this.Txt_OrderNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "OrderNumber").First().ActualWidth - 1;
-                        this.Txt_OrderName.Width = this.datagrid_orders.Columns.Where(c => c.Header is "Name").First().ActualWidth - 1;
-                        this.Txt_OppNbr.Width = this.datagrid_orders.Columns.Where(c => c.Header is "OpportunityNbr").First().ActualWidth - 1;
-                    });
-                    */
 
                 }
                 catch (Exception ex)
@@ -183,6 +156,9 @@ namespace OMPS.Pages
                     MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
                 }
             });
+#endif
+            this.datagrid_orders.EndInit();
+            this.RefreshDelay.Start();
             Console.WriteLine("Finished Query");
             this.progbar_orders.Visibility = Visibility.Collapsed;
             this.progbar_orders.IsEnabled = false;
@@ -215,7 +191,7 @@ namespace OMPS.Pages
             }
             return null;
         }
-        #endregion
+#endregion
 
 
         #region EventHandlers
@@ -269,21 +245,33 @@ namespace OMPS.Pages
         private void datagrid_orders_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton is not MouseButton.Left) return;
+#if NEWDBSQL
+            if (datagrid_orders.SelectedItem is not Models.Order.AIcColorSet item) return;
+            if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
+            Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
+#else
             if (datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
             if (!Ext.IsJobNumValid(item.JobNbr)) return;
             //Ext.MainWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //Ext.MainWindow.Page_EngOrder.JobNbr = item.JobNbr;
             Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+#endif
             Ext.MainWindow.MainViewModel.CurrentPage = PageTypes.EngOrder;
         }
 
         private void OrdersViewSource_Filter(object sender, FilterEventArgs e)
         {
-            // Assuming 'MyDataItem' is the type of objects in collection
+#if NEWDBSQL
+            if (e.Item is not Models.Order.AIcColorSet item)
+            {
+                return;
+            }
+#else
             if (e.Item is not example_queries_GetColorSetsResult item)
             {
                 return;
             }
+#endif
 
             // Get text from TextBox
             var filterText = Txt_JobNbr.Text.ToLower();
@@ -294,7 +282,11 @@ namespace OMPS.Pages
                 e.Accepted = true;
                 return;
             }
+#if NEWDBSQL
+            e.Accepted = (item.SupplyOrderRef is not null && item.SupplyOrderRef.Contains(filterText));
+#else
             e.Accepted = item.JobNbr.Contains(filterText);
+#endif
         }
 
         private void Txt_JobNbr_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -314,10 +306,18 @@ namespace OMPS.Pages
         IEnumerable<DirectoryInfo>? JobFoldersH = new DirectoryInfo("H:\\Engineering").MultiEnumerateDirectories("*", SearchOption.AllDirectories);
         public void SetupOrderRowHeader(DataGridRow row)
         {
+
+#if NEWDBSQL
+            if (row.Item is not Models.Order.AIcColorSet item) return;
+
+            var matchesC = JobFoldersC?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
+            var matchesH = JobFoldersH?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
+#else
             if (row.Item is not example_queries_GetColorSetsResult item) return;
 
             var matchesC = JobFoldersC?.FirstOrDefault(d => d.Name == item.JobNbr);
             var matchesH = JobFoldersH?.FirstOrDefault(d => d.Name == item.JobNbr);
+#endif
 
             bool foundC = matchesC is not null,
                  foundH = matchesH is not null;
@@ -516,35 +516,47 @@ namespace OMPS.Pages
         public void SetOrdersRowHeader(DataGridRow row)
         {
             //return;
+#if NEWDBSQL
+            if (row.Item is not Models.Order.AIcColorSet item) return;
+#else
             if (row.Item is not example_queries_GetColorSetsResult item) return;
+#endif
 
             if (row.Template.FindName("Grid_RowHeader", row) is Grid)
             {
-                Debug.WriteLine(item.JobNbr);
                 return;
             } else
             {
-                this.SetupOrderRowHeader(row);
+                //this.SetupOrderRowHeader(row);
             }
         }
 
         private void datagrid_orders_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             //Debug.WriteLine("row");
-            this.SetOrdersRowHeader(e.Row);
+            //this.SetOrdersRowHeader(e.Row);
         }
 
         private async void datagrid_orders_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton is not MouseButton.Left) return;
+#if NEWDBSQL
+            if (this.datagrid_orders.SelectedItem is not Models.Order.AIcColorSet item) return;
+#else
             if (this.datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
+#endif
             if (this.datagrid_orders.SelectedCells is not IList<DataGridCellInfo> cells || cells.Count is 0) return;
             var cell = this.datagrid_orders.CurrentCell;
             Debug.WriteLine(cell.Column.Header.ToString());
             if (cell.Column.Header.ToString() is "JobNbr")
             {
+#if NEWDBSQL
+                if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
+                Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
+#else
                 if (!Ext.IsJobNumValid(item.JobNbr)) return;
                 Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+#endif
                 Ext.MainWindow.MainViewModel.CurrentPage = PageTypes.EngOrder;
                 return;
             }
@@ -556,7 +568,7 @@ namespace OMPS.Pages
             //Ext.MainWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //Ext.MainWindow.Page_EngOrder.JobNbr = item.JobNbr;
         }
-        #endregion
+#endregion
 
         private void datagrid_orders_Sorting(object sender, DataGridSortingEventArgs e)
         {
@@ -573,7 +585,11 @@ namespace OMPS.Pages
             GC.SuppressFinalize(this);
             this.RefreshDelay.Elapsed -= this.RefreshDelay_Elapsed;
             this.RefreshDelay.Dispose();
+#if NEWDBSQL
+            this._colorSetInfos.Clear();
+#else
             this.ColorSetInfos.Clear();
+#endif
         }
     }
 }

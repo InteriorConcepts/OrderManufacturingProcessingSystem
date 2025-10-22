@@ -13,6 +13,6 @@
         
     </UserControl.Resources>
     <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" DataContext="{Binding ElementName=Root}">
-        <CheckBox IsChecked="{Binding InputText, Converter={conv:StringToBoolConverter}}" Content="{Binding LabelText, FallbackValue=DefaultValue}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="{Binding FontSize}"/>
+        <CheckBox IsChecked="{Binding CheckValue}" Content="{Binding LabelText, FallbackValue=DefaultValue}" ContentStringFormat="{} {0}" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="{Binding FontSize}"/>
     </DockPanel>
 </UserControl>

@@ -55,8 +55,6 @@ namespace OMPS.Windows
                 "PartDescription asc",
                 ["PartID", "PartDescription"]
             );
-            /*
-            */
         }
 
         public int Total = -1;

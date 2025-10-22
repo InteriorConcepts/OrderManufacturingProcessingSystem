@@ -23,12 +23,18 @@ using System.Windows.Navigation;
 
 namespace OMPS.Pages
 {
+
     /// <summary>
     /// Interaction logic for Home.xaml
     /// </summary>
     public partial class Home : UserControl, INotifyPropertyChanged
     {
-        public Home() { }
+        public Home()
+        {
+            InitializeComponent();
+            //
+            this.DataContext = this;
+        }
         public Home(MainWindow parentWindow)
         {
             this.ParentWindow = parentWindow;
@@ -36,17 +42,27 @@ namespace OMPS.Pages
             //
             this.DataContext = this;
             //
-            this.LoadData();
+            this.Refresher.Elapsed += Refresher_Elapsed;
+            //this.Refresher.Start();
         }
 
+        public uint infrequentcy = 0;
         public async void LoadData()
         {
-            await this.GetNewOrders();
-            await this.GetEngWorking();
+            if (infrequentcy is 0 or 2)
+            {
+                Debug.WriteLine("Infrequent home update");
+                await this.GetNewOrders();
+                await this.GetEngWorking();
+                infrequentcy = 0;
+            }
+            Debug.WriteLine("Home update");
+            this.GetLocalFolders();
             this.GetEngChecks();
             this.GetEngReleases();
             this.GetEngArchive();
             this.GetCncWorking();
+            infrequentcy++;
         }
 
 
@@ -57,6 +73,8 @@ namespace OMPS.Pages
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+
+        readonly System.Timers.Timer Refresher = new(TimeSpan.FromSeconds(10)) { };
         public Main_ViewModel MainViewModel
         {
             get => Ext.MainWindow.MainViewModel;
@@ -111,6 +129,8 @@ namespace OMPS.Pages
         public IReadOnlyList<EngOrder> EngWorking => _engWorking;
 
 
+        public ObservableCollection<EngArchiveEntry> LocalFolders { get; set; } = [];
+
         public ObservableCollection<EngArchiveEntry> EngCheck1 { get; set; } = [];
         public ObservableCollection<EngArchiveEntry> EngCheck2 { get; set; } = [];
 
@@ -151,9 +171,10 @@ namespace OMPS.Pages
 
         //
 
+#if NEWDBSQL
         public async Task<List<RecentOrder>> LoadColorSetsAsync()
         {
-            using var context = new IcEmqContext();
+            using var context = new Models.Order.OrderDbCtx();
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
 
@@ -172,15 +193,17 @@ namespace OMPS.Pages
                 })
                 .ToListAsync();
         }
+#endif
 
         public async Task GetNewOrders()
         {
             //this.DataGrid_NewOrders.BeginInit();
+#if NEWDBSQL
             _newOrders = await this.LoadColorSetsAsync();
-
             OnPropertyChanged(nameof(NewOrders));
+#else
+            var now = DateTime.Now;
             //this.DataGrid_NewOrders.EndInit();
-            /*
             var data_orders =
                 Ext.Queries.GetColorSets("%").
                     Where(i => (now - i.OrderDate).TotalDays <= 30).
@@ -188,18 +211,19 @@ namespace OMPS.Pages
                     Take(20);
             foreach (var item in data_orders)
             {
-                NewOrders.Add(new () { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber});
+                _newOrders.Add(new () { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber});
             }
             OnPropertyChanged(nameof(NewOrders));
-            */
+#endif
         }
 
         public async Task GetEngWorking()
         {
-            using var context = new IcEmqContext();
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
 
+#if NEWDBSQL
+            using var context = new Models.Order.OrderDbCtx();
             _engWorking = await context.AIcColorSets
                 .Where(o => o.OrderDate <= cutoff)
                 .Where(o => o.SupplyOrderRef.Substring(0, 1) == "S" || o.SupplyOrderRef.Substring(0, 1) == "J")
@@ -215,18 +239,31 @@ namespace OMPS.Pages
                     Eng = o.Engined
                 }).ToListAsync();
             OnPropertyChanged(nameof(EngWorking));
-            /*
-            //EngWorking.Clear();
-            var now = DateTime.Now;
+#else
+            _engWorking.Clear();
             var jobs = Ext.Queries.GetColorSets("%").Select(i => i.JobNbr);
             var colorSetDatas =
                 jobs.SelectMany(Ext.Queries.GetColorSet).
                 Where(i => i.Engined is false);
             foreach (var item in colorSetDatas)
             {
-                EngWorking.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
+                _engWorking.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
             }
-            */
+#endif
+        }
+
+        public void GetLocalFolders()
+        {
+            LocalFolders.Clear();
+            var dirs = new DirectoryInfo("C:/").GetDirectories("*", SearchOption.TopDirectoryOnly);
+            foreach (var entry in dirs)
+            {
+                if (!(entry.Name[..2] is "J0" or "S0"))
+                {
+                    continue;
+                }
+                LocalFolders.Add(new(entry.Name, entry));
+            }
         }
 
         public const string EngCheck1Root = "H:\\engineering\\4. 1st Check";
@@ -456,6 +493,16 @@ namespace OMPS.Pages
             if (sender is null) return;
             if (sender is not DataGrid dg) return;
             dg.SelectedIndex = -1;
+        }
+
+        private void Refresher_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            //this.LoadData();
+        }
+
+        private void btn_reload_Click(object sender, RoutedEventArgs e)
+        {
+            this.LoadData();
         }
     }
 }

@@ -20,16 +20,16 @@ namespace OMPS.Components
     {
         public LabelCheckPair()
         {
-            //InitializeComponent();
+            InitializeComponent();
         }
 
         public static readonly DependencyProperty LabelTextProperty =
             DependencyProperty.Register("LabelText", typeof(string), typeof(LabelCheckPair),
                 new PropertyMetadata("DefaultText"));
 
-        public static readonly DependencyProperty InputTextProperty =
-            DependencyProperty.Register("InputText", typeof(string), typeof(LabelCheckPair),
-                new PropertyMetadata("DefaultText"));
+        public static readonly DependencyProperty CheckValueProperty =
+            DependencyProperty.Register("CheckValue", typeof(bool), typeof(LabelCheckPair),
+                new PropertyMetadata(false));
 
         public static readonly DependencyProperty InputReadOnlyProperty =
             DependencyProperty.Register("InputReadOnly", typeof(bool), typeof(LabelCheckPair),
@@ -41,16 +41,10 @@ namespace OMPS.Components
             set { SetValue(LabelTextProperty, value); }
         }
 
-        public string InputText
-        {
-            get { return (string)GetValue(InputTextProperty); }
-            set { SetValue(InputTextProperty, value); }
-        }
-
         public bool CheckValue
         {
-            get { return bool.TryParse((string)GetValue(InputTextProperty), out bool val) && val; }
-            set { SetValue(InputTextProperty, value.ToString()); }
+            get { return (bool)GetValue(CheckValueProperty); }
+            set { SetValue(CheckValueProperty, value); }
         }
 
         public bool InputReadOnly

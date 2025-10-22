@@ -23,29 +23,80 @@
     <Grid DataContext="{Binding ElementName=Page_ProductCatalogSearch}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="23 0 0 0">
+        <Border Grid.Row="0" BorderThickness="0 0 0 1" BorderBrush="#666" Padding="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Label Content="Product Catalog Search" VerticalContentAlignment="Center" Margin="24 0 0 0"
+                       FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                <Label Content="Limit:" VerticalContentAlignment="Center" Margin="24 0 0 0"
+           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                <materialDesign:NumericUpDown Maximum="500" Minimum="1" Style="{StaticResource MaterialDesignNumericUpDown}"
+                                              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                              Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                                              Height="{Binding MainViewModel.FontSize_H1, FallbackValue=22}"
+                                              Value="{Binding ItemLimit, Mode=TwoWay}"
+                                              Margin="0 0 24 0"
+                                              Padding="6 2"/>
+                <Button x:Name="Btn_OrdersRefresh" Style="{StaticResource MaterialDesignFlatButton}"
+                        Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                        Height="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
+                        Width="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
+                        Padding="0" Margin="0" Click="btn_reload_Click">
+                    <materialDesign:PackIcon Kind="Refresh"
+                                 Height="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
+                                 Width="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
+                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Border>
+        
+        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="1" Margin="0">
             <TextBox x:Name="Txt_ProdCode" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-             materialDesign:HintAssist.Hint="ProductCode" Margin="0 12 1 0" Padding="10 4"
-             materialDesign:TextFieldAssist.HasClearButton="True"
-             materialDesign:TextFieldAssist.ClearButtonSize="14"
-             AcceptsReturn="False" TextWrapping="NoWrap"
-             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-             Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_ProdCode_PreviewKeyDown"/>
-            <Button x:Name="btn_reload" Content="Reload" Click="btn_reload_Click"/>
+                     materialDesign:HintAssist.Hint="ProductCode" Margin="0 12 1 0" Padding="10 4"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_PC, Path=ActualWidth, FallbackValue=125}"
+                     PreviewKeyDown="Txt_PreviewKeyDown"/>
+            <TextBox x:Name="Txt_ProdDesc" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                     materialDesign:HintAssist.Hint="Description" Margin="0 12 1 0" Padding="10 4"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.ClearButtonSize="14"
+                     AcceptsReturn="False" TextWrapping="NoWrap"
+                     FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_PD, Path=ActualWidth, FallbackValue=125}"
+                     PreviewKeyDown="Txt_PreviewKeyDown"/>
         </StackPanel>
-        <ProgressBar Panel.ZIndex="99" x:Name="progbar" Height="3" Grid.Row="1" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
-        <DataGrid x:Name="datagrid_main" Grid.Row="1" IsReadOnly="True"
+        <ProgressBar Panel.ZIndex="99" x:Name="progbar" Height="3" Grid.Row="2" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
+        <DataGrid x:Name="datagrid_main" Grid.Row="2" IsReadOnly="True"
                   ItemsSource="{Binding Source={StaticResource ProductsViewSource}}" DataContext="{x:Reference Name=Page_ProductCatalogSearch}"
                   AutoGenerateColumns="False" MouseDoubleClick="datagrid_main_MouseDoubleClick"
                   EnableColumnVirtualization="False" 
                   EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ProductCode" Binding="{Binding ProductCode}"/>
-                <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                <DataGridTextColumn x:Name="DgHeader_PC" Header="ProductCode" Binding="{Binding ProductCode}" Width="165"/>
+                <DataGridTextColumn x:Name="DgHeader_PD" Header="Description" Binding="{Binding Description}"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Border Grid.Row="3" BorderThickness="0 0 0 1" BorderBrush="#666" Padding="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Label Content="Showing" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
+   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                <Label Content="{Binding QueryFilterAmount}" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
+   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                <Label Content="of" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
+   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                <Label Content="{Binding QueryTotalAmount}" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
+   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                <Label Content="Items" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
+   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
