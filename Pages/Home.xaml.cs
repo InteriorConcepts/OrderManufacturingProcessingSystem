@@ -197,7 +197,7 @@ namespace OMPS.Pages
 
         public async Task GetNewOrders()
         {
-            //this.DataGrid_NewOrders.BeginInit();
+            _newOrders.Clear();
 #if NEWDBSQL
             _newOrders = await this.LoadColorSetsAsync();
             OnPropertyChanged(nameof(NewOrders));
@@ -221,7 +221,6 @@ namespace OMPS.Pages
         {
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
-
 #if NEWDBSQL
             using var context = new Models.Order.OrderDbCtx();
             _engWorking = await context.AIcColorSets
@@ -296,6 +295,7 @@ namespace OMPS.Pages
         public const string EngReleaseDir = "H:\\engineering\\Ready to Release";
         public void GetEngReleases()
         {
+            EngReleases.Clear();
             var userDirs = new DirectoryInfo(EngReleaseDir).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var jobDirs = userDirs.SelectMany(d => d.EnumerateDirectories("*", SearchOption.TopDirectoryOnly));
 

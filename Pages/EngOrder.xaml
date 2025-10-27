@@ -10,7 +10,7 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       x:Name="Page_EngOrder" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
       mc:Ignorable="d" UseLayoutRounding="False"
-      d:DesignHeight="2400" d:DesignWidth="1025"
+      d:DesignHeight="1000" d:DesignWidth="1025"
       DataContext="{Binding ElementName=Page_EngOrder}"
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
       FontSize="{Binding DataGridFontSize, ElementName=Page_EngOrder, FallbackValue=12}"
@@ -20,6 +20,16 @@
     </UserControl.CacheMode>
     <UserControl.Resources>
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
+        <!--
+            Make two more styles for the edit pane's combobox and checkboxes and assign it to them
+        -->
+        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}" x:Key="Txt_Edit_Tag_BG">
+            <Style.Triggers>
+                <Trigger Property="Tag" Value="true">
+                    <Setter Property="Background" Value="#32ff0000"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid DataContext="{Binding ElementName=Page_EngOrder}">
@@ -419,7 +429,8 @@
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
-                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="9pt" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
+                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="9pt" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
+                             PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
                     <Button x:Name="Btn_FilterSave" Grid.Column="2"
                             Height="20"
                             Width="20"
@@ -474,6 +485,7 @@
             </Grid.ColumnDefinitions>
             <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
 
+            <!--
             <DataGrid x:Name="datagrid_QPO" Grid.Row="0" Visibility="Collapsed"
                       IsReadOnly="True"
                       CellEditEnding="DataGrid_CellEditEnding"
@@ -494,48 +506,150 @@
                       Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
             </DataGrid>
+            -->
             <DataGrid x:Name="datagrid_main" Grid.Row="0" Visibility="Visible"
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
-                      IsReadOnly="True"
-                      DataContext="Page_EngOrder"
+                      IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="True"
                       FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                      CellEditEnding="DataGrid_CellEditEnding"
+                      Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                      CellEditEnding="DataGrid_CellEditEnding" SnapsToDevicePixels="True"
                       RowEditEnding="DataGrid_RowEditEnding"
-                      IsTextSearchEnabled="True" Background="#292929"
-                      AlternatingRowBackground="#FF191919" RowBackground="#FF2B2B2B"
+                      IsTextSearchEnabled="True" Background="#222"
                       AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
                       LoadingRow="DataGrid_LoadingRow"
-                      Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
-                      PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All" Unloaded="datagrid_main_Unloaded">
+                      BorderBrush="LightGray"
+                      BorderThickness="0"
+                      Loaded="datagrid_main_Loaded"
+                      SelectionChanged="datagrid_main_SelectionChanged"
+                      EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                      MouseDoubleClick="datagrid_main_MouseDoubleClick"
+                      PreviewKeyDown="datagrid_main_PreviewKeyDown"
+                      SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All"
+                      Unloaded="datagrid_main_Unloaded"
+                      GridLinesVisibility="None">
+                <DataGrid.Resources>
+                    <!-- Fix Column Headers Presenter -->
+                    <Style TargetType="DataGridColumnHeadersPresenter">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                    </Style>
+
+                    <!-- Fix the row header container (usually part of DataGridRowsPresenter) -->
+                    <Style TargetType="DataGridRowHeader">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                    </Style>
+                </DataGrid.Resources>
                 <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                    <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#222"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Padding" Value="8,4"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridColumnHeader">
+                                    <Grid>
+                                        <Border x:Name="HeaderBorder"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter x:Name="HeaderContent"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </Border>
+                                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left"/>
+                                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
                 <DataGrid.RowHeaderStyle>
-                    <Style TargetType="DataGridRowHeader" BasedOn="{StaticResource {x:Type DataGridRowHeader}}">
+                    <Style TargetType="DataGridRowHeader">
                         <Setter Property="Background" Value="#222"/>
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="Padding" Value="8 1 1 1"/>
+                        <Setter Property="Padding" Value="4 1 1 1"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridRowHeader">
+                                    <Grid>
+                                        <Border x:Name="RowHeaderBorder"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter x:Name="RowHeaderContent"
+                                                              Content="{TemplateBinding Content}"
+                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </Border>
+                                        <Thumb x:Name="PART_TopHeaderGripper" VerticalAlignment="Top"/>
+                                        <Thumb x:Name="PART_BottomHeaderGripper" VerticalAlignment="Bottom"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsRowSelected" Value="True">
+                                <Setter Property="Background" Value="DodgerBlue"/>
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
                         <Setter Property="Height" Value="Auto"/>
+                        <Setter Property="SnapsToDevicePixels" Value="True"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Padding" Value="1"/>
+                        <Setter Property="Background" Value="#222"/>
+                        <Setter Property="BorderBrush" Value="#555"/>
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="DodgerBlue"/>
+                                <Setter Property="BorderBrush" Value="#ececec"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
                         <Setter Property="Padding" Value="16 0"/>
+                        <Setter Property="SnapsToDevicePixels" Value="True"/>
                         <Setter Property="VerticalAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <!--
-                        <Setter Property="FontSize" Value="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"/>
-                        -->
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="#222"/>
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="BorderBrush" Value="#ececec"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#222"/>
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
                 </DataGrid.CellStyle>
             </DataGrid>
+            <!--
             <DataGrid x:Name="datagrid_MP" Grid.Row="0" Visibility="Collapsed"
                       IsReadOnly="True"
                       CellEditEnding="DataGrid_CellEditEnding"
@@ -546,6 +660,7 @@
                       Loaded="datagrid_main_Loaded" VirtualizingPanel.VirtualizationMode="Recycling"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
             </DataGrid>
+            -->
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
                                           FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
@@ -633,47 +748,51 @@
                                     <Label Height="30" Content="CoreSize"/>
                                     <Label Height="30" Content="Area"/>
                                 </WrapPanel>
-                                <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.JobNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Padding="4 0" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ElementName=datagrid_main, Path=SelectedItem.Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ElementName=datagrid_main, Path=SelectedItem.SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.IDNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <CheckBox Height="30" Width="247" IsChecked="{Binding ElementName=datagrid_main, Path=SelectedItem.Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.FabWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.FabWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ElementName=datagrid_main, Path=SelectedItem.Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch"
+                                           VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                                           DataContext="{Binding ElementName=datagrid_main, Path=SelectedItem}">
+                                    <WrapPanel.BindingGroup>
+                                        <BindingGroup Name="BGroup_LineEdits"/>
+                                    </WrapPanel.BindingGroup>
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding JobNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Padding="4 0" x:Name="Txt_RowEdit_ItemNbr" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Idnbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" Text="{Binding ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" Text="{Binding WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Fabwidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>
@@ -692,7 +811,7 @@
                         -->
                         <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
                                 BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
-                                IsEnabled="{Binding Pending_LineChanges}" Height="24"
+                                IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
                                 Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -705,7 +824,7 @@
                         <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
                                 BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-                                IsEnabled="{Binding Pending_LineChanges}"
+                                IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
                                 Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"

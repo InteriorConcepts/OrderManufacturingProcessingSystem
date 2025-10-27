@@ -3,6 +3,8 @@ using Microsoft.VisualBasic;
 using MyApp.DataAccess.Generated;
 using OMPS.Components;
 using OMPS.Models;
+using OMPS.Models.Order;
+using OMPS.Models.Product;
 using OMPS.viewModel;
 using OMPS.Windows;
 using System;
@@ -111,22 +113,23 @@ namespace OMPS.Pages
         public bool IsLoadingJobData { get; set; } = false;
         private DateTime? Last_ManufData = null;
 
-        private bool Pending_LineChanges
+        public bool Pending_LineChanges
         {
-            get => (bool)GetValue(Pending_LineChangesProperty);
-            set => SetValue(Pending_LineChangesProperty, (bool)value);
+            get => Pending_LineChangesCount is not 0;
         }
-        private byte Pending_LineChangesCount {
+        public byte Pending_LineChangesCount {
             get => field;
             set
             {
                 if (field == value) return;
                 field = value;
+                this.datagrid_main.IsHitTestVisible = (value is 0);
                 OnPropertyChanged(nameof(Pending_LineChangesCount));
-                this.Pending_LineChanges = (value is not 0);
+                OnPropertyChanged(nameof(Pending_LineChanges));
+                OnPropertyChanged(nameof(NoPending_LineChanges));
             }
         } = 0;
-        public bool NoPending_LineChanges { get => !this.Pending_LineChanges; }
+        public bool NoPending_LineChanges { get => Pending_LineChangesCount is 0; }
 
         internal DataGrid? CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
@@ -189,19 +192,20 @@ namespace OMPS.Pages
             string tab = "";
             try
             {
+                this.Pending_LineChangesCount = 0;
                 IsLoadingJobData = true;
                 this.CurrentGrid?.Visibility = Visibility.Collapsed;
                 await this.LoadColorSetData(job);
                 if (this.RadioBtn_View_QPO.IsChecked is true)
                 {
                     tab = this.RadioBtn_View_QPO.Tag.ToString() ?? "";
-                    this.CurrentGrid = this.datagrid_QPO;
+                    //this.CurrentGrid = this.datagrid_QPO;
                     await this.LoadQPartsOrdered(job);
                 }
                 else if (this.RadioBtn_View_QDO.IsChecked is true)
                 {
                     tab = this.RadioBtn_View_QDO.Tag.ToString() ?? "";
-                    this.CurrentGrid = this.datagrid_QIO;
+                    //this.CurrentGrid = this.datagrid_QIO;
                     await this.LoadQItemsOrdered(job);
                 }
                 else if (this.RadioBtn_View_M.IsChecked is true)
@@ -213,7 +217,7 @@ namespace OMPS.Pages
                 else if (this.RadioBtn_View_MP.IsChecked is true)
                 {
                     tab = this.RadioBtn_View_MP.Tag.ToString() ?? "";
-                    this.CurrentGrid = this.datagrid_MP;
+                    //this.CurrentGrid = this.datagrid_MP;
                     await this.LoadManufParts(job);
                 }
                 this.CurrentGrid?.Visibility = Visibility.Visible;
@@ -491,6 +495,39 @@ namespace OMPS.Pages
             await proc.WaitForExitAsync(t);
             proc.Dispose();
         }
+
+        public void FocusFieldFromRowCell()
+        {
+            if (this.pnl_dock.Visibility is Visibility.Collapsed)
+                ToggleSideGrid();
+            if (this.datagrid_main.SelectedCells.Count is 0) return;
+            if (this.datagrid_main.CurrentCell.Column is not DataGridColumn col) return;
+            var colIdx = col.DisplayIndex;
+            this.pnl_dock.Focus();
+            //this.grid_dataeditregion.Focus();
+            this.WPnl_DataEditRegion.Focus();
+            //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
+            if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> txts) return;
+            Debug.WriteLine(colIdx);
+            if (txts.ElementAt(colIdx) is not TextBox txt) return;
+            txt.Focus();
+            txt.Select(txt.Text.Length, 0);
+        }
+
+        public void RevertEditControls()
+        {
+            if (this.WPnl_EditInputs is null || this.WPnl_EditInputs.Children is null) return;
+            this.WPnl_EditInputs.BindingGroup.CancelEdit();
+            var tmp = WPnl_EditInputs.DataContext;
+            this.WPnl_EditInputs.DataContext = null;
+            this.WPnl_EditInputs.DataContext = tmp;
+            this.WPnl_EditInputs.BindingGroup.UpdateSources();
+            if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> cntrls) return;
+            foreach (var item in cntrls)
+            {
+                item.Tag = false;
+            }
+        }
 #endregion
 
 
@@ -558,19 +595,8 @@ namespace OMPS.Pages
         {
             if (e.Key is Key.Enter)
             {
-                if (this.pnl_dock.Visibility is Visibility.Collapsed)
-                    ToggleSideGrid();
                 e.Handled = true;
-                var colIdx = this.datagrid_main.CurrentCell.Column.DisplayIndex;
-                this.pnl_dock.Focus();
-                //this.grid_dataeditregion.Focus();
-                this.WPnl_DataEditRegion.Focus();
-                //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-                if (this.WPnl_EditInputs.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-                Debug.WriteLine(colIdx);
-                if (txts.ElementAt(colIdx) is not TextBox txt) return;
-                txt.Focus();
-                txt.Select(txt.Text.Length, 0);
+                FocusFieldFromRowCell();
                 return;
             }
             if (e.Key is Key.F && (Keyboard.Modifiers & ModifierKeys.Control) is ModifierKeys.Control)
@@ -578,6 +604,11 @@ namespace OMPS.Pages
                 this.ToggleFiltersPanel();
                 e.Handled = true;
             }
+        }
+
+        private void datagrid_main_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            FocusFieldFromRowCell();
         }
 
         private void Page_EngOrder_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -631,12 +662,6 @@ namespace OMPS.Pages
             this.ToggleFiltersPanel();
             e.Handled = true;
         }
-
-        public static readonly DependencyProperty Pending_LineChangesProperty =
-            DependencyProperty.Register(
-                "Pending_LineChanges", typeof(bool), typeof(EngOrder),
-                new PropertyMetadata(false)
-            );
 
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
@@ -708,16 +733,49 @@ namespace OMPS.Pages
         }
 
 
-        private void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
+        private async void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
             if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-            if (this.WPnl_EditInputs.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-            List<(string, bool, Type?, object?)> changes = [];
+            if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> txts) return;
+#if NEWDBSQL
+            if (this.datagrid_main.SelectedItem is not AIcIceManuf line) return;
+            List<(string, bool, object?)> changes = [];
+            if(this.WPnl_EditInputs.BindingGroup.CommitEdit())
+            {
+                using (var ctx = new OrderDbCtx())
+                {
+                    var dbline = await ctx.AIcIceManufs
+                        .FirstOrDefaultAsync(i => i.IceManufId == line.IceManufId);
+                    if (dbline is null)
+                    {
+                        MessageBox.Show("Item line was not found and may have been deleted, refresh item lines and try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    foreach (var prop in dbline.GetType().GetProperties(BindingFlags.Default))
+                    {
+                        var lineprop = line.GetType().GetProperty(prop.Name, BindingFlags.Default);
+                        if (lineprop is null) continue;
+                        var lineval = lineprop.GetValue(line);
+                        if (lineval != prop.GetValue(dbline))
+                        {
+                            prop.SetValue(dbline, lineval);
+                        }
+                    }
+                    await ctx.SaveChangesAsync();
+                }
+                if (changes.Count is 0) return;
+                Debug.WriteLine(string.Join("\n", changes.Select(c => $"{c.Item1} = {c.Item3}")));
+            }
+            //this.UpdateItemLineData(line.IceManufId, line);
+#else
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
+            List<(string, bool, Type?, object?)> changes = [];
             foreach (var item in txts)
             {
-                var binding = item.GetBindingExpression(TextBox.TextProperty);
+                var dpinfo = DpValueFromInputType(item);
+                if (dpinfo is not (DependencyProperty, object) dpinfoval) continue;
+                var binding = item.GetBindingExpression(dpinfoval.dp);
                 var propertyName = binding.ParentBinding.Path.Path.Split('.').Last();
                 if (propertyName is null ||
                     this.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(propertyName) ||
@@ -726,7 +784,7 @@ namespace OMPS.Pages
                     continue;
                 }
                 this.datagrid_main.BeginEdit();
-                var propRes = UpdateProperty(line, propertyName, item.Text);
+                var propRes = UpdateProperty(line, propertyName, dpinfoval.value);
                 this.datagrid_main.CommitEdit();
                 if (propRes.Item2 is true)
                 {
@@ -737,6 +795,7 @@ namespace OMPS.Pages
             if (changes.Count is 0) return;
             this.UpdateItemLineData(line.IceManufID, line);
             Debug.WriteLine(string.Join("\n", changes.Select(c => $"{c.Item1}: {c.Item3} = {c.Item4}")));
+#endif
             this.Pending_LineChangesCount = 0;
         }
 
@@ -744,19 +803,7 @@ namespace OMPS.Pages
         {
             if (Ext.PopupConfirmation("Discard changes made to item line? All unsaved changes will be lost.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) is not MessageBoxResult.Yes) return;
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-            if (this.WPnl_EditInputs.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-            foreach (var item in txts)
-            {
-                var binding = item.GetBindingExpression(TextBox.TextProperty);
-                //var propertyName = binding.ParentBinding.Path.Path.Split('.').Last();
-                binding.UpdateTarget();
-                // Trigger Cell & Row Edit events
-                /*
-                item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWayToSource;
-                item.Text = item.Text;
-                item.GetBindingExpression(TextBox.TextProperty).ParentBinding.Mode = BindingMode.OneWay;
-                */
-            }
+            this.RevertEditControls();
             this.Pending_LineChangesCount = 0;
         }
 
@@ -851,14 +898,17 @@ namespace OMPS.Pages
 #if NEWDBSQL
             using (var ctx = new Models.Product.ProductDbCtx())
             {
-                /*
-                await ctx.IcProductCatalogs
-                    .Where(p => p.JobNbr == job)
-                    .OrderBy(p => p.IceManufId)
+                var res = await ctx.IcItems
+                    .Where(p => p.ItemId.ToString() == e.Lookup)
                     .AsNoTracking() // No change tracking
                     .AsSplitQuery()
                     .ToListAsync();
-                */
+                if (res is null || res.Count is 0 || res[0] is not IcItem item)
+                {
+                    e.Source.InputLookupValue = "-";
+                    return;
+                }
+                e.Source.InputLookupValue = $"{item.Item} - {item.Description}";
             }
 #else
             var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
@@ -1114,67 +1164,59 @@ namespace OMPS.Pages
         }
 
         public bool WaitingForTextChanged = false;
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+
+        public (DependencyProperty dp, object value)? DpValueFromInputType<T>(T value) where T : Control
         {
-            //if (this.WaitingForTextChanged is false) return;
-            //Debug.WriteLine(sender is TextBox);
-            if (sender is not TextBox txt) return;
+            if (value is TextBox txt)
+            {
+                return (TextBox.TextProperty, txt.Text);
+            }
+            if (value is ComboBox cmbx)
+            {
+                return (ComboBox.SelectedValueProperty, cmbx.SelectedValue);
+            }
+            if (value is CheckBox chkbx)
+            {
+                return (CheckBox.IsCheckedProperty, chkbx.IsChecked ?? false);
+            }
+            return null;
+
+        }
+
+        public void HandleInputValueChanged(object sender, EventArgs e)
+        {
+            if (!WaitingForTextChanged) return;
+            if (sender is not Control cntrl) return;
+            //if (cntrl.Background is not null && cntrl.Background.Opacity == 50 / 255.0) return;
+            var foo = DpValueFromInputType(cntrl);
+            if (foo is not (DependencyProperty, object) pair || pair.dp is null || pair.value is null) return;
+            //if (txt.Background is not null && txt.Background.Opacity is 50) return;
             if (this.datagrid_main.SelectedItem is not object obj ||
-                txt.GetBindingExpression(TextBox.TextProperty) is not BindingExpression be ||
+                cntrl.GetBindingExpression(pair.dp) is not BindingExpression be ||
                 be.ParentBinding.Path is not PropertyPath pp ||
                 obj.GetType().GetProperty(pp.Path.Replace("SelectedItem.", "")) is not PropertyInfo pi ||
                 pi.GetValue(obj) is not object value) return;
-            if (txt.Text.Equals(value.ToString(), StringComparison.OrdinalIgnoreCase))
+            if (pair.value.Equals(value))
             {
                 Debug.WriteLine("Same value as data context object");
                 this.Pending_LineChangesCount -= 1;
-                txt.Background = null;
+                cntrl.Tag = "false";
+                //cntrl.Background = null;
                 return;
             }
-            this.Pending_LineChanges = true;
             this.Pending_LineChangesCount += 1;
-            txt.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
+            cntrl.Tag = "true";
+            //cntrl.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+            => HandleInputValueChanged(sender, e);
 
         private void TextBox_TextChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is not ComboBox cmbx) return;
-            if (this.datagrid_main.SelectedItem is not object obj ||
-                cmbx.GetBindingExpression(ComboBox.SelectedValueProperty) is not BindingExpression be ||
-                be.ParentBinding.Path is not PropertyPath pp ||
-                obj.GetType().GetProperty(pp.Path.Replace("SelectedItem.", "")) is not PropertyInfo pi ||
-                pi.GetValue(obj) is not object value) return;
-            if (cmbx.SelectedValue.Equals(value))
-            {
-                Debug.WriteLine("Same value as data context object");
-                this.Pending_LineChangesCount -= 1;
-                cmbx.Background = null;
-                return;
-            }
-            this.Pending_LineChanges = true;
-            this.Pending_LineChangesCount += 1;
-            cmbx.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
-        }
+            => HandleInputValueChanged(sender, e);
 
         private void TextBox_TextChanged(object sender, RoutedEventArgs e)
-        {
-            if (sender is not CheckBox chkbx) return;
-            if (this.datagrid_main.SelectedItem is not object obj ||
-                chkbx.GetBindingExpression(CheckBox.IsCheckedProperty) is not BindingExpression be ||
-                be.ParentBinding.Path is not PropertyPath pp ||
-                obj.GetType().GetProperty(pp.Path.Replace("SelectedItem.", "")) is not PropertyInfo pi ||
-                pi.GetValue(obj) is not object value) return;
-            if (chkbx.IsChecked.Equals(value))
-            {
-                Debug.WriteLine("Same value as data context object");
-                this.Pending_LineChangesCount -= 1;
-                chkbx.Background = null;
-                return;
-            }
-            this.Pending_LineChanges = true;
-            this.Pending_LineChangesCount += 1;
-            chkbx.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
-        }
+            => HandleInputValueChanged(sender, e);
 
         private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
@@ -1187,8 +1229,6 @@ namespace OMPS.Pages
             this.WaitingForTextChanged = false;
         }
 
-#endregion
-
         private void ComboBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (sender is not ComboBox cmbx) return;
@@ -1200,6 +1240,14 @@ namespace OMPS.Pages
                 Source = sender
             };
             this.WPnl_DataEditRegion.RaiseEvent(newEventArgs);
+        }
+
+#endregion
+
+        private void datagrid_main_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.WPnl_EditInputs.BindingGroup.BeginEdit();
+            RevertEditControls();
         }
     }
 }

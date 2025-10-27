@@ -65,12 +65,12 @@
             <Border CornerRadius="1" BorderThickness="1" x:Name="MainBorder" Margin="0 0 0 8">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="4,6" StartPoint="0,0" SpreadMethod="Repeat" MappingMode="Absolute" Opacity="0.267">
-                        <GradientStop Color="{Binding Background.Color, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <GradientStop Color="{TemplateBinding Background}"/>
                         <GradientStop Color="#0000" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Border.BorderBrush>
-                    <SolidColorBrush Color="{Binding Background.Color, RelativeSource={RelativeSource TemplatedParent}}" Opacity="0.267"/>
+                    <SolidColorBrush Color="{TemplateBinding Background}" Opacity="0.267"/>
                 </Border.BorderBrush>
                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <StackPanel.Effect>
@@ -78,20 +78,9 @@
                     </StackPanel.Effect>
                     <ContentPresenter VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="4 2">
                         <ContentPresenter.Effect>
-                            <DropShadowEffect BlurRadius="12" Color="{Binding Background.Color, RelativeSource={RelativeSource TemplatedParent}}" Direction="-45" Opacity="0.7" ShadowDepth="0" />
+                            <DropShadowEffect BlurRadius="12" Color="{TemplateBinding Background}" Direction="-45" Opacity="0.7" ShadowDepth="0" />
                         </ContentPresenter.Effect>
                     </ContentPresenter>
-                    <Rectangle Height="0">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Color="{Binding Background.Color, RelativeSource={RelativeSource TemplatedParent}}" Opacity="1.0"/>
-                        </Rectangle.Fill>
-                        <Rectangle.OpacityMask>
-                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                <GradientStop Color="Black"/>
-                                <GradientStop Color="Transparent" Offset="5"/>
-                            </LinearGradientBrush>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
                 </StackPanel>
             </Border>
 

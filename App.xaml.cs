@@ -12,6 +12,7 @@ namespace OMPS
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
             Ext.ValidateAppSettings();
             base.OnStartup(e);
         }

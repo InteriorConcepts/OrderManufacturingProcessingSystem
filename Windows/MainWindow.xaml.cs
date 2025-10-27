@@ -246,10 +246,11 @@ namespace OMPS.Windows
 
         private void Window_StateChanged(object sender, System.EventArgs e)
         {
+            
             switch (this.WindowState)
             {
                 case WindowState.Maximized:
-                    this.Grid_Main.Margin = new(8, 8, 8, 4);
+                    this.Grid_Main.Margin = new(7, 7, 7, 7);
                     break;
                 case WindowState.Minimized:
 
@@ -258,6 +259,7 @@ namespace OMPS.Windows
                     this.Grid_Main.Margin = new(0);
                     break;
             }
+            
         }
 
 
@@ -290,10 +292,12 @@ namespace OMPS.Windows
             this.BeginInit();
             if (this.WindowState == WindowState.Maximized)
             {
-                SystemCommands.RestoreWindow(this);
+                this.WindowState = WindowState.Normal;
+                //SystemCommands.RestoreWindow(this);
             } else
             {
-                SystemCommands.MaximizeWindow(this);
+                this.WindowState = WindowState.Maximized;
+                //SystemCommands.MaximizeWindow(this);
             }
             this.EndInit();
             this.MainViewModel.ToggleCurrentContentControl(Visibility.Visible);
