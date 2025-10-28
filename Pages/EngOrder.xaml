@@ -46,19 +46,12 @@
                                                   RecognizesAccessKey="True"/>
 
                                 <!-- Indicator Dot -->
-                                <materialDesign:PackIcon Grid.Column="1" 
-                                               Foreground="{TemplateBinding BorderBrush}" 
-                                               Width="8" 
-                                               Height="8" 
-                                               Kind="CircleOutline" 
-                                               Margin="0,0,0,0"
-                                               VerticalAlignment="Center"/>
                                 <materialDesign:PackIcon Grid.Column="1" Panel.ZIndex="-2"
                                                Foreground="{TemplateBinding Background}" 
-                                               Width="7" 
-                                               Height="7" 
+                                               Width="{Binding MainViewModel.FontSize_H7, FallbackValue=8}" 
+                                               Height="{Binding MainViewModel.FontSize_H7, FallbackValue=8}" 
                                                Kind="Circle" 
-                                               Margin="0.5,0,0,0"
+                                               Margin="0,0,0,0"
                                                VerticalAlignment="Center">
                                 </materialDesign:PackIcon>
                             </Grid>
@@ -749,7 +742,7 @@
                             <WrapPanel x:Name="WPnl_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                        Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                                 <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                                    <Label Style="{StaticResource LabelWithIndicator}" Width="150" Content="JobNbr"/>
+                                    <Label Tag="error" Style="{StaticResource LabelWithIndicator}" Width="150" Content="JobNbr"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="PartNbr"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
                                         <Label.Content>
