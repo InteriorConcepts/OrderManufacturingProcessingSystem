@@ -23,10 +23,76 @@
         <!--
             Make two more styles for the edit pane's combobox and checkboxes and assign it to them
         -->
-        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}" x:Key="Txt_Edit_Tag_BG">
+        <Style TargetType="Label" x:Key="LabelWithIndicator">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border Background="Transparent" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Content -->
+                                <ContentPresenter Grid.Column="0"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"/>
+
+                                <!-- Indicator Dot -->
+                                <materialDesign:PackIcon Grid.Column="1" 
+                                               Foreground="{TemplateBinding BorderBrush}" 
+                                               Width="8" 
+                                               Height="8" 
+                                               Kind="CircleOutline" 
+                                               Margin="0,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                <materialDesign:PackIcon Grid.Column="1" Panel.ZIndex="-2"
+                                               Foreground="{TemplateBinding Background}" 
+                                               Width="7" 
+                                               Height="7" 
+                                               Kind="Circle" 
+                                               Margin="0.5,0,0,0"
+                                               VerticalAlignment="Center">
+                                </materialDesign:PackIcon>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Resources>
+                            <!-- Force inheritance for all TextBlocks within this template -->
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="Foreground" 
+                                        Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                            </Style>
+                        </ControlTemplate.Resources>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter Property="Background" Value="#32ff0000"/>
+                <Trigger Property="Tag" Value="none">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="error">
+                    <Setter Property="BorderBrush" Value="#d44"/>
+                    <Setter Property="Background" Value="#d44"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="warn">
+                    <Setter Property="BorderBrush" Value="#d60"/>
+                    <Setter Property="Background" Value="#d60"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="good">
+                    <Setter Property="BorderBrush" Value="#195"/>
+                    <Setter Property="Background" Value="#195"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="blue">
+                    <Setter Property="BorderBrush" Value="#17a"/>
+                    <Setter Property="Background" Value="#17a"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -683,9 +749,9 @@
                             <WrapPanel x:Name="WPnl_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                        Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                                 <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                                    <Label Height="30" Content="JobNbr"/>
-                                    <Label Height="30" Content="PartNbr"/>
-                                    <Label Height="30" VerticalContentAlignment="Center">
+                                    <Label Style="{StaticResource LabelWithIndicator}" Width="150" Content="JobNbr"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="PartNbr"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
                                         <Label.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="ItemNbr"/>
@@ -698,10 +764,10 @@
                                             </StackPanel>
                                         </Label.Content>
                                     </Label>
-                                    <Label Height="30" Content="CatalogNbr"/>
-                                    <Label Height="30" Content="Qty"/>
-                                    <Label Height="30" Content="Multiplier"/>
-                                    <Label Height="30" VerticalContentAlignment="Center">
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="CatalogNbr"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Qty"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Multiplier"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
                                         <Label.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="Description"/>
@@ -714,39 +780,39 @@
                                             </StackPanel>
                                         </Label.Content>
                                     </Label>
-                                    <Label Height="30" Content="UofM"/>
-                                    <Label Height="30" Content="Type"/>
-                                    <Label Height="30" Content="SubType"/>
-                                    <Label Height="30" Content="IDNbr"/>
-                                    <Label Height="30" Content="Explode"/>
-                                    <Label Height="30" Content="Assembled"/>
-                                    <Label Height="30" Content="AssyNbr"/>
-                                    <Label Height="30" Content="TileIndicator"/>
-                                    <Label Height="30" Content="ItemFin"/>
-                                    <Label Height="30" Content="ColorBy"/>
-                                    <Label Height="30" Content="WorkCtr"/>
-                                    <Label Height="30" Content="ItemCore"/>
-                                    <Label Height="30" Content="Dept"/>
-                                    <Label Height="30" Content="ScrapFactor"/>
-                                    <Label Height="30" Content="SizeDivisor"/>
-                                    <Label Height="30" Content="FabWidth"/>
-                                    <Label Height="30" Content="Depth"/>
-                                    <Label Height="30" Content="Width"/>
-                                    <Label Height="30" Content="Height"/>
-                                    <Label Height="30" Content="FabWidth"/>
-                                    <Label Height="30" Content="FabHeight"/>
-                                    <Label Height="30" Content="Option01"/>
-                                    <Label Height="30" Content="Option02"/>
-                                    <Label Height="30" Content="Option03"/>
-                                    <Label Height="30" Content="Option04"/>
-                                    <Label Height="30" Content="Option05"/>
-                                    <Label Height="30" Content="Option06"/>
-                                    <Label Height="30" Content="Option07"/>
-                                    <Label Height="30" Content="Option08"/>
-                                    <Label Height="30" Content="Option09"/>
-                                    <Label Height="30" Content="Option10"/>
-                                    <Label Height="30" Content="CoreSize"/>
-                                    <Label Height="30" Content="Area"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="UofM"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Type"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="SubType"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="IDNbr"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Explode"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Assembled"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="AssyNbr"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="TileIndicator"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="ItemFin"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="ColorBy"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="WorkCtr"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="ItemCore"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Dept"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="ScrapFactor"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="SizeDivisor"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="FabWidth"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Depth"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Width"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Height"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="FabWidth"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="FabHeight"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option01"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option02"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option03"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option04"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option05"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option06"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option07"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option08"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option09"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Option10"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="CoreSize"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="Area"/>
                                 </WrapPanel>
                                 <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch"
                                            VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
@@ -754,45 +820,45 @@
                                     <WrapPanel.BindingGroup>
                                         <BindingGroup Name="BGroup_LineEdits"/>
                                     </WrapPanel.BindingGroup>
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding JobNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Padding="4 0" x:Name="Txt_RowEdit_ItemNbr" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Idnbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" Text="{Binding ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" Text="{Binding WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Fabwidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Style="{StaticResource Txt_Edit_Tag_BG}" Text="{Binding Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding JobNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Padding="4 0" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Text="{Binding Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Idnbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" Text="{Binding ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" Text="{Binding WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Fabwidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>

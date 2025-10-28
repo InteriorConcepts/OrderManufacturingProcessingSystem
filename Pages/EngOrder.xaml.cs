@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using MyApp.DataAccess.Generated;
 using OMPS.Components;
+using OMPS.Core;
 using OMPS.Models;
 using OMPS.Models.Order;
 using OMPS.Models.Product;
@@ -26,6 +28,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.System.RemoteSystems;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Pages
@@ -43,8 +46,10 @@ namespace OMPS.Pages
             this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
             //this.FrmFin.ItemSource = Finishes_Default;
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
-            this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
+            this.PropertyChanged += this.EngOrder_PropertyChanged;
+            //this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
         }
+
 
         private void ColorSetInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -60,6 +65,16 @@ namespace OMPS.Pages
             });
             Debug.WriteLine($"{propName} -> {val}");
         }
+
+        private void EngOrder_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not string propName) return;
+            if (propName is "ColorSetInfo")
+            {
+                this.ColorSetInfo_PropertyChanged(sender, e);
+            }
+        }
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -155,7 +170,11 @@ namespace OMPS.Pages
                 this.JobNbrChanged?.Invoke(this, this._jobNbr);
             }
         }
+#if NEWDBSQL
+        public AIcColorSet ColorSetInfo { get; set; } = new();
+#else
         public example_queries_GetColorSetResult ColorSetInfo { get; set; } = new();
+#endif
         public Dictionary<string, object> ColorSetInfo_Changes { get; set; } = [];
 #if NEWDBSQL
         public List<Models.Order.AIcIceManuf> _mfgItemLines = [];
@@ -163,7 +182,7 @@ namespace OMPS.Pages
 #else
         public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
 #endif
-        #endregion
+#endregion
 
 
         #region Fields
@@ -232,11 +251,23 @@ namespace OMPS.Pages
 
         public async Task LoadColorSetData(string job)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 Debug.WriteLine("Loading Color Set Data");
+#if NEWDBSQL
+                using (var ctx = new OrderDbCtx())
+                {
+                    var res = await ctx.AIcColorSets
+                        .Where(c => c.SupplyOrderRef == job)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+                    if (res is null) return;
+                    this.ColorSetInfo = res;
+                }
+#else
                 var data_info = Ext.Queries.GetColorSet(job).First();
                 PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
+#endif
             });
         }
 
@@ -375,7 +406,7 @@ namespace OMPS.Pages
             return false;
         }
 
-        private (string, bool, Type?, object?) UpdateProperty(object dataItem, string propertyName, string value)
+        private (string, bool, Type?, object?) UpdateProperty(object dataItem, string propertyName, object value)
         {
             var property = dataItem.GetType().GetProperty(propertyName);
             if (property != null && property.CanWrite)
@@ -522,10 +553,10 @@ namespace OMPS.Pages
             this.WPnl_EditInputs.DataContext = null;
             this.WPnl_EditInputs.DataContext = tmp;
             this.WPnl_EditInputs.BindingGroup.UpdateSources();
-            if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> cntrls) return;
+            if (this.WPnl_EditLabels.Children.OfType<Control>() is not IEnumerable<Control> cntrls) return;
             foreach (var item in cntrls)
             {
-                item.Tag = false;
+                item.Tag = null;
             }
         }
 #endregion
@@ -809,24 +840,13 @@ namespace OMPS.Pages
 
         private async void Btn_DeleteItemLine_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            Ext.PopupConfirmation("Astr", "", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
-            Ext.PopupConfirmation("Errr", "", MessageBoxButton.YesNo, MessageBoxImage.Error);
-            Ext.PopupConfirmation("Excl", "", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-            Ext.PopupConfirmation("Hand", "", MessageBoxButton.YesNo, MessageBoxImage.Hand);
-            Ext.PopupConfirmation("Info", "", MessageBoxButton.YesNo, MessageBoxImage.Information);
-            Ext.PopupConfirmation("None", "", MessageBoxButton.YesNo, MessageBoxImage.None);
-            Ext.PopupConfirmation("Ques", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            Ext.PopupConfirmation("Stop", "", MessageBoxButton.YesNo, MessageBoxImage.Stop);
-            Ext.PopupConfirmation("Warn", "", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            */
             if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
 #if NEWDBSQL
             if (this.datagrid_main.SelectedItem is not Models.Order.AIcIceManuf line) return;
             var res = await this.DeleteItemLine(line.IceManufId, line.JobNbr);
 #else
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
-            var res = this.DeleteItemLine(line.IceManufID, line.JobNbr);
+            var res = await this.DeleteItemLine(line.IceManufID, line.JobNbr);
 #endif
             if (res)
             {
@@ -1148,7 +1168,7 @@ namespace OMPS.Pages
                     this.Txt_RowEdit_ItemNbr.AppendText(obj["PartID"].ToString());
                     this.Txt_RowEdit_ItemNbr.Select(this.Txt_RowEdit_ItemNbr.Text.Length, 0);
                     this.Txt_RowEdit_ItemNbr.Focus();
-                    this.TextBox_TextChanged(this.Txt_RowEdit_ItemNbr, new TextChangedEventArgs(null, UndoAction.None));
+                    this.TextBox_TextChanged(this.Txt_RowEdit_ItemNbr, new TextChangedEventArgs(e.RoutedEvent, UndoAction.None));
                     break;
                 case "Description":
                     if (this.Txt_RowEdit_Desc.Text.Equals(obj["PartDescription"].ToString(), StringComparison.OrdinalIgnoreCase)) return;
@@ -1156,7 +1176,7 @@ namespace OMPS.Pages
                     this.Txt_RowEdit_Desc.AppendText(obj["PartDescription"].ToString());
                     this.Txt_RowEdit_Desc.Select(this.Txt_RowEdit_Desc.Text.Length, 0);
                     this.Txt_RowEdit_Desc.Focus();
-                    this.TextBox_TextChanged(this.Txt_RowEdit_Desc, new TextChangedEventArgs(null, UndoAction.None));
+                    this.TextBox_TextChanged(this.Txt_RowEdit_Desc, new TextChangedEventArgs(e.RoutedEvent, UndoAction.None));
                     break;
                 default:
                     break;
@@ -1187,7 +1207,10 @@ namespace OMPS.Pages
         {
             if (!WaitingForTextChanged) return;
             if (sender is not Control cntrl) return;
+            var index = WPnl_EditInputs.Children.IndexOf(cntrl);
+            var lbl = (Label)WPnl_EditLabels.Children[index];
             //if (cntrl.Background is not null && cntrl.Background.Opacity == 50 / 255.0) return;
+            Debug.WriteLine("%%%");
             var foo = DpValueFromInputType(cntrl);
             if (foo is not (DependencyProperty, object) pair || pair.dp is null || pair.value is null) return;
             //if (txt.Background is not null && txt.Background.Opacity is 50) return;
@@ -1200,12 +1223,18 @@ namespace OMPS.Pages
             {
                 Debug.WriteLine("Same value as data context object");
                 this.Pending_LineChangesCount -= 1;
-                cntrl.Tag = "false";
+                lbl.Tag = null;
                 //cntrl.Background = null;
-                return;
             }
-            this.Pending_LineChangesCount += 1;
-            cntrl.Tag = "true";
+            else
+            {
+                if (lbl.Tag is not "error")
+                {
+                    this.Pending_LineChangesCount += 1;
+                    lbl.Tag = "error";
+                }
+            }
+            Debug.WriteLine(this.Pending_LineChangesCount);
             //cntrl.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
         }
 
@@ -1221,6 +1250,15 @@ namespace OMPS.Pages
         private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             this.WaitingForTextChanged = true;
+        }
+        private void TextBox_GotKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            this.WaitingForTextChanged = true;
+        }
+
+        private void TextBox_LostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            this.WaitingForTextChanged = false;
         }
 
         private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
