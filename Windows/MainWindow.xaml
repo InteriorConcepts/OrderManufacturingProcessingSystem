@@ -56,9 +56,11 @@
                     <RowDefinition Height="{Binding DataContext.FontSize_H1, FallbackValue=24}"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="2" Padding="0" Background="Transparent" Foreground="#eee">
+                <materialDesign:ColorZone Grid.Row="0" Grid.ColumnSpan="3" Padding="0" Background="Transparent" Foreground="#eee">
 
                     <Border CornerRadius="6 6 0 0">
                         <Border.Background>
@@ -156,6 +158,16 @@
                                             Click="Btn_Chat_Click">
                                     <materialDesign:PackIcon Kind="TerminalNetworkOutline" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
                                 </Button>
+
+                                <Button x:Name="Btn_ToastTest"
+                                            Height="{Binding DataContext.FontSize_H1, FallbackValue=24}"
+                                            IsEnabled="True"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Margin="2 0 0 0" Padding="1" Foreground="FloralWhite"
+                                            VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                            Click="Btn_ToastTest_Click">
+                                    <materialDesign:PackIcon Kind="Toaster" Width="{Binding DataContext.FontSize_H2, FallbackValue=18}" Height="{Binding DataContext.FontSize_H2, FallbackValue=18}"/>
+                                </Button>
                             </StackPanel>
                             <!--
     <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -218,7 +230,7 @@
                         </Grid>
                     </Border>
                 </materialDesign:ColorZone>
-                <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="0">
+                <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Height="0">
                     <Rectangle.Fill>
                         <ImageBrush ImageSource="pack://application:,,,/OMPS;component/Images/gradient.png" Stretch="Fill"/>
                     </Rectangle.Fill>
@@ -228,7 +240,7 @@
                     <materialDesign:PackIcon Height="Auto" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Kind="HomeOutline"/>
                 </Grid>
                 -->
-                <materialDesign:ColorZone Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch" Background="Transparent" HorizontalAlignment="Stretch" Margin="0">
+                <materialDesign:ColorZone Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Stretch" Background="Transparent" HorizontalAlignment="Stretch" Margin="0">
                     <Grid x:Name="Grid_Contents" Background="#111" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DataContext="{Binding DataContext}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -244,25 +256,25 @@
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_ProdCatSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                              Content="PCat Search" Tag="{x:Static local:PageTypes.ProductCatalogSearch}" Padding="10 0"
-                                             Visibility="{Binding ProductCatalogSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=True}"
+                                             Visibility="{Binding ProductCatalogSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding ProductCatalogSearch_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_OrderSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                              Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="10 0"
-                                             Visibility="{Binding OrderSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=True}"
+                                             Visibility="{Binding OrderSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                              Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" Padding="10 0"
-                                             Visibility="{Binding EngOrder_IsSelected, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=True}"
+                                             Visibility="{Binding EngOrder_IsSelected, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
                                              Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" Padding="10 0"
-                                             Visibility="{Binding QuoteOrder_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=True}"
+                                             Visibility="{Binding QuoteOrder_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
@@ -280,7 +292,7 @@
                     </Grid>
                 </materialDesign:ColorZone>
 
-                <DockPanel x:Name="Dpnl_SizeNav" Grid.Row="2" Grid.Column="1" Visibility="Collapsed" Margin="0 32 0 0" Width="Auto" MaxWidth="400" HorizontalAlignment="Left" Background="#111">
+                <DockPanel x:Name="Dpnl_SizeNav" Grid.Row="2" Grid.Column="0" Visibility="Collapsed" Margin="0 32 0 0" Width="Auto" MaxWidth="400" HorizontalAlignment="Left" Background="#111">
                     <Border Width="Auto" BorderThickness="0 0 2 0" BorderBrush="#FF2D2E31">
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="12" Color="#000" Direction="-45" Opacity="0.7" ShadowDepth="3" />
@@ -349,7 +361,16 @@
                     </Border>
                 </DockPanel>
 
-                <materialDesign:ColorZone Grid.Row="3" Grid.ColumnSpan="2" Background="Transparent" Foreground="#CCC" Margin="0" VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible">
+                <Components:ToastContainer x:Name="MainToastContainer" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="200" MinWidth="500">
+                    <Components:ToastContainer.OpacityMask>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#0000"/>
+                            <GradientStop Color="#F000" Offset="0.1"/>
+                        </LinearGradientBrush>
+                    </Components:ToastContainer.OpacityMask>
+                </Components:ToastContainer>
+
+                <materialDesign:ColorZone Grid.Row="3" Grid.ColumnSpan="3" Background="Transparent" Foreground="#CCC" Margin="0" VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible">
                     <Border CornerRadius="0 0 5 5" Background="#111">
                         <Grid x:Name="statusbar" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
@@ -359,12 +380,16 @@
                             <Separator Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="0"/>
                             <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="5 0 0 0">
                                 <Image x:Name="Img_NetworkStatus" Margin="3" SnapsToDevicePixels="True"
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           RenderOptions.EdgeMode="Aliased" RenderSize="32,32"
-                           Source="pack://application:,,,/OMPS;component/Images/Network.png"/>
-                                <Label Content="Online" VerticalAlignment="Center" VerticalContentAlignment="Center"
-                           Foreground="#BBB" FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}"
-                           Padding="0,0,0,0">
+                                       RenderOptions.BitmapScalingMode="HighQuality"
+                                       RenderOptions.EdgeMode="Aliased" RenderSize="32,32"
+                                       Source="pack://application:,,,/OMPS;component/Images/Network.png"/>
+                                <Label x:Name="ver" Content="v??" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                       Foreground="#BBB" FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}"
+                                       Padding="0,0,0,0">
+                                    <Label.ToolTip>
+                                        <ToolTip Content="Build Date: ??"/>
+                                    </Label.ToolTip>
+                                    <!--
                                     <Label.ContextMenu>
                                         <ContextMenu BorderThickness="1" Background="#99292929" Padding="2" Margin="0" materialDesign:MenuAssist.MenuItemsPresenterMargin="1">
                                             <Separator>
@@ -380,6 +405,7 @@
                                             <MenuItem Header="test123" Padding="1"/>
                                         </ContextMenu>
                                     </Label.ContextMenu>
+                                    -->
                                 </Label>
                             </StackPanel>
                             <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Orientation="Horizontal" Margin="0 0 5 0">

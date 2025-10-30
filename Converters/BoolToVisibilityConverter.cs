@@ -10,7 +10,7 @@ namespace OMPS.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Return true if value is not null, false if null
-            return value is true ? Visibility.Visible : (parameter is true ? Visibility.Hidden : Visibility.Collapsed);
+            return value is true ? Visibility.Visible : (bool.Parse(parameter?.ToString()?.ToLower() ?? "true") is true ? Visibility.Hidden : Visibility.Collapsed);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

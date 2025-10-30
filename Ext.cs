@@ -63,19 +63,87 @@ namespace OMPS
                 MessageBox.Show("Error reading AppSettings");
             }
         }
-        public static void ReadSetting(string key)
+        public static (bool success, string value) ReadSetting(string key)
         {
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
-                string result = appSettings[key] ?? "Not Found";
-                MessageBox.Show(result);
+                if (appSettings[key] is not string str)
+                {
+                    return (false, "");
+                } else
+                return (true, str);
             }
             catch (ConfigurationErrorsException)
             {
+                return (false, "Error reading app settings");
                 MessageBox.Show("Error reading app settings");
             }
         }
+
+        public static (bool success, bool value) ReadSettingAsBool(string key)
+        {
+
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "false";
+                if (appSettings[key] is not string str)
+                {
+                    return (false, false);
+                }
+                else
+                    return (true, bool.TryParse(str, out bool val) ? val : false);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return (false, false);
+                MessageBox.Show("Error reading app settings");
+            }
+        }
+
+        public static (bool success, double value) ReadSettingAsDouble(string key)
+        {
+
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "false";
+                if (appSettings[key] is not string str)
+                {
+                    return (false, 0.0);
+                }
+                else
+                    return (true, double.TryParse(str, out double val) ? val : 0.0);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return (false, 0.0);
+                MessageBox.Show("Error reading app settings");
+            }
+        }
+
+        public static (bool success, int value) ReadSettingAsInt(string key)
+        {
+
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "false";
+                if (appSettings[key] is not string str)
+                {
+                    return (false, -1);
+                }
+                else
+                    return (true, int.TryParse(str, out int val) ? val : -1);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return (false, -1);
+                MessageBox.Show("Error reading app settings");
+            }
+        }
+
         public static void AddUpdateAppSettings(string key, string value)
         {
             try

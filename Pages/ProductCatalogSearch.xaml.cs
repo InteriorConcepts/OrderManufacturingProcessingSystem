@@ -220,7 +220,7 @@ namespace OMPS.Pages
             if (this.datagrid_main.SelectedIndex is -1) return;
             if (this.datagrid_main.SelectedItem is not Models.Product.IcProductCatalog prod) return;
             this.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
-            await this.MainViewModel.ProductCatalogDetails_VM.LoadProductData(prod.ProductCode);
+            this.MainViewModel.ProductCatalogDetails_VM.ProductCode = prod.ProductCode;
         }
     }
 }

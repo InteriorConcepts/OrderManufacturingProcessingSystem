@@ -25,6 +25,7 @@
         -->
         <Style TargetType="Label" x:Key="LabelWithIndicator">
             <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="150"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -101,8 +102,8 @@
         </Grid.RowDefinitions>
         <Grid x:Name="toolbar" Grid.Row="0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal">
                 <Label x:Name="Lbl_JobNbr" Content="{Binding ColorSetInfo.SupplyOrderRef, FallbackValue=J000000000}"
@@ -110,21 +111,32 @@
                        FontSize="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button x:Name="Btn_RefreshHeader" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
-                        Style="{StaticResource MaterialDesignFlatButton}"
+                <Button x:Name="Btn_RefreshHeader" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                        Style="{StaticResource MaterialDesignFlatButton}" Foreground="LightSkyBlue"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Center"
-                        Padding="0" Margin="0 0 2 0" Cursor="Hand"
+                        Padding="6 0" Margin="0 0 4 0" Cursor="Hand"
                         Click="Btn_RefreshHeader_Click">
-                    <materialDesign:PackIcon Foreground="LightSkyBlue" Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}" Kind="Reload"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Refresh" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Margin="6 0 0 0"
+                                                 Width="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                                                 Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                                                 Kind="Reload"/>
+                    </StackPanel>
                 </Button>
                 <Button x:Name="Btn_SaveHeader" Height="22" Width="Auto"
-                        Style="{StaticResource SaveBtn}" IsEnabled="False"
-                        VerticalContentAlignment="Stretch" VerticalAlignment="Center"
-                        Padding="8 0" Margin="0 0 2 0" Cursor="Hand"
+                        Style="{StaticResource MaterialDesignFlatButton}" Foreground="LightSkyBlue"
+                        IsEnabled="{Binding ColorSetInfo_HasChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                        VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
+                        Padding="6 0" Margin="0 0 4 0" Cursor="Hand"
                         Click="Btn_SaveHeader_Click">
-                    <Image x:Name="Img_SaveHeader" Width="18" Height="18" IsEnabled="False"
-                       SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
-                       RenderOptions.EdgeMode="Aliased" RenderSize="32,32"/>
+                    <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
+                        <TextBlock Text="Save Header" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Width="18" Height="18" Kind="FloppyDisc" VerticalAlignment="Center"
+                                                 SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"
+                                                 RenderOptions.EdgeMode="Aliased" RenderSize="32,32"
+                                                 Margin="6 0 0 0"/>
+                    </StackPanel>
                 </Button>
                 <CheckBox x:Name="Btn_CollapseTopBar" Content="Header" IsChecked="True"
                           Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
@@ -146,7 +158,7 @@
         <Grid x:Name="grid_header" Grid.Row="1">
             <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
                 
-                <TabItem Height="40">
+                <TabItem Height="40" Width="100">
                     <TabItem.Header>
                         <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="General"/>
                     </TabItem.Header>
@@ -178,10 +190,10 @@
                                 <Components:LabelComboPair LabelText="ShelfFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.ShelfFin, Mode=TwoWay}"/>
                                 <Components:LabelComboPair LabelText="GibLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.TblLegFin, Mode=TwoWay}"/>
                                 <Components:LabelComboPair LabelText="ValBaseFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_BS}" InputText="{Binding ColorSetInfo.TblBaseFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="100" InputReadOnly="False" InputText="{Binding ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="100" InputReadOnly="False" InputText="{Binding ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="90" InputReadOnly="False" InputText="{Binding ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputReadOnly="False" InputText="{Binding ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Omt}" InputText="{Binding ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_SlimLeg}" InputText="{Binding ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="90" InputReadOnly="False" ItemSource="{Binding Finishes_TangLeg}" InputText="{Binding ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
+                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputReadOnly="False" ItemSource="{Binding Finishes_PedCush}" InputText="{Binding ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
                             <StackPanel Width="415" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
@@ -568,7 +580,7 @@
             -->
             <DataGrid x:Name="datagrid_main" Grid.Row="0" Visibility="Visible"
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
-                      IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="True"
+                      IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
                       FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
                       Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                       CellEditEnding="DataGrid_CellEditEnding" SnapsToDevicePixels="True"
@@ -582,9 +594,11 @@
                       SelectionChanged="datagrid_main_SelectionChanged"
                       EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
                       MouseDoubleClick="datagrid_main_MouseDoubleClick"
+                      PreviewMouseDown="datagrid_main_PreviewMouseDown"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown"
-                      SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All"
+                      SelectionMode="Single" IsTabStop="True" RowHeaderWidth="48" HeadersVisibility="All"
                       Unloaded="datagrid_main_Unloaded"
+                      CanUserReorderColumns="False"
                       GridLinesVisibility="None">
                 <DataGrid.Resources>
                     <!-- Fix Column Headers Presenter -->
@@ -601,13 +615,24 @@
                 </DataGrid.Resources>
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="FontWeight" Value="DemiBold"/>
+                        <Setter Property="BorderThickness" Value="0 0 1 0"/>
+                        <Setter Property="BorderBrush" Value="#444"/>
+                        <Setter Property="Background" Value="#333"/>
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="Padding" Value="4"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <!--
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#222"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0 0 1 0"/>
+                        <Setter Property="BorderBrush" Value="#444"/>
                         <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="Padding" Value="8,4"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="Padding" Value="16,4"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="DataGridColumnHeader">
@@ -630,12 +655,13 @@
                         </Setter>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
+                -->
                 <DataGrid.RowHeaderStyle>
                     <Style TargetType="DataGridRowHeader">
-                        <Setter Property="Background" Value="#222"/>
+                        <Setter Property="Background" Value="#333"/>
                         <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="Padding" Value="4 1 1 1"/>
+                        <Setter Property="Padding" Value="0"/>
                         <Setter Property="BorderThickness" Value="1"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
                         <Setter Property="Template">
@@ -672,7 +698,7 @@
                         <Setter Property="Height" Value="Auto"/>
                         <Setter Property="SnapsToDevicePixels" Value="True"/>
                         <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Padding" Value="1"/>
+                        <Setter Property="Padding" Value="0"/>
                         <Setter Property="Background" Value="#222"/>
                         <Setter Property="BorderBrush" Value="#555"/>
                         <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
@@ -689,7 +715,7 @@
                 </DataGrid.RowStyle>
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                        <Setter Property="Padding" Value="16 0"/>
+                        <Setter Property="Padding" Value="4 0"/>
                         <Setter Property="SnapsToDevicePixels" Value="True"/>
                         <Setter Property="VerticalAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -723,6 +749,7 @@
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
                                           FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
+
                     <Grid Width="Auto" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <Grid.CacheMode>
                             <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
@@ -734,23 +761,35 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="24"/>
                         </Grid.RowDefinitions>
-                        <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Margin="0" Padding="0"
-                                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
+                            <Label Content="Row Edit Pane" HorizontalAlignment="Center"
+                               Padding="0" Margin="0"
+                               FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H3, FallbackValue=16}"
+                               Foreground="#DDD"
+                               FontWeight="DemiBold"/>
+                            <Label Content="Unsaved changes, Grid is locked" HorizontalAlignment="Center"
+                               Padding="0" Margin="0" Visibility="{Binding Pending_LineChanges, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=true, FallbackValue=Visibility.Hidden}"
+                               Foreground="#FFFFD881"
+                               FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5, FallbackValue=10}"
+                               FontWeight="Regular"/>
+                        </StackPanel>
+                        <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Margin="0" Padding="0"
+                                            HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
                             <WrapPanel x:Name="WPnl_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                       Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                            Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                                 <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                                    <Label Tag="error" Style="{StaticResource LabelWithIndicator}" Width="150" Content="JobNbr"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="PartNbr"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
                                         <Label.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="ItemNbr"/>
                                                 <Button Grid.Column="1" Grid.Row="0" Height="18" Tag="ItemNbr"
-                                                        Padding="0" Margin="0" BorderThickness="0"
-                                                        Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                            Padding="0" Margin="0" BorderThickness="0"
+                                                            Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
                                                     <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                     </Image>
                                                 </Button>
@@ -765,8 +804,8 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="Description"/>
                                                 <Button Grid.Column="1" Grid.Row="0" Height="18" Tag="Description"
-                                                        Padding="0" Margin="0" BorderThickness="0"
-                                                        Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                            Padding="0" Margin="0" BorderThickness="0"
+                                                            Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
                                                     <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                     </Image>
                                                 </Button>
@@ -788,7 +827,6 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Dept"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="ScrapFactor"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="SizeDivisor"/>
-                                    <Label Style="{StaticResource LabelWithIndicator}" Content="FabWidth"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Depth"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Width"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Height"/>
@@ -808,14 +846,13 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Area"/>
                                 </WrapPanel>
                                 <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch"
-                                           VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-                                           DataContext="{Binding ElementName=datagrid_main, Path=SelectedItem}">
+                                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                                                DataContext="{Binding ElementName=Page_EngOrder, Path=CurrentItem}">
                                     <WrapPanel.BindingGroup>
                                         <BindingGroup Name="BGroup_LineEdits"/>
                                     </WrapPanel.BindingGroup>
-                                    <TextBox Height="30" Width="247" Text="{Binding JobNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Padding="4 0" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
@@ -823,14 +860,14 @@
                                     <TextBox Height="30" Width="247" Text="{Binding UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
                                     <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Idnbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding IDNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" Text="{Binding ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
-                                    <ComboBox Height="30" Width="247" Text="{Binding WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
+                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
@@ -855,68 +892,69 @@
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>
+
                         <!--
-                        <ScrollViewer Name="dataSideGridScrollViewer" Grid.Column="0" Grid.Row="0" Width="414" Grid.ColumnSpan="5" Margin="0 0 0 0"
-                                      Loaded="dataSideGridScrollViewer_Loaded" FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
-                                      VirtualizingPanel.IsVirtualizing="True">
-                            <Grid x:Name="grid_dataeditregion" Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                            </Grid>
-                        </ScrollViewer>
-                        -->
-                        <Button Grid.Row="1" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
-                                BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
-                                IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
-                                Style="{StaticResource MaterialDesignToolForegroundButton}">
+                            <ScrollViewer Name="dataSideGridScrollViewer" Grid.Column="0" Grid.Row="0" Width="414" Grid.ColumnSpan="5" Margin="0 0 0 0"
+                                          Loaded="dataSideGridScrollViewer_Loaded" FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
+                                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
+                                          VirtualizingPanel.IsVirtualizing="True">
+                                <Grid x:Name="grid_dataeditregion" Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+                            </ScrollViewer>
+                            -->
+                        <Button Grid.Row="2" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
+                                    BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
+                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
+                                    Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                                           Text="Revert"/>
+                                               Text="Revert"/>
                                 <materialDesign:PackIcon Kind="UndoVariant" Foreground="#d0763e"
-                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
-                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                                                             Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                             Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="1" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
-                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-                                IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
-                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                        <Button Grid.Row="2" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
+                                    BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
+                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                                    Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                                           Text="Save"/>
+                                               Text="Save"/>
                                 <materialDesign:PackIcon Kind="FloppyDiscEditOutline" Foreground="#FF7EB750"
-                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
-                                                         Height="{Binding MainViewModel.FontSize_H4, FallbackValue=16}"/>
+                                                             Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                             Height="{Binding MainViewModel.FontSize_H4, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="1" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
-                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
-                                IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
-                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                        <Button Grid.Row="2" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
+                                    BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
+                                    IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
+                                    Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                                           Text="Delete"/>
+                                               Text="Delete"/>
                                 <materialDesign:PackIcon Kind="TrashOutline" Foreground="#9f3847"
-                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
-                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                                                             Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                             Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="1" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
-                                BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
-                                IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
-                                Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                        <Button Grid.Row="2" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
+                                    BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
+                                    IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
+                                    Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                                           Text="New"/>
+                                               Text="New"/>
                                 <materialDesign:PackIcon Kind="AddBold" Foreground="#7dadc8"
-                                                         Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
-                                                         Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                                                             Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                             Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
                     </Grid>

@@ -47,7 +47,7 @@ namespace OMPS.Pages
         }
 
         public uint infrequentcy = 0;
-        public async void LoadData()
+        public async Task LoadData()
         {
             if (infrequentcy is 0 or 2)
             {
@@ -500,9 +500,10 @@ namespace OMPS.Pages
             //this.LoadData();
         }
 
-        private void btn_reload_Click(object sender, RoutedEventArgs e)
+        private async void btn_reload_Click(object sender, RoutedEventArgs e)
         {
-            this.LoadData();
+            await this.LoadData();
+            Ext.MainWindow.MainToastContainer.CreateToast("Home", "Data refreshed").Show();
         }
     }
 }

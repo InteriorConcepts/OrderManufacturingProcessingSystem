@@ -1,7 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using MyApp.DataAccess.Generated;
+using OMPS.Components;
 using OMPS.Pages;
 using OMPS.viewModel;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +15,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Xml.Linq;
 using static OMPS.Ext;
-using System.Windows.Interop;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Windows
@@ -59,6 +62,7 @@ namespace OMPS.Windows
                 {
                     msg += SCH.Global.Config.GetErrorString();
                 }
+                Ext.MainWindow.MainToastContainer.CreateToast("Application", msg, FeedbackToast.IconTypes.Error).Show();
                 MessageBox.Show(msg);
                 App.Current.Shutdown(-1);
             }
@@ -77,9 +81,47 @@ namespace OMPS.Windows
             //((OrderSearch?)((Main_ViewModel)this.DataContext)["OrderSearch", PageTypes.OrderSearch])?.LoadRecentOrders();
         }
 
+        public Version? ApplicationVersion
+        {
+            get
+            {
+                // Get the executing assembly
+                Assembly assembly = Assembly.GetExecutingAssembly();
+
+                if (assembly.GetName() is not AssemblyName an) return null;
+                return an.Version;
+            }
+        }
+
+        public string ApplicationVersionStr
+        {
+            get =>
+                (ApplicationVersion is not Version ver) ? "??" : $"{ver}";
+        }
+
+        public DateTime? ApplicationBuildDate
+        {
+            get
+            {
+                var dtRef = new DateTime(2000, 1, 1);
+                if (ApplicationVersion is not Version ver) return null;
+                var daysSince2000 = ver.Build;
+                var timeSinceMidnight = ver.Revision * 2;
+                return dtRef.AddDays(daysSince2000).AddSeconds(timeSinceMidnight);
+            }
+        }
+
+        public string? ApplicationBuildDateStr
+        {
+            get
+                => ApplicationBuildDate.ToString() ?? "??";
+        }
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.MainViewModel.CurrentPage = PageTypes.Home;
+            this.ver.Content = $"v{this.ApplicationVersionStr}";
+            (this.ver.ToolTip as ToolTip)?.Content = $"Version: {this.ApplicationVersionStr}\nBuild date: {this.ApplicationBuildDateStr}";
             //if (MainViewModel.AddNewPage(PageTypes.OrderSearch) is not string tag) return;
             //(MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
         }
@@ -119,6 +161,7 @@ namespace OMPS.Windows
                 this.TaskbarItemInfo.ProgressState = value;
             }
         }
+
 
         public void SetWindowTitle(string title)
         {
@@ -345,6 +388,8 @@ namespace OMPS.Windows
         }
 
         public BlurEffect blur = new() { KernelType = KernelType.Gaussian, Radius = 2, RenderingBias = RenderingBias.Performance };
+
+
         private void Btn_Settings_Click(object sender, RoutedEventArgs e)
         {
             ConfigurationWindow _configWin = new (this._viewModel) { MainVM = this._viewModel };
@@ -401,6 +446,11 @@ namespace OMPS.Windows
             if (btn.Tag is not PageTypes pageType) return;
             this.Dpnl_SizeNav.Visibility = Visibility.Collapsed;
             this.MainViewModel.CurrentPage = pageType;
+        }
+
+        private void Btn_ToastTest_Click(object sender, RoutedEventArgs e)
+        {
+            this.MainToastContainer.CreateToast("Test123", Environment.StackTrace).Show();
         }
     }
 }

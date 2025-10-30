@@ -32,7 +32,18 @@ namespace OMPS.Pages
     {
         public ProductCatalogDetails(MainWindow parentWindow)
         {
+            this.ParentWindow = parentWindow;
             InitializeComponent();
+            this.PropertyChanged += ProductCatalogDetails_PropertyChanged;
+        }
+
+        private async void ProductCatalogDetails_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not string propName) return;
+            if (propName is "ProductCode")
+            {
+                await this.LoadProductData();
+            }
         }
 
 
@@ -43,6 +54,16 @@ namespace OMPS.Pages
 
         #region "Properties"
         public bool isLoaded { get; set; } = false;
+        public string ProductCode {
+            get => field;
+            set
+            {
+                if (value is null or "") return;
+                if (value == field) return;
+                field = value;
+                OnPropertyChanged(nameof(ProductCode));
+            }
+        } = "";
         public Main_ViewModel MainViewModel
         {
             get => Ext.MainWindow.MainViewModel;
@@ -69,9 +90,14 @@ namespace OMPS.Pages
 
 
         #region "Methods"
-        public async Task LoadProductData(string productCode)
+        public async Task LoadProductData()
         {
-
+            await Task.Run(() =>
+            {
+                var res_items = Ext.Queries.GetProductSubPartsByProductCode(this.ProductCode);
+                if (res_items is null) return;
+                if (res_items.Count is 0) return;
+            });
         }
         #endregion
 

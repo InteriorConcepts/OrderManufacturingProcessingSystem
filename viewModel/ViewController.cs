@@ -61,6 +61,7 @@ namespace OMPS.viewModel
             }
         } = Ext.MainWindow;
 
+
         public bool WidgetMode {
             get;
             set
@@ -95,6 +96,7 @@ namespace OMPS.viewModel
                 if (field == value) return;
                 if (value > FontSize_MAX || value < FontSize_MIN) return;
                 field = value;
+                Ext.AddUpdateAppSettings("FontSize", value.ToString());
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(FontSize_H1));
                 OnPropertyChanged(nameof(FontSize_H1_1));
@@ -116,7 +118,7 @@ namespace OMPS.viewModel
                 OnPropertyChanged("FontSize_CanBeSmaller");
                 OnPropertyChanged("FontSize_CanBeLarger");
             }
-        } = 12;
+        } = ((Ext.ReadSettingAsDouble("FontSize") is (true, double) res && res.success) ? res.value : 12);
 
         private readonly double FontSize_H1_scale   = (2 / Math.Sqrt(1));
         private readonly double FontSize_H1_1_scale = (2 / Math.Sqrt(1.25));
