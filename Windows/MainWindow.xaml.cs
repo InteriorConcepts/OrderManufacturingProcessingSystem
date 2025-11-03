@@ -450,7 +450,9 @@ namespace OMPS.Windows
 
         private void Btn_ToastTest_Click(object sender, RoutedEventArgs e)
         {
-            this.MainToastContainer.CreateToast("Test123", Environment.StackTrace).Show();
+            var vals = Enum.GetValues<FeedbackToast.IconTypes>();
+            var rand = new Random((int)DateTime.Now.Ticks);
+            this.MainToastContainer.CreateToast("Test123", Environment.StackTrace, vals[rand.Next(0, vals.Length)]).Show();
         }
     }
 }

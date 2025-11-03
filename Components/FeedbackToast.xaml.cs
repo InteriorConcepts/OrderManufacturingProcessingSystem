@@ -56,7 +56,7 @@ namespace OMPS.Components
                 KeyFrames = [
                     new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))) { EasingFunction = new CubicEase() { EasingMode = ease } },
                     new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(83))) { EasingFunction = new CubicEase() { EasingMode = ease } },
-                    new EasingDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(500))) { EasingFunction = new CubicEase() { EasingMode = ease } },
+                    new EasingDoubleKeyFrame(0.95, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(500))) { EasingFunction = new CubicEase() { EasingMode = ease } },
                 ]
             };
             var b = new DoubleAnimationUsingKeyFrames()
@@ -99,7 +99,7 @@ namespace OMPS.Components
             var a = new DoubleAnimationUsingKeyFrames()
             {
                 KeyFrames = [
-                    new EasingDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))) { EasingFunction = new CubicEase() { EasingMode = ease } },
+                    new EasingDoubleKeyFrame(0.95, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))) { EasingFunction = new CubicEase() { EasingMode = ease } },
                     new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(300))) { EasingFunction = new CubicEase() { EasingMode = ease } },
                 ]
             };
@@ -269,11 +269,11 @@ namespace OMPS.Components
         {
             get =>
                 new(
-                    TitleIconType switch
+                    IconType switch
                     {
-                        PackIconKind.InfoCircleOutline => Color.FromRgb(131, 199, 226),
-                        PackIconKind.WarningOutline => Color.FromRgb(215, 186, 125),
-                        PackIconKind.ErrorOutline => Color.FromRgb(255, 255, 216),
+                        IconTypes.Info => Color.FromRgb(131, 199, 226),
+                        IconTypes.Warn => Color.FromRgb(215, 186, 125),
+                        IconTypes.Error => Color.FromRgb(219, 92, 92),
                         _ => Colors.GhostWhite
                     }
                 );

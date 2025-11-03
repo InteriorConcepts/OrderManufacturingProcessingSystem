@@ -23,7 +23,7 @@
         <!--
             Make two more styles for the edit pane's combobox and checkboxes and assign it to them
         -->
-        <Style TargetType="Label" x:Key="LabelWithIndicator">
+        <Style x:Key="LabelWithIndicator" TargetType="Label">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Width" Value="150"/>
             <Setter Property="Template">
@@ -89,6 +89,65 @@
                     <Setter Property="Background" Value="#17a"/>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InputStyle" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
+            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Margin" Value="0 4"/>
+            <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
+            <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
+            <Setter Property="BorderThickness" Value="0.5"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Padding" Value="0 1"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="FontSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"/>
+        </Style>
+
+        <Style x:Key="InputLookupStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
+            <Setter Property="materialDesign:TextFieldAssist.HasLeadingIcon" Value="True"/>
+            <Setter Property="materialDesign:TextFieldAssist.LeadingIconSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4, FallbackValue=12}"/>
+            <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="LinkVariant"/>
+        </Style>
+
+        <Style x:Key="BtnLookupStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0 4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style x:Key="BtnLookupImageStyle" TargetType="Image">
+            <Setter Property="Width" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2_1, FallbackValue=16}"/>
+            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+            <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
+            <Setter Property="Source" Value="pack://application:,,,/OMPS;component/Images/Binoculars.png"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+
+        <Style x:Key="InputLabel" TargetType="Label" BasedOn="{StaticResource MaterialDesignLabel}">
+            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Padding" Value="0 1 2 1"/>
+            <Setter Property="Margin" Value="0 4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="FontSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"/>
+        </Style>
+
+        <Style x:Key="InputComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
+            <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
+            <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
+            <Setter Property="BorderThickness" Value="0.5"/>
+            <Setter Property="Padding" Value="2 1"/>
+            <Setter Property="Margin" Value="0 4"/>
+            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"/>
         </Style>
     </UserControl.Resources>
 
@@ -172,40 +231,102 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
-                            <StackPanel Width="180" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputPair x:Name="head_OrderNbr" LabelWidth="85" LabelText="OrderNbr" InputReadOnly="True" FontSize="{Binding DataContext.FontSize_H4, ElementName=Page_EngOrder, FallbackValue=12, UpdateSourceTrigger=PropertyChanged}" InputText="{Binding ColorSetInfo.OrderNumber, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="85" LabelText="LineNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineNumber, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="85" LabelText="JobNbr" InputReadOnly="True" InputText="{Binding ColorSetInfo.SupplyOrderRef, Mode=TwoWay}"/>
-                                <Components:LabelInputLookupPair LabelFullWidth="85" LabelText="Quote" LookupEnabled="False" InputLookup="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
-                                <Components:LabelInputCurrencyPair LabelWidth="85" LabelText="NetProduct" InputReadOnly="True" InputText="{Binding ColorSetInfo.NetProduct, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="85" LabelText="ShipByDate" InputReadOnly="True" InputText="{Binding ColorSetInfo.ShipByDate, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="85" LabelText="Item" InputReadOnly="True" InputText="{Binding ColorSetInfo.LineItem, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="85" LabelText="Qty" InputReadOnly="True" InputText="{Binding ColorSetInfo.Qty, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="85" LabelText="Engineer" InputReadOnly="False" InputText="{Binding ColorSetInfo.Engineer, Mode=TwoWay}"/>
+                            <StackPanel MinWidth="76" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                <Label Style="{StaticResource InputLabel}" Content="Order Nbr:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Line Nbr:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Job Nbr:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Quote:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Net Product:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Ship By Date:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Item:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Qty:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
+                            </StackPanel>
+                            <StackPanel MinWidth="80" MaxWidth="95" Width="Auto" Margin="0 0 4 0">
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct, StringFormat=C2, FallbackValue='$1,234.00'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Engineer, FallbackValue='DefaultValue'}"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
-                            <StackPanel Width="170" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelComboPair x:Name="FrmFin" LabelText="FrameFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Path=Finishes_Default}" InputText="{Binding ColorSetInfo.FrameFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="Metal Comp" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.PedFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="ShelfFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.ShelfFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="GibLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.TblLegFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="ValBaseFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_BS}" InputText="{Binding ColorSetInfo.TblBaseFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="OmtLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_Omt}" InputText="{Binding ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="TblSlimLegFin" LabelWidth="100" InputReadOnly="False" ItemSource="{Binding Finishes_SlimLeg}" InputText="{Binding ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="TangentLegFin" LabelWidth="90" InputReadOnly="False" ItemSource="{Binding Finishes_TangLeg}" InputText="{Binding ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="PedCushion" LabelWidth="77" InputReadOnly="False" ItemSource="{Binding Finishes_PedCush}" InputText="{Binding ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
+                            <StackPanel MinWidth="73" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                <Label Style="{StaticResource InputLabel}" Content="Frame:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Metal Comp:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Shelf:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Gib Leg:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Val Base:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Omt Leg:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Tbl Slim Leg:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Tangent Leg:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Ped Cushion:"/>
+                            </StackPanel>
+                            <StackPanel MinWidth="80" MaxWidth="95" Margin="0 0 4 0">
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.FrameFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.PedFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.ShelfFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.TblLegFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}" SelectedItem="{Binding ColorSetInfo.TblBaseFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}" SelectedItem="{Binding ColorSetInfo.TblLegBaseFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}" SelectedItem="{Binding ColorSetInfo.TblSlimLegFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}" SelectedItem="{Binding ColorSetInfo.TangentLegFin}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding ColorSetInfo.PedCushionColor}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
-                            <StackPanel Width="415" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Fabric" InputLookupType="fab" LabelWidth="82" InputLookup="{Binding ColorSetInfo.Fabric1ID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Lam" InputLookupType="wks" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksLamID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Wks Edge" InputLookupType="web" LabelWidth="82" InputLookup="{Binding ColorSetInfo.WksEdgeID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl" InputLookupType="mel" LabelWidth="82" InputLookup="{Binding ColorSetInfo.MelPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl" InputLookupType="lam" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamPnlID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Chase Door" InputLookupType="chs" LabelWidth="82" InputLookup="{Binding ColorSetInfo.ChaseDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Acrylic" InputLookupType="acr" LabelWidth="82" InputLookup="{Binding ColorSetInfo.AcrylicID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam HC Door" InputLookupType="hcd" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamHCDoorID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
-                                <Components:LabelInputLookupPair LabelText="Lam Curve" InputLookupType="crv" LabelWidth="82" InputLookup="{Binding ColorSetInfo.LamCurveID, Mode=TwoWay}" InputLookupChanged="LabelInputLookupPair_LookupInputChanged" LookupButtonPressed="LabelInputLookupPair_LookupButtonPressed"/>
+                            <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                <Label Style="{StaticResource InputLabel}" Content="Fabric:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Wks Lam:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Wks Edge:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Mel Pnl:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Lam Pnl:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Chase Door:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Acrylic:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="HC Door Lam:"/>
+                                <Label Style="{StaticResource InputLabel}" Content="Curve Lam:"/>
+                            </StackPanel>
+                            <StackPanel x:Name="SPnl_LookupButtons" Width="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2_1, FallbackValue=16}">
+                                <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="wks" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="web" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="mel" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="lam" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="chs" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="acr" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="hcd" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                                <Button Tag="crv" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="410" Width="Auto" Margin="0 0 4 0">
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric1ID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLamID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksEdgeID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.MelPnlID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamPnlID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.ChaseDoorID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.AcrylicID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamHCDoorID}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamCurveID}"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
@@ -596,7 +717,7 @@
                       MouseDoubleClick="datagrid_main_MouseDoubleClick"
                       PreviewMouseDown="datagrid_main_PreviewMouseDown"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown"
-                      SelectionMode="Single" IsTabStop="True" RowHeaderWidth="48" HeadersVisibility="All"
+                      SelectionMode="Single" IsTabStop="True" HeadersVisibility="All"
                       Unloaded="datagrid_main_Unloaded"
                       CanUserReorderColumns="False"
                       GridLinesVisibility="None">
@@ -676,8 +797,10 @@
                                             <ContentPresenter x:Name="RowHeaderContent"
                                                               Content="{TemplateBinding Content}"
                                                               ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              Margin="0"
+                                                              Width="60"
+                                                              HorizontalAlignment="Left"
+                                                              VerticalAlignment="Stretch"
                                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                         </Border>
                                         <Thumb x:Name="PART_TopHeaderGripper" VerticalAlignment="Top"/>
@@ -851,7 +974,7 @@
                                     <WrapPanel.BindingGroup>
                                         <BindingGroup Name="BGroup_LineEdits"/>
                                     </WrapPanel.BindingGroup>
-                                    <TextBox Height="30" Width="247" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
+                                    <TextBox Height="30" Width="247" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown"/>
                                     <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
                                     <TextBox Height="30" Width="247" Text="{Binding Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />

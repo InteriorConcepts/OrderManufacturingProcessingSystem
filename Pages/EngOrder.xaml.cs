@@ -48,6 +48,12 @@ namespace OMPS.Pages
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
             //this.PropertyChanged += this.EngOrder_PropertyChanged;
             this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
+            for (int i = 0; i < this.SPnl_LookupInputs.Children.Count; i++)
+            {
+                TextBox cntrl = this.SPnl_LookupInputs.Children.OfType<TextBox>().ElementAt(i);
+                DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(TextBox.TagProperty, typeof(TextBox));
+                dpd.AddValueChanged(cntrl, LabelInputLookupPair_TagChanged);
+            }
         }
 
 
@@ -220,7 +226,7 @@ namespace OMPS.Pages
             ["QuoteNbr", "JobNbr", "CustOrderNbr",
             "Usertag1", "Multiplier", "Area", "CreationDate", "ChangeDate"];
         private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsOrder = [
-            "JobNbr", "PartNbr", "ItemNbr", "CatalogNbr", "Qty", "Multiplier",
+            "PartNbr", "ItemNbr", "CatalogNbr", "Qty", "Multiplier",
             "Description", "UofM", "Type", "SubType", "IDNbr", "Explode",
             "Assembled", "AssyNbr", "TileIndicator", "ItemFin", "ColorBy",
             "WorkCtr"
@@ -275,6 +281,8 @@ namespace OMPS.Pages
         public async Task LoadColorSetData(string job)
         {
             IsLoadingJobData = true;
+            this.ColorSetInfo = new();
+            OnPropertyChanged(nameof(ColorSetInfo));
             await Task.Run(async () =>
             {
                 Debug.WriteLine("Loading Color Set Data");
@@ -291,6 +299,7 @@ namespace OMPS.Pages
 #else
                 var data_info = Ext.Queries.GetColorSet(job).First();
                 PropertyCopier<example_queries_GetColorSetResult>.Copy(data_info, this.ColorSetInfo);
+                OnPropertyChanged(nameof(ColorSetInfo));
 #endif
             });
         }
@@ -564,13 +573,14 @@ namespace OMPS.Pages
             if (this.datagrid_main.SelectedCells.Count is 0) return;
             if (this.datagrid_main.CurrentCell.Column is not DataGridColumn col) return;
             var colIdx = col.DisplayIndex;
+            if (this.WPnl_EditInputs.Children.OfType<Control>().ToArray() is not Control[] txts) return;
+            if (txts.Length - 1 < colIdx) return;
             this.pnl_dock.Focus();
             //this.grid_dataeditregion.Focus();
             this.WPnl_DataEditRegion.Focus();
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-            if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> txts) return;
             Debug.WriteLine(colIdx);
-            if (txts.ElementAt(colIdx) is not TextBox txt) return;
+            if (txts[colIdx] is not TextBox txt) return;
             txt.Focus();
             txt.Select(txt.Text.Length, 0);
         }
@@ -631,10 +641,9 @@ namespace OMPS.Pages
             {
                 Text = e.Row.GetIndex().ToString(),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                Width = 32 - 8 - 1,
                 TextAlignment = TextAlignment.Right,
-                Margin = new (0),
-                Padding = new (0)
+                Margin = new(0, 0, 8, 0),
+                Padding = new (4, 0, 4, 0)
             };
         }
 
@@ -807,7 +816,10 @@ namespace OMPS.Pages
 
         private async void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
         {
-            if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
+            if (sender is not null)
+            {
+                if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
+            }
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             var lbls = this.WPnl_EditLabels.Children.OfType<Label>().ToArray();
             if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> txts) return;
@@ -976,11 +988,19 @@ namespace OMPS.Pages
 
         }
 
-        private async void LabelInputLookupPair_LookupInputChanged(object sender, LabelInputLookupPair.Lookup_EventArgs e)
+        private async void LabelInputLookupPair_TagChanged(object? sender, EventArgs e)
         {
-            if (e.Lookup is "00000000-0000-0000-0000-000000000000") return;
+            Debug.WriteLine("TagChanged");
+            Debug.WriteLine(sender?.GetType().Name);
+            if (sender is not TextBox txt || txt.Tag is not Guid lookupGuid) return;
+            Debug.WriteLine(lookupGuid);
+            if (lookupGuid.ToString() is "00000000-0000-0000-0000-000000000000")
+            {
+                txt.Text = "-";
+                return;
+            }
             if (SCH.Global.Config is null || !SCH.Global.Config.InitializationSuccessfull) return;
-            Debug.WriteLine($"Try Query GUID lookup ({e.Lookup})");
+            Debug.WriteLine($"Try Query GUID lookup ({lookupGuid})");
 #if NEWDBSQL
             using (var ctx = new Models.Product.ProductDbCtx())
             {
@@ -999,7 +1019,7 @@ namespace OMPS.Pages
 #else
             var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
             var cmd1 = dbcon1.CreateCommand();
-            cmd1.CommandText = $"SELECT TOP 1 PartID, PartDescription    FROM eCRM_intcon2.dbo.aIC_Product    WHERE (ItemID = '{e.Lookup}')";
+            cmd1.CommandText = $"SELECT TOP 1 PartID, PartDescription    FROM eCRM_intcon2.dbo.aIC_Product    WHERE (ItemID = '{lookupGuid}')";
             cmd1.CommandTimeout = 10000;
             cmd1.Connection = dbcon1;
             try
@@ -1020,10 +1040,10 @@ namespace OMPS.Pages
                 Debug.WriteLine("Query GUID lookup");
                 if (res is null || res.Count is 0 || res[0] is not Dictionary<string, object> item)
                 {
-                    e.Source.InputLookupValue = "-";
+                    txt.Text = "-";
                     return;
                 }
-                e.Source.InputLookupValue = $"{item["PartID"]} - {item["PartDescription"]}" ?? "";
+                txt.Text = $"{item["PartID"]} - {item["PartDescription"]}" ?? "";
             }
             catch (Exception ex)
             {
@@ -1032,6 +1052,37 @@ namespace OMPS.Pages
             await cmd1.DisposeAsync();
             await dbcon1.CloseAsync();
 #endif
+        }
+
+        private async void BtnLookup_Click(object sender, EventArgs e)
+        {
+            if (sender is not Button btn) return;
+            var txt = (TextBox)SPnl_LookupInputs.Children[SPnl_LookupButtons.Children.IndexOf(btn)];
+            Debug.WriteLine("Try TextBox");
+            if (txt is null) return;
+            var (partFilter, descFilter, partConstraint, descConstraint) = btn.Tag.ToString() switch
+            {
+                "fab" => (null, null, "%", "Fab%"),
+                "wks" => ("p-0512gp", null, "%", "PLW%"),
+                "web" => (null, null, "70055%", "%"),
+                "mel" => ("p-0512gp", "", "%", "Mel%"),
+                "lam" => ("p-0512gp", "", "%", "Pnl%"),
+                "chs" => (null, null, "%", "CDmel%"),
+                "acr" => (null, null, "338%", "Acr%"),
+                "hcd" => (null, null, "%-0508gp", "Lam%"),
+                "crv" => (null, null, "%-0508gp", "Lam%"),
+                _ => (null, null, null, null)
+            };
+            if (partConstraint is null || descConstraint is null) return;
+            using var lookup = new LookupFinder(this.MainViewModel)
+            {
+                MainVM = this.MainViewModel,
+                Owner = Ext.MainWindow
+            };
+            await lookup.LookupMaterials(partFilter, descFilter, partConstraint, descConstraint);
+            if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;
+            txt.Tag = (Guid?)obj["ItemID"] ?? new Guid();
+            //MessageBox.Show(lookup.ReturnObject["ItemID"].ToString());
         }
 
         private async void LabelInputLookupPair_LookupButtonPressed(object sender, LabelInputLookupPair.Lookup_EventArgs e)
@@ -1373,6 +1424,17 @@ namespace OMPS.Pages
                 Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Unsaved changes in Row Edit Pane, Grid is locked", FeedbackToast.IconTypes.Warn).Show();
                 e.Handled = true;
             }
+        }
+
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key is not Key.S || ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
+            {
+                e.Handled = false;
+                return;
+            }
+            this.Btn_AcceptItemLineEdits_Click(null, new RoutedEventArgs(null, null));
+            e.Handled = true;
         }
     }
 }

@@ -66,6 +66,7 @@ namespace OMPS.viewModel
             get;
             set
             {
+                if (field == value) return;
                 field = value;
                 this.ParentWin.Spnl_FrameTabs.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
                 //this.ParentWin.statusbar.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
