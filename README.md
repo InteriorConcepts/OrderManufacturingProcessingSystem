@@ -56,7 +56,8 @@ The most recent couple hundred from the last 60 days (currently) are shown
 
 ## Job ItemLine Info
 By clicking a Job number link (blue text) in Order Search it will load its order data and manuf lines then switch to this page.
-<img width="1480" height="901" alt="image" src="https://github.com/user-attachments/assets/ff3fd4eb-2b7c-424b-b991-07db37a33126" />
+<img width="1403" height="943" alt="image" src="https://github.com/user-attachments/assets/fe0342d7-1ee2-4841-81f9-e253c9643636" />
+
 
 ### Togglable Panels, Filters, and Line Editing
-<img width="1480" height="901" alt="image" src="https://github.com/user-attachments/assets/419b7790-0a20-47d7-bb49-f7dc0bd59b3f" />
+<img width="1403" height="943" alt="image" src="https://github.com/user-attachments/assets/051229ef-6fb3-4256-85b6-71f69724d368" />
