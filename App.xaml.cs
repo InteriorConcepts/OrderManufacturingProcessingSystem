@@ -13,11 +13,26 @@ namespace OMPS
     /// </summary>
     public partial class App : Application
     {
+        private static Mutex? _mutex = null;
+        public const string appName = "ICC_OrderManufacturingProcessingSystem";
+
         protected override void OnStartup(StartupEventArgs e)
         {
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
+
+            // Handle Single Instance
+            _mutex = new Mutex(true, appName, out bool createdNew);
+            if (!createdNew)
+            {
+                // Another instance is already running
+                MessageBox.Show("Another instance of the application is already running.", "Application Already Running", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                Application.Current.Shutdown();
+                return;
+            }
+
             Ext.ValidateAppSettings();
 
+            // Config & DB
             var res = SCH.SQLDatabaseConnection.Init();
             if (res.Item1 is false || res.Item2 is not null)
             {
@@ -37,6 +52,16 @@ namespace OMPS
 
             Ext.MainViewModel = new Main_ViewModel();
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            if (_mutex is null) return;
+            
+            _mutex.ReleaseMutex();
+            _mutex.Dispose();
+            
+            base.OnExit(e);
         }
     }
 
