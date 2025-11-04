@@ -39,11 +39,11 @@ namespace OMPS.Pages
             this.DataContext = this;
             //
             this.Refresher.Elapsed += Refresher_Elapsed;
-            //this.Refresher.Start();
+            this.Refresher.Start();
         }
 
         public uint infrequency = 0;
-        //public uint infrequentAltInterval = 60;
+        public uint infrequentAltInterval = 60;
         public void LoadData()
         {
             new Task(
@@ -55,26 +55,26 @@ namespace OMPS.Pages
                     Debug.WriteLine("GetEngChecks");
                     this.GetEngReleases();
                     Debug.WriteLine("GetEngReleases");
-                    this.GetEngArchive();
-                    Debug.WriteLine("GetEngArchive");
                     this.GetCncWorking();
                     Debug.WriteLine("GetCncWorking");
-                    //if (infrequency is 0 || infrequency == infrequentAltInterval)
-                    //{
-                    //infrequency = 0;
-                    //}
-                    //infrequency++;
                 },
                 TaskCreationOptions.DenyChildAttach
             ).Start();
-            Dispatcher.BeginInvoke(() =>
+            if (infrequency is 0 || infrequency == infrequentAltInterval)
             {
-                Debug.WriteLine("Infrequent home update");
-                this.GetNewOrders();
-                Debug.WriteLine("GetNewOrders");
-                this.GetEngWorking();
-                Debug.WriteLine("GetEngWorking");
-            }, System.Windows.Threading.DispatcherPriority.Loaded);
+                Dispatcher.BeginInvoke(() =>
+                {
+                    Debug.WriteLine("Infrequent home update");
+                    this.GetNewOrders();
+                    Debug.WriteLine("GetNewOrders");
+                    this.GetEngWorking();
+                    Debug.WriteLine("GetEngWorking");
+                    this.GetEngArchive();
+                    Debug.WriteLine("GetEngArchive");
+                }, System.Windows.Threading.DispatcherPriority.Loaded);
+            infrequency = 0;
+            }
+            infrequency++;
         }
 
         #region Events
@@ -213,16 +213,17 @@ namespace OMPS.Pages
             _newOrders = await this.LoadColorSetsAsync();
             OnPropertyChanged(nameof(NewOrders));
 #else
-            _newOrders.Clear();
             var now = DateTime.Now;
             //this.DataGrid_NewOrders.EndInit();
             var data_orders =
                 Ext.Queries.GetColorSets("%").
                     OrderBy(i => i.OrderDate);
+            List<RecentOrder> temp = [];
             foreach (var item in data_orders)
             {
-                _newOrders.Add(new() { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber });
+                temp.Add(new() { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber });
             }
+            _newOrders = temp;
             OnPropertyChanged(nameof(NewOrders));
 #endif
         }
@@ -249,15 +250,16 @@ namespace OMPS.Pages
                 }).ToListAsync();
             OnPropertyChanged(nameof(EngWorking));
 #else
-            _engWorking.Clear();
             var jobs = Ext.Queries.GetColorSets("%").Select(i => i.JobNbr);
             var colorSetDatas =
                 jobs.SelectMany(Ext.Queries.GetColorSet).
                 Where(i => i.Engined is false);
+            List<EngOrder> temp = [];
             foreach (var item in colorSetDatas)
             {
-                _engWorking.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
+                temp.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
             }
+            _engWorking = temp;
             OnPropertyChanged(nameof(EngWorking));
 #endif
         }
@@ -288,11 +290,7 @@ namespace OMPS.Pages
                     removed.Add(fsi);
                 }
             }
-            _localFolders.Clear();
-            for (short i = 0; i < temp.Count; i++)
-            {
-                _localFolders.Add(new(temp[i].Name, temp[i]));
-            }
+            _localFolders = [.. temp.Select(e => new EngArchiveEntry(e.Name, e))];
             if (added.Count is not 0 || removed.Count is not 0)
             {
                 OnPropertyChanged(nameof(LocalFolders));
@@ -304,19 +302,19 @@ namespace OMPS.Pages
         public const string EngCheck2Root = "H:\\engineering\\5. 2nd Check";
         public void GetEngChecks()
         {
-            _engCheck1.Clear();
-            _engCheck2.Clear();
-
             var dirs1 = new DirectoryInfo(EngCheck1Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var dirs2 = new DirectoryInfo(EngCheck2Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            List<EngArchiveEntry> temp = [];
             foreach (var entry in dirs1)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                _engCheck1.Add(new(entry.Name, entry));
+                temp.Add(new(entry.Name, entry));
             }
+            _engCheck1 = [.. temp];
+            temp.Clear();
             OnPropertyChanged(nameof(EngCheck1));
             foreach (var entry in dirs2)
             {
@@ -324,8 +322,9 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                _engCheck2.Add(new(entry.Name, entry));
+                temp.Add(new(entry.Name, entry));
             }
+            _engCheck2 = temp;
             OnPropertyChanged(nameof(EngCheck2));
         }
 
@@ -335,15 +334,16 @@ namespace OMPS.Pages
             _engReleases.Clear();
             var userDirs = new DirectoryInfo(EngReleaseDir).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var jobDirs = userDirs.SelectMany(d => d.EnumerateDirectories("*", SearchOption.TopDirectoryOnly));
-
+            List<DirEntryWithParentName> temp = [];
             foreach (var entry in jobDirs)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                _engReleases.Add(new(entry.Name, entry));
+                temp.Add(new(entry.Name, entry));
             }
+            _engReleases = temp;
             OnPropertyChanged(nameof(EngReleases));
         }
 
@@ -352,8 +352,8 @@ namespace OMPS.Pages
         public void GetEngArchive()
         {
             this.EngArchiveCurrentPath ??= new(EngArchiveRoot);
-            _engArchive.Clear();
             var dirs = EngArchiveCurrentPath.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly);
+            List<EngArchiveEntry> temp = [];
             foreach (var entry in dirs)
             {
                 if (entry is FileInfo && !entry.Name.EndsWith(".zip"))
@@ -364,8 +364,9 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                _engArchive.Add(new(entry.Name, entry));
+                temp.Add(new(entry.Name, entry));
             }
+            _engArchive = temp;
             OnPropertyChanged(nameof(EngArchive));
         }
 
@@ -377,14 +378,17 @@ namespace OMPS.Pages
             _cncPnlEntries.Clear();
             var wksEntries = new DirectoryInfo(CncWorkingWksRoot).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var pnlEntries = new DirectoryInfo(CncWorkingPnlRoot).GetDirectories("*", SearchOption.TopDirectoryOnly);
+            List<CncEntry> temp = [];
             foreach (var entry in wksEntries)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                _cncWksEntries.Add(new(entry) { Name = entry.Name });
+                temp.Add(new(entry) { Name = entry.Name });
             }
+            _cncWksEntries = [.. temp];
+            temp.Clear();
             OnPropertyChanged(nameof(CncWksEntries));
             foreach (var entry in pnlEntries)
             {
@@ -392,8 +396,9 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                _cncPnlEntries.Add(new(entry) { Name = entry.Name });
+                temp.Add(new(entry) { Name = entry.Name });
             }
+            _cncPnlEntries = temp;
             OnPropertyChanged(nameof(CncPnlEntries));
         }
 

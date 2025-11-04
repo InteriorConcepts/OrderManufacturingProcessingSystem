@@ -11,10 +11,10 @@
         xmlns:Ext="clr-namespace:OMPS" Width="1025" Height="600"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         UseLayoutRounding="True" Closing="MainWindow_Closing"
-        Title="MainWindow" MinHeight="600" MinWidth="1025" BorderBrush="Transparent" Background="Transparent" AllowsTransparency="True"
-        BorderThickness="0"
-        Style="{StaticResource MaterialDesignWindow}" WindowStyle="None" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen"
-        StateChanged="Window_StateChanged">
+        Title="MainWindow" MinHeight="600" MinWidth="1025" Background="Transparent" AllowsTransparency="False"
+        Style="{StaticResource MaterialDesignWindow}" WindowStartupLocation="CenterScreen"
+        Icon="/Images/Interior-Concepts-Logo.png"
+        StateChanged="Window_StateChanged" >
     <Window.Resources>
         
     </Window.Resources>
@@ -22,17 +22,8 @@
         <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
     </Window.CacheMode>
 
-    <!--
-    <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" NonClientFrameEdges="None" ResizeBorderThickness="4"/>
-    </WindowChrome.WindowChrome>
-    -->
-
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo>
-            <TaskbarItemInfo.Overlay>
-                <DrawingImage>/Images/Interior-Concepts-Logo.png</DrawingImage>
-            </TaskbarItemInfo.Overlay>
         </TaskbarItemInfo>
     </Window.TaskbarItemInfo>
     <!--
@@ -40,7 +31,7 @@
         <viewModel:Main_ViewModel/>
     </Window.DataContext>
     -->
-    <Border CornerRadius="6" Padding="1">
+    <Border CornerRadius="6" Padding="0">
         <Border.Background>
             <LinearGradientBrush EndPoint="1,1" StartPoint="0,0" SpreadMethod="Pad">
                 <GradientStop Color="#FF5DBB62" Offset="1"/>
@@ -210,7 +201,7 @@
                                     </LinearGradientBrush>
                                 </TextBox.Background>
                             </TextBox>
-                            <StackPanel Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Margin="0 2 0 0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Panel.ZIndex="9">
+                            <StackPanel Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Visibility="Collapsed" Margin="0 2 0 0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Stretch" Panel.ZIndex="9">
                                 <Button x:Name="Btn_WinMin" Click="Btn_WinMin_Click" Style="{StaticResource MaterialDesignFlatButton}" Foreground="#A0A0A0" Margin="0" Padding="0"
                                             Width="32"
                                             VerticalAlignment="Top" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">

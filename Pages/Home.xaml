@@ -481,7 +481,7 @@
                                 </Grid>
                             </materialDesign:ColorZone>
                         </Border>
-                        <Border MinWidth="340" Width="Auto" Height="244" Visibility="Collapsed"
+                        <Border MinWidth="340" Width="Auto" Height="244"
                             BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
                             Margin="8" Padding="6 4" CornerRadius="1">
                             <Border.Effect>

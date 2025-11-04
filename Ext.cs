@@ -39,6 +39,17 @@ namespace OMPS
     public static class Ext
     {
         #region "App.config"
+        public enum AppConfigKey
+        {
+            FontSize,
+            Notify_local,
+            Notify_engcheck1,
+            Notify_engcheck2,
+            Notify_engrelease,
+            Notify_cncwks,
+            Notify_cncpnl,
+            EngOrder_
+        }
         internal static void ValidateAppSettings()
         {
             try
@@ -69,6 +80,30 @@ namespace OMPS
             catch (ConfigurationErrorsException)
             {
                 MessageBox.Show("Error reading AppSettings");
+            }
+        }
+
+        internal static (bool success, T? value) ReadSetting<T>(AppConfigKey key)
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                if (appSettings[key.ToString()] is not string str)
+                {
+                    return (false, default(T));
+                }
+                else
+                {
+                    if (Convert.ChangeType(str, typeof(T)) is not object converted || converted is null)
+                    {
+                        return (false, default(T));
+                    }
+                    return (true, (T)converted);
+                }
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return (false, default(T));
             }
         }
         internal static (bool success, string value) ReadSetting(string key)

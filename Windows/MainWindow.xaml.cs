@@ -57,22 +57,6 @@ namespace OMPS.Windows
             this.Loaded += MainWindow_Loaded;
         }
 
-        #region Dll Imports
-        // Import SendMessage and FindWindow from user32.dll
-        [LibraryImport("user32.dll", SetLastError = true)]
-        internal static partial IntPtr SendMessage(
-            IntPtr hWnd,
-            uint Msg,
-            IntPtr wParam,
-            IntPtr lParam);
-
-        [LibraryImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.SysInt)]
-        internal static partial IntPtr FindWindow(
-            [MarshalAs(UnmanagedType.LPWStr)] string? lpClassName,
-            [MarshalAs(UnmanagedType.LPWStr)] string? lpWindowName);
-        #endregion
-
         #region Fields
         public string Title_Main_Prefix = "Production Bridge";
 
@@ -134,6 +118,7 @@ namespace OMPS.Windows
             this.ver.Content = $"v{Ext.ApplicationVersionStr}";
             (this.ver.ToolTip as ToolTip)?.Content = $"Version: {Ext.ApplicationVersionStr}\nBuild date: {Ext.ApplicationBuildDateStr}";
             Ext.MainViewModel.CurrentPage = PageTypes.Home;
+            MessageBox.Show(SystemParameters.WindowGlassColor.ToString());
             //if (MainViewModel.AddNewPage(PageTypes.OrderSearch) is not string tag) return;
             //(MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
         }
@@ -196,18 +181,31 @@ namespace OMPS.Windows
 
         private void Window_StateChanged(object sender, System.EventArgs e)
         {
+            /*
             switch (this.WindowState)
             {
                 case WindowState.Maximized:
-                    this.Grid_Main.Margin = new(7, 7, 7, 7);
+                    this.WindowStyle = WindowStyle.None;
+                    this.WindowState = WindowState.Normal;
+                    this.Top = 0;
+                    this.Left = 0;
+                    this.Width = SystemParameters.WorkArea.Width;
+                    this.Height = SystemParameters.WorkArea.Height;
+                    //this.AllowsTransparency = false;
+                    //Thread.Sleep(500);
+                    //AllowsTransparency = false;
+                    //this.Grid_Main.Margin = new(7, 7, 7, 7);
                     break;
                 case WindowState.Minimized:
 
                     break;
                 case WindowState.Normal:
-                    this.Grid_Main.Margin = new(0);
+                    //this.Grid_Main.Margin = new(0);
+                    //AllowsTransparency = true;
+                    //this.AllowsTransparency = true;
                     break;
             }
+            */
         }
 
         private void Btn_WinMin_Click(object sender, RoutedEventArgs e)
@@ -221,12 +219,12 @@ namespace OMPS.Windows
             this.BeginInit();
             if (this.WindowState == WindowState.Maximized)
             {
-                this.WindowState = WindowState.Normal;
+                SystemCommands.RestoreWindow(this);
                 //SystemCommands.RestoreWindow(this);
             }
             else
             {
-                this.WindowState = WindowState.Maximized;
+                SystemCommands.MaximizeWindow(this);
                 //SystemCommands.MaximizeWindow(this);
             }
             this.EndInit();
