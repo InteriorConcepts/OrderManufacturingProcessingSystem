@@ -18,10 +18,10 @@ namespace OMPS
         private readonly int _port;
         private bool _isRunning;
 
-        public event EventHandler<string> MessageReceived;
-        public event EventHandler<Exception> ErrorOccurred;
-        public event EventHandler ClientConnected;
-        public event EventHandler ClientDisconnected;
+        public event EventHandler<string>? MessageReceived;
+        public event EventHandler<Exception>? ErrorOccurred;
+        public event EventHandler? ClientConnected;
+        public event EventHandler? ClientDisconnected;
 
         public bool isDisposing = false;
 

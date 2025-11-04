@@ -49,18 +49,6 @@ namespace OMPS.viewModel
 
     public class Main_ViewModel : ObservableObject
     {
-        public MainWindow ParentWin
-        {
-            get;
-            set
-            {
-                field = value;
-                this.OrderSearch_VM?.ParentWindow = value;
-                //this.EngOrder_VM?.ParentWindow = value;
-                this.Login_VM?.ParentWindow = value;
-            }
-        } = Ext.MainWindow;
-
 
         public bool WidgetMode {
             get;
@@ -68,21 +56,21 @@ namespace OMPS.viewModel
             {
                 if (field == value) return;
                 field = value;
-                this.ParentWin.Spnl_FrameTabs.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                //this.ParentWin.statusbar.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                ((UIElement)this.ParentWin.statusbar.Parent).Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                this.ParentWin.Btn_Home.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                this.ParentWin.Btn_Back.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                this.ParentWin.Btn_Chat.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                this.ParentWin.Btn_Settings.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                this.ParentWin.Btn_ToggleSideNav.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
-                //this.ParentWin.MinHeight = 0;
-                //this.ParentWin.MinWidth = 0;
-                this.ParentWin.MinHeight = (value is false ? 600 : 0);
-                this.ParentWin.MinWidth = (value is false ? 1025 : 0);
-                this.ParentWin.Height = (value is false ? 620 : 620);
-                this.ParentWin.Width = (value is false ? 1025 : 550);
-                this.ParentWin.ResizeMode = (value is false ? ResizeMode.CanResizeWithGrip : ResizeMode.CanResize);
+                Ext.MainWindow.Spnl_FrameTabs.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                //Ext.MainWindow.statusbar.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                ((UIElement)Ext.MainWindow.statusbar.Parent).Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                Ext.MainWindow.Btn_Home.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                Ext.MainWindow.Btn_Back.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                Ext.MainWindow.Btn_Chat.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                Ext.MainWindow.Btn_Settings.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                Ext.MainWindow.Btn_ToggleSideNav.Visibility = (value is false ? Visibility.Visible : Visibility.Collapsed);
+                //Ext.MainWindow.MinHeight = 0;
+                //Ext.MainWindow.MinWidth = 0;
+                Ext.MainWindow.MinHeight = (value is false ? 600 : 0);
+                Ext.MainWindow.MinWidth = (value is false ? 1025 : 0);
+                Ext.MainWindow.Height = (value is false ? 620 : 620);
+                Ext.MainWindow.Width = (value is false ? 1025 : 550);
+                Ext.MainWindow.ResizeMode = (value is false ? ResizeMode.CanResizeWithGrip : ResizeMode.CanResize);
             }
         } = false;
 
@@ -224,13 +212,13 @@ namespace OMPS.viewModel
             }
         } = UrlBase;
 
-        public Home Home_VM { get; set; }
-        public Login Login_VM { get; set; }
-        public OrderSearch OrderSearch_VM { get; set; }
-        public EngOrder EngOrder_VM { get; set; }
-        public QuoteOrder QuoteOrder_VM { get; set; }
-        public ProductCatalogSearch ProductCatalogSearch_VM { get; set; }
-        public ProductCatalogDetails ProductCatalogDetails_VM { get; set; }
+        public Home? Home_VM { get; set; }
+        public Login? Login_VM { get; set; }
+        public OrderSearch? OrderSearch_VM { get; set; }
+        public EngOrder? EngOrder_VM { get; set; }
+        public QuoteOrder? QuoteOrder_VM { get; set; }
+        public ProductCatalogSearch? ProductCatalogSearch_VM { get; set; }
+        public ProductCatalogDetails? ProductCatalogDetails_VM { get; set; }
 
         public bool Home_IsSelected { get => this.CurrentPage is PageTypes.Home; }
         public bool Login_IsSelected { get => this.CurrentPage is PageTypes.Login; }
@@ -291,7 +279,7 @@ namespace OMPS.viewModel
                 field = value;
                 OnPropertyChanged();
                 this.UpdateUrl();
-                this.WidgetMode = value is PageTypes.Login;
+                this.WidgetMode = (value is PageTypes.Login);
                 ToggleCurrentContentControl(Visibility.Visible);
                 RunPageDefaultFirstBehaviour(value);
                 OnPropertyChanged(this.PreviousPage + "_IsSelected");
@@ -334,7 +322,7 @@ namespace OMPS.viewModel
                 PageTypes.Home => "",
                 PageTypes.Login => "",
                 PageTypes.OrderSearch => "",
-                PageTypes.EngOrder => $"?job={this.EngOrder_VM.JobNbr}&tab={this.EngOrder_VM.dpnl_ViewsBar.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked is true)?.Tag}",
+                PageTypes.EngOrder => $"?job={this.EngOrder_VM?.JobNbr}&tab={this.EngOrder_VM?.dpnl_ViewsBar.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked is true)?.Tag}",
                 PageTypes.QuoteOrder => "",
                 PageTypes.ProductCatalogSearch => "",
                 PageTypes.ProductCatalogDetails => "",
@@ -347,21 +335,21 @@ namespace OMPS.viewModel
             switch (pageType)
             {
                 case PageTypes.Home:
-                    this.Home_VM.LoadData();
+                    this.Home_VM?.LoadData();
                     break;
                 case PageTypes.Login:
                     break;
                 case PageTypes.OrderSearch:
                     Debug.WriteLine("Load Orders");
-                    if (this.OrderSearch_VM.ColorSetInfos?.Count is not 0) return;
-                    this.OrderSearch_VM.LoadRecentOrders();
+                    if (this.OrderSearch_VM?.ColorSetInfos?.Count is not 0) return;
+                    this.OrderSearch_VM?.LoadRecentOrders();
                     break;
                 case PageTypes.EngOrder:
                     break;
                 case PageTypes.QuoteOrder:
                     break;
                 case PageTypes.ProductCatalogSearch:
-                    this.ProductCatalogSearch_VM.LoadProducts();
+                    this.ProductCatalogSearch_VM?.LoadProducts();
                     break;
                 case PageTypes.ProductCatalogDetails:
                     break;
@@ -374,34 +362,31 @@ namespace OMPS.viewModel
         {
             (this.CurrentPage switch
             {
-                PageTypes.Home => this.ParentWin.CC_Landing,
-                PageTypes.Login => this.ParentWin.CC_Login,
-                PageTypes.OrderSearch => this.ParentWin.CC_OrderSearch,
-                PageTypes.EngOrder => this.ParentWin.CC_EngOrder,
-                PageTypes.QuoteOrder => this.ParentWin.CC_QuoteOrder,
-                PageTypes.ProductCatalogSearch => this.ParentWin.CC_ProductCatalogSearch,
-                PageTypes.ProductCatalogDetails => this.ParentWin.CC_ProductCatalogDetails,
+                PageTypes.Home => Ext.MainWindow.CC_Landing,
+                PageTypes.Login => Ext.MainWindow.CC_Login,
+                PageTypes.OrderSearch => Ext.MainWindow.CC_OrderSearch,
+                PageTypes.EngOrder => Ext.MainWindow.CC_EngOrder,
+                PageTypes.QuoteOrder => Ext.MainWindow.CC_QuoteOrder,
+                PageTypes.ProductCatalogSearch => Ext.MainWindow.CC_ProductCatalogSearch,
+                PageTypes.ProductCatalogDetails => Ext.MainWindow.CC_ProductCatalogDetails,
                 _ => null
             })?.Visibility = state;
         }
 
         public Main_ViewModel()
         {
-            //this.EngOrder_VM.JobNbr = "J000000123";
             this.WidgetMode = false;
-            //this.CurrentPage = PageTypes.OrderSearch;
         }
 
         public void Init()
         {
-            this.ParentWin = Ext.MainWindow;
-            this.Home_VM = new(this.ParentWin);
-            this.Login_VM = new(this.ParentWin);
-            this.OrderSearch_VM = new() { ParentWindow = this.ParentWin };
-            this.EngOrder_VM = new() { ParentWindow = this.ParentWin };
-            this.QuoteOrder_VM = new(this.ParentWin);
-            this.ProductCatalogSearch_VM = new() { ParentWindow = this.ParentWin };
-            this.ProductCatalogDetails_VM = new(this.ParentWin);
+            this.Home_VM = new();
+            this.Login_VM = new();
+            this.OrderSearch_VM = new() { };
+            this.EngOrder_VM = new() { };
+            this.QuoteOrder_VM = new();
+            this.ProductCatalogSearch_VM = new() { };
+            this.ProductCatalogDetails_VM = new();
         }
     }
 }

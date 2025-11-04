@@ -53,26 +53,11 @@ namespace OMPS.Pages
 
 
         #region Properties
-        public Main_ViewModel MainViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
 
-        public double DataGridFontSize
-        {
-            get => MainViewModel.FontSize_Base;
-        }
-        internal MainWindow ParentWindow { get; set
-            {
-                field = value;
-                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
-                {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
-                    //this.datagrid_orders.UpdateLayout();
-                    OnPropertyChanged(nameof(DataGridFontSize));
-                });
-            }
-        }
+        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
+        internal static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
+
 #if NEWDBSQL
         public List<Models.Order.AIcColorSet> _colorSetInfos = [];
         public IReadOnlyCollection<Models.Order.AIcColorSet> ColorSetInfos => this._colorSetInfos;
@@ -172,25 +157,7 @@ namespace OMPS.Pages
             }
         }
 
-        private Point GetColumnPositionSimple(DataGrid grid, int columnIndex)
-        {
-            var header = FindVisualChild<DataGridColumnHeadersPresenter>(grid)
-                ?.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridColumnHeader;
-
-            return header?.TransformToAncestor(grid).Transform(new Point(0, 0)) ?? new Point(0, 0);
-        }
-
-        private T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T result) return result;
-                var found = FindVisualChild<T>(child);
-                if (found != null) return found;
-            }
-            return null;
-        }
+        
 #endregion
 
 
@@ -248,15 +215,15 @@ namespace OMPS.Pages
 #if NEWDBSQL
             if (datagrid_orders.SelectedItem is not Models.Order.AIcColorSet item) return;
             if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
-            Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
+            Ext.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
 #else
             if (datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
             if (!Ext.IsJobNumValid(item.JobNbr)) return;
             //Ext.MainWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //Ext.MainWindow.Page_EngOrder.JobNbr = item.JobNbr;
-            Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+            Ext.MainViewModel.EngOrder_VM?.JobNbr = item.JobNbr;
 #endif
-            Ext.MainWindow.MainViewModel.CurrentPage = PageTypes.EngOrder;
+            Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
         }
 
         private void OrdersViewSource_Filter(object sender, FilterEventArgs e)
@@ -302,9 +269,7 @@ namespace OMPS.Pages
             this.LoadRecentOrders();
         }
 
-        IEnumerable<DirectoryInfo>? JobFoldersC = new DirectoryInfo("C:\\").MultiEnumerateDirectories("*", SearchOption.TopDirectoryOnly);
-        IEnumerable<DirectoryInfo>? JobFoldersH = new DirectoryInfo("H:\\Engineering").MultiEnumerateDirectories("*", SearchOption.AllDirectories);
-        public void SetupOrderRowHeader(DataGridRow row)
+        public static void SetupOrderRowHeader(DataGridRow row)
         {
 
 #if NEWDBSQL
@@ -315,8 +280,8 @@ namespace OMPS.Pages
 #else
             if (row.Item is not example_queries_GetColorSetsResult item) return;
 
-            var matchesC = JobFoldersC?.FirstOrDefault(d => d.Name == item.JobNbr);
-            var matchesH = JobFoldersH?.FirstOrDefault(d => d.Name == item.JobNbr);
+            var matchesC = Ext.JobFoldersC?.FirstOrDefault(d => d.Name == item.JobNbr);
+            var matchesH = Ext.JobFoldersH?.FirstOrDefault(d => d.Name == item.JobNbr);
 #endif
 
             bool foundC = matchesC is not null,
@@ -353,7 +318,7 @@ namespace OMPS.Pages
             }
 
             //row.ApplyTemplate();
-            var rowHeader = FindVisualChild<DataGridRowHeader>(row);
+            var rowHeader = Ext.FindVisualChild<DataGridRowHeader>(row);
             rowHeader?.ApplyTemplate();
             var grid = rowHeader?.Template.FindName("Grid_RowHeader", rowHeader) as Grid;
             var foo = grid?.Children.OfType<UIElement>();
@@ -363,7 +328,7 @@ namespace OMPS.Pages
                 if (dir is null) continue;
                 var mi = new MenuItem
                 {
-                    Header = TruncatePath(dir.FullName),
+                    Header = Ext.TruncatePath(dir.FullName),
                     FontSize = 12,
                     Tag = dir,
                     ContextMenu = new() { }
@@ -474,46 +439,7 @@ namespace OMPS.Pages
             */
         }
 
-        public static string TruncatePath(string path, ushort maxLength = 20)
-        {
-            string[] splits = [.. path.Split("\\").SkipLast(1)];
-            var count = (ushort)splits.Sum(s => s.Length);
-            if (count <= maxLength)
-            {
-                return path;
-            }
-            var start = new StringBuilder(255, 1024);
-            ushort curStartLen = 0,
-                   startSplitsUsed = 0;
-            foreach (var split in splits)
-            {
-                if (curStartLen + split.Length > (maxLength))
-                {
-                    break;
-                }
-                if (start.Length is not 0)
-                {
-                    start.Append('\\');
-                }
-                start.Append(split);
-                startSplitsUsed++;
-                curStartLen += (ushort)split.Length;
-            }
-            if (splits.Length == startSplitsUsed)
-            {
-                return start.ToString();
-            }
-            else if (splits.Length - startSplitsUsed == 1)
-            {
-                return start.ToString() + "\\" + splits[^1];
-            }
-            else
-            {
-                return start + "\\...\\" + splits[^1];
-            }
-        }
-
-        public void SetOrdersRowHeader(DataGridRow row)
+        public static void SetOrdersRowHeader(DataGridRow row)
         {
             //return;
 #if NEWDBSQL
@@ -527,7 +453,7 @@ namespace OMPS.Pages
                 return;
             } else
             {
-                //this.SetupOrderRowHeader(row);
+                SetupOrderRowHeader(row);
             }
         }
 
@@ -552,33 +478,33 @@ namespace OMPS.Pages
             {
 #if NEWDBSQL
                 if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
-                Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
+                Ext.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
 #else
                 if (!Ext.IsJobNumValid(item.JobNbr)) return;
-                Ext.MainWindow.MainViewModel.EngOrder_VM.JobNbr = item.JobNbr;
+                Ext.MainViewModel.EngOrder_VM?.JobNbr = item.JobNbr;
 #endif
-                Ext.MainWindow.MainViewModel.CurrentPage = PageTypes.EngOrder;
+                Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
             {
-                Ext.MainWindow.MainViewModel.QuoteOrder_VM.QuoteNbr = item.QuoteNbr;
-                Ext.MainWindow.MainViewModel.CurrentPage = PageTypes.QuoteOrder;
+                Ext.MainViewModel.QuoteOrder_VM?.QuoteNbr = item.QuoteNbr;
+                Ext.MainViewModel.CurrentPage = PageTypes.QuoteOrder;
             }
             //Ext.MainWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
             //Ext.MainWindow.Page_EngOrder.JobNbr = item.JobNbr;
         }
-#endregion
 
         private void datagrid_orders_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            
+
         }
 
         private void datagrid_orders_InitializingNewItem(object sender, InitializingNewItemEventArgs e)
         {
 
         }
+        #endregion
 
         public void Dispose()
         {

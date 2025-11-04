@@ -28,6 +28,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.ApplicationModel.Background;
 using Windows.System.RemoteSystems;
 using SCH = SQL_And_Config_Handler;
 
@@ -92,7 +93,7 @@ namespace OMPS.Pages
 
 
         #region Properties
-        public example_queries_GetItemLinesByJobResult CurrentItem
+        public example_queries_GetItemLinesByJobResult? CurrentItem
         {
             get => field;
             set
@@ -103,27 +104,9 @@ namespace OMPS.Pages
                 OnPropertyChanged(nameof(CurrentItem));
             }
         }
-        public double DataGridFontSize
-        {
-            get => MainViewModel.FontSize_Base;
-        }
-        public Main_ViewModel MainViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
-        public MainWindow? ParentWindow
-        {
-            get; set
-            {
-                field = value;
-                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
-                {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
-                    //this.datagrid_orders.UpdateLayout();
-                    OnPropertyChanged(nameof(DataGridFontSize));
-                });
-            }
-        }
+        public static double DataGridFontSize { get => Ext.MainViewModel.FontSize_Base; }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
 
         public const short DELAY_HEADER_REFRESH = 10000;
 
@@ -240,8 +223,9 @@ namespace OMPS.Pages
             string tab = "";
             try
             {
+                this.LastCell = null;
                 this.Pending_LineChangesCount = 0;
-                IsLoadingJobData = true;
+                this.IsLoadingJobData = true;
                 this.CurrentGrid?.Visibility = Visibility.Collapsed;
                 await this.LoadColorSetData(job);
                 if (this.RadioBtn_View_QPO.IsChecked is true)
@@ -269,7 +253,7 @@ namespace OMPS.Pages
                     await this.LoadManufParts(job);
                 }
                 this.CurrentGrid?.Visibility = Visibility.Visible;
-                this.ParentWindow?.SetUrlRelPath($"?job={job}&tab={tab}");
+                Ext.MainViewModel?.SetUrlRelPath($"?job={job}&tab={tab}");
             }
             catch (Exception ex)
             {
@@ -306,12 +290,10 @@ namespace OMPS.Pages
 
         public async Task LoadQPartsOrdered(string job)
         {
-
         }
 
         public async Task LoadQItemsOrdered(string job)
         {
-
         }
 
         public async Task LoadManufData(string job)
@@ -346,7 +328,7 @@ namespace OMPS.Pages
                         this.MfgItemLines.Add(data_mfglines[i]);
                     }
                     //this.datagrid_main.EndInit();
-                    Ext.MainWindow.SetTabTitle($"{this.JobNbr}");
+                    Ext.SetTabTitle($"{this.JobNbr}");
                 });
             });
 #endif
@@ -365,7 +347,6 @@ namespace OMPS.Pages
 
         public async Task LoadManufParts(string job)
         {
-
         }
 
         public void ToggleSideGrid()
@@ -398,42 +379,6 @@ namespace OMPS.Pages
             */
         }
 
-        public bool MfgItems_Filter(example_queries_GetItemLinesByJobResult item, string filterText)
-        {
-
-            var properties = typeof(example_queries_GetItemLinesByJobResult).GetProperties();
-
-            string[] filterGroups = filterText.Split(' ');
-            string[][] groupFilters = [.. filterGroups.Select(g => g.Split('+', StringSplitOptions.RemoveEmptyEntries))];
-
-            int i = 0;
-            foreach (var group in groupFilters)
-            {
-                List<string> groupReqd = [.. group];
-                foreach (var filter in group)
-                {
-                    foreach (var property in properties)
-                    {
-                        var value = property.GetValue(item)?.ToString();
-                        //Debug.WriteLine(filter + " == " + value);
-                        if (value is not null && value.ToLower().Contains(filter))
-                        {
-                            groupReqd.Remove(filter);
-                            if (groupReqd.Count is 0)
-                            {
-                                //e.Accepted = true;
-                                return true;
-                            }
-                        }
-                    }
-                    i++;
-                }
-            }
-
-            // No match found across columns
-            //e.Accepted = false;
-            return false;
-        }
 
         public enum PropUpdateResult
         {
@@ -441,80 +386,6 @@ namespace OMPS.Pages
             Error,
             NoPropOrCantWrite,
             SameValue
-        }
-
-        private (string, PropUpdateResult, Type?, object?) UpdateProperty(object dataItem, string propertyName, object value)
-        {
-            var property = dataItem.GetType().GetProperty(propertyName);
-            if (property != null && property.CanWrite)
-            {
-                try
-                {
-                    var prevValue = property.GetValue(dataItem);
-                    var convertedValue = Convert.ChangeType(value, property.PropertyType);
-                    //Debug.WriteLine($"{prevValue} | {convertedValue}");
-                    if (!((object?)prevValue as object)?.Equals((object?)convertedValue as object) ?? true)
-                    {
-                        property.SetValue(dataItem, convertedValue);
-                        return (propertyName, PropUpdateResult.Worked, property.PropertyType, convertedValue);
-                    } else
-                    {
-                        return (propertyName, PropUpdateResult.SameValue, property.PropertyType, null);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Handle conversion errors
-                    Debug.WriteLine($"Error updating property: {ex.Message}");
-                    return (propertyName, PropUpdateResult.Error, property.PropertyType, null);
-                }
-            } else
-            {
-                return (propertyName, PropUpdateResult.NoPropOrCantWrite, null, null);
-            }
-        }
-
-        public bool UpdateItemLineData(Guid manufid, example_queries_GetItemLinesByJobResult item)
-        {
-            if (item is null) return false;
-            var res = Ext.Queries.SetItemLineByJobAndManufID(
-                item.PartNbr, item.ItemNbr, item.IDNbr, item.CatalogNbr, item.Qty, item.Type,
-                item.SubType, item.Description, item.UofM, item.ItemFin, item.ItemCore, item.ColorBy,
-                item.Dept, item.WorkCtr, item.ScrapFactor, item.SizeDivisor, item.Depth, item.Width, item.Fabwidth,
-                item.Height, item.FabHeight, item.Assembled, item.AssyNbr, item.TileIndicator, item.Explode,
-                item.Option01, item.Option02, item.Option03, item.Option04, item.Option05, item.Option06,
-                item.Option07, item.Option08, item.Option09, item.Option10, item.Usertag1, item.CoreSize,
-                item.Multiplier, item.Area, item.JobNbr, manufid
-            );
-            if (res is null) return false;
-            return true;
-        }
-
-        public bool CopyItemLineData(Guid manufid, example_queries_GetItemLinesByJobResult item)
-        {
-            if (item is null) return false;
-            var res = Ext.Queries.CopyManufItemLineByManufID(" (COPY)", manufid);
-            if (res is null) return false;
-            return true;
-        }
-
-        public async Task<bool> DeleteItemLine(Guid manufid, string job)
-        {
-#if NEWDBSQL
-            using (var ctx = new Models.Order.OrderDbCtx())
-            {
-                var txt = await ctx.AIcIceManufs
-                    .Where(p => p.IceManufId == manufid && p.JobNbr == job)
-                    .AsSingleQuery()
-                    .ExecuteDeleteAsync();
-                if (txt is not 1) return false;
-                return true;
-            }
-#else
-            var res = Ext.Queries.DeleteManufItemLineByManufID(job, manufid);
-            if (res is null) return false;
-            return true;
-#endif
         }
 
         public void ToggleFiltersPanel()
@@ -544,27 +415,6 @@ namespace OMPS.Pages
                 Brushes.DodgerBlue;
         }
 
-        public async Task RunExternal(ProcessStartInfo startInfo)
-        {
-            //MessageBox.Show(startInfo.Arguments);
-            var proc = Process.Start(startInfo);
-            if (proc is null) return;
-            proc.ErrorDataReceived += (ss, ee) =>
-            {
-                Debug.WriteLine("ERR:\n" + ee.Data);
-            };
-            proc.OutputDataReceived += (ss, ee) =>
-            {
-                Debug.WriteLine("OUT:\n" + ee.Data);
-            };
-            proc.Exited += (ss, ee) =>
-            {
-
-            };
-            CancellationToken t = new();
-            await proc.WaitForExitAsync(t);
-            proc.Dispose();
-        }
 
         public void FocusFieldFromRowCell()
         {
@@ -603,7 +453,7 @@ namespace OMPS.Pages
             if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> inputs) return;
             foreach (var item in inputs)
             {
-                var dpinfo = DpValueFromInputType(item);
+                var dpinfo = Ext.DpValueFromInputType(item);
                 if (dpinfo is null) continue;
                 var be = item.GetBindingExpression(dpinfo.Value.dp);
                 if (be is null) continue;
@@ -735,7 +585,7 @@ namespace OMPS.Pages
                 e.Accepted = true;
                 return;
             }
-            e.Accepted = this.MfgItems_Filter(item, filterText);            
+            e.Accepted = Ext.MfgItems_Filter(item, filterText);            
         }
 
         private void Btn_FilterClose_Click(object sender, RoutedEventArgs e)
@@ -814,7 +664,7 @@ namespace OMPS.Pages
         }
 
 
-        private async void Btn_AcceptItemLineEdits_Click(object sender, RoutedEventArgs e)
+        private async void Btn_AcceptItemLineEdits_Click(object? sender, RoutedEventArgs e)
         {
             if (sender is not null)
             {
@@ -861,7 +711,7 @@ namespace OMPS.Pages
             {
                 var lbl = lbls[i];
                 i++;
-                var dpinfo = DpValueFromInputType(item);
+                var dpinfo = Ext.DpValueFromInputType(item);
                 if (dpinfo is not (DependencyProperty, object) dpinfoval) continue;
                 var binding = item.GetBindingExpression(dpinfoval.dp);
                 var propertyName = binding.ParentBinding.Path.Path;
@@ -872,7 +722,7 @@ namespace OMPS.Pages
                     continue;
                 }
                 this.datagrid_main.BeginEdit();
-                var propRes = UpdateProperty(line, propertyName, dpinfoval.value);
+                var propRes = Ext.UpdateProperty(line, propertyName, dpinfoval.value);
                 this.datagrid_main.CommitEdit();
                 switch (propRes.Item2)
                 {
@@ -892,30 +742,36 @@ namespace OMPS.Pages
                 }
             }
             if (changes.Count is 0) return;
-            this.UpdateItemLineData(line.IceManufID, line);
+            Ext.UpdateItemLineData(line.IceManufID, line);
             Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Item line changes saved").Show();
             Debug.WriteLine(string.Join("\n", changes.Select(c => $"{c.Item1}: {c.Item3} = {c.Item4}")));
 #endif
         }
 
-        private void Btn_RevertItemLineEdits_Click(object sender, RoutedEventArgs e)
+        private void Btn_RevertItemLineEdits_Click(object? sender, RoutedEventArgs e)
         {
-            if (Ext.PopupConfirmation("Discard changes made to item line? All unsaved changes will be lost.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) is not MessageBoxResult.Yes) return;
+            if (sender is not null)
+            {
+                if (Ext.PopupConfirmation("Discard changes made to item line? All unsaved changes will be lost.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning) is not MessageBoxResult.Yes) return;
+            }
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             this.RevertEditControls();
             Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Item line changes discarded").Show();
             this.Pending_LineChangesCount = 0;
         }
 
-        private async void Btn_DeleteItemLine_Click(object sender, RoutedEventArgs e)
+        private async void Btn_DeleteItemLine_Click(object? sender, RoutedEventArgs e)
         {
-            if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
+            if (sender is not null)
+            {
+                if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
+            }
 #if NEWDBSQL
             if (this.datagrid_main.SelectedItem is not Models.Order.AIcIceManuf line) return;
             var res = await this.DeleteItemLine(line.IceManufId, line.JobNbr);
 #else
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
-            var res = await this.DeleteItemLine(line.IceManufID, line.JobNbr);
+            var res = await Ext.DeleteItemLine(line.IceManufID, line.JobNbr);
 #endif
             if (res)
             {
@@ -937,7 +793,7 @@ namespace OMPS.Pages
         {
             if (Ext.PopupConfirmation("Are you sure you'd like to create a new line using the current line's values? New line will have \"(COPY)\" append to the end of its description", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
-            var res = this.CopyItemLineData(line.IceManufID, line);
+            var res = Ext.CopyItemLineData(line.IceManufID, line);
             if (res is false)
             {
                 Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Item line not copied successfully :(", FeedbackToast.IconTypes.Error).Show();
@@ -1074,14 +930,17 @@ namespace OMPS.Pages
                 _ => (null, null, null, null)
             };
             if (partConstraint is null || descConstraint is null) return;
-            using var lookup = new LookupFinder(this.MainViewModel)
+            using var lookup = new LookupFinder()
             {
-                MainVM = this.MainViewModel,
                 Owner = Ext.MainWindow
             };
             await lookup.LookupMaterials(partFilter, descFilter, partConstraint, descConstraint);
             if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;
-            txt.Tag = (Guid?)obj["ItemID"] ?? new Guid();
+            if (txt.GetBindingExpression(TextBox.TagProperty) is not BindingExpression be) return;
+            if (be.ResolvedSource.GetType().GetProperty(be.ResolvedSourcePropertyName) is not PropertyInfo pi) return;
+            pi.SetValue(be.ResolvedSource, (Guid?)obj["ItemID"] ?? new Guid());
+            ColorSetInfo_PropertyChanged(this.ColorSetInfo, new PropertyChangedEventArgs(be.ResolvedSourcePropertyName));
+            //txt.Tag = (Guid?)obj["ItemID"] ?? new Guid();
             //MessageBox.Show(lookup.ReturnObject["ItemID"].ToString());
         }
 
@@ -1101,9 +960,8 @@ namespace OMPS.Pages
                 _ => (null, null, null, null)
             };
             if (partConstraint is null || descConstraint is null) return;
-            using var lookup = new LookupFinder(this.MainViewModel)
+            using var lookup = new LookupFinder()
             {
-                MainVM = this.MainViewModel,
                 Owner = Ext.MainWindow
             };
             await lookup.LookupMaterials(partFilter, descFilter, partConstraint, descConstraint);
@@ -1186,7 +1044,7 @@ namespace OMPS.Pages
                 )
             );
             ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await RunExternal(psi);
+            await Ext.RunExternal(psi);
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
@@ -1206,7 +1064,7 @@ namespace OMPS.Pages
                 )
             );
             ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await RunExternal(psi);
+            await Ext.RunExternal(psi);
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
@@ -1226,7 +1084,7 @@ namespace OMPS.Pages
                 )
             );
             ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await RunExternal(psi);
+            await Ext.RunExternal(psi);
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
@@ -1246,7 +1104,7 @@ namespace OMPS.Pages
                 )
             );
             ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await RunExternal(psi);
+            await Ext.RunExternal(psi);
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
@@ -1266,7 +1124,7 @@ namespace OMPS.Pages
                 )
             );
             ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await RunExternal(psi);
+            await Ext.RunExternal(psi);
             ((Button)sender).BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
@@ -1274,55 +1132,45 @@ namespace OMPS.Pages
         private async void Btn_rowEdit_Lookup_Click(object sender, RoutedEventArgs e)
         {
             if (sender is null || sender is not Button btn) return;
-            using var lookup = new LookupFinder(this.MainViewModel)
+            if (btn.Tag?.ToString() is not string tag) return;
+            await ItemInfoLookup(tag, e);
+        }
+
+        public async Task ItemInfoLookup(string type, RoutedEventArgs e)
+        {
+            using var lookup = new LookupFinder()
             {
-                MainVM = this.MainViewModel,
                 Owner = Ext.MainWindow
             };
             await lookup.LookupMaterials();
             if (lookup.ShowDialog() is not true || lookup.ReturnObject is not Dictionary<string, object> obj) return;
-            switch (btn.Tag.ToString())
+            TextBox? txt = null;
+            string? propName = null;
+            switch (type)
             {
                 case "ItemNbr":
-                    if (this.Txt_RowEdit_ItemNbr.Text.Equals(obj["PartID"].ToString(), StringComparison.OrdinalIgnoreCase)) return;
-                    this.Txt_RowEdit_ItemNbr.Clear();
-                    this.Txt_RowEdit_ItemNbr.AppendText(obj["PartID"].ToString());
-                    this.Txt_RowEdit_ItemNbr.Select(this.Txt_RowEdit_ItemNbr.Text.Length, 0);
-                    this.Txt_RowEdit_ItemNbr.Focus();
-                    this.TextBox_TextChanged(this.Txt_RowEdit_ItemNbr, new TextChangedEventArgs(e.RoutedEvent, UndoAction.None));
+                    txt = this.Txt_RowEdit_ItemNbr;
+                    propName = "PartID";
                     break;
                 case "Description":
-                    if (this.Txt_RowEdit_Desc.Text.Equals(obj["PartDescription"].ToString(), StringComparison.OrdinalIgnoreCase)) return;
-                    this.Txt_RowEdit_Desc.Clear();
-                    this.Txt_RowEdit_Desc.AppendText(obj["PartDescription"].ToString());
-                    this.Txt_RowEdit_Desc.Select(this.Txt_RowEdit_Desc.Text.Length, 0);
-                    this.Txt_RowEdit_Desc.Focus();
-                    this.TextBox_TextChanged(this.Txt_RowEdit_Desc, new TextChangedEventArgs(e.RoutedEvent, UndoAction.None));
+                    txt = this.Txt_RowEdit_Desc;
+                    propName = "PartDescription";
                     break;
                 default:
                     break;
             }
+            if (txt is null || propName is null) return;
+
+            txt.Clear();
+            txt.AppendText(obj[propName]?.ToString());
+            txt.Select(txt.Text.Length, 0);
+            txt.Focus();
+            this.TextBox_TextChanged(txt, new TextChangedEventArgs(e.RoutedEvent, UndoAction.None));
         }
+
 
         public bool WaitingForTextChanged = false;
 
-        public (DependencyProperty dp, object value)? DpValueFromInputType<T>(T value) where T : Control
-        {
-            if (value is TextBox txt)
-            {
-                return (TextBox.TextProperty, txt.Text);
-            }
-            if (value is ComboBox cmbx)
-            {
-                return (ComboBox.SelectedValueProperty, cmbx.SelectedValue);
-            }
-            if (value is CheckBox chkbx)
-            {
-                return (CheckBox.IsCheckedProperty, chkbx.IsChecked ?? false);
-            }
-            return null;
-
-        }
 
         public void HandleInputValueChanged(object sender, EventArgs e)
         {
@@ -1332,7 +1180,7 @@ namespace OMPS.Pages
             var lbl = (Label)WPnl_EditLabels.Children[index];
             //if (cntrl.Background is not null && cntrl.Background.Opacity == 50 / 255.0) return;
             Debug.WriteLine("%");
-            var foo = DpValueFromInputType(cntrl);
+            var foo = Ext.DpValueFromInputType(cntrl);
             if (foo is not (DependencyProperty, object) pair || pair.dp is null || pair.value is null) return;
             //if (txt.Background is not null && txt.Background.Opacity is 50) return;
             if (CurrentItem is not object obj ||
@@ -1344,7 +1192,7 @@ namespace OMPS.Pages
                 return;
             }
             Debug.WriteLine("%%");
-            if (pair.value.ToString().Equals(value.ToString(), StringComparison.Ordinal))
+            if (pair.value.ToString()?.Equals(value.ToString(), StringComparison.Ordinal) ?? false)
             {
                 Debug.WriteLine("Same value as data context object");
                 this.Pending_LineChangesCount -= 1;
@@ -1353,10 +1201,10 @@ namespace OMPS.Pages
             }
             else
             {
-                if (lbl.Tag is not "error")
+                if (lbl.Tag is not "warn")
                 {
                     this.Pending_LineChangesCount += 1;
-                    lbl.Tag = "error";
+                    lbl.Tag = "warn";
                 }
             }
             Debug.WriteLine(this.Pending_LineChangesCount);
@@ -1426,15 +1274,71 @@ namespace OMPS.Pages
             }
         }
 
+        public void FocusSelectedItem(ref DataGrid dg)
+        {
+            if (dg.SelectedCells.Count is 0) return;
+            if (LastCell is null) return;
+            LastCell?.Focus();
+            /*
+            if (dg.SelectedItems.Count is 0) return;
+            int rowindex = dg.SelectedIndex;
+            DataGridRow dataRow = (DataGridRow)dg.ItemContainerGenerator.ContainerFromIndex(rowindex);
+            if (dataRow is null) return;
+            FocusManager.SetFocusedElement(dg, dataRow as IInputElement);
+            */
+        }
+
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key is not Key.S || ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control))
+            var ctrl = ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control);
+            if (!ctrl)
             {
-                e.Handled = false;
-                return;
+                switch (e.Key)
+                {
+                    case Key.Escape:
+                        break;
+                    default:
+                        e.Handled = false;
+                        break;
+                }
+            } else
+            {
+                switch (e.Key)
+                {
+                    case Key.S:
+                        this.Btn_AcceptItemLineEdits_Click(null, new RoutedEventArgs(null, null));
+                        e.Handled = true;
+                        break;
+                    case Key.R:
+                        this.Btn_RevertItemLineEdits_Click(null, new RoutedEventArgs(null, null));
+                        e.Handled = true;
+                        break;
+                    case Key.E:
+                        this.Btn_DeleteItemLine_Click(null, new RoutedEventArgs(null, null));
+                        e.Handled = true;
+                        break;
+                    case Key.I:
+                        this.Txt_RowEdit_ItemNbr.Focus();
+                        this.Txt_RowEdit_ItemNbr.Select(this.Txt_RowEdit_ItemNbr.Text.Length, 0);
+                        e.Handled = true;
+                        break;
+                    case Key.D:
+                        this.Txt_RowEdit_Desc.Focus();
+                        this.Txt_RowEdit_Desc.Select(this.Txt_RowEdit_Desc.Text.Length, 0);
+                        e.Handled = true;
+                        break;
+                    default:
+                        e.Handled = false;
+                        break;
+                }
             }
-            this.Btn_AcceptItemLineEdits_Click(null, new RoutedEventArgs(null, null));
-            e.Handled = true;
+        }
+
+        public DataGridCell? LastCell = null;
+        private void datagrid_main_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Ext.GetCellFromDataGrid(ref datagrid_main, datagrid_main.SelectedCells.FirstOrDefault()) is not DataGridCell cell) return;
+            LastCell = cell;
         }
     }
 }

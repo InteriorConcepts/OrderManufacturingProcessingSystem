@@ -71,28 +71,11 @@ namespace OMPS.Pages
         public uint QueryTotalAmount { get; set { field = value; OnPropertyChanged(nameof(QueryTotalAmount)); } } = 0;
 
 
-        public Main_ViewModel MainViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
-        public double DataGridFontSize
-        {
-            get => MainViewModel.FontSize_Base;
-        }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
+        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
 
-        internal MainWindow ParentWindow
-        {
-            get; set
-            {
-                field = value;
-                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
-                {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
-                    //this.datagrid_orders.UpdateLayout();
-                    OnPropertyChanged(nameof(DataGridFontSize));
-                });
-            }
-        }
+
 
         #endregion
 
@@ -203,14 +186,14 @@ namespace OMPS.Pages
         #endregion
 
 
-        private async void Txt_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Txt_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key is not Key.Enter) return;
             if (sender is not TextBox txt) return;
             btn_reload_Click(sender, null);
         }
 
-        private void btn_reload_Click(object sender, RoutedEventArgs e)
+        private void btn_reload_Click(object sender, RoutedEventArgs? e)
         {
             this.LoadProducts(this.Txt_ProdCode.Text, this.Txt_ProdDesc.Text);
         }
@@ -219,8 +202,8 @@ namespace OMPS.Pages
         {
             if (this.datagrid_main.SelectedIndex is -1) return;
             if (this.datagrid_main.SelectedItem is not Models.Product.IcProductCatalog prod) return;
-            this.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
-            this.MainViewModel.ProductCatalogDetails_VM.ProductCode = prod.ProductCode;
+            Ext.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
+            Ext.MainViewModel.ProductCatalogDetails_VM?.ProductCode = prod.ProductCode;
         }
     }
 }

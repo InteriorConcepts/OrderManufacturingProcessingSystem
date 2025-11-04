@@ -71,9 +71,9 @@ namespace OMPS.Components
             public required LabelInputLookupPair Source { get; set; }
         }
 
-        public event EventHandler<Lookup_EventArgs> LookupButtonPressed;
+        public event EventHandler<Lookup_EventArgs>? LookupButtonPressed;
 
-        public event EventHandler<Lookup_EventArgs> InputLookupChanged;
+        public event EventHandler<Lookup_EventArgs>? InputLookupChanged;
 
         public string LabelText
         {

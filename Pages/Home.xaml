@@ -274,6 +274,9 @@
                                         <materialDesign:PackIcon Kind="NewReleases" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                         <TextBlock Text="New" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="242 0 0 0" Padding="0" Foreground="White" Width="Auto">
+                                            <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                        </Button>
                                     </StackPanel>
                                     <ContentControl.Effect>
                                         <DropShadowEffect BlurRadius="0" Color="#000" Direction="-45" Opacity="0.5" ShadowDepth="2" />
@@ -314,6 +317,9 @@
                                             <materialDesign:PackIcon Kind="Wrench" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Working" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="189 0 0 0" Padding="0" Foreground="White" Width="Auto">
+                                                <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                            </Button>
                                         </StackPanel>
                                     </ContentControl>
 
@@ -342,7 +348,11 @@
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="FoldersOutline" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Local" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                               FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                       FontWeight="Bold" Foreground="#e9e9e5"/>
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Tag="local" Height="18" Margin="95 0 0 0" Padding="0" Foreground="White" Width="Auto"
+                                                    Click="Btn_HomeNotifs_Click">
+                                                <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                            </Button>
                                         </StackPanel>
                                     </ContentControl>
                                     <DataGrid x:Name="DataGrid_Local" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
@@ -374,6 +384,9 @@
                                             <materialDesign:PackIcon Kind="FormatListChecks" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Checking 1" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="30 0 0 0" Padding="0" Foreground="White" Width="Auto">
+                                                <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                            </Button>
                                         </StackPanel>
                                     </ContentControl>
                                     <DataGrid x:Name="DataGrid_EngChecks1" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
@@ -405,6 +418,9 @@
                                             <materialDesign:PackIcon Kind="FormatListChecks" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Checking 2" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="30 0 0 0" Padding="0" Foreground="White" Width="Auto">
+                                                <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                            </Button>
                                         </StackPanel>
                                     </ContentControl>
                                     <DataGrid x:Name="DataGrid_EngChecks2" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
@@ -436,6 +452,9 @@
                                             <materialDesign:PackIcon Kind="TaskAuto" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Releasing" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="163 0 0 0" Height="18" Padding="0" Foreground="White" Width="Auto">
+                                                <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                            </Button>
                                         </StackPanel>
                                     </ContentControl>
                                     <DataGrid x:Name="DataGrid_EngRelease" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
@@ -517,6 +536,9 @@
                                         <materialDesign:PackIcon Kind="SawBlade" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Wks Working" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="136 0 0 0" Height="18" Padding="0" Foreground="White" Width="Auto">
+                                            <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                        </Button>
                                     </StackPanel>
                                 </ContentControl>
 
@@ -546,6 +568,9 @@
                                         <materialDesign:PackIcon Kind="SawBlade" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Pnl Working" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
                                                        FontWeight="Bold" Foreground="#e9e9e5"/>
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="136 0 0 0" Height="18" Padding="0" Foreground="White" Width="Auto">
+                                            <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
+                                        </Button>
                                     </StackPanel>
                                 </ContentControl>
                                 <DataGrid x:Name="DataGrid_CncWorkingPnl" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"

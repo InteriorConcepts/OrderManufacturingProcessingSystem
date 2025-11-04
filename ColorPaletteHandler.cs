@@ -128,7 +128,7 @@ namespace OMPS
             wb.CopyPixels(pixelData, stride, 0);
 
             // Process palette
-            IList<Color> originalPalette = wb.Palette?.Colors;
+            IList<Color> originalPalette = wb.Palette.Colors;
             if (originalPalette == null || originalPalette.Count == 0)
                 throw new InvalidOperationException("Indexed8 bitmap has no palette");
 

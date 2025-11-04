@@ -20,14 +20,11 @@ namespace OMPS.Windows
     /// </summary>
     public partial class ConfigurationWindow : Window
     {
-        public required Main_ViewModel MainVM {  get; set; }
         public ObservableCollection<TimeZoneInfo> TimeZoneInfos = [];
-        public ConfigurationWindow(Main_ViewModel mainVM)
+        public ConfigurationWindow()
         {
-            this.MainVM = mainVM;
             InitializeComponent();
             this.DataContext = this;
-            this.MainVM.PropertyChanged += this.MainVM_PropertyChanged;
             this.TimeZoneInfos.Clear();
             foreach (var tz in TimeZoneInfo.GetSystemTimeZones())
             {
@@ -40,20 +37,18 @@ namespace OMPS.Windows
 
         }
 
-        private void MainVM_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName is not "FontSize_Base") return;
-            this.Txtblk_Title.FontSize = this.MainVM.FontSize_Base * 1.25;
-        }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        public static MainWindow ParentWindow { get => Ext.MainWindow; }
+        public static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
 
         private void Btn_FontSizeDown_Click(object sender, RoutedEventArgs e)
         {
-            this.MainVM.FontSize_Base -= 1;
+            Ext.MainViewModel.FontSize_Base -= 1;
         }
 
         private void Btn_FontSizeUp_Click(object sender, RoutedEventArgs e)
         {
-            this.MainVM.FontSize_Base += 1;
+            Ext.MainViewModel.FontSize_Base += 1;
         }
 
         private void Btn_CloseConfigWin_Click(object sender, RoutedEventArgs e)
@@ -76,7 +71,7 @@ namespace OMPS.Windows
         {
             if (this.Cmbx_Tiemzones.SelectedIndex is int indx && indx is -1) return;
             if (indx > TimeZoneInfos.Count - 1) return;
-            this.MainVM.CurrentTimezone = this.TimeZoneInfos[indx];
+            Ext.MainViewModel.CurrentTimezone = this.TimeZoneInfos[indx];
         }
     }
 }

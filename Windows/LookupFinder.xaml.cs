@@ -21,14 +21,14 @@ namespace OMPS.Windows
     /// </summary>
     public partial class LookupFinder : Window, IDisposable
     {
-        public required Main_ViewModel MainVM { get; set; }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
         public ObservableCollection<object> Data { get; set; } = [];
 
-        public Dictionary<string, object>? ReturnObject = null;
+        public Dictionary<string, object?>? ReturnObject = null;
 
-        public LookupFinder(Main_ViewModel mainVM)
+        public LookupFinder()
         {
-            this.MainVM = mainVM;
             InitializeComponent();
             this.DataContext = this;
             //
@@ -81,7 +81,7 @@ namespace OMPS.Windows
                     "
                     );
                 if (resTotal is null) return;
-                if (resTotal.FirstOrDefault() is not Dictionary<string, object> first) return;
+                if (resTotal.FirstOrDefault() is not Dictionary<string, object?> first) return;
                 if (first.TryGetValue("TOTAL", out object? val) is false || val is not int valInt) return;
                 this.Total = valInt;
             }
@@ -106,7 +106,7 @@ namespace OMPS.Windows
             this.Lbl_datagrid_count.Content = $"Showing {(res.Count < limit ? res.Count : limit)} of {this.Total} items";
         }
 
-        public static async Task<List<Dictionary<string, object>>?> Query(string sql)
+        public static async Task<List<Dictionary<string, object?>>?> Query(string sql)
         {
             var (con, cmd) =
                 await EstablishConnection(
@@ -137,13 +137,13 @@ namespace OMPS.Windows
         }
 
 
-        public static async Task<List<Dictionary<string, object>>> RetrieveData(OdbcCommand cmd)
+        public static async Task<List<Dictionary<string, object?>>> RetrieveData(OdbcCommand cmd)
         {
             var reader = await cmd.ExecuteReaderAsync();
-            List<Dictionary<string, object>> res = [];
+            List<Dictionary<string, object?>> res = [];
             while (await reader.ReadAsync())
             {
-                Dictionary<string, object> obj = [];
+                Dictionary<string, object?> obj = [];
                 for (int fieldIndex = 0; fieldIndex < reader.VisibleFieldCount; fieldIndex++)
                 {
                     obj.Add(reader.GetName(fieldIndex), reader.GetValue(fieldIndex));
@@ -162,13 +162,13 @@ namespace OMPS.Windows
             if (e.Item is not BindableDynamicDictionary dict) return;
             var passed = true;
             if (!string.IsNullOrWhiteSpace(this.Txt_FilterPart.Text))
-                passed &= (dict["PartID"].ToString()?.Contains(this.Txt_FilterPart.Text, StringComparison.OrdinalIgnoreCase) ?? false);
+                passed &= (dict["PartID"]?.ToString()?.Contains(this.Txt_FilterPart.Text, StringComparison.OrdinalIgnoreCase) ?? false);
             if (!string.IsNullOrWhiteSpace(this.Txt_FilterDesc.Text))
-            passed &= (dict["PartDescription"].ToString()?.Contains(this.Txt_FilterDesc.Text, StringComparison.OrdinalIgnoreCase) ?? false);
+            passed &= (dict["PartDescription"]?.ToString()?.Contains(this.Txt_FilterDesc.Text, StringComparison.OrdinalIgnoreCase) ?? false);
             e.Accepted = passed;
         }
 
-        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs? e)
         {
             //Debug.WriteLine("$$$");
             //Debug.WriteLine(1);
@@ -243,26 +243,26 @@ namespace OMPS.Windows
         /// <summary>
         /// The internal dictionary.
         /// </summary>
-        private readonly Dictionary<string, object> _dictionary;
+        private readonly Dictionary<string, object?> _dictionary;
 
         /// <summary>
         /// Creates a new BindableDynamicDictionary with an empty internal dictionary.
         /// </summary>
         public BindableDynamicDictionary()
         {
-            _dictionary = new Dictionary<string, object>();
+            _dictionary = new Dictionary<string, object?>();
         }
 
         /// <summary>
         /// Copies the contents of the given dictionary to initilize the internal dictionary.
         /// </summary>
         /// <param name="source"></param>
-        public BindableDynamicDictionary(IDictionary<string, object> source)
+        public BindableDynamicDictionary(IDictionary<string, object?> source)
         {
-            _dictionary = new Dictionary<string, object>(source);
+            _dictionary = new Dictionary<string, object?>(source);
         }
 
-        public Dictionary<string, object> Source()
+        public Dictionary<string, object?> Source()
             => this._dictionary;
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace OMPS.Windows
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public object this[string key]
+        public object? this[string key]
         {
             get
             {
@@ -300,7 +300,7 @@ namespace OMPS.Windows
         /// <param name="binder"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public override bool TrySetMember(SetMemberBinder binder, object value)
+        public override bool TrySetMember(SetMemberBinder binder, object? value)
         {
             _dictionary[binder.Name] = value;
             RaisePropertyChanged(binder.Name);

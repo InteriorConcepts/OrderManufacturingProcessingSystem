@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using OMPS.viewModel;
+using OMPS.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,7 +45,7 @@ namespace OMPS.Components
             this.SBoard_Out?.Completed += SBoard_Out_Completed;
             this.ExpirationTimer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 0, ShownDurationMS) };
             this.ExpirationTimer.Tick += ExpirationTimer_Tick;
-            Ext.MainWindow.MainViewModel.PropertyChanged += MainViewModel_PropertyChanged;
+            Ext.MainViewModel.PropertyChanged += MainViewModel_PropertyChanged;
         }
 
         public Storyboard Storyboard_Create_In()
@@ -170,10 +171,8 @@ namespace OMPS.Components
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Main_ViewModel Main_ViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
+
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
 
         public bool IsExpired = false;
         public bool IsExpanded = false;
@@ -202,7 +201,7 @@ namespace OMPS.Components
         public double OriginalFullHeight
         {
             get => field;
-        } = Ext.MainWindow.MainViewModel.FontSize_H1 * 1.5;
+        } = Ext.MainViewModel.FontSize_H1 * 1.5;
 
         public double FullHeight
         {
@@ -213,7 +212,7 @@ namespace OMPS.Components
                 Debug.WriteLine(value);
                 OnPropertyChanged(nameof(FullHeight));
             }
-        } = Ext.MainWindow.MainViewModel.FontSize_H1 * 1.5;
+        } = Ext.MainViewModel.FontSize_H1 * 1.5;
 
         public double ExpandedHeight
         {
@@ -223,7 +222,7 @@ namespace OMPS.Components
                 field = value;
                 OnPropertyChanged(nameof(ExpandedHeight));
             }
-        } = Ext.MainWindow.MainViewModel.FontSize_H1 * 4.5;
+        } = Ext.MainViewModel.FontSize_H1 * 4.5;
 
         public int ShownDurationMS
         {
@@ -258,10 +257,10 @@ namespace OMPS.Components
         {
             get => IconType switch
             {
-                IconTypes.Info => PackIconKind.InfoOutline,
-                IconTypes.Warn => PackIconKind.WarningOutline,
-                IconTypes.Error => PackIconKind.ErrorOutline,
-                _ => PackIconKind.InfoOutline,
+                IconTypes.Info => PackIconKind.Info,
+                IconTypes.Warn => PackIconKind.Warning,
+                IconTypes.Error => PackIconKind.Error,
+                _ => PackIconKind.Info,
             };
         }
 
@@ -272,8 +271,8 @@ namespace OMPS.Components
                     IconType switch
                     {
                         IconTypes.Info => Color.FromRgb(131, 199, 226),
-                        IconTypes.Warn => Color.FromRgb(215, 186, 125),
-                        IconTypes.Error => Color.FromRgb(219, 92, 92),
+                        IconTypes.Warn => Color.FromRgb(255, 204, 119),
+                        IconTypes.Error => Color.FromRgb(184, 45, 68),
                         _ => Colors.GhostWhite
                     }
                 );
@@ -474,6 +473,7 @@ namespace OMPS.Components
         public void Dispose()
         {
             this.RemoveLogicalChild(this._txt);
+            GC.SuppressFinalize(this);
         }
 
         private void BodyPreviewWindow_Closing(object? sender, CancelEventArgs e)

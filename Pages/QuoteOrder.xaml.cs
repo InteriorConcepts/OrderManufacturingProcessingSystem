@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OMPS.viewModel;
+using OMPS.Windows;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -10,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using OMPS.Windows;
 
 namespace OMPS.Pages
 {
@@ -19,19 +20,16 @@ namespace OMPS.Pages
     /// </summary>
     public partial class QuoteOrder : UserControl
     {
+
         public QuoteOrder()
         {
             InitializeComponent();
-        }
-
-        public QuoteOrder(MainWindow parentWin)
-        {
-            InitializeComponent();
             //
-            this.ParentWindow = parentWin;
         }
 
-        internal MainWindow? ParentWindow { get; set; }
+
+        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
         public string? QuoteNbr { get; set; }
     }
 }

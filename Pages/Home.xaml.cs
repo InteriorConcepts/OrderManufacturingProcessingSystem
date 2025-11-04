@@ -34,35 +34,42 @@ namespace OMPS.Pages
             InitializeComponent();
             //
             this.DataContext = this;
-        }
-        public Home(MainWindow parentWindow)
-        {
-            this.ParentWindow = parentWindow;
-            InitializeComponent();
-            //
-            this.DataContext = this;
             //
             this.Refresher.Elapsed += Refresher_Elapsed;
-            //this.Refresher.Start();
+            this.Refresher.Start();
         }
 
-        public uint infrequentcy = 0;
+        public uint infrequency = 0;
+        public uint infrequentAltInterval = 60;
         public async Task LoadData()
         {
-            if (infrequentcy is 0 or 2)
+            if (infrequency is 0 || infrequency == infrequentAltInterval)
             {
-                Debug.WriteLine("Infrequent home update");
-                await this.GetNewOrders();
-                await this.GetEngWorking();
-                infrequentcy = 0;
+                await Dispatcher.BeginInvoke(async () =>
+                {
+                    Debug.WriteLine("Infrequent home update");
+                    await this.GetNewOrders();
+                    Debug.WriteLine("GetNewOrders");
+                    await this.GetEngWorking();
+                    Debug.WriteLine("GetEngWorking");
+                    infrequency = 0;
+                });
             }
-            Debug.WriteLine("Home update");
-            this.GetLocalFolders();
-            this.GetEngChecks();
-            this.GetEngReleases();
-            this.GetEngArchive();
-            this.GetCncWorking();
-            infrequentcy++;
+            infrequency++;
+            await Dispatcher.BeginInvoke(async () =>
+            {
+                Debug.WriteLine("Home update");
+                this.GetLocalFolders();
+                Debug.WriteLine("GetLocalFolders");
+                this.GetEngChecks();
+                Debug.WriteLine("GetEngChecks");
+                this.GetEngReleases();
+                Debug.WriteLine("GetEngReleases");
+                this.GetEngArchive();
+                Debug.WriteLine("GetEngArchive");
+                this.GetCncWorking();
+                Debug.WriteLine("GetCncWorking");
+            });
         }
 
 
@@ -75,37 +82,20 @@ namespace OMPS.Pages
 
 
         readonly System.Timers.Timer Refresher = new(TimeSpan.FromSeconds(10)) { };
-        public Main_ViewModel MainViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
 
-        public double DataGridFontSize
-        {
-            get => MainViewModel.FontSize_Base;
-        }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
+        public static double DataGridFontSize { get => Ext.MainViewModel.FontSize_Base; }
 
-        internal MainWindow ParentWindow
-        {
-            get; set
-            {
-                field = value;
-                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
-                {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
-                    //this.datagrid_orders.UpdateLayout();
-                    OnPropertyChanged(nameof(DataGridFontSize));
-                });
-            }
-        }
+
 
         public class PathEntry
         {
             public string Name { get; set; } = "";
-            private FileSystemInfo Path { get; set; }
+            private FileSystemInfo? Path { get; set; }
             public void SetPath(FileSystemInfo fsi)
                 => this.Path = fsi;
-            public FileSystemInfo GetPath()
+            public FileSystemInfo? GetPath()
                 => this.Path;
         }
 
@@ -206,9 +196,7 @@ namespace OMPS.Pages
             //this.DataGrid_NewOrders.EndInit();
             var data_orders =
                 Ext.Queries.GetColorSets("%").
-                    Where(i => (now - i.OrderDate).TotalDays <= 30).
-                    OrderBy(i => now - i.OrderDate).
-                    Take(20);
+                    OrderBy(i => i.OrderDate);
             foreach (var item in data_orders)
             {
                 _newOrders.Add(new () { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber});
@@ -248,6 +236,7 @@ namespace OMPS.Pages
             {
                 _engWorking.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
             }
+            OnPropertyChanged(nameof(EngWorking));
 #endif
         }
 
@@ -405,8 +394,8 @@ namespace OMPS.Pages
         {
             if (e.ChangedButton is not MouseButton.Left) return;
             if (this.DataGrid_EngArchive.SelectedItem is not EngArchiveEntry entry) return;
-            if (entry.GetPath().Exists is false) return;
-            this.ChangeEngArchivePath(entry.GetPath());
+            if (entry.GetPath() is not FileSystemInfo fsi || fsi.Exists is false) return;
+            this.ChangeEngArchivePath(fsi);
         }
 
         private void DataGrid_EngArchive_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -415,12 +404,13 @@ namespace OMPS.Pages
             {
                 e.Handled = true;
                 if (this.DataGrid_EngArchive.SelectedItem is not EngArchiveEntry entry) return;
+                if (entry.GetPath() is not FileSystemInfo fsi) return;
                 string? newDir = null;
                 switch (e.Key)
                 {
                     case Key.Enter:
-                        if (entry.GetPath().Exists is false) return;
-                        newDir = entry.GetPath().FullName;
+                        if (fsi.Exists is false) return;
+                        newDir = fsi.FullName;
                         break;
                     case Key.Back:
                         if (this.EngArchiveCurrentPath?.Parent is not DirectoryInfo parentDir) return;
@@ -443,14 +433,14 @@ namespace OMPS.Pages
                 cm.PlacementTarget is object obj)
             {
                 if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
-                this.MainViewModel.CurrentPage = PageTypes.EngOrder;
-                this.MainViewModel.EngOrder_VM.JobNbr = pe.Name;
+                MainViewModel.CurrentPage = PageTypes.EngOrder;
+                MainViewModel.EngOrder_VM?.JobNbr = pe.Name;
             }
             if (sender is Button btn)
             {
                 if (btn.DataContext is not PathEntry pe) return;
-                this.MainViewModel.CurrentPage = PageTypes.EngOrder;
-                this.MainViewModel.EngOrder_VM.JobNbr = pe.Name;
+                MainViewModel.CurrentPage = PageTypes.EngOrder;
+                MainViewModel.EngOrder_VM?.JobNbr = pe.Name;
             }
         }
 
@@ -461,13 +451,13 @@ namespace OMPS.Pages
                 mi.Parent is ContextMenu cm &&
                 cm.PlacementTarget is object obj)
             {
-                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
-                Process.Start("explorer.exe", pe.GetPath().FullName);
+                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe || pe.GetPath() is not FileSystemInfo fsi) return;
+                Process.Start("explorer.exe", fsi.FullName);
             }
             if (sender is Button btn)
             {
-                if (btn.DataContext is not PathEntry pe) return;
-                Process.Start("explorer.exe", pe.GetPath().FullName);
+                if (btn.DataContext is not PathEntry pe || pe.GetPath() is not FileSystemInfo fsi) return;
+                Process.Start("explorer.exe", fsi.FullName);
             }
         }
 
@@ -478,13 +468,13 @@ namespace OMPS.Pages
                 mi.Parent is ContextMenu cm &&
                 cm.PlacementTarget is object obj)
             {
-                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
-                Process.Start("explorer.exe", "/select," + pe.GetPath().FullName);
+                if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe || pe.GetPath() is not FileSystemInfo fsi) return;
+                Process.Start("explorer.exe", "/select," + fsi.FullName);
             }
             if (sender is Button btn)
             {
-                if (btn.DataContext is not PathEntry pe) return;
-                Process.Start("explorer.exe", "/select," + pe.GetPath().FullName);
+                if (btn.DataContext is not PathEntry pe || pe.GetPath() is not FileSystemInfo fsi) return;
+                Process.Start("explorer.exe", "/select," + fsi.FullName);
             }
         }
 
@@ -504,6 +494,21 @@ namespace OMPS.Pages
         {
             await this.LoadData();
             Ext.MainWindow.MainToastContainer.CreateToast("Home", "Data refreshed").Show();
+        }
+
+        private void Btn_HomeNotifs_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            if (btn.Tag?.ToString()?.ToLower() is not string tag) return;
+            switch (tag)
+            {
+                case "local":
+                    // Notify in same way that is differnt than the usual
+                    //  info notifications (diff icon & color perhaps).
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

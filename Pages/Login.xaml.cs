@@ -28,11 +28,11 @@ namespace OMPS.Pages
     /// </summary>
     public partial class Login : UserControl
     {
-        public Login_ViewModel _viewModel = new();
-        public MainWindow? ParentWindow;
-        public Login(MainWindow parentWindow)
+
+        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
+        public Login()
         {
-            this.ParentWindow = parentWindow;
             InitializeComponent();
 
 #if false
@@ -164,7 +164,7 @@ namespace OMPS.Pages
 
         private void NextBtn_ResetAnim_Completed(object? sender, EventArgs e)
         {
-            if (this.ParentWindow is null) return;
+            if (ParentWindow is null) return;
             var storyboard = (Storyboard)this.Resources["LoginBox_Out"];
             Storyboard.SetTarget(storyboard, this.Border_LoginBox);
             storyboard.Completed += (ss, ee) =>
@@ -174,44 +174,44 @@ namespace OMPS.Pages
                 var sb = new Storyboard()
                 {
                     Children = [
-                        new DoubleAnimation(this.ParentWindow.Width, 1025, TimeSpan.FromSeconds(0.5))
+                        new DoubleAnimation(ParentWindow.Width, 1025, TimeSpan.FromSeconds(0.5))
                         {
                             EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseInOut }
-                        }.SetTarget(Window.WidthProperty, this.ParentWindow),
-                        new DoubleAnimation(this.ParentWindow.Left, this.ParentWindow.Left - ((1025 - this.ParentWindow.Width) / 2.0), TimeSpan.FromSeconds(0.5))
+                        }.SetTarget(Window.WidthProperty, ParentWindow),
+                        new DoubleAnimation(ParentWindow.Left, ParentWindow.Left - ((1025 - ParentWindow.Width) / 2.0), TimeSpan.FromSeconds(0.5))
                         {
                             EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseInOut }
-                        }.SetTarget(Window.LeftProperty, this.ParentWindow)
+                        }.SetTarget(Window.LeftProperty, ParentWindow)
                     ]
                 };
                 Storyboard.SetDesiredFrameRate(sb, 240);
-                Storyboard.SetTarget(this.ParentWindow, sb);
+                Storyboard.SetTarget(ParentWindow, sb);
                 
                 sb.Completed += (ss, ee) =>
                 {
-                    this.ParentWindow.MainViewModel.CurrentPage = PageTypes.Home;
-                    this.ParentWindow.MainViewModel.WidgetMode = false;
+                    Ext.MainViewModel.CurrentPage = PageTypes.Home;
+                    Ext.MainViewModel.WidgetMode = false;
                     this.Opacity = 1;
                 };
                 
                 sb.Begin();
-                //this.ParentWindow.BeginAnimation(Window.WidthProperty, anim);
-                //this.ParentWindow.BeginAnimation(Window.LeftProperty, anim2);
+                //ParentWindow.BeginAnimation(Window.WidthProperty, anim);
+                //ParentWindow.BeginAnimation(Window.LeftProperty, anim2);
 
                 //
             };
             storyboard.Begin();
         }
 
-        private void CenterWindowOnScreen()
+        private static void CenterWindowOnScreen()
         {
-            if (this.ParentWindow is null) return;
+            if (ParentWindow is null) return;
             double screenWidth = System.Windows.SystemParameters.PrimaryScreenWidth;
             double screenHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
-            double windowWidth = this.ParentWindow.Width;
-            double windowHeight = this.ParentWindow.Height;
-            this.ParentWindow?.Left = (screenWidth / 2) - (windowWidth / 2);
-            this.ParentWindow?.Top = (screenHeight / 2) - (windowHeight / 2);
+            double windowWidth = ParentWindow.Width;
+            double windowHeight = ParentWindow.Height;
+            ParentWindow?.Left = (screenWidth / 2) - (windowWidth / 2);
+            ParentWindow?.Top = (screenHeight / 2) - (windowHeight / 2);
         }
 
 

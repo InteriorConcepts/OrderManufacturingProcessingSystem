@@ -30,9 +30,8 @@ namespace OMPS.Pages
     /// </summary>
     public partial class ProductCatalogDetails : UserControl, INotifyPropertyChanged
     {
-        public ProductCatalogDetails(MainWindow parentWindow)
+        public ProductCatalogDetails()
         {
-            this.ParentWindow = parentWindow;
             InitializeComponent();
             this.PropertyChanged += ProductCatalogDetails_PropertyChanged;
         }
@@ -64,28 +63,12 @@ namespace OMPS.Pages
                 OnPropertyChanged(nameof(ProductCode));
             }
         } = "";
-        public Main_ViewModel MainViewModel
-        {
-            get => Ext.MainWindow.MainViewModel;
-        }
-        public double DataGridFontSize
-        {
-            get => MainViewModel.FontSize_Base;
-        }
 
-        internal MainWindow ParentWindow
-        {
-            get; set
-            {
-                field = value;
-                value?.MainViewModel?.PropertyChanged += new((sender, e) =>
-                {
-                    if (e.PropertyName is not nameof(ParentWindow.MainViewModel.FontSize_Base)) return;
-                    //this.datagrid_orders.UpdateLayout();
-                    OnPropertyChanged(nameof(DataGridFontSize));
-                });
-            }
-        }
+        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
+        internal static double DataGridFontSize { get => Ext.MainViewModel.FontSize_Base; }
+
+
         #endregion
 
 

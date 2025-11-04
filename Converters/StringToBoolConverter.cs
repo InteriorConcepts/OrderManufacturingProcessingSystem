@@ -7,8 +7,8 @@ namespace OMPS.Converters
 
     public class StringToBoolConverter : MarkupExtension, IValueConverter
     {
-        public string TrueValue { get; set; }
-        public string FalseValue { get; set; }
+        public required string TrueValue { get; set; } = "true";
+        public required string FalseValue { get; set; } = "false";
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -16,7 +16,7 @@ namespace OMPS.Converters
             // value for TrueValue. Probably not an issue in 99.94% of all cases,
             // but something to consider, if one is looking to make a truly 100%
             // general-purpose class here.
-            return value != null && EqualityComparer<string>.Default.Equals((string)value, TrueValue);
+            return value != null && EqualityComparer<string>.Default.Equals(((string)value).ToLower(), TrueValue.ToLower());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

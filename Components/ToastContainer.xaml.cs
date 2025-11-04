@@ -25,7 +25,7 @@ namespace OMPS.Components
             InitializeComponent();
         }
 
-        public FeedbackToast CreateToast(string Title, string Desc = null, IconTypes icon = IconTypes.Info, ushort Duration = 3300)
+        public FeedbackToast CreateToast(string Title, string? Desc = null, IconTypes icon = IconTypes.Info, ushort Duration = 3300)
         {
             var t = new FeedbackToast() { Title = Title, IconType = icon, ShownDurationMS = Duration };
             if (Desc is not null)
