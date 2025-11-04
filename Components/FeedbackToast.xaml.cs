@@ -48,6 +48,10 @@ namespace OMPS.Components
             Ext.MainViewModel.PropertyChanged += MainViewModel_PropertyChanged;
         }
 
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        public static MainWindow ParentWindow { get => Ext.MainWindow; }
+        public static double DataGridFontSize { get => Ext.MainViewModel.FontSize_Base; }
+
         public Storyboard Storyboard_Create_In()
         {
             var ease = EasingMode.EaseOut;
@@ -170,9 +174,6 @@ namespace OMPS.Components
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
-        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
 
         public bool IsExpired = false;
         public bool IsExpanded = false;

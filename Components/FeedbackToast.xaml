@@ -39,29 +39,29 @@
                 <ColumnDefinition Width="4*"/>
                 <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="16*"/>
-                <ColumnDefinition Width="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H1, FallbackValue=24}"/>
+                <ColumnDefinition Width="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H1, FallbackValue=24}"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <materialDesign:PackIcon x:Name="PckIco_title" Grid.Column="0" Grid.Row="0" Margin="0 -8 0 0"
                                      Kind="{Binding TitleIconType, FallbackValue=InfoCircleOutline}" Foreground="{Binding TitleIconColor, FallbackValue='#83C7E2'}" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                     Width="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H3, FallbackValue=14}"
-                                     Height="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H3, FallbackValue=14}"/>
+                                     Width="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H3, FallbackValue=14}"
+                                     Height="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H3, FallbackValue=14}"/>
             <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" TextAlignment="Center"
                        Text="{Binding ElementName=ToastItem, Path=Title, UpdateSourceTrigger=PropertyChanged, FallbackValue='Title 123'}"
-                       FontSize="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H4, FallbackValue=12}" FontWeight="SemiBold"
+                       FontSize="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H4, FallbackValue=12}" FontWeight="SemiBold"
                        Margin="2 -8 2 0" Padding="0"
                        TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"/>
             <TextBlock Grid.Column="3" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Left"
                        Text="{Binding ElementName=ToastItem, Path=Body, UpdateSourceTrigger=PropertyChanged, FallbackValue='Default content text'}"
-                       FontSize="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H4, FallbackValue=12}" FontWeight="Regular"
+                       FontSize="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H4, FallbackValue=12}" FontWeight="Regular"
                        Margin="0 -8 0 0" Padding="0"
                        TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"/>
             <xrpb:RadialProgressBar x:Name="RProgBar_Remaining" Grid.Column="4" Grid.Row="0" ClipToBounds="False"
-                                    Height="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H2_1, FallbackValue=16}" Margin="0 -8 0 0"
-                                    Width="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H2_1, FallbackValue=16}"
-                                    Value="100" ArcWidth="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H1, Converter={Converters:ScalingConverter}, ConverterParameter=0.06, FallbackValue=16}"
+                                    Height="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H2_1, FallbackValue=16}" Margin="0 -8 0 0"
+                                    Width="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H2_1, FallbackValue=16}"
+                                    Value="100" ArcWidth="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H1, Converter={Converters:ScalingConverter}, ConverterParameter=0.06, FallbackValue=16}"
                                     ArcRotationDegree="-90" Foreground="#777"
                                     OuterBackgroundBrush="Transparent" ArcMode="Fill"
                                     VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -77,12 +77,12 @@
             </xrpb:RadialProgressBar>
             <Button x:Name="Btn_Dismiss" Grid.Column="4" Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}"
                     Padding="0" Margin="0 -8 0 0"
-                    Width="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H3, FallbackValue=14}"
-                    Height="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H3, FallbackValue=14}"
+                    Width="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H3, FallbackValue=14}"
+                    Height="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H3, FallbackValue=14}"
                     Click="Btn_Dismiss_Click" MouseEnter="Btn_Dismiss_MouseEnter" MouseLeave="Btn_Dismiss_MouseLeave">
                 <materialDesign:PackIcon x:Name="PckIco_btn" Kind="None" Foreground="#aaa"
-                                         Width="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H3, FallbackValue=14}"
-                                         Height="{Binding ElementName=ToastItem, Path=Main_ViewModel.FontSize_H3, FallbackValue=14}"/>
+                                         Width="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H3, FallbackValue=14}"
+                                         Height="{Binding ElementName=ToastItem, Path=MainViewModel.FontSize_H3, FallbackValue=14}"/>
             </Button>
         </Grid>
     </Border>

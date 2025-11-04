@@ -247,6 +247,9 @@ namespace OMPS
             }
         }
 
+        /*
+        // Redo so text isn't cut off with bigger font
+        //  and use page enum to determine which tab element to modify.
         internal static void SetTabTitle(string title)
         {
             Ext.MainWindow.TabBtn_LineItemInfo.Content =
@@ -254,6 +257,7 @@ namespace OMPS
                 Environment.NewLine +
                 title;
         }
+        */
         #endregion
 
 

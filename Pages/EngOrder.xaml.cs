@@ -47,7 +47,7 @@ namespace OMPS.Pages
             this.dpnl_DataFilter.Visibility = Visibility.Collapsed;
             //this.FrmFin.ItemSource = Finishes_Default;
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
-            //this.PropertyChanged += this.EngOrder_PropertyChanged;
+            this.PropertyChanged += this.EngOrder_PropertyChanged;
             this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
             for (int i = 0; i < this.SPnl_LookupInputs.Children.Count; i++)
             {
@@ -265,8 +265,6 @@ namespace OMPS.Pages
         public async Task LoadColorSetData(string job)
         {
             IsLoadingJobData = true;
-            this.ColorSetInfo = new();
-            OnPropertyChanged(nameof(ColorSetInfo));
             await Task.Run(async () =>
             {
                 Debug.WriteLine("Loading Color Set Data");
@@ -328,7 +326,7 @@ namespace OMPS.Pages
                         this.MfgItemLines.Add(data_mfglines[i]);
                     }
                     //this.datagrid_main.EndInit();
-                    Ext.SetTabTitle($"{this.JobNbr}");
+                    //Ext.SetTabTitle($"{this.JobNbr}");
                 });
             });
 #endif

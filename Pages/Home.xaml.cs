@@ -1,4 +1,5 @@
-﻿using Humanizer;
+﻿using Azure;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using OMPS.Models;
 using OMPS.viewModel;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -20,6 +22,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using static OMPS.Pages.Home;
 
 namespace OMPS.Pages
 {
@@ -36,44 +39,53 @@ namespace OMPS.Pages
             this.DataContext = this;
             //
             this.Refresher.Elapsed += Refresher_Elapsed;
-            this.Refresher.Start();
+            //this.Refresher.Start();
         }
 
         public uint infrequency = 0;
-        public uint infrequentAltInterval = 60;
-        public async Task LoadData()
+        //public uint infrequentAltInterval = 60;
+        public void LoadData()
         {
-            if (infrequency is 0 || infrequency == infrequentAltInterval)
+            new Task(
+                () => {
+                    Debug.WriteLine("Home update");
+                    this.GetLocalFolders();
+                    Debug.WriteLine("GetLocalFolders");
+                    this.GetEngChecks();
+                    Debug.WriteLine("GetEngChecks");
+                    this.GetEngReleases();
+                    Debug.WriteLine("GetEngReleases");
+                    this.GetEngArchive();
+                    Debug.WriteLine("GetEngArchive");
+                    this.GetCncWorking();
+                    Debug.WriteLine("GetCncWorking");
+                    //if (infrequency is 0 || infrequency == infrequentAltInterval)
+                    //{
+                    //infrequency = 0;
+                    //}
+                    //infrequency++;
+                },
+                TaskCreationOptions.DenyChildAttach
+            ).Start();
+            Dispatcher.BeginInvoke(() =>
             {
-                await Dispatcher.BeginInvoke(async () =>
-                {
-                    Debug.WriteLine("Infrequent home update");
-                    await this.GetNewOrders();
-                    Debug.WriteLine("GetNewOrders");
-                    await this.GetEngWorking();
-                    Debug.WriteLine("GetEngWorking");
-                    infrequency = 0;
-                });
-            }
-            infrequency++;
-            await Dispatcher.BeginInvoke(async () =>
-            {
-                Debug.WriteLine("Home update");
-                this.GetLocalFolders();
-                Debug.WriteLine("GetLocalFolders");
-                this.GetEngChecks();
-                Debug.WriteLine("GetEngChecks");
-                this.GetEngReleases();
-                Debug.WriteLine("GetEngReleases");
-                this.GetEngArchive();
-                Debug.WriteLine("GetEngArchive");
-                this.GetCncWorking();
-                Debug.WriteLine("GetCncWorking");
-            });
+                Debug.WriteLine("Infrequent home update");
+                this.GetNewOrders();
+                Debug.WriteLine("GetNewOrders");
+                this.GetEngWorking();
+                Debug.WriteLine("GetEngWorking");
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
-
+        #region Events
         public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler<NotifyChangesEventArgs<FileSystemInfo>>? Home_New_LocalFolders;
+        public event EventHandler<NotifyChangesEventArgs<FileSystemInfo>>? Home_New_EngCheck1;
+        public event EventHandler<NotifyChangesEventArgs<FileSystemInfo>>? Home_New_EngCheck2;
+        public event EventHandler<NotifyChangesEventArgs<FileSystemInfo>>? Home_New_EngReleases;
+        public event EventHandler<NotifyChangesEventArgs<FileSystemInfo>>? Home_New_CncWksWorking;
+        public event EventHandler<NotifyChangesEventArgs<FileSystemInfo>>? Home_New_CncPnlWorking;
+        #endregion
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -119,10 +131,15 @@ namespace OMPS.Pages
         public IReadOnlyList<EngOrder> EngWorking => _engWorking;
 
 
-        public ObservableCollection<EngArchiveEntry> LocalFolders { get; set; } = [];
+        public List<EngArchiveEntry> _localFolders  = [];
+        public IReadOnlyList<EngArchiveEntry> LocalFolders => _localFolders;
 
-        public ObservableCollection<EngArchiveEntry> EngCheck1 { get; set; } = [];
-        public ObservableCollection<EngArchiveEntry> EngCheck2 { get; set; } = [];
+
+        public List<EngArchiveEntry> _engCheck1 = [];
+        public IReadOnlyList<EngArchiveEntry> EngCheck1 => _engCheck1;
+        public List<EngArchiveEntry> _engCheck2 = [];
+        public IReadOnlyList<EngArchiveEntry> EngCheck2 => _engCheck2;
+
 
         public class DirEntryWithParentName: PathEntry
         {
@@ -134,7 +151,8 @@ namespace OMPS.Pages
                 this.Parent = path.Parent?.Name ?? "";
             }
         }
-        public ObservableCollection<DirEntryWithParentName> EngReleases { get; set; } = [];
+        public List<DirEntryWithParentName> _engReleases = [];
+        public IReadOnlyList<DirEntryWithParentName> EngReleases => _engReleases;
 
         public class EngArchiveEntry: PathEntry
         {
@@ -144,7 +162,8 @@ namespace OMPS.Pages
                 this.SetPath(path);
             }
         }
-        public ObservableCollection<EngArchiveEntry> EngArchive { get; set; } = [];
+        public List<EngArchiveEntry> _engArchive = [];
+        public IReadOnlyList<EngArchiveEntry> EngArchive => _engArchive;
 
         public class CncEntry: PathEntry
         {
@@ -153,8 +172,11 @@ namespace OMPS.Pages
                 this.SetPath(path);
             }
         }
-        public ObservableCollection<CncEntry> CncWksEntries { get; set; } = [];
-        public ObservableCollection<CncEntry> CncPnlEntries { get; set; } = [];
+
+        public List<CncEntry> _cncWksEntries = [];
+        public IReadOnlyList<CncEntry> CncWksEntries => _cncWksEntries;
+        public List<CncEntry> _cncPnlEntries = [];
+        public IReadOnlyList<CncEntry> CncPnlEntries => _cncPnlEntries;
 
 
 
@@ -185,13 +207,13 @@ namespace OMPS.Pages
         }
 #endif
 
-        public async Task GetNewOrders()
+        public void GetNewOrders()
         {
-            _newOrders.Clear();
 #if NEWDBSQL
             _newOrders = await this.LoadColorSetsAsync();
             OnPropertyChanged(nameof(NewOrders));
 #else
+            _newOrders.Clear();
             var now = DateTime.Now;
             //this.DataGrid_NewOrders.EndInit();
             var data_orders =
@@ -199,13 +221,13 @@ namespace OMPS.Pages
                     OrderBy(i => i.OrderDate);
             foreach (var item in data_orders)
             {
-                _newOrders.Add(new () { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber});
+                _newOrders.Add(new() { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber });
             }
             OnPropertyChanged(nameof(NewOrders));
 #endif
         }
 
-        public async Task GetEngWorking()
+        public void GetEngWorking()
         {
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
@@ -242,7 +264,9 @@ namespace OMPS.Pages
 
         public void GetLocalFolders()
         {
-            LocalFolders.Clear();
+            IList<FileSystemInfo> temp = [];
+            IList<FileSystemInfo> added = [];
+            IList<FileSystemInfo> removed = [];
             var dirs = new DirectoryInfo("C:/").GetDirectories("*", SearchOption.TopDirectoryOnly);
             foreach (var entry in dirs)
             {
@@ -250,7 +274,29 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                LocalFolders.Add(new(entry.Name, entry));
+                if (!_localFolders.Any(e => e.GetPath()?.FullName == entry.FullName))
+                {
+                    added.Add(entry);
+                    Debug.WriteLine(entry.FullName);
+                }
+                temp.Add(entry);
+            }
+            for (short i = 0; i < _localFolders.Count; i++) {
+                if (_localFolders[i].GetPath() is not FileSystemInfo fsi) return;
+                if (!temp.Any(e => e.FullName == fsi.FullName))
+                {
+                    removed.Add(fsi);
+                }
+            }
+            _localFolders.Clear();
+            for (short i = 0; i < temp.Count; i++)
+            {
+                _localFolders.Add(new(temp[i].Name, temp[i]));
+            }
+            if (added.Count is not 0 || removed.Count is not 0)
+            {
+                OnPropertyChanged(nameof(LocalFolders));
+                this.Home_New_LocalFolders?.Invoke(this, new("local", added, removed));
             }
         }
 
@@ -258,8 +304,8 @@ namespace OMPS.Pages
         public const string EngCheck2Root = "H:\\engineering\\5. 2nd Check";
         public void GetEngChecks()
         {
-            EngCheck1.Clear();
-            EngCheck2.Clear();
+            _engCheck1.Clear();
+            _engCheck2.Clear();
 
             var dirs1 = new DirectoryInfo(EngCheck1Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var dirs2 = new DirectoryInfo(EngCheck2Root).GetDirectories("*", SearchOption.TopDirectoryOnly);
@@ -269,22 +315,24 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                EngCheck1.Add(new(entry.Name, entry));
+                _engCheck1.Add(new(entry.Name, entry));
             }
+            OnPropertyChanged(nameof(EngCheck1));
             foreach (var entry in dirs2)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                EngCheck2.Add(new(entry.Name, entry));
+                _engCheck2.Add(new(entry.Name, entry));
             }
+            OnPropertyChanged(nameof(EngCheck2));
         }
 
         public const string EngReleaseDir = "H:\\engineering\\Ready to Release";
         public void GetEngReleases()
         {
-            EngReleases.Clear();
+            _engReleases.Clear();
             var userDirs = new DirectoryInfo(EngReleaseDir).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var jobDirs = userDirs.SelectMany(d => d.EnumerateDirectories("*", SearchOption.TopDirectoryOnly));
 
@@ -294,8 +342,9 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                EngReleases.Add(new(entry.Name, entry));
+                _engReleases.Add(new(entry.Name, entry));
             }
+            OnPropertyChanged(nameof(EngReleases));
         }
 
         public const string EngArchiveRoot = "H:\\Zipped Jobs";
@@ -303,7 +352,7 @@ namespace OMPS.Pages
         public void GetEngArchive()
         {
             this.EngArchiveCurrentPath ??= new(EngArchiveRoot);
-            EngArchive.Clear();
+            _engArchive.Clear();
             var dirs = EngArchiveCurrentPath.GetFileSystemInfos("*", SearchOption.TopDirectoryOnly);
             foreach (var entry in dirs)
             {
@@ -315,16 +364,17 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                EngArchive.Add(new(entry.Name, entry));
+                _engArchive.Add(new(entry.Name, entry));
             }
+            OnPropertyChanged(nameof(EngArchive));
         }
 
         public const string CncWorkingWksRoot = "H:\\CNC JOBS\\_WORK\\Laid Out";
         public const string CncWorkingPnlRoot = "H:\\CNC JOBS\\_WORK\\PNL Working";
         public void GetCncWorking()
         {
-            CncWksEntries.Clear();
-            CncPnlEntries.Clear();
+            _cncWksEntries.Clear();
+            _cncPnlEntries.Clear();
             var wksEntries = new DirectoryInfo(CncWorkingWksRoot).GetDirectories("*", SearchOption.TopDirectoryOnly);
             var pnlEntries = new DirectoryInfo(CncWorkingPnlRoot).GetDirectories("*", SearchOption.TopDirectoryOnly);
             foreach (var entry in wksEntries)
@@ -333,16 +383,18 @@ namespace OMPS.Pages
                 {
                     continue;
                 }
-                CncWksEntries.Add(new(entry) { Name = entry.Name });
+                _cncWksEntries.Add(new(entry) { Name = entry.Name });
             }
+            OnPropertyChanged(nameof(CncWksEntries));
             foreach (var entry in pnlEntries)
             {
                 if (!(entry.Name[..1] is "J" or "S"))
                 {
                     continue;
                 }
-                CncPnlEntries.Add(new(entry) { Name = entry.Name });
+                _cncPnlEntries.Add(new(entry) { Name = entry.Name });
             }
+            OnPropertyChanged(nameof(CncPnlEntries));
         }
 
 
@@ -487,12 +539,12 @@ namespace OMPS.Pages
 
         private void Refresher_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            //this.LoadData();
+            this.LoadData();
         }
 
         private async void btn_reload_Click(object sender, RoutedEventArgs e)
         {
-            await this.LoadData();
+            this.LoadData();
             Ext.MainWindow.MainToastContainer.CreateToast("Home", "Data refreshed").Show();
         }
 
@@ -500,15 +552,63 @@ namespace OMPS.Pages
         {
             if (sender is not Button btn) return;
             if (btn.Tag?.ToString()?.ToLower() is not string tag) return;
-            switch (tag)
+            Debug.WriteLine(tag);
+            ToggleNotifs(tag);
+        }
+
+        public class NotifyChangesEventArgs<T>(string sourceName, IList<T> added, IList<T> removed)
+        {
+            public string SourceName { get; init; } = sourceName;
+            public IList<T> Added { get; init; } = added;
+            public IList<T> Removed { get; init; } = removed;
+        }
+
+
+        private void Notification_Handler(object? sender, object e)
+        {
+            if (e is not NotifyChangesEventArgs<object>) return;
+            if (e is NotifyChangesEventArgs<FileSystemInfo> eargs)
+            {
+                switch (eargs.SourceName)
+                {
+                    case "local":
+                        Ext.MainWindow.MainToastContainer.CreateToast(
+                            "Home Notify",
+                            $"New 'local' entries: {string.Join(", ", eargs.Added)}"
+                        ).Show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public void ToggleNotifs(string type)
+        {
+            var settingName = $"Notify_{type}";
+            if (Ext.ReadSettingAsBool(settingName) is (bool, bool) res && res.success is false) return;
+            Debug.WriteLine($"value read: {res.value}");
+            bool currentVal = res.value,
+                 newVal = !res.value;
+            Ext.AddUpdateAppSettings(settingName, $"{newVal}");
+            switch (type)
             {
                 case "local":
-                    // Notify in same way that is differnt than the usual
-                    //  info notifications (diff icon & color perhaps).
+                    if (newVal)
+                    {
+                        this.Home_New_LocalFolders += this.Notification_Handler;
+                        Debug.WriteLine("Handler added");
+                    }
+                    else
+                    {
+                        this.Home_New_LocalFolders -= this.Notification_Handler;
+                        Debug.WriteLine("Handler removed");
+                    }
                     break;
                 default:
                     break;
             }
+            Ext.MainWindow.MainToastContainer.CreateToast("Home", $"Notifications {(newVal ? "enabled" : "disabled")} for '{type}'").Show();
         }
     }
 }

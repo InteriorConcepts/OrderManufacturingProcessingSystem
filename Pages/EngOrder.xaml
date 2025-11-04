@@ -202,7 +202,7 @@
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                           Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
-                <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="True"
+                <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="False"
                           Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -243,15 +243,15 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
                             </StackPanel>
                             <StackPanel MinWidth="80" MaxWidth="95" Width="Auto" Margin="0 0 4 0">
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct, StringFormat=C2, FallbackValue='$1,234.00'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty, FallbackValue='DefaultValue'}"/>
-                                <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" Text="{Binding Path=ColorSetInfo.Engineer, FallbackValue='DefaultValue'}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct, StringFormat=C2, FallbackValue='$1,234.00', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" Text="{Binding Path=ColorSetInfo.Engineer, FallbackValue='DefaultValue', Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
                             <StackPanel MinWidth="73" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
@@ -266,15 +266,15 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Ped Cushion:"/>
                             </StackPanel>
                             <StackPanel MinWidth="80" MaxWidth="95" Margin="0 0 4 0">
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.FrameFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.PedFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.ShelfFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.TblLegFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}" SelectedItem="{Binding ColorSetInfo.TblBaseFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}" SelectedItem="{Binding ColorSetInfo.TblLegBaseFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}" SelectedItem="{Binding ColorSetInfo.TblSlimLegFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}" SelectedItem="{Binding ColorSetInfo.TangentLegFin}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding ColorSetInfo.PedCushionColor}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.FrameFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.FrameFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.PedFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.PedFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.ShelfFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.ShelfFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.TblLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblLegFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}" SelectedItem="{Binding Path=ColorSetInfo.TblBaseFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblBaseFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}" SelectedItem="{Binding Path=ColorSetInfo.TblLegBaseFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}" SelectedItem="{Binding Path=ColorSetInfo.TblSlimLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}" SelectedItem="{Binding Path=ColorSetInfo.TangentLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
                             <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
@@ -339,7 +339,7 @@
                         </StackPanel>
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
-                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" Width="Auto" MaxWidth="800" Text="{Binding ColorSetInfo.Notes, Mode=TwoWay}"/>
+                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" Width="Auto" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -872,7 +872,7 @@
                       PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
             </DataGrid>
             -->
-            <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
+            <DockPanel x:Name="pnl_dock" Visibility="Collapsed" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
                                           FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
 
