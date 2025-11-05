@@ -458,7 +458,13 @@ namespace OMPS.Pages
                 be.UpdateTarget();
             }
         }
-#endregion
+
+        public void DoMfgItemsFilter()
+        {
+            var viewSource = (CollectionViewSource)Resources["MfgItemsViewSource"];
+            viewSource?.View?.Refresh();
+        }
+        #endregion
 
 
         #region EventHandlers
@@ -562,8 +568,7 @@ namespace OMPS.Pages
         private void Txt_Filter_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key is not Key.Enter) return;
-            var viewSource = (CollectionViewSource)Resources["MfgItemsViewSource"];
-            viewSource?.View?.Refresh();
+            this.DoMfgItemsFilter();
         }
 
         private void MfgItemsViewSource_Filter(object sender, FilterEventArgs e)
@@ -1250,9 +1255,6 @@ namespace OMPS.Pages
             };
             this.WPnl_DataEditRegion.RaiseEvent(newEventArgs);
         }
-
-#endregion
-
         private void datagrid_main_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.WPnl_EditInputs.BindingGroup.BeginEdit();
@@ -1299,7 +1301,8 @@ namespace OMPS.Pages
                         e.Handled = false;
                         break;
                 }
-            } else
+            }
+            else
             {
                 switch (e.Key)
                 {
@@ -1332,11 +1335,24 @@ namespace OMPS.Pages
             }
         }
 
+
         public DataGridCell? LastCell = null;
         private void datagrid_main_LostFocus(object sender, RoutedEventArgs e)
         {
+            if (this.datagrid_main.SelectedCells.Count is 0) return;
             if (Ext.GetCellFromDataGrid(ref datagrid_main, datagrid_main.SelectedCells.FirstOrDefault()) is not DataGridCell cell) return;
             LastCell = cell;
         }
+
+
+        private void Btn_SavedFilters_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            if (btn.Tag is not string filterStr) return;
+            this.Txt_Filter.Text = filterStr;
+            this.DoMfgItemsFilter();
+        }
+        #endregion
+
     }
 }

@@ -78,18 +78,18 @@ namespace OMPS.Components
                     new EasingThicknessKeyFrame(new(0, 4, 0, 4), KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(500))) { EasingFunction = new CubicEase() { EasingMode = ease } },
                 ]
             };
-            Timeline.SetDesiredFrameRate(a, 120);
+            Timeline.SetDesiredFrameRate(a, 60);
             Storyboard.SetTarget(a, this);
             Storyboard.SetTarget(a, this.RProgBar_Remaining);
             Storyboard.SetTargetProperty(a, new(FrameworkElement.OpacityProperty));
             sb.Children.Add(a);
 
-            Timeline.SetDesiredFrameRate(b, 120);
+            Timeline.SetDesiredFrameRate(b, 60);
             Storyboard.SetTarget(b, this);
             Storyboard.SetTargetProperty(b, new(FrameworkElement.HeightProperty));
             sb.Children.Add(b);
 
-            Timeline.SetDesiredFrameRate(c, 120);
+            Timeline.SetDesiredFrameRate(c, 60);
             Storyboard.SetTarget(c, this);
             Storyboard.SetTargetProperty(c, new(FrameworkElement.MarginProperty));
             sb.Children.Add(c);
@@ -122,17 +122,17 @@ namespace OMPS.Components
                     new EasingThicknessKeyFrame(new(0), KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(550))) { EasingFunction = new CubicEase() { EasingMode = ease } },
                 ]
             };
-            Timeline.SetDesiredFrameRate(a, 120);
+            Timeline.SetDesiredFrameRate(a, 60);
             Storyboard.SetTarget(a, this);
             Storyboard.SetTargetProperty(a, new(FrameworkElement.OpacityProperty));
             sb.Children.Add(a);
 
-            Timeline.SetDesiredFrameRate(b, 120);
+            Timeline.SetDesiredFrameRate(b, 60);
             Storyboard.SetTarget(b, this);
             Storyboard.SetTargetProperty(b, new(FrameworkElement.HeightProperty));
             sb.Children.Add(b);
 
-            Timeline.SetDesiredFrameRate(c, 120);
+            Timeline.SetDesiredFrameRate(c, 60);
             Storyboard.SetTarget(c, this);
             Storyboard.SetTargetProperty(c, new(FrameworkElement.MarginProperty));
             sb.Children.Add(c);
@@ -150,7 +150,7 @@ namespace OMPS.Components
                     new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(ShownDurationMS))) { },
                 ]
             };
-            Timeline.SetDesiredFrameRate(a, 120);
+            Timeline.SetDesiredFrameRate(a, 60);
             Storyboard.SetTarget(a, this.RProgBar_Remaining);
             Storyboard.SetTargetProperty(a, new(XamlRadialProgressBar.RadialProgressBar.ValueProperty));
             sb.Children.Add(a);

@@ -39,7 +39,7 @@ namespace OMPS.Pages
             this.DataContext = this;
             //
             this.Refresher.Elapsed += Refresher_Elapsed;
-            this.Refresher.Start();
+            //this.Refresher.Start();
         }
 
         public uint infrequency = 0;
@@ -62,9 +62,9 @@ namespace OMPS.Pages
             ).Start();
             if (infrequency is 0 || infrequency == infrequentAltInterval)
             {
+                Debug.WriteLine("Infrequent home update");
                 Dispatcher.BeginInvoke(() =>
                 {
-                    Debug.WriteLine("Infrequent home update");
                     this.GetNewOrders();
                     Debug.WriteLine("GetNewOrders");
                     this.GetEngWorking();

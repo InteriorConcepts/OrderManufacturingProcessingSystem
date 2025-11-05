@@ -15,9 +15,7 @@
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
       FontSize="{Binding DataGridFontSize, ElementName=Page_EngOrder, FallbackValue=12}"
       >
-    <UserControl.CacheMode>
-        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
-    </UserControl.CacheMode>
+
     <UserControl.Resources>
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
         <!--
@@ -33,7 +31,7 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Padding="{TemplateBinding Padding}"
-                                TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+                                TextElement.Foreground="{StaticResource MaterialDesign.Brush.Foreground}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -61,7 +59,7 @@
                             <!-- Force inheritance for all TextBlocks within this template -->
                             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="Foreground" 
-                                        Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                                        Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                             </Style>
                         </ControlTemplate.Resources>
                     </ControlTemplate>
@@ -227,7 +225,7 @@
                     <Grid Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
@@ -337,7 +335,7 @@
                                 <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="Auto">
                             <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
                             <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" Width="Auto" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay}"/>
                         </StackPanel>
@@ -623,25 +621,25 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
-                    <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
-                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="9pt" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
+                    <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
+                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H6}" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
                              PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
                     <Button x:Name="Btn_FilterSave" Grid.Column="2"
-                            Height="20"
-                            Width="20"
+                            Height="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
+                            Width="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
                             Padding="0"
                             IsEnabled="True"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" 
                             ToolTip="Add Filter"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+                            Foreground="{StaticResource MaterialDesign.Brush.Foreground}">
                         <materialDesign:PackIcon
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Kind="AddBox"/>
                     </Button>
-                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" Opacity="0.7" FontSize="9pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
+                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" Opacity="0.7" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H6}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
                         <TextBlock>
                         Ex:&#x00A0;&#x00A0;<Italic><Underline>Jnt+D&amp;T+yes</Underline></Italic>&#x00A0;&#x00A0;or&#x00A0;&#x00A0;<Italic><Underline>Rivet+300-0</Underline></Italic>
                         </TextBlock>
@@ -650,14 +648,14 @@
                             Click="Btn_FilterClose_Click"
                             Padding="0"
                             materialDesign:ButtonAssist.CornerRadius="1"
-                            Height="20"
-                            Width="20"
+                            Height="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
+                            Width="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
                             IsEnabled="True"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             ToolTip="Close Filters"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+                            Foreground="{StaticResource MaterialDesign.Brush.Foreground}">
                         <materialDesign:PackIcon
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
@@ -665,10 +663,13 @@
                     </Button>
                 </Grid>
                 <Separator Grid.Row="1" Margin="0 1"/>
-                <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="10pt" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0" Visibility="Collapsed"/>
-                <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
-                    <WrapPanel Orientation="Horizontal" VerticalAlignment="Stretch">
-                        <Button Content="Assembled" Padding="2 1" Margin="0 0 3 1" Height="20" Width="Auto" FontSize="10" BorderThickness="0"/>
+                <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
+                <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                    <WrapPanel x:Name="WPnl_SavedFilters" Orientation="Horizontal" VerticalAlignment="Stretch">
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="yes+F" Click="Btn_SavedFilters_Click" Content="Assembled" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Til+p1-" Click="Btn_SavedFilters_Click" Content="Panels" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Tub+Tube" Click="Btn_SavedFilters_Click" Content="Tubes" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Pmd" Click="Btn_SavedFilters_Click" Content="Pmold" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
                     </WrapPanel>
                 </ScrollViewer>
             </Grid>
@@ -678,7 +679,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"/>
+            <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False" Foreground="White" Background="{x:Static local:Ext.AccentColorBrush50}" BorderBrush="{x:Static local:Ext.AccentColorBrush}"/>
 
             <!--
             <DataGrid x:Name="datagrid_QPO" Grid.Row="0" Visibility="Collapsed"
@@ -705,8 +706,8 @@
             <DataGrid x:Name="datagrid_main" Grid.Row="0" Visibility="Visible"
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
                       IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
-                      FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
-                      Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                      FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"
+                      Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                       CellEditEnding="DataGrid_CellEditEnding" SnapsToDevicePixels="True"
                       RowEditEnding="DataGrid_RowEditEnding"
                       IsTextSearchEnabled="True" Background="#222"
@@ -743,7 +744,7 @@
                         <Setter Property="BorderThickness" Value="0 0 1 0"/>
                         <Setter Property="BorderBrush" Value="#444"/>
                         <Setter Property="Background" Value="#333"/>
-                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Setter Property="Padding" Value="4"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
@@ -754,7 +755,7 @@
                         <Setter Property="FontWeight" Value="DemiBold"/>
                         <Setter Property="BorderThickness" Value="0 0 1 0"/>
                         <Setter Property="BorderBrush" Value="#444"/>
-                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                         <Setter Property="Padding" Value="16,4"/>
                         <Setter Property="Template">
@@ -783,7 +784,7 @@
                 <DataGrid.RowHeaderStyle>
                     <Style TargetType="DataGridRowHeader">
                         <Setter Property="Background" Value="#333"/>
-                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
                         <Setter Property="Padding" Value="0"/>
                         <Setter Property="BorderThickness" Value="0"/>
@@ -814,7 +815,7 @@
                         </Setter>
                         <Style.Triggers>
                             <Trigger Property="IsRowSelected" Value="True">
-                                <Setter Property="Background" Value="MediumPurple"/>
+                                <Setter Property="Background" Value="{x:Static local:Ext.AccentColorBrush}"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -827,11 +828,11 @@
                         <Setter Property="Padding" Value="0"/>
                         <Setter Property="Background" Value="#222"/>
                         <Setter Property="BorderBrush" Value="#555"/>
-                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="MediumPurple"/>
-                                <Setter Property="BorderBrush" Value="#ececec"/>
+                                <Setter Property="Background" Value="{x:Static local:Ext.AccentColorBrush50}"/>
+                                <Setter Property="BorderBrush" Value="{x:Static local:Ext.AccentColorBrush}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="Transparent"/>
@@ -847,7 +848,7 @@
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Background" Value="#222"/>
-                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                        <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Style.Triggers>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter Property="BorderThickness" Value="1"/>
@@ -875,11 +876,7 @@
             <DockPanel x:Name="pnl_dock" Visibility="Collapsed" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
                                           FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
-
                     <Grid Width="Auto" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                        <Grid.CacheMode>
-                            <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
-                        </Grid.CacheMode>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
@@ -1090,25 +1087,25 @@
         <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="4" LastChildFill="False" Background="#222">
             <RadioButton x:Name="RadioBtn_View_QPO" Content="Quote Parts Ordered" Tag="QuotePartsOrdered" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>
             <RadioButton x:Name="RadioBtn_View_QDO" Content="Quote Items Ordered" Tag="QuoteDetailOrdered" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>
             <RadioButton x:Name="RadioBtn_View_M" Content="Manuf Items" Tag="IceManuf"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          IsChecked="True" Checked="RadioButton_Checked"/>
             <RadioButton x:Name="RadioBtn_View_MP" Content="Manuf Parts" Tag="IceManufParts" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                          Checked="RadioButton_Checked"/>

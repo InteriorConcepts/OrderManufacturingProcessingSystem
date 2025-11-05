@@ -11,9 +11,6 @@
             mc:Ignorable="d" UseLayoutRounding="False"
             d:DesignHeight="600" d:DesignWidth="1025"
             DataContext="{Binding ElementName=Page_QuoteOrder}">
-    <UserControl.CacheMode>
-        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
-    </UserControl.CacheMode>
     <Grid DataContext="{Binding ElementName=Page_QuoteOrder}">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
@@ -73,42 +70,42 @@
         </Grid>
         <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="4" LastChildFill="False">
             <RadioButton x:Name="RadioBtn_View_QLI"  Content="Quote Line Items" Tag="QuoteLineItems"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  IsChecked="True"/>
             <RadioButton x:Name="RadioBtn_View_QTasks" Content="Quote Tasks" Tag="QuoteTasks"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />
             <RadioButton x:Name="RadioBtn_View_AreaDescr" Content="Area Descirption" Tag="AreaDescr"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />
             <RadioButton x:Name="RadioBtn_View_PPLNotes" Content="PPL Notes" Tag="PPLNotes"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />
             <RadioButton x:Name="RadioBtn_View_Notes" Content="Notes" Tag="Notes"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />
             <RadioButton x:Name="RadioBtn_View_InstallChkList" Content="Install Check List" Tag="InstallChkList"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />
             <RadioButton x:Name="RadioBtn_View_QuoteCases" Content="Quote Cases" Tag="QuoteCases"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />
             <RadioButton x:Name="RadioBtn_View_DepositeInvoice" Content="Deposit/Invoice" Tag="Deposit/Invoice"
-                 FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                 FontSize="12" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                  Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                  VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                  />

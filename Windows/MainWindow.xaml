@@ -18,8 +18,9 @@
     <Window.Resources>
         
     </Window.Resources>
+
     <Window.CacheMode>
-        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
+        <BitmapCache RenderAtScale="1" EnableClearType="True" SnapsToDevicePixels="False"/>
     </Window.CacheMode>
 
     <Window.TaskbarItemInfo>
@@ -236,31 +237,31 @@
                         </Grid.RowDefinitions>
                         <StackPanel>
                             <StackPanel Grid.Row="0" x:Name="Spnl_FrameTabs" Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                <RadioButton x:Name="TabBtn_Landing" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                <RadioButton x:Name="TabBtn_Landing" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                                              Content="Landing" Tag="{x:Static local:PageTypes.Home}" Padding="10 0"
                                              Visibility="Visible"
                                              Height="21" IsChecked="{Binding DataContext.Home_IsSelected, ElementName=MainWin, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
-                                <RadioButton x:Name="TabBtn_ProdCatSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                <RadioButton x:Name="TabBtn_ProdCatSearch" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                                              Content="PCat Search" Tag="{x:Static local:PageTypes.ProductCatalogSearch}" Padding="10 0"
                                              Visibility="{Binding ProductCatalogSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding ProductCatalogSearch_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
-                                <RadioButton x:Name="TabBtn_OrderSearch" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                <RadioButton x:Name="TabBtn_OrderSearch" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                                              Content="Order Search" Tag="{x:Static local:PageTypes.OrderSearch}" Padding="10 0"
                                              Visibility="{Binding OrderSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding OrderSearch_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
-                                <RadioButton x:Name="TabBtn_LineItemInfo" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                <RadioButton x:Name="TabBtn_LineItemInfo" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                                              Content="LineItem Info" Tag="{x:Static local:PageTypes.EngOrder}" Padding="10 0"
                                              Visibility="{Binding EngOrder_IsSelected, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding EngOrder_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
-                                <RadioButton x:Name="TabBtn_QuoteOrder" Style="{DynamicResource MaterialDesignTabRadioButtonBottom}"
+                                <RadioButton x:Name="TabBtn_QuoteOrder" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                                              Content="Quote Order" Tag="{x:Static local:PageTypes.QuoteOrder}" Padding="10 0"
                                              Visibility="{Binding QuoteOrder_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding QuoteOrder_IsSelected, Mode=OneWay}"
@@ -296,7 +297,7 @@
                                         <Rectangle Height="2" Fill="#FF3B5492"/>
                                     </StackPanel>
                                 </Expander.Header>
-                                <StackPanel HorizontalAlignment="Stretch" Background="#AA3B5492" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                                <StackPanel HorizontalAlignment="Stretch" Background="#AA3B5492" TextBlock.Foreground="{StaticResource MaterialDesignBody}">
                                     <Button Foreground="#eee" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}" Tag="{x:Static local:PageTypes.OrderSearch}"
                                 Click="Btn_SideNav_Click"
                                 Height="{Binding DataContext.FontSize_H1, FallbackValue=26}">
@@ -318,7 +319,7 @@
                                         <Rectangle Height="2" Fill="#FF3B5492"/>
                                     </StackPanel>
                                 </Expander.Header>
-                                <StackPanel HorizontalAlignment="Stretch" Background="#AA3B5492" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                                <StackPanel HorizontalAlignment="Stretch" Background="#AA3B5492" TextBlock.Foreground="{StaticResource MaterialDesignBody}">
                                     <Button Foreground="#eee" FontWeight="Regular" Style="{StaticResource MaterialDesignFlatButton}" Padding="2" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=16}" Tag="{x:Static local:PageTypes.ProductCatalogSearch}"
                                 Click="Btn_SideNav_Click"
                                 Height="{Binding DataContext.FontSize_H1, FallbackValue=26}">

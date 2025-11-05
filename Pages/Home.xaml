@@ -11,6 +11,7 @@
              d:DesignHeight="1000" d:DesignWidth="1525"
              DataContext="{Binding ElementName=Page_Home}"
              FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
+
     <UserControl.Resources>
         <!-- Context Menu fallback for DataGrids -->
         <ContextMenu x:Name="CtxMnu_EngRightClick" x:Key="CtxMnu_EngRightClick">
@@ -223,17 +224,13 @@
         </Style>
         
     </UserControl.Resources>
-    
+
     <UserControl.Background>
         <LinearGradientBrush EndPoint="0,0" StartPoint="1,1">
             <GradientStop Color="#FF292929" Offset="1"/>
             <GradientStop Color="#FF111111" Offset="0"/>
         </LinearGradientBrush>
     </UserControl.Background>
-    
-    <UserControl.CacheMode>
-        <BitmapCache EnableClearType="True" RenderAtScale="2.0" SnapsToDevicePixels="True"/>
-    </UserControl.CacheMode>
 
     <ScrollViewer DataContext="{Binding ElementName=Page_Home}">
         <StackPanel Orientation="Vertical" >

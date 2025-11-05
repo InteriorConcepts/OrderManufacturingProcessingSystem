@@ -38,6 +38,11 @@ namespace OMPS
 
     public static class Ext
     {
+
+        public static Color AccentColor = SystemParameters.WindowGlassColor;
+        public static SolidColorBrush AccentColorBrush => new SolidColorBrush(AccentColor);
+        public static SolidColorBrush AccentColorBrush50 => new SolidColorBrush(Color.FromArgb(127, AccentColor.R, AccentColor.G, AccentColor.B));
+
         #region "App.config"
         public enum AppConfigKey
         {
@@ -430,7 +435,9 @@ namespace OMPS
         public static bool MfgItems_Filter(example_queries_GetItemLinesByJobResult item, string filterText)
         {
 
-            var properties = typeof(example_queries_GetItemLinesByJobResult).GetProperties();
+            var properties =
+                typeof(example_queries_GetItemLinesByJobResult).GetProperties().
+                    Where(p => p.PropertyType != typeof(Guid));
 
             string[] filterGroups = filterText.Split(' ');
             string[][] groupFilters = [.. filterGroups.Select(g => g.Split('+', StringSplitOptions.RemoveEmptyEntries))];

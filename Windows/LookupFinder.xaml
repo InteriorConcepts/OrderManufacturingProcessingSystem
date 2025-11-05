@@ -24,7 +24,7 @@
         
     </Window.Resources>
     <Window.CacheMode>
-        <BitmapCache RenderAtScale="2" EnableClearType="True" SnapsToDevicePixels="True"/>
+        <BitmapCache RenderAtScale="1.5" EnableClearType="True" SnapsToDevicePixels="True"/>
     </Window.CacheMode>
     <Border CornerRadius="2" Background="#292929" BorderBrush="{StaticResource MaterialDesign.Brush.Primary}" BorderThickness="1">
         <Grid DataContext="{Binding ElementName=LookupFinderWindow}">
@@ -46,8 +46,8 @@
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          materialDesign:TextFieldAssist.ClearButtonSize="14"
                          AcceptsReturn="False" TextWrapping="NoWrap"
-                         FontSize="{Binding MainVM.FontSize_Base}"
-                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         FontSize="{Binding Path=MainViewModel.FontSize_H4}"
+                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignFilledTextBox}" Width="125"
                          PreviewKeyDown="Txt_PreviewKeyDown" />
                 <TextBox x:Name="Txt_FilterDesc" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
@@ -55,13 +55,13 @@
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          materialDesign:TextFieldAssist.ClearButtonSize="14"
                          AcceptsReturn="False" TextWrapping="NoWrap"
-                         FontSize="{Binding MainVM.FontSize_Base}"
-                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                         FontSize="{Binding Path=MainViewModel.FontSize_H4}"
+                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignFilledTextBox}" Width="440"
                          PreviewKeyDown="Txt_PreviewKeyDown" />
             </StackPanel>
             <DataGrid x:Name="DataGrid_Lookup" Grid.Row="2"
-                      FontSize="{Binding MainVM.FontSize_Base}"
+                      FontSize="{Binding Path=MainViewModel.FontSize_H4}"
                       ItemsSource="{Binding Source={StaticResource DataViewSource}}"
                       CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserReorderColumns="False"
                       AutoGenerateColumns="True"
@@ -82,7 +82,7 @@
             </DataGrid>
             <Label x:Name="Lbl_datagrid_count" Grid.Row="3" Padding="4 0 0 0" Margin="0"
                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                   Foreground="#aaa" FontSize="{Binding MainVM.FontSize_Base, FallbackValue=12, Converter={conv:ScalingConverter}, ConverterParameter=0.8}"
+                   Foreground="#aaa" FontSize="{Binding MainViewModel.FontSize_Base, FallbackValue=12, Converter={conv:ScalingConverter}, ConverterParameter=0.8}"
                    Content="{Binding ElementName=DataGrid_Lookup, Path=Items.Count}" ContentStringFormat="Showing {0:N0} items"/>
         </Grid>
     </Border>

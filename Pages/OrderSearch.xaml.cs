@@ -54,7 +54,7 @@ namespace OMPS.Pages
 
         #region Properties
 
-        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
         internal static MainWindow ParentWindow { get => Ext.MainWindow; }
         internal static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
 

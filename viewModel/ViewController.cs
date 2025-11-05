@@ -335,7 +335,7 @@ namespace OMPS.viewModel
             switch (pageType)
             {
                 case PageTypes.Home:
-                    if (this.Home_VM?.NewOrders?.Count is not 0) return;
+                    //if (this.Home_VM?.NewOrders?.Count is not 0) return;
                     this.Home_VM?.LoadData();
                     Debug.WriteLine("Load Home");
                     break;

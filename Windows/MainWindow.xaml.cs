@@ -112,13 +112,13 @@ namespace OMPS.Windows
 
         #endregion
 
+
         #region Event Handlers
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.ver.Content = $"v{Ext.ApplicationVersionStr}";
             (this.ver.ToolTip as ToolTip)?.Content = $"Version: {Ext.ApplicationVersionStr}\nBuild date: {Ext.ApplicationBuildDateStr}";
             Ext.MainViewModel.CurrentPage = PageTypes.Home;
-            MessageBox.Show(SystemParameters.WindowGlassColor.ToString());
             //if (MainViewModel.AddNewPage(PageTypes.OrderSearch) is not string tag) return;
             //(MainViewModel[tag] as OrderSearch)?.LoadRecentOrders();
         }

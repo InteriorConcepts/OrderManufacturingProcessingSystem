@@ -16,8 +16,8 @@
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource SystemColors.ControlBrushKey}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemColors.ControlTextBrushKey}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -28,8 +28,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsReadOnly" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                            <Setter Property="Background" Value="{StaticResource SystemColors.ActiveBorderBrushKey}" />
+                            <Setter Property="Foreground" Value="{StaticResource SystemColors.ControlTextBrushKey}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -38,9 +38,9 @@
     </Style>
     <!--
     <Style TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource SystemColors.ControlDarkBrushKey}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemColors.ControlTextBrushKey}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SystemColors.InactiveBorderBrushKey}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -63,9 +63,9 @@
     -->
 
     <Style TargetType="{x:Type Button}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource SystemColors.ControlDarkDarkBrushKey}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemColors.ControlLightLightBrushKey}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SystemColors.ActiveBorderBrushKey}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -85,18 +85,18 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource SystemColors.HighlightBrushKey}" />
+                            <Setter Property="Foreground" Value="{StaticResource SystemColors.HighlightTextBrushKey}" />
+                            <Setter Property="Background" Value="{StaticResource SystemColors.ControlDarkBrushKey}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource SystemColors.HotTrackBrushKey}" />
+                            <Setter Property="Foreground" Value="{StaticResource SystemColors.HighlightTextBrushKey}" />
+                            <Setter Property="Background" Value="{StaticResource SystemColors.ControlDarkBrushKey}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource SystemColors.ControlBrushKey}" />
+                            <Setter Property="Foreground" Value="{StaticResource SystemColors.GrayTextBrushKey}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding Source={StaticResource IsDarkTheme}}" Value="True">
                             <Setter Property="Background" Value="#222"/>
@@ -113,9 +113,9 @@
     </Style>
 
     <Style TargetType="{x:Type TabControl}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource SystemColors.ControlBrushKey}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemColors.ControlTextBrushKey}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SystemColors.ActiveBorderBrushKey}" />
     </Style>
 
     <Style TargetType="{x:Type Components:LabelInputPair}">
@@ -140,9 +140,9 @@
 
     <!--
     <Style TargetType="TabItem">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+        <Setter Property="Background" Value="{StaticResource SystemColors.ControlTextBrushKey}" />
+        <Setter Property="Foreground" Value="{StaticResource SystemColors.ControlBrushKey}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SystemColors.ActiveBorderBrushKey}" />
     </Style>
     -->
     

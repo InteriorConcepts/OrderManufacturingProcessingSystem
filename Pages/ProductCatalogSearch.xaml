@@ -12,11 +12,7 @@
              d:DesignHeight="600" d:DesignWidth="1025"
              DataContext="{Binding ElementName=Page_ProductCatalogSearch}" Background="#292929"
              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
-    
-    <UserControl.CacheMode>
-        <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
-    </UserControl.CacheMode>
-    
+
     <UserControl.Resources>
         <CollectionViewSource x:Key="ProductsViewSource" Source="{Binding Products}" Filter="ProductsViewSource_Filter"/>
     </UserControl.Resources>

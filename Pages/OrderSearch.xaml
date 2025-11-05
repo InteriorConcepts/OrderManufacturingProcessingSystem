@@ -11,11 +11,7 @@
       d:DesignHeight="600" d:DesignWidth="1025"
       DataContext="{Binding ElementName=Page_OrderSearch}" Background="#292929"
       FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
-    
-    <UserControl.CacheMode>
-        <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
-    </UserControl.CacheMode>
-    
+        
     <UserControl.Resources>
         <CollectionViewSource x:Key="OrdersViewSource" Source="{Binding ColorSetInfos}" Filter="OrdersViewSource_Filter"/>
     </UserControl.Resources>
@@ -78,7 +74,7 @@
                   EnableColumnVirtualization="False" MouseDoubleClick="datagrid_orders_MouseDoubleClick"
                   EnableRowVirtualization="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   RowHeaderWidth="36" HeadersVisibility="All" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"
-                  FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" CanUserResizeColumns="False" CanUserResizeRows="False"
+                  FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}" CanUserResizeColumns="False" CanUserResizeRows="False"
                   LoadingRow="datagrid_orders_LoadingRow" Sorting="datagrid_orders_Sorting" InitializingNewItem="datagrid_orders_InitializingNewItem">
             
             <!--
@@ -119,7 +115,7 @@
                             <StackPanel Orientation="Horizontal" ToolTip="Open In EngOrder">
                                 <TextBlock Text="{Binding JobNbr}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -130,7 +126,7 @@
                             <StackPanel Orientation="Horizontal" ToolTip="Open In QuoteOrder">
                                 <TextBlock Text="{Binding OrderNumber}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -141,7 +137,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Name}" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -152,7 +148,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding OpportunityNbr}" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -163,7 +159,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding OrderDate}" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                           FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

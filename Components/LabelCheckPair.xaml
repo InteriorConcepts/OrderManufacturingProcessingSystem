@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              x:Name="Root" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
             d:DesignHeight="22" d:DesignWidth="100" Padding="1 2 1 2" Height="22" Margin="0 2"
-             Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+             Foreground="{StaticResource MaterialDesign.Brush.Foreground}">
     <UserControl.Resources>
         
     </UserControl.Resources>

@@ -8,9 +8,6 @@
              x:Class="OMPS.Pages.Login"
              mc:Ignorable="d" Background="Pink"
              d:DesignHeight="650" d:DesignWidth="600" x:Name="Page_Login">
-    <UserControl.CacheMode>
-        <BitmapCache RenderAtScale="3" EnableClearType="True" SnapsToDevicePixels="True"/>
-    </UserControl.CacheMode>
     <UserControl.Resources>
         <ResourceDictionary>
             <!-- Merge the external dictionary into local resources -->

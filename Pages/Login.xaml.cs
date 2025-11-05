@@ -184,7 +184,7 @@ namespace OMPS.Pages
                         }.SetTarget(Window.LeftProperty, ParentWindow)
                     ]
                 };
-                Storyboard.SetDesiredFrameRate(sb, 240);
+                Storyboard.SetDesiredFrameRate(sb, 60);
                 Storyboard.SetTarget(ParentWindow, sb);
                 
                 sb.Completed += (ss, ee) =>
