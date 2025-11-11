@@ -11,6 +11,7 @@ using OMPS.viewModel;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -28,6 +29,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using Windows.ApplicationModel.Background;
 using Windows.System.RemoteSystems;
 using SCH = SQL_And_Config_Handler;
@@ -48,7 +50,9 @@ namespace OMPS.Pages
             //this.FrmFin.ItemSource = Finishes_Default;
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
             this.PropertyChanged += this.EngOrder_PropertyChanged;
+#if !NEWDBSQL
             this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
+#endif
             for (int i = 0; i < this.SPnl_LookupInputs.Children.Count; i++)
             {
                 TextBox cntrl = this.SPnl_LookupInputs.Children.OfType<TextBox>().ElementAt(i);
@@ -56,7 +60,6 @@ namespace OMPS.Pages
                 dpd.AddValueChanged(cntrl, LabelInputLookupPair_TagChanged);
             }
         }
-
 
         private void ColorSetInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -109,14 +112,6 @@ namespace OMPS.Pages
         internal static MainWindow ParentWindow { get => Ext.MainWindow; }
 
         public const short DELAY_HEADER_REFRESH = 10000;
-
-        public const string extProc_ImportEngMfg_exe = "P:\\!CRM\\IceMfgImport.exe";
-        public const string extProc_ProcEngMfg_exe = "P:\\!CRM\\IceMfgProcess.exe";
-        public const string extProc_CalcEngMatl_exe = "P:\\!CRM\\IceMatlCalc.exe";
-        public const string extProc_CncCutList_exe = "P:\\!CRM\\IceCNCCutList.exe";
-        public const string extProc_SymEngExp_exe = "P:\\!CRM\\SymIceExp.exe";
-
-        public const string extProc_ColorSet_arg = "iColorSetID={{@ColorSetID}}";
 
         public Dictionary<string, bool> ExternalProc_GroupActive = new()
         {
@@ -189,8 +184,8 @@ namespace OMPS.Pages
             }
         } = [];
 #if NEWDBSQL
-        public List<Models.Order.AIcIceManuf> _mfgItemLines = [];
-        public IReadOnlyCollection<Models.Order.AIcIceManuf> MfgItemLines => this._mfgItemLines;
+        public List<Models.Order.AIcManuf> _mfgItemLines = [];
+        public IReadOnlyCollection<Models.Order.AIcManuf> MfgItemLines => this._mfgItemLines;
 #else
         public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
 #endif
@@ -200,20 +195,6 @@ namespace OMPS.Pages
         #region Fields
 
         public int RowSpan = 1;
-        private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsExcludedHidden =
-            ["IceManufID", "ColorSetID", "ProductID",
-            "ProductLinkID", "ItemID", "JobNbr", "QuoteNbr", "CustOrderNbr",
-            "BpartnerAvailable", "CustomerAvailable", "CreatedByID",
-            "ChangedbyID", "ChangebyIDOffline"];
-        private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsReadonly =
-            ["QuoteNbr", "JobNbr", "CustOrderNbr",
-            "Usertag1", "Multiplier", "Area", "CreationDate", "ChangeDate"];
-        private readonly ReadOnlyCollection<string> DataGrid_IceManuf_ColumnsOrder = [
-            "PartNbr", "ItemNbr", "CatalogNbr", "Qty", "Multiplier",
-            "Description", "UofM", "Type", "SubType", "IDNbr", "Explode",
-            "Assembled", "AssyNbr", "TileIndicator", "ItemFin", "ColorBy",
-            "WorkCtr"
-            ];
         #endregion
 
 
@@ -304,9 +285,9 @@ namespace OMPS.Pages
 #if NEWDBSQL
             using (var ctx = new Models.Order.OrderDbCtx())
             {
-                this._mfgItemLines = await ctx.AIcIceManufs
+                this._mfgItemLines = await ctx.AIcManufs
                     .Where(p => p.JobNbr == job)
-                    .OrderBy(p => p.IceManufId)
+                    .OrderBy(p => p.ManufId)
                     .AsNoTracking() // No change tracking
                     .AsSingleQuery()
                     .ToListAsync();
@@ -416,6 +397,7 @@ namespace OMPS.Pages
 
         public void FocusFieldFromRowCell()
         {
+            if (this.datagrid_main.SelectedCells.Count is 0) return;
             if (this.pnl_dock.Visibility is Visibility.Collapsed)
                 ToggleSideGrid();
             if (this.datagrid_main.SelectedCells.Count is 0) return;
@@ -461,6 +443,9 @@ namespace OMPS.Pages
 
         public void DoMfgItemsFilter()
         {
+            var filterText = this.Txt_Filter.Text.ToLower().Trim();
+            Ext.MfgItem_FilterGroups = filterText.Split(' ');
+            Ext.MfgItem_GroupFilters = [.. Ext.MfgItem_FilterGroups.Select(g => g.Split('+', StringSplitOptions.RemoveEmptyEntries))];
             var viewSource = (CollectionViewSource)Resources["MfgItemsViewSource"];
             viewSource?.View?.Refresh();
         }
@@ -493,7 +478,7 @@ namespace OMPS.Pages
         {
             e.Row.Header = new TextBlock()
             {
-                Text = e.Row.GetIndex().ToString(),
+                Text = (e.Row.GetIndex() + 1).ToString(),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 TextAlignment = TextAlignment.Right,
                 Margin = new(0, 0, 8, 0),
@@ -507,18 +492,15 @@ namespace OMPS.Pages
             {
                 return;
             }
-            if (this.DataGrid_IceManuf_ColumnsOrder.Contains(headerName))
-            {
-                e.Column.DisplayIndex = this.DataGrid_IceManuf_ColumnsOrder.IndexOf(headerName);
-            }
-            if (this.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(headerName)) {
+            string headerNameLower = headerName.ToLower();
+            if (Ext.DataGrid_Manuf_ColumnsExcludedHidden.Contains(headerNameLower)) {
                 e.Cancel = true;
             }
             e.Column.Visibility =
-                this.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(headerName) ?
+                Ext.DataGrid_Manuf_ColumnsExcludedHidden.Contains(headerNameLower) ?
                 Visibility.Collapsed :
                 Visibility.Visible;
-            e.Column.IsReadOnly = this.DataGrid_IceManuf_ColumnsReadonly.Contains(headerName);
+            e.Column.IsReadOnly = Ext.DataGrid_Manuf_ColumnsReadonly.Contains(headerNameLower);
         }
 
         private void dataSideGridScrollViewer_Loaded(object sender, RoutedEventArgs e)
@@ -580,9 +562,9 @@ namespace OMPS.Pages
             }
 
             // Get text from TextBox
-            var filterText = Txt_Filter.Text.ToLower();
+            var filterText = Txt_Filter.Text.ToLower().Trim();
             // If the filter text is empty, accept all items
-            if (filterText is null || string.IsNullOrWhiteSpace(filterText))
+            if (filterText is null || filterText is "")
             {
                 //e.Accepted = true;
                 e.Accepted = true;
@@ -599,6 +581,14 @@ namespace OMPS.Pages
 
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
+            foreach (var col in this.datagrid_main.Columns)
+            {
+                if (col.Header is not string headerName) continue;
+                if (Ext.DataGrid_Manuf_ColumnsOrder.IndexOf(headerName.ToLower()) is int idx && idx is not -1)
+                {
+                    col.DisplayIndex = idx;
+                }
+            }
             //this.grid_dataeditregion.Children.Clear();
             //this.grid_dataeditregion.RowDefinitions.Clear();
             /*
@@ -677,14 +667,14 @@ namespace OMPS.Pages
             var lbls = this.WPnl_EditLabels.Children.OfType<Label>().ToArray();
             if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> txts) return;
 #if NEWDBSQL
-            if (this.datagrid_main.SelectedItem is not AIcIceManuf line) return;
+            if (this.datagrid_main.SelectedItem is not AIcManuf line) return;
             List<(string, bool, object?)> changes = [];
             if(this.WPnl_EditInputs.BindingGroup.CommitEdit())
             {
                 using (var ctx = new OrderDbCtx())
                 {
-                    var dbline = await ctx.AIcIceManufs
-                        .FirstOrDefaultAsync(i => i.IceManufId == line.IceManufId);
+                    var dbline = await ctx.AIcManufs
+                        .FirstOrDefaultAsync(i => i.ManufId == line.ManufId);
                     if (dbline is null)
                     {
                         Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", $"Item line was not found and may have been deleted, refresh item lines and try again", FeedbackToast.IconTypes.Error).Show();
@@ -719,8 +709,8 @@ namespace OMPS.Pages
                 var binding = item.GetBindingExpression(dpinfoval.dp);
                 var propertyName = binding.ParentBinding.Path.Path;
                 if (propertyName is null ||
-                    this.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(propertyName) ||
-                    this.DataGrid_IceManuf_ColumnsReadonly.Contains(propertyName))
+                    Ext.DataGrid_IceManuf_ColumnsExcludedHidden.Contains(propertyName) ||
+                    Ext.DataGrid_IceManuf_ColumnsReadonly.Contains(propertyName))
                 {
                     continue;
                 }
@@ -770,8 +760,8 @@ namespace OMPS.Pages
                 if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
             }
 #if NEWDBSQL
-            if (this.datagrid_main.SelectedItem is not Models.Order.AIcIceManuf line) return;
-            var res = await this.DeleteItemLine(line.IceManufId, line.JobNbr);
+            if (this.datagrid_main.SelectedItem is not Models.Order.AIcManuf line) return;
+            var res = await Ext.DeleteItemLine(line.ManufId, line.JobNbr);
 #else
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
             var res = await Ext.DeleteItemLine(line.IceManufID, line.JobNbr);
@@ -864,16 +854,16 @@ namespace OMPS.Pages
             using (var ctx = new Models.Product.ProductDbCtx())
             {
                 var res = await ctx.IcItems
-                    .Where(p => p.ItemId.ToString() == e.Lookup)
+                    .Where(p => p.ItemId.ToString() == lookupGuid.ToString())
                     .AsNoTracking() // No change tracking
                     .AsSplitQuery()
                     .ToListAsync();
                 if (res is null || res.Count is 0 || res[0] is not IcItem item)
                 {
-                    e.Source.InputLookupValue = "-";
+                    txt.Text = "-";
                     return;
                 }
-                e.Source.InputLookupValue = $"{item.Item} - {item.Description}";
+                txt.Text = $"{item.Item} - {item.Description}";
             }
 #else
             var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
@@ -992,6 +982,33 @@ namespace OMPS.Pages
         private async void Btn_SaveHeader_Click(object sender, RoutedEventArgs e)
         {
             if (this.ColorSetInfo_Changes.Count is 0) return;
+#if NEWDBSQL
+            if (this.ColorSetInfo.ColorSetId.ToString().Length < 8) return;
+            try
+            {
+                using var context = new Models.Order.OrderDbCtx();
+                var dborder = await context.AIcColorSets
+                    .Where(o => o.ColorSetId == ColorSetInfo.ColorSetId)
+                    .FirstAsync();
+                if (dborder is null) return;
+                foreach (var prop in dborder.GetType().GetProperties(BindingFlags.Default))
+                {
+                    if (!this.ColorSetInfo_Changes.ContainsKey(prop.Name)) continue;
+                    var orderprop = ColorSetInfo.GetType().GetProperty(prop.Name, BindingFlags.Default);
+                    if (orderprop is null) continue;
+                    var orderval = orderprop.GetValue(ColorSetInfo);
+                    if (orderval != prop.GetValue(dborder))
+                    {
+                        prop.SetValue(dborder, orderval);
+                    }
+                }
+                await context.SaveChangesAsync();
+                Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", $"Saved {this.ColorSetInfo_Changes.Count} header changes successfully", FeedbackToast.IconTypes.Info).Show();
+            } catch
+            {
+                Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Header changes not saved successfully :(", FeedbackToast.IconTypes.Error).Show();
+            }
+#else
             if (this.ColorSetInfo.ColorSetID.ToString().Length < 8) return;
             var dbcon1 = new System.Data.Odbc.OdbcConnection($"Driver={{SQL Server}};Server={SCH.Global.Config["sql.servers.OldCRM"]};Database={SCH.Global.Config["sql.databases.OldCRM"]};DSN={SCH.Global.Config["sql.databases.OldCRM"]};Trusted_Connection=Yes;Integrated Security=SSPI;");
             var cmd1 = dbcon1.CreateCommand();
@@ -1014,122 +1031,66 @@ namespace OMPS.Pages
             {
                 await dbcon1.OpenAsync();
                 var res = await cmd1.ExecuteNonQueryAsync();
-                var changesCount = this.ColorSetInfo_Changes.Count;
                 //this.ColorSetInfo_Changes.Clear();
                 this.ColorSetInfo_Changes = [];
-                Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", $"Saved {changesCount} header changes successfully", FeedbackToast.IconTypes.Info).Show();
+                Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", $"Saved {this.ColorSetInfo_Changes.Count} header changes successfully", FeedbackToast.IconTypes.Info).Show();
             } catch
             {
                 Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Header changes not saved successfully :(", FeedbackToast.IconTypes.Error).Show();
             }
+#endif
         }
 
-        private async void Btn_ExtProc_ImpMfg_Click(object sender, RoutedEventArgs e)
+        private async void ExtProc_Button_Click(string exePath, Button? sender)
         {
-            /*
-            if (System.IO.Directory.Exists($"C:/{JobNbr}") is false)
-            {
-                MessageBox.Show($"Folder 'C:/{JobNbr}' not found", "Local file not found", MessageBoxButton.OK, MessageBoxImage.Stop);
-                return;
-            }
-            */
             if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
                 return;
             else
                 this.ExternalProc_GroupActive["stdEngProcs"] = true;
 
             this.ResetUI();
+
             ProcessStartInfo psi = new(
-                extProc_ImportEngMfg_exe,
-                extProc_ColorSet_arg.Replace(
+                exePath,
+                Ext.extProc_ColorSet_arg.Replace(
                     "{@ColorSetID}",
-                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
+                    this.ColorSetInfo.ColorSetId.ToString().ToUpper()
                 )
             );
-            ((Button)sender).BorderBrush = Brushes.Goldenrod;
+            sender?.BorderBrush = Brushes.Goldenrod;
             await Ext.RunExternal(psi);
-            ((Button)sender).BorderBrush = Brushes.ForestGreen;
+            sender?.BorderBrush = Brushes.ForestGreen;
             this.ExternalProc_GroupActive["stdEngProcs"] = false;
         }
 
-        private async void Btn_ExtProc_EngPrc_Click(object sender, RoutedEventArgs e)
+        private void Btn_ExtProc_ImpMfg_Click(object sender, RoutedEventArgs e)
         {
-            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
+            if (System.IO.Directory.Exists($"C:/{JobNbr}") is false)
+            {
+                MessageBox.Show($"Folder 'C:/{JobNbr}' not found", "Local file not found", MessageBoxButton.OK, MessageBoxImage.Stop);
                 return;
-            else
-                this.ExternalProc_GroupActive["stdEngProcs"] = true;
-
-            ProcessStartInfo psi = new(
-                extProc_ProcEngMfg_exe,
-                extProc_ColorSet_arg.Replace(
-                    "{@ColorSetID}",
-                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
-                )
-            );
-            ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await Ext.RunExternal(psi);
-            ((Button)sender).BorderBrush = Brushes.ForestGreen;
-            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+            }
+            this.ExtProc_Button_Click(Ext.extProc_BaseDir + Ext.extProc_New_ImportEngMfg, (Button)(sender ?? this.Btn_ExtProc_ImpMfg));
         }
 
-        private async void Btn_ExtProc_Matl_Click(object sender, RoutedEventArgs e)
+        private void Btn_ExtProc_EngPrc_Click(object sender, RoutedEventArgs e)
         {
-            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
-                return;
-            else
-                this.ExternalProc_GroupActive["stdEngProcs"] = true;
-
-            ProcessStartInfo psi = new(
-                extProc_CalcEngMatl_exe,
-                extProc_ColorSet_arg.Replace(
-                    "{@ColorSetID}",
-                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
-                )
-            );
-            ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await Ext.RunExternal(psi);
-            ((Button)sender).BorderBrush = Brushes.ForestGreen;
-            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+            this.ExtProc_Button_Click(Ext.extProc_BaseDir + Ext.extProc_New_ProcEngMfg, (Button)(sender ?? this.Btn_ExtProc_EngPrc));
         }
 
-        private async void Btn_ExtProc_Cutlst_Click(object sender, RoutedEventArgs e)
+        private void Btn_ExtProc_Matl_Click(object sender, RoutedEventArgs e)
         {
-            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
-                return;
-            else
-                this.ExternalProc_GroupActive["stdEngProcs"] = true;
-
-            ProcessStartInfo psi = new(
-                extProc_CncCutList_exe,
-                extProc_ColorSet_arg.Replace(
-                    "{@ColorSetID}",
-                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
-                )
-            );
-            ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await Ext.RunExternal(psi);
-            ((Button)sender).BorderBrush = Brushes.ForestGreen;
-            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+            this.ExtProc_Button_Click(Ext.extProc_BaseDir + Ext.extProc_New_CalcEngMatl, (Button)(sender ?? this.Btn_ExtProc_Matl));
         }
 
-        private async void Btn_ExtProc_SlExp_Click(object sender, RoutedEventArgs e)
+        private void Btn_ExtProc_Cutlst_Click(object sender, RoutedEventArgs e)
         {
-            if (this.ExternalProc_GroupActive["stdEngProcs"] is true)
-                return;
-            else
-                this.ExternalProc_GroupActive["stdEngProcs"] = true;
+            this.ExtProc_Button_Click(Ext.extProc_BaseDir + Ext.extProc_New_CncCutList, (Button)(sender ?? this.Btn_ExtProc_Cutlst));
+        }
 
-            ProcessStartInfo psi = new(
-                extProc_SymEngExp_exe,
-                extProc_ColorSet_arg.Replace(
-                    "{@ColorSetID}",
-                    this.ColorSetInfo.ColorSetID.ToString().ToUpper()
-                )
-            );
-            ((Button)sender).BorderBrush = Brushes.Goldenrod;
-            await Ext.RunExternal(psi);
-            ((Button)sender).BorderBrush = Brushes.ForestGreen;
-            this.ExternalProc_GroupActive["stdEngProcs"] = false;
+        private void Btn_ExtProc_SlExp_Click(object sender, RoutedEventArgs e)
+        {
+            this.ExtProc_Button_Click(Ext.extProc_BaseDir + Ext.extProc_New_SymEngExp, (Button)(sender ?? this.Btn_ExtProc_SlExp));
         }
 
         private async void Btn_rowEdit_Lookup_Click(object sender, RoutedEventArgs e)
@@ -1352,7 +1313,7 @@ namespace OMPS.Pages
             this.Txt_Filter.Text = filterStr;
             this.DoMfgItemsFilter();
         }
-        #endregion
+#endregion
 
     }
 }

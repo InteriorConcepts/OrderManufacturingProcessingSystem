@@ -18,11 +18,13 @@
     <Optimize>True</Optimize>
     <DebugType>full</DebugType>
     <Deterministic>False</Deterministic>
+    <DefineConstants>$(DefineConstants);NEWDBSQL</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>full</DebugType>
     <Deterministic>False</Deterministic>
+    <DefineConstants>$(DefineConstants);NEWDBSQL</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +40,7 @@
     <None Remove="Images\Binoculars-high_contrast.png" />
     <None Remove="Images\fluent_web_dark_bg.png" />
     <None Remove="Images\gradient.png" />
+    <None Remove="Images\Infor_logo_95x95.png" />
     <None Remove="Images\Network-online.png" />
     <None Remove="Network-error.png" />
     <None Remove="Network-out.png" />
@@ -57,6 +60,7 @@
     <Resource Include="Images\Binoculars.png" />
     <Resource Include="Images\fluent_web_dark_bg.png" />
     <Resource Include="Images\gradient.png" />
+    <Resource Include="Images\Infor_logo_95x95.png" />
     <Resource Include="Images\Network-error.png" />
     <Resource Include="Images\Network-online.png" />
     <Resource Include="Images\Network-out.png" />

@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using MyApp.DataAccess.Generated;
 using OMPS.Models;
 using OMPS.Pages;
@@ -6,6 +7,8 @@ using OMPS.viewModel;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Data;
@@ -20,6 +23,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using static OMPS.Pages.EngOrder;
+using static System.Net.WebRequestMethods;
 
 
 namespace OMPS
@@ -53,7 +57,8 @@ namespace OMPS
             Notify_engrelease,
             Notify_cncwks,
             Notify_cncpnl,
-            EngOrder_
+            EngOrder_VertBorder,
+            Shortcuts,
         }
         internal static void ValidateAppSettings()
         {
@@ -432,34 +437,77 @@ namespace OMPS
         }
 
         #region Filters
+
+        public static readonly ImmutableList<string> DataGrid_Manuf_ColumnsExcludedHidden = ImmutableList.Create([
+                "ManufId", "ColorSetId", "ProductId",
+                "ProductLinkId", "ItemId", "JobNbr", "QuoteNbr", "CustOrderNbr",
+                "BpartnerAvailable", "CustomerAvailable", "CreatedById",
+                "ChangedbyId", "ChangebyIdOffline"
+            ]).Select(s => s.ToLower()).ToImmutableList();
+        public static readonly ImmutableList<string> DataGrid_Manuf_ColumnsReadonly = ImmutableList.Create([
+                "QuoteNbr", "JobNbr", "CustOrderNbr",
+                "Usertag1", "Multiplier", "Area", "CreationDate", "ChangeDate"
+            ]).Select(s => s.ToLower()).ToImmutableList();
+        public static readonly ImmutableList<string> DataGrid_Manuf_ColumnsOrder = ImmutableList.Create([
+                "PartNbr", "ItemNbr", "CatalogNbr", "Qty", "Multiplier",
+                "Description", "UofM", "Type", "SubType", "IDNbr", "Explode",
+                "Assembled", "AssyNbr", "TileIndicator", "ItemFin", "ColorBy",
+                "WorkCtr"
+            ]).Select(s => s.ToLower()).ToImmutableList();
+
+        public static readonly ImmutableList<PropertyInfo> MfgItem_FilterProps = [..
+                typeof(example_queries_GetItemLinesByJobResult).
+                    GetProperties().
+                    Where(p => p.PropertyType != typeof(Guid) &&
+                                         p.PropertyType != typeof(DateTime) &&
+                                         !DataGrid_Manuf_ColumnsExcludedHidden.Contains(p.Name.ToLower())
+                    )
+            ];
+        public static string[] MfgItem_FilterGroups = [];
+        public static string[][] MfgItem_GroupFilters = [];
+        public static bool MfgItems_Filter_Desc(example_queries_GetItemLinesByJobResult item, string filterText)
+        {
+            return (item.Description.Contains(filterText, StringComparison.CurrentCultureIgnoreCase));
+        }
         public static bool MfgItems_Filter(example_queries_GetItemLinesByJobResult item, string filterText)
         {
-
-            var properties =
-                typeof(example_queries_GetItemLinesByJobResult).GetProperties().
-                    Where(p => p.PropertyType != typeof(Guid));
-
-            string[] filterGroups = filterText.Split(' ');
-            string[][] groupFilters = [.. filterGroups.Select(g => g.Split('+', StringSplitOptions.RemoveEmptyEntries))];
-
-            int i = 0;
-            foreach (var group in groupFilters)
+            byte i = 0;
+            for (byte j = 0; j < MfgItem_GroupFilters.Length; j++)
             {
+                var group = MfgItem_GroupFilters[j];
                 List<string> groupReqd = [.. group];
-                foreach (var filter in group)
+                for (byte k = 0; k < group.Length; k++)
                 {
-                    foreach (var property in properties)
+                    var filter = group[k];
+                    if (!groupReqd.Contains(filter)) continue;
+                    if (filter.Contains('='))
                     {
-                        var value = property.GetValue(item)?.ToString();
-                        //Debug.WriteLine(filter + " == " + value);
-                        if (value is not null && value.Contains(filter, StringComparison.CurrentCultureIgnoreCase))
+                        //Debug.WriteLine("PropName");
+                        var split = filter.Split('=');
+                        string pName = split[0],
+                                pValue = split[1];
+                        //Debug.WriteLine(pName);
+                        if (item.GetType().GetProperty(pName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase) is not PropertyInfo pInfo) continue;
+                        //Debug.WriteLine("has prop");
+                        if (pInfo.GetValue(item) is not object obj || obj.ToString() is not string value) continue;
+                        //Debug.WriteLine("has prop val");
+                        if (!value.Contains(pValue, StringComparison.CurrentCultureIgnoreCase)) continue;
+                        //Debug.WriteLine("has val");
+                        groupReqd.Remove(filter);
+                        if (groupReqd.Count is not 0) continue;
+                        return true;
+                    }
+                    else
+                    {
+                        for (byte l = 0; l < MfgItem_FilterProps.Count; l++)
                         {
+                            var property = MfgItem_FilterProps[l];
+                            if (property.GetValue(item) is not object obj || obj.ToString() is not string value) continue;
+                            //Debug.WriteLine(filter + " == " + value);
+                            if (!value.Contains(filter, StringComparison.CurrentCultureIgnoreCase)) continue;
                             groupReqd.Remove(filter);
-                            if (groupReqd.Count is 0)
-                            {
-                                //e.Accepted = true;
-                                return true;
-                            }
+                            if (groupReqd.Count is not 0) continue;
+                            return true;
                         }
                     }
                     i++;
@@ -470,7 +518,7 @@ namespace OMPS
             //e.Accepted = false;
             return false;
         }
-        #endregion
+#endregion
 
 
         #region "Properties"
@@ -595,8 +643,8 @@ namespace OMPS
 #if NEWDBSQL
             using (var ctx = new Models.Order.OrderDbCtx())
             {
-                var txt = await ctx.AIcIceManufs
-                    .Where(p => p.IceManufId == manufid && p.JobNbr == job)
+                var txt = await ctx.AIcManufs
+                    .Where(p => p.ManufId == manufid && p.JobNbr == job)
                     .AsSingleQuery()
                     .ExecuteDeleteAsync();
                 if (txt is not 1) return false;
@@ -643,9 +691,39 @@ namespace OMPS
         }
         #endregion
 
+
+
+        public const string extProc_ImportEngMfg_exe = "P:\\!CRM\\IceMfgImport.exe";
+        public const string extProc_ProcEngMfg_exe = "P:\\!CRM\\IceMfgProcess.exe";
+        public const string extProc_CalcEngMatl_exe = "P:\\!CRM\\IceMatlCalc.exe";
+        public const string extProc_CncCutList_exe = "P:\\!CRM\\IceCNCCutList.exe";
+        public const string extProc_SymEngExp_exe = "P:\\!CRM\\SymIceExp.exe";
+
+        public const string extProc_BaseDir = "P:\\_IC_EMQ\\Apps-IC_EMQ\\IC_Mfg\\";
+        public const string extProc_New_ImportEngMfg = "IC_MfgImport.exe";
+        public const string extProc_New_ProcEngMfg = "IC_MfgProcess.exe";
+        public const string extProc_New_CalcEngMatl = "IC_MatlCalc.exe";
+        public const string extProc_New_CncCutList = "IC_CNCCutList.exe";
+        public const string extProc_New_SymEngExp = "IC_MfgImport.exe";
+
+        public const string extProc_ColorSet_arg = "iColorSetID={{@ColorSetID}}";
+
+        public static async void ExtProc_Button(string exeName, string colorSetId)
+        {
+            ProcessStartInfo psi = new(
+                extProc_BaseDir + exeName,
+                extProc_ColorSet_arg.Replace(
+                    "{@ColorSetID}",
+                    colorSetId.ToUpper()
+                )
+            );
+            await RunExternal(psi);
+        }
+
         public static async Task RunExternal(ProcessStartInfo startInfo)
         {
             //MessageBox.Show(startInfo.Arguments);
+            CancellationToken t = new();
             var proc = Process.Start(startInfo);
             if (proc is null) return;
             proc.ErrorDataReceived += (ss, ee) =>
@@ -656,11 +734,12 @@ namespace OMPS
             {
                 Debug.WriteLine("OUT:\n" + ee.Data);
             };
+            /*
             proc.Exited += (ss, ee) =>
             {
 
             };
-            CancellationToken t = new();
+            */
             await proc.WaitForExitAsync(t);
             proc.Dispose();
         }

@@ -18,9 +18,9 @@ public partial class OrderDbCtx : DbContext
 
     public virtual DbSet<AIcColorSet> AIcColorSets { get; set; }
 
-    public virtual DbSet<AIcIceManuf> AIcIceManufs { get; set; }
+    public virtual DbSet<AIcManuf> AIcManufs { get; set; }
 
-    public virtual DbSet<AIcIceManufPart> AIcIceManufParts { get; set; }
+    public virtual DbSet<AIcManufPart> AIcManufParts { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["NewOldCrm"].ConnectionString);
@@ -161,17 +161,17 @@ public partial class OrderDbCtx : DbContext
             entity.Property(e => e.Xq).HasColumnName("XQ");
         });
 
-        modelBuilder.Entity<AIcIceManuf>(entity =>
+        modelBuilder.Entity<AIcManuf>(entity =>
         {
-            entity.HasKey(e => e.IceManufId);
+            entity.HasKey(e => e.ManufId);
 
-            entity.ToTable("aIC_IceManuf", "dbo");
+            entity.ToTable("aIC_Manuf", "dbo", tb => tb.HasTrigger("aIC_ManufUpdate"));
 
             entity.HasIndex(e => e.ColorSetId, "IX_aIC_IceManuf");
 
-            entity.Property(e => e.IceManufId)
+            entity.Property(e => e.ManufId)
                 .ValueGeneratedNever()
-                .HasColumnName("IceManufID");
+                .HasColumnName("ManufID");
             entity.Property(e => e.Area).HasMaxLength(50);
             entity.Property(e => e.Assembled).HasMaxLength(50);
             entity.Property(e => e.AssyNbr).HasMaxLength(50);
@@ -186,7 +186,7 @@ public partial class OrderDbCtx : DbContext
             entity.Property(e => e.CustOrderNbr).HasMaxLength(50);
             entity.Property(e => e.Dept).HasMaxLength(8);
             entity.Property(e => e.Description).HasMaxLength(250);
-            entity.Property(e => e.Idnbr)
+            entity.Property(e => e.IDNbr)
                 .HasMaxLength(50)
                 .HasColumnName("IDNbr");
             entity.Property(e => e.ItemCore).HasMaxLength(50);
@@ -216,20 +216,20 @@ public partial class OrderDbCtx : DbContext
             entity.Property(e => e.WorkCtr).HasMaxLength(20);
         });
 
-        modelBuilder.Entity<AIcIceManufPart>(entity =>
+        modelBuilder.Entity<AIcManufPart>(entity =>
         {
-            entity.HasKey(e => e.IceManufPartId);
+            entity.HasKey(e => e.ManufPartId);
 
-            entity.ToTable("aIC_IceManufPart", "dbo");
+            entity.ToTable("aIC_ManufPart", "dbo");
 
-            entity.Property(e => e.IceManufPartId)
+            entity.Property(e => e.ManufPartId)
                 .ValueGeneratedNever()
-                .HasColumnName("IceManufPartID");
+                .HasColumnName("ManufPartID");
             entity.Property(e => e.ChangeDate).HasColumnType("datetime");
             entity.Property(e => e.ChangedbyId).HasColumnName("ChangedbyID");
             entity.Property(e => e.ColorSetId).HasColumnName("ColorSetID");
             entity.Property(e => e.CreationDate).HasColumnType("datetime");
-            entity.Property(e => e.IceManufId).HasColumnName("IceManufID");
+            entity.Property(e => e.ManufId).HasColumnName("ManufID");
             entity.Property(e => e.PartDescription).HasMaxLength(50);
             entity.Property(e => e.PartNbr).HasMaxLength(50);
         });

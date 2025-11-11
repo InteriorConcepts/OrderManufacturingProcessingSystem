@@ -275,8 +275,8 @@ namespace OMPS.Pages
 #if NEWDBSQL
             if (row.Item is not Models.Order.AIcColorSet item) return;
 
-            var matchesC = JobFoldersC?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
-            var matchesH = JobFoldersH?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
+            var matchesC = Ext.JobFoldersC?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
+            var matchesH = Ext.JobFoldersH?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
 #else
             if (row.Item is not example_queries_GetColorSetsResult item) return;
 

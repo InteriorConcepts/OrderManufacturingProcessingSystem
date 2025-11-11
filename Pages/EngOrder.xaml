@@ -213,7 +213,7 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
-            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
                 
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
@@ -717,7 +717,9 @@
                       BorderThickness="0"
                       Loaded="datagrid_main_Loaded"
                       SelectionChanged="datagrid_main_SelectionChanged"
-                      EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                      EnableRowVirtualization="True" EnableColumnVirtualization="False"
+                      VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.ScrollUnit="Item"
                       MouseDoubleClick="datagrid_main_MouseDoubleClick"
                       PreviewMouseDown="datagrid_main_PreviewMouseDown"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown"
@@ -737,6 +739,11 @@
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
                     </Style>
+
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                    </Style>
+
                 </DataGrid.Resources>
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
@@ -847,6 +854,7 @@
                         <Setter Property="VerticalAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"/>
                         <Setter Property="Background" Value="#222"/>
                         <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Style.Triggers>

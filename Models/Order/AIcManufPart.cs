@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace OMPS.Models.Order;
 
-public partial class AIcIceManufPart
+public partial class AIcManufPart
 {
-    public Guid IceManufPartId { get; set; }
+    public Guid ManufPartId { get; set; }
 
     public Guid? ColorSetId { get; set; }
 
-    public Guid? IceManufId { get; set; }
+    public Guid? ManufId { get; set; }
 
     public string PartNbr { get; set; } = null!;
 

@@ -240,7 +240,7 @@
                                 <RadioButton x:Name="TabBtn_Landing" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                                              Content="Landing" Tag="{x:Static local:PageTypes.Home}" Padding="10 0"
                                              Visibility="Visible"
-                                             Height="21" IsChecked="{Binding DataContext.Home_IsSelected, ElementName=MainWin, Mode=OneWay}"
+                                             Height="21" IsChecked="{Binding Home_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_ProdCatSearch" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"

@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Humanizer;
+using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using OMPS.Models;
 using OMPS.viewModel;
@@ -38,6 +39,35 @@ namespace OMPS.Pages
             //
             this.DataContext = this;
             //
+            if (Ext.ReadSetting<string>(Ext.AppConfigKey.Shortcuts) is (bool, string) res && res.success && !string.IsNullOrWhiteSpace(res.value))
+            {
+                var split = res.value.Split(';');
+                if (split is null || split.Length is 0) return;
+                foreach (var shortcut in split)
+                {
+                    if (shortcut.Split('+') is not string[] infoSplit || infoSplit is null || infoSplit.Length is not 3) continue;
+                    if (TryFindResource("Home_ShortcutButton") is not object obj || obj is not ControlTemplate ct) continue;
+                    var cc = new ContentControl() { Template = ct, Tag = infoSplit[2] };
+                    var ico = new PackIcon() { Width = 50, Height = 50 };
+                    ico.Kind = infoSplit[0] switch
+                    {
+                        "Link" => PackIconKind.ExternalLink,
+                        "Folder" => PackIconKind.Folder,
+                        "File" => PackIconKind.File,
+                        "Program" => PackIconKind.Application,
+                        _ => PackIconKind.None,
+                    };
+                    var lbl = new Label()
+                    {
+                        Content = infoSplit[1]
+                    };
+                    var sp = new StackPanel() { };
+                    sp.Children.Add(ico);
+                    sp.Children.Add(lbl);
+                    cc.Content = sp;
+                    this.SPnl_Shortcuts.Children.Add(cc);
+                }
+            }
             this.Refresher.Elapsed += Refresher_Elapsed;
             //this.Refresher.Start();
         }
@@ -184,6 +214,21 @@ namespace OMPS.Pages
         //
 
 #if NEWDBSQL
+        public IQueryable<Models.Order.AIcColorSet> GetColorSets(Models.Order.OrderDbCtx ctx)
+        {
+            var now = DateTime.Now;
+            var cutoff = DateTime.Now.AddDays(-30);
+
+            // Safe read-only query
+            return ctx.AIcColorSets
+                .Where(o => o.OrderDate <= cutoff)
+                .Where(o => o.SupplyOrderRef.Substring(0, 1) == "S" || o.SupplyOrderRef.Substring(0, 1) == "J")
+                .OrderByDescending(o => o.OrderDate)
+                .Take(25)
+                .AsNoTracking() // No change tracking
+                .AsSplitQuery();
+        }
+
         public async Task<List<RecentOrder>> LoadColorSetsAsync()
         {
             using var context = new Models.Order.OrderDbCtx();
@@ -191,13 +236,7 @@ namespace OMPS.Pages
             var cutoff = DateTime.Now.AddDays(-30);
 
             // Safe read-only query
-            return await context.AIcColorSets
-                .Where(o => o.OrderDate <= cutoff)
-                .Where(o => o.SupplyOrderRef.Substring(0, 1) == "S" || o.SupplyOrderRef.Substring(0, 1) == "J")
-                .OrderByDescending(o => o.OrderDate)
-                .Take(25)
-                .AsNoTracking() // No change tracking
-                .AsSplitQuery()
+            return await GetColorSets(context)
                 .Select(o => new RecentOrder
                 {
                     JobNbr = o.SupplyOrderRef ?? "",
@@ -205,9 +244,22 @@ namespace OMPS.Pages
                 })
                 .ToListAsync();
         }
+
+        public async Task<List<EngOrder>> GetColorSetEngOrderAsync()
+        {
+            using var context = new Models.Order.OrderDbCtx();
+            return await GetColorSets(context)
+                .Where(o => o.Engined == false)
+                .Select(o => new EngOrder
+                {
+                    Name = o.SupplyOrderRef ?? "",
+                    PreEng = o.Preengined,
+                    Eng = o.Engined
+                }).ToListAsync();
+        }
 #endif
 
-        public void GetNewOrders()
+        public async void GetNewOrders()
         {
 #if NEWDBSQL
             _newOrders = await this.LoadColorSetsAsync();
@@ -224,30 +276,16 @@ namespace OMPS.Pages
                 temp.Add(new() { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber });
             }
             _newOrders = temp;
-            OnPropertyChanged(nameof(NewOrders));
 #endif
+            OnPropertyChanged(nameof(NewOrders));
         }
 
-        public void GetEngWorking()
+        public async void GetEngWorking()
         {
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
 #if NEWDBSQL
-            using var context = new Models.Order.OrderDbCtx();
-            _engWorking = await context.AIcColorSets
-                .Where(o => o.OrderDate <= cutoff)
-                .Where(o => o.SupplyOrderRef.Substring(0, 1) == "S" || o.SupplyOrderRef.Substring(0, 1) == "J")
-                .OrderByDescending(o => o.OrderDate)
-                .Take(25)
-                .AsNoTracking() // No change tracking
-                .AsSplitQuery()
-                .Where(o => o.Engined == false)
-                .Select(o => new EngOrder
-                {
-                    Name = o.SupplyOrderRef ?? "",
-                    PreEng = o.Preengined,
-                    Eng = o.Engined
-                }).ToListAsync();
+            _engWorking = await GetColorSetEngOrderAsync();
             OnPropertyChanged(nameof(EngWorking));
 #else
             var jobs = Ext.Queries.GetColorSets("%").Select(i => i.JobNbr);
@@ -614,6 +652,17 @@ namespace OMPS.Pages
                     break;
             }
             Ext.MainWindow.MainToastContainer.CreateToast("Home", $"Notifications {(newVal ? "enabled" : "disabled")} for '{type}'").Show();
+        }
+
+        private void Btn_Shortcuts_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag is not string tag) return;
+            var psi = new ProcessStartInfo(tag)
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            Process.Start(psi);
         }
     }
 }

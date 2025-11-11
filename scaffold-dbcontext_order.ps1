@@ -1,1 +1,1 @@
-﻿Scaffold-DbContext "Server=Win2022srv03;Database=IC_EMQ;Integrated Security=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/Order -Context OrderDbCtx -Tables aIC_ColorSet, aIC_IceManuf, aIC_IceManufPart -Force -Verbose
+﻿Scaffold-DbContext "Server=Win2022srv03;Database=IC_EMQ;Integrated Security=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/Order -Context OrderDbCtx -Tables aIC_ColorSet, aIC_Manuf, aIC_ManufPart -Force -Verbose

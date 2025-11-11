@@ -110,6 +110,8 @@ namespace OMPS.Windows
             }
         }
 
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
         #endregion
 
 

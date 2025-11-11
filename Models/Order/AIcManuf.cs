@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace OMPS.Models.Order;
 
-public partial class AIcIceManuf
+public partial class AIcManuf
 {
-    public Guid IceManufId { get; set; }
+    public Guid ManufId { get; set; }
 
     public Guid? ColorSetId { get; set; }
 
@@ -25,7 +25,7 @@ public partial class AIcIceManuf
 
     public string? ItemNbr { get; set; }
 
-    public string? Idnbr { get; set; }
+    public string? IDNbr { get; set; }
 
     public string? CatalogNbr { get; set; }
 
