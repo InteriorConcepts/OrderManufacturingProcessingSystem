@@ -41,6 +41,7 @@
     <None Remove="Images\fluent_web_dark_bg.png" />
     <None Remove="Images\gradient.png" />
     <None Remove="Images\Infor_logo_95x95.png" />
+    <None Remove="Images\Microsoft_Dynamics_Logo.png" />
     <None Remove="Images\Network-online.png" />
     <None Remove="Network-error.png" />
     <None Remove="Network-out.png" />
@@ -61,6 +62,7 @@
     <Resource Include="Images\fluent_web_dark_bg.png" />
     <Resource Include="Images\gradient.png" />
     <Resource Include="Images\Infor_logo_95x95.png" />
+    <Resource Include="Images\Microsoft_Dynamics_Logo.png" />
     <Resource Include="Images\Network-error.png" />
     <Resource Include="Images\Network-online.png" />
     <Resource Include="Images\Network-out.png" />
