@@ -1,4 +1,5 @@
 ﻿using Azure;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Humanizer;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -43,29 +45,72 @@ namespace OMPS.Pages
             {
                 var split = res.value.Split(';');
                 if (split is null || split.Length is 0) return;
+                if (TryFindResource("Home_ShortcutButton") is not object obj || obj is not ControlTemplate ct) return;
                 foreach (var shortcut in split)
                 {
-                    if (shortcut.Split('+') is not string[] infoSplit || infoSplit is null || infoSplit.Length is not 3) continue;
-                    if (TryFindResource("Home_ShortcutButton") is not object obj || obj is not ControlTemplate ct) continue;
+                    if (shortcut.Split('+') is not string[] infoSplit || infoSplit is null || (infoSplit.Length is not 3 && infoSplit.Length is not 4)) continue;
+                    (string type, string name, string dest, string img) = (infoSplit[0].ToLower(), infoSplit[1], infoSplit[2], infoSplit[3]);
                     var cc = new ContentControl() { Template = ct, Tag = infoSplit[2] };
-                    var ico = new PackIcon() { Width = 50, Height = 50 };
-                    ico.Kind = infoSplit[0] switch
-                    {
-                        "Link" => PackIconKind.ExternalLink,
-                        "Folder" => PackIconKind.Folder,
-                        "File" => PackIconKind.File,
-                        "Program" => PackIconKind.Application,
-                        _ => PackIconKind.None,
-                    };
-                    var lbl = new Label()
-                    {
-                        Content = infoSplit[1]
-                    };
                     var sp = new StackPanel() { };
+                    FrameworkElement? ico = null;
+                    //MessageBox.Show(String.Join("\n", infoSplit));
+                    if (img.Length is not 0)
+                    {
+                        if (img.StartsWith("/"))
+                        {
+                            ico = new Image() { };
+                            ((Image)ico).Source = new BitmapImage(new Uri(
+                                @"pack://application:,,,/OMPS;component" +
+                                img
+                            ));
+                        } else
+                        {
+                            ico = new PackIcon() { Kind = PackIconKind.None };
+                            if (Enum.TryParse<PackIconKind>(img, true, out PackIconKind val) is true)
+                            {
+                                ((PackIcon)ico).Kind = val;
+                            }
+                            else
+                            {
+                                img = "";
+                            }
+                        }
+                    }
+                    if (img.Length is 0)
+                    {
+                        ico ??= new PackIcon();
+                        ((PackIcon)ico).Kind = type switch
+                        {
+                            "link" => PackIconKind.ExternalLink,
+                            "program" => PackIconKind.Application,
+                            "folder" => PackIconKind.Folder,
+                            "file" => PackIconKind.File,
+                            _ => PackIconKind.None,
+                        };
+                    }
                     sp.Children.Add(ico);
+                    var lbl = new TextBlock()
+                    {
+                        Text = infoSplit[1]
+                    };
+                    lbl.SetBinding(TextBlock.FontSizeProperty, new Binding("DataContext.FontSize_H4"));
                     sp.Children.Add(lbl);
                     cc.Content = sp;
-                    this.SPnl_Shortcuts.Children.Add(cc);
+                    switch (type)
+                    {
+                        case "link":
+                            this.SPnl_Shortcuts_Links.Children.Add(cc);
+                            break;
+                        case "program":
+                            this.SPnl_Shortcuts_Programs.Children.Add(cc);
+                            break;
+                        case "file":
+                        case "folder":
+                            this.SPnl_Shortcuts_FilesFolders.Children.Add(cc);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             this.Refresher.Elapsed += Refresher_Elapsed;
@@ -90,6 +135,7 @@ namespace OMPS.Pages
                 },
                 TaskCreationOptions.DenyChildAttach
             ).Start();
+#if false
             if (infrequency is 0 || infrequency == infrequentAltInterval)
             {
                 Debug.WriteLine("Infrequent home update");
@@ -104,6 +150,7 @@ namespace OMPS.Pages
                 }, System.Windows.Threading.DispatcherPriority.Loaded);
             infrequency = 0;
             }
+#endif
             infrequency++;
         }
 
@@ -663,6 +710,30 @@ namespace OMPS.Pages
                 Verb = "open"
             };
             Process.Start(psi);
+        }
+
+
+        public const byte HomeSectionCollapsedHeight = 12;
+        public const byte HomeSectionShortcutsRegularHeight = 120;
+        public const byte HomeSectionRegularHeight = 200;
+        private void Btn_ToggleSectionVis(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag?.ToString()?.ToLower() is not string tag) return;
+            FrameworkElement? c = tag switch
+            {
+                "quick access" => this.SPnl_Shortcuts,
+                "orders" => this.SPnl_Section_Orders,
+                "engineering" => this.SPnl_Section_Engineering,
+                "cnc" => this.SPnl_Section_CNC,
+                _ => null
+            };
+            if (c is null) return;
+            bool isHidden = c.Height is HomeSectionCollapsedHeight;
+            c.Height = (isHidden ? (tag is "quick access" ? HomeSectionShortcutsRegularHeight : HomeSectionRegularHeight) : HomeSectionCollapsedHeight);
+            c.Visibility = (isHidden ? Visibility.Visible : Visibility.Hidden);
+            var icon = (btn.Content as FrameworkElement)?.FindName("PackIco_SectionVisState") as PackIcon;
+            if (icon is null) return;
+            icon.Kind = (isHidden ? PackIconKind.VisibilityOutline : PackIconKind.VisibilityOffOutline);
         }
     }
 }

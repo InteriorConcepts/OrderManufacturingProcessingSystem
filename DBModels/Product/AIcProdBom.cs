@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models.Product;
+namespace OMPS.DBModels.Product;
 
 public partial class AIcProdBom
 {

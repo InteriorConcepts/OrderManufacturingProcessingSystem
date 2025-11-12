@@ -71,8 +71,8 @@ namespace OMPS.Pages
         public uint QueryTotalAmount { get; set { field = value; OnPropertyChanged(nameof(QueryTotalAmount)); } } = 0;
 
 
-        internal static MainWindow ParentWindow { get => Ext.MainWindow; }
-        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        public static MainWindow ParentWindow { get => Ext.MainWindow; }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
         internal static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
 
 

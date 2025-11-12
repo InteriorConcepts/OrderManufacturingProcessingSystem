@@ -3,10 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using MyApp.DataAccess.Generated;
 using OMPS.Components;
-using OMPS.Core;
-using OMPS.Models;
-using OMPS.Models.Order;
-using OMPS.Models.Product;
+using OMPS.DBModels;
+using OMPS.DBModels.Order;
+using OMPS.DBModels.Product;
 using OMPS.viewModel;
 using OMPS.Windows;
 using System;
@@ -39,7 +38,7 @@ namespace OMPS.Pages
     /// <summary>
     /// Interaction logic for EngOrder.xaml
     /// </summary>
-    public partial class EngOrder : UserControl, INotifyPropertyChanged
+    public partial class EngOrder : UserControl, IDisposable
     {
         public EngOrder()
         {
@@ -1298,6 +1297,8 @@ namespace OMPS.Pages
 
 
         public DataGridCell? LastCell = null;
+        private bool disposedValue;
+
         private void datagrid_main_LostFocus(object sender, RoutedEventArgs e)
         {
             if (this.datagrid_main.SelectedCells.Count is 0) return;
@@ -1313,7 +1314,41 @@ namespace OMPS.Pages
             this.Txt_Filter.Text = filterStr;
             this.DoMfgItemsFilter();
         }
-#endregion
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    this._mfgItemLines = null;
+                    this.ColorSetInfo = null;
+                    this.ColorSetInfo_Changes.Clear();
+                    this.PropertyChanged -= this.EngOrder_PropertyChanged;
+                    this.DataContext = null;
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~EngOrder()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
 
     }
 }

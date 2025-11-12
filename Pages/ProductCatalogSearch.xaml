@@ -51,7 +51,7 @@
         
         <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="1" Margin="0">
             <TextBox x:Name="Txt_ProdCode" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="ProductCode" Margin="0 12 1 0" Padding="10 4"
+                     materialDesign:HintAssist.Hint="{Binding ElementName=DgHeader_PC, Path=Header, FallbackValue='Placeholder'}" Margin="0 12 1 0" Padding="10 4"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
@@ -59,7 +59,7 @@
                      Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_PC, Path=ActualWidth, FallbackValue=125}"
                      PreviewKeyDown="Txt_PreviewKeyDown"/>
             <TextBox x:Name="Txt_ProdDesc" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Description" Margin="0 12 1 0" Padding="10 4"
+                     materialDesign:HintAssist.Hint="{Binding ElementName=DgHeader_PD, Path=Header, FallbackValue='Placeholder'}" Margin="0 12 1 0" Padding="10 4"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
@@ -71,27 +71,52 @@
         <DataGrid x:Name="datagrid_main" Grid.Row="2" IsReadOnly="True"
                   ItemsSource="{Binding Source={StaticResource ProductsViewSource}}" DataContext="{x:Reference Name=Page_ProductCatalogSearch}"
                   AutoGenerateColumns="False" MouseDoubleClick="datagrid_main_MouseDoubleClick"
-                  EnableColumnVirtualization="False" 
+                  EnableColumnVirtualization="False" Background="#292929" HeadersVisibility="Column"
                   EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                    <Setter Property="BorderThickness" Value="0 0 1 0"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="DgHeader_PC" Header="ProductCode" Binding="{Binding ProductCode}" Width="165"/>
-                <DataGridTextColumn x:Name="DgHeader_PD" Header="Description" Binding="{Binding Description}"/>
+                <DataGridTemplateColumn x:Name="DgHeader_PC" Header="ProductCode" DisplayIndex="0">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding ProductCode}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
+                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
+                                            FontSize="{Binding ElementName=Page_ProductCatalogSearch, Path=MainViewModel.FontSize_H4}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn x:Name="DgHeader_PD" Header="Description" DisplayIndex="1">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Description}" Background="Transparent"
+                                           VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
+                                           FontSize="{Binding ElementName=Page_ProductCatalogSearch, Path=MainViewModel.FontSize_H4}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
         <Border Grid.Row="3" BorderThickness="0 0 0 1" BorderBrush="#666" Padding="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 <Label Content="Showing" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
-   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                        FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 <Label Content="{Binding QueryFilterAmount}" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
-   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                        FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 <Label Content="of" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
-   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                        FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 <Label Content="{Binding QueryTotalAmount}" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
-   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                        FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
                 <Label Content="Items" VerticalContentAlignment="Center" Margin="0" Padding="2 0"
-   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                        FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
             </StackPanel>
         </Border>
     </Grid>

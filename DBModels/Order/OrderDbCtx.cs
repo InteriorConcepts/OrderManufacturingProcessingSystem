@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace OMPS.Models.Order;
+namespace OMPS.DBModels.Order;
 
 public partial class OrderDbCtx : DbContext
 {

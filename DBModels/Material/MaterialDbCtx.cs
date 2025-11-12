@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace OMPS.Models.Material;
+namespace OMPS.DBModels.Material;
 
 public partial class MaterialDbCtx : DbContext
 {

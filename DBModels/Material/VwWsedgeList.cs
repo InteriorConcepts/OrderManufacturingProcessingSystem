@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models.Material;
+namespace OMPS.DBModels.Material;
 
-public partial class VwLamPnlList
+public partial class VwWsedgeList
 {
     public Guid ItemId { get; set; }
 

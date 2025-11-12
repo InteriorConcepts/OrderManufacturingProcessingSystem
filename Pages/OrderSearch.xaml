@@ -21,42 +21,39 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="23 0 0 0">
+        <StackPanel x:Name="spnl_TopBar" Orientation="Horizontal" Grid.Row="0" Margin="0">
             <TextBox x:Name="Txt_JobNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Job" Margin="0 12 1 0" Padding="10 4"
+                     materialDesign:HintAssist.Hint="{Binding ElementName=DgHeader_Job, Path=Header, FallbackValue='Placeholder'}" Margin="0 12 1 0" Padding="10 4"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
                      FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
-            <TextBox x:Name="Txt_QuoteNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Quote" Margin="0 12 1 0" Padding="10 0"
-                     materialDesign:TextFieldAssist.HasClearButton="True"
-                     materialDesign:TextFieldAssist.ClearButtonSize="14"
-                     AcceptsReturn="False" TextWrapping="NoWrap"
-                     FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="119" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown" Visibility="Collapsed"/>
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_Job, Path=ActualWidth, FallbackValue=125}"
+                     PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
             <TextBox x:Name="Txt_OrderNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Order" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:HintAssist.Hint="{Binding ElementName=DgHeader_Order, Path=Header, FallbackValue='Placeholder'}" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
                      FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_Order, Path=ActualWidth, FallbackValue=125}"
+                     PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
             <TextBox x:Name="Txt_OrderName" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Name" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:HintAssist.Hint="{Binding ElementName=DgHeader_Name, Path=Header, FallbackValue='Placeholder'}" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
                      FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_Name, Path=ActualWidth, FallbackValue=125}"
+                     PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
             <TextBox x:Name="Txt_OppNbr" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                     materialDesign:HintAssist.Hint="Opportunity" Margin="0 12 1 0" Padding="10 0"
+                     materialDesign:HintAssist.Hint="{Binding ElementName=DgHeader_Opp, Path=Header, FallbackValue='Placeholder'}" Margin="0 12 1 0" Padding="10 0"
                      materialDesign:TextFieldAssist.HasClearButton="True"
                      materialDesign:TextFieldAssist.ClearButtonSize="14"
                      AcceptsReturn="False" TextWrapping="NoWrap"
                      FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="125" PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
+                     Style="{StaticResource MaterialDesignFilledTextBox}" Width="{Binding ElementName=DgHeader_Opp, Path=ActualWidth, FallbackValue=125}"
+                     PreviewKeyDown="Txt_JobNbr_PreviewKeyDown"/>
             <Button x:Name="Btn_OrdersRefresh" Style="{StaticResource MaterialDesignIconButton}"
                     Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                     Padding="4 1" Margin="0 12 1 0" Click="Btn_OrdersRefresh_Click"
@@ -73,17 +70,10 @@
                   AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" Loaded="datagrid_orders_Loaded" CanUserAddRows="False"
                   EnableColumnVirtualization="False" MouseDoubleClick="datagrid_orders_MouseDoubleClick"
                   EnableRowVirtualization="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  RowHeaderWidth="36" HeadersVisibility="All" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"
-                  FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}" CanUserResizeColumns="False" CanUserResizeRows="False"
+                  HeadersVisibility="Column" Background="#292929" MouseLeftButtonUp="datagrid_orders_MouseLeftButtonUp"
+                  FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}" CanUserResizeRows="False"
                   LoadingRow="datagrid_orders_LoadingRow" Sorting="datagrid_orders_Sorting" InitializingNewItem="datagrid_orders_InitializingNewItem">
             
-            <!--
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                    <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
-                </Style>
-            </DataGrid.CellStyle>
-            -->
             <DataGrid.RowHeaderStyle>
                 <Style TargetType="DataGridRowHeader">
                     <Setter Property="Template">
@@ -109,18 +99,18 @@
                 </Style>
             </DataGrid.RowHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0">
+                <DataGridTemplateColumn x:Name="DgHeader_Job" Header="JobNbr" DisplayIndex="0">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" ToolTip="Open In EngOrder">
-                                <TextBlock Text="{Binding JobNbr}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
+                                <TextBlock Text="{Binding SupplyOrderRef}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
                                            FontSize="{Binding ElementName=Page_OrderSearch, Path=MainViewModel.FontSize_H4}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="OrderNumber" DisplayIndex="1">
+                <DataGridTemplateColumn x:Name="DgHeader_Order" Header="OrderNumber" DisplayIndex="1">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" ToolTip="Open In QuoteOrder">
@@ -131,7 +121,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Name" DisplayIndex="2">
+                <DataGridTemplateColumn x:Name="DgHeader_Name" Header="Name" DisplayIndex="2">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -142,7 +132,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Opportunity" DisplayIndex="3">
+                <DataGridTemplateColumn x:Name="DgHeader_Opp" Header="Opportunity" DisplayIndex="3">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -153,7 +143,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Order Date" DisplayIndex="4">
+                <DataGridTemplateColumn x:Name="DgHeader_Date" Header="Order Date" DisplayIndex="4">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

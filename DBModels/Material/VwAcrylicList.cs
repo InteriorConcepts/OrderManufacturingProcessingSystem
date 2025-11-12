@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models.Material;
+namespace OMPS.DBModels.Material;
 
-public partial class VwCurvePnlLamList
+public partial class VwAcrylicList
 {
     public Guid ItemId { get; set; }
 

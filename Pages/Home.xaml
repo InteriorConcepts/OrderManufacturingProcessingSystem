@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1525"
              DataContext="{Binding ElementName=Page_Home}"
-             FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
+             FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}">
 
     <UserControl.Resources>
         <!-- Context Menu fallback for DataGrids -->
@@ -44,20 +44,33 @@
 
         <!-- Quick Preview Section Header -->
         <ControlTemplate x:Key="QuickPreview_Section_HeaderTemplate" TargetType="ContentControl">
-            <Border BorderThickness="0 0 0 2" CornerRadius="1" x:Name="MainBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="4">
+            <Border BorderThickness="0 0 0 2" CornerRadius="1 1 10 10" x:Name="MainBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="4">
                 <Border.Background>
                     <SolidColorBrush Color="#353535" Opacity="1.0"/>
                 </Border.Background>
                 <Border.BorderBrush>
                     <SolidColorBrush Color="{Binding BorderBrush.Color, RelativeSource={RelativeSource TemplatedParent}}" Opacity="1.0"/>
                 </Border.BorderBrush>
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12 0 0 0"
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12 0 0 0"
                                Foreground="#FFEFEFEF" FontWeight="Bold" FontSize="{Binding ElementName=Page_Home, Path=MainViewModel.FontSize_H2, FallbackValue=20}"
                                Text="{Binding Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}">
-                    <TextBlock.Effect>
-                        <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.3" ShadowDepth="3" />
-                    </TextBlock.Effect>
-                </TextBlock>
+                        <TextBlock.Effect>
+                            <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.3" ShadowDepth="3" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}"
+                            FontSize="{Binding ElementName=Page_Home, Path=MainViewModel.FontSize_H2, FallbackValue=20}" Background="#9666"
+                            Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Padding="8" materialDesign:ButtonAssist.CornerRadius="6"
+                            Tag="{Binding Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                            Click="Btn_ToggleSectionVis">
+                        <materialDesign:PackIcon x:Name="PackIco_SectionVisState" Kind="VisibilityOutline"
+                                                 VerticalAlignment="Center"
+                                                 Height="{Binding ElementName=Page_Home, Path=MainViewModel.FontSize_H2, FallbackValue=20}"
+                                                 Width="{Binding ElementName=Page_Home, Path=MainViewModel.FontSize_H2, FallbackValue=20}"/>
+                    </Button>
+                </DockPanel>
+                
             </Border>
         </ControlTemplate>
 
@@ -91,39 +104,64 @@
         <!-- Style for Shortcut Button -->
         <Style x:Key="ShortcutButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter Property="Height" Value="90"/>
-            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="Width" Value="70"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="#343434"/>
             <Setter Property="ClipToBounds" Value="True"/>
             <Setter Property="Padding" Value="4 4"/>
-            <Setter Property="Margin" Value="0 0 8 0"/>
+            <Setter Property="Margin" Value="0 0 6 4"/>
         </Style>
         
         <!-- Shortcut Button -->
         <ControlTemplate x:Key="Home_ShortcutButton" TargetType="ContentControl">
-            <Button Style="{StaticResource ShortcutButton}" DataContext="{Binding ElementName=DataContent}" Tag="{TemplateBinding Tag}" Click="Btn_Shortcuts_Click">
+            <ControlTemplate.Resources>
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="Width" Value="50"/>
+                    <Setter Property="Height" Value="50"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="materialDesign:PackIcon">
+                    <Setter Property="Width" Value="50"/>
+                    <Setter Property="Height" Value="50"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="0 4"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                </Style>
+            </ControlTemplate.Resources>
+            <Button Style="{StaticResource ShortcutButton}" DataContext="{Binding ElementName=DataContent}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Tag="{TemplateBinding Tag}" Click="Btn_Shortcuts_Click">
                 <Button.Effect>
                     <DropShadowEffect BlurRadius="8" ShadowDepth="1" Color="Black" Opacity="1" Direction="-90"/>
                 </Button.Effect>
-                <StackPanel>
-                    <ContentPresenter VerticalAlignment="Top" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Content="{TemplateBinding Content}">
-                        <ContentPresenter.OpacityMask>
-                            <VisualBrush>
-                                <VisualBrush.Visual>
-                                    <Border 
-                                        Background="Black"
-                                        SnapsToDevicePixels="True"
-                                        CornerRadius="30"
-                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
-                                        Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"
-                                    />
-                                </VisualBrush.Visual>
-                            </VisualBrush>
-                        </ContentPresenter.OpacityMask>
-                    </ContentPresenter>
-                </StackPanel>
+                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}" TextBlock.FontSize="{Binding ElementName=Page_Home, Path=DataContext.FontSize_H3, FallbackValue=14, UpdateSourceTrigger=PropertyChanged}">
+                    <ContentPresenter.OpacityMask>
+                        <VisualBrush>
+                            <VisualBrush.Visual>
+                                <Border 
+                                    Background="Black"
+                                    SnapsToDevicePixels="True"
+                                    CornerRadius="10"
+                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"
+                                />
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </ContentPresenter.OpacityMask>
+                </ContentPresenter>
             </Button>
         </ControlTemplate>
+        
+        <!-- Style for Horizontal ScrollViewer -->
+        <Style x:Key="ScrollViewer_Horizontal" TargetType="ScrollViewer">
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Visible"/>
+        </Style>
 
         <!-- Style for Row quick access button -->
         <Style x:Key="QuickActionButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
@@ -275,39 +313,68 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical" Margin="12 8" Background="#1F1F1F">
-            <StackPanel.OpacityMask>
+        <Grid Grid.Row="0" Margin="12 8" Background="#1F1F1F">
+            <Grid.OpacityMask>
                 <VisualBrush>
                     <VisualBrush.Visual>
                         <Border 
                             Background="Black"
                             SnapsToDevicePixels="True"
-                            CornerRadius="10"
-                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}}"
-                            Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=StackPanel}}"
+                            CornerRadius="0 0 10 10"
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                            Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Grid}}"
                         />
                     </VisualBrush.Visual>
                 </VisualBrush>
-            </StackPanel.OpacityMask>
-            <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Quick Access" BorderBrush="#FF8544C8"/>
-            <ScrollViewer Grid.Row="0" Margin="12 2 4 2" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible">
-                <StackPanel x:Name="SPnl_Shortcuts" Orientation="Horizontal" Margin="2">
-                    <ContentControl Visibility="Collapsed" Template="{StaticResource Home_ShortcutButton}" Tag="https://mingle-portal.inforcloudsuite.com/WP5SKD6AED9DWM9B_PRD/5738efb3-297b-4dff-8f46-f473ce41a06a">
-                        <StackPanel>
-                            <Image Source="/Images/Infor_logo_95x95.png" Height="50" Width="Auto"/>
-                            <Label Content="Syteline" HorizontalAlignment="Center" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=14}" Margin="0 4 0 4" Padding="0"/>
-                        </StackPanel>
-                    </ContentControl>
-                    <ContentControl Visibility="Collapsed" Template="{StaticResource Home_ShortcutButton}" Tag="H:/Engineering">
-                        <StackPanel>
-                            <materialDesign:PackIcon Height="50" Width="50" Kind="Folder" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"/>
-                            <Label Content="H Eng" HorizontalAlignment="Center" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=14}" Margin="0 4 0 4" Padding="0"/>
-                        </StackPanel>
-                    </ContentControl>
-                    
-                </StackPanel>
-            </ScrollViewer>
-        </StackPanel>
+            </Grid.OpacityMask>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ContentControl Grid.Row="0" Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Quick Access" BorderBrush="#FF8544C8"/>
+            <Grid x:Name="SPnl_Shortcuts" Grid.Row="1" Height="120" Margin="12 2 4 2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Grid.Row="0" FontWeight="DemiBold" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=18}" Content="Links" Padding="1 2"/>
+                <Label Grid.Column="2" Grid.Row="0" FontWeight="DemiBold" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=18}" Content="Programs" Padding="1 2"/>
+                <Label Grid.Column="4" Grid.Row="0" FontWeight="DemiBold" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=18}" Content="Folders / Files" Padding="1 2"/>
+
+                <ScrollViewer Grid.Column="0" Grid.Row="1" Style="{StaticResource ScrollViewer_Horizontal}">
+                    <WrapPanel x:Name="SPnl_Shortcuts_Links" Orientation="Horizontal"/>
+                </ScrollViewer>
+
+                <ScrollViewer Grid.Column="2" Grid.Row="1" Style="{StaticResource ScrollViewer_Horizontal}">
+                    <WrapPanel x:Name="SPnl_Shortcuts_Programs" Orientation="Horizontal" Margin="2"/>
+                </ScrollViewer>
+
+                <ScrollViewer Grid.Column="4" Grid.Row="1" Style="{StaticResource ScrollViewer_Horizontal}">
+                    <WrapPanel x:Name="SPnl_Shortcuts_FilesFolders" Orientation="Horizontal" Margin="2"/>
+                </ScrollViewer>
+                <ContentControl Visibility="Collapsed" Template="{StaticResource Home_ShortcutButton}" Tag="https://mingle-portal.inforcloudsuite.com/WP5SKD6AED9DWM9B_PRD/5738efb3-297b-4dff-8f46-f473ce41a06a">
+                    <StackPanel>
+                        <Image Source="/Images/Infor_logo_95x95.png" Height="50" Width="Auto"/>
+                        <Label Content="Syteline" HorizontalAlignment="Center" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=14}" Margin="0 4 0 4" Padding="0"/>
+                    </StackPanel>
+                </ContentControl>
+                <ContentControl Visibility="Collapsed" Template="{StaticResource Home_ShortcutButton}" Tag="H:/Engineering">
+                    <StackPanel>
+                        <materialDesign:PackIcon Height="50" Width="50" Kind="Folder" Foreground="{StaticResource MaterialDesign.Brush.Foreground}"/>
+                        <Label Content="H Eng" HorizontalAlignment="Center" FontSize="{Binding DataContext.FontSize_H3, FallbackValue=14}" Margin="0 4 0 4" Padding="0"/>
+                    </StackPanel>
+                </ContentControl>
+
+            </Grid>
+        </Grid>
         <ScrollViewer Grid.Row="1" DataContext="{Binding ElementName=Page_Home}">
             <StackPanel Orientation="Vertical" >
                 <StackPanel.Background>
@@ -321,17 +388,17 @@
                 Width="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
                 Padding="0" Margin="0" Click="btn_reload_Click" HorizontalAlignment="Right">
                     <materialDesign:PackIcon Kind="Refresh"
-             Height="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
-             Width="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
-             VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                             Height="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
+                                             Width="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"
+                                             VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Button>
                 <StackPanel Margin="12 0" Background="Transparent">
                     <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Orders" BorderBrush="#FF70FF6C"/>
 
-                    <WrapPanel Orientation="Horizontal" Height="260" Margin="4">
-                        <Border MinWidth="340" Width="Auto" Height="244"
-                        BorderBrush="#FF70FF6C" Background="#1F1F1F" BorderThickness="0"
-                        Margin="8" Padding="6 4" CornerRadius="1">
+                    <StackPanel x:Name="SPnl_Section_Orders" Orientation="Horizontal" Height="200" Margin="4">
+                        <Border MinWidth="340" Width="Auto"
+                                BorderBrush="#FF70FF6C" Background="#1F1F1F" BorderThickness="0"
+                                Margin="8" Padding="6 4" CornerRadius="1">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                             </Border.Effect>
@@ -346,7 +413,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="NewReleases" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="New" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                             <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="242 0 0 0" Padding="0" Foreground="White" Width="Auto">
                                                 <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
                                             </Button>
@@ -366,16 +433,16 @@
                                 </Grid>
                             </materialDesign:ColorZone>
                         </Border>
-                    </WrapPanel>
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel Margin="12 0" Background="Transparent">
                     <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Engineering" BorderBrush="#FF6CB8FF"/>
-                    <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" BorderBrush="#353535" BorderThickness="2">
-                        <StackPanel Orientation="Horizontal" Height="260" Margin="4">
-                            <Border MinWidth="340" Width="Auto" Height="244"
-                        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                        Margin="8" Padding="6 4" CornerRadius="1">
+                    <ScrollViewer x:Name="ScrollViewer_Section_Engineering" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" BorderBrush="#353535" BorderThickness="2">
+                        <StackPanel x:Name="SPnl_Section_Engineering" Orientation="Horizontal" Height="200" Margin="4">
+                            <Border MinWidth="340" Width="Auto"
+                                    BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                    Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                                 </Border.Effect>
@@ -389,7 +456,7 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Kind="Wrench" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Working" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                                 <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="189 0 0 0" Padding="0" Foreground="White" Width="Auto">
                                                     <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
                                                 </Button>
@@ -397,17 +464,17 @@
                                         </ContentControl>
 
                                         <DataGrid x:Name="DataGrid_EngFolders" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
-                                          ItemsSource="{Binding EngWorking, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                                  DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
+                                                  ItemsSource="{Binding EngWorking, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                                  RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                                  CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                         </DataGrid>
                                     </Grid>
                                 </materialDesign:ColorZone>
                             </Border>
-                            <Border MinWidth="220" Width="Auto" Height="244"
-                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                            Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border MinWidth="220" Width="Auto" Height="204"
+                                    BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                    Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                                 </Border.Effect>
@@ -421,7 +488,7 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Kind="FoldersOutline" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Local" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                                 <Button Style="{StaticResource MaterialDesignFlatButton}" Tag="local" Height="18" Margin="95 0 0 0" Padding="0" Foreground="White" Width="Auto"
                                                 Click="Btn_HomeNotifs_Click">
                                                     <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
@@ -429,10 +496,10 @@
                                             </StackPanel>
                                         </ContentControl>
                                         <DataGrid x:Name="DataGrid_Local" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}"
-                                          ItemsSource="{Binding LocalFolders, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                                  DataContext="{Binding ElementName=Page_Home}"
+                                                  ItemsSource="{Binding LocalFolders, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                                  RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                                  CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                             <DataGrid.Columns>
                                                 <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0" CellTemplate="{StaticResource NameColumnDataTemplate}"/>
                                             </DataGrid.Columns>
@@ -440,9 +507,9 @@
                                     </Grid>
                                 </materialDesign:ColorZone>
                             </Border>
-                            <Border MinWidth="220" Width="Auto" Height="244"
-                        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                        Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border MinWidth="220" Width="Auto"
+                                    BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                    Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                                 </Border.Effect>
@@ -456,17 +523,17 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Kind="FormatListChecks" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Checking 1" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                                 <Button Style="{StaticResource MaterialDesignFlatButton}" Height="18" Margin="30 0 0 0" Padding="0" Foreground="White" Width="Auto">
                                                     <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
                                                 </Button>
                                             </StackPanel>
                                         </ContentControl>
                                         <DataGrid x:Name="DataGrid_EngChecks1" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}"
-                                          ItemsSource="{Binding EngCheck1, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                                  DataContext="{Binding ElementName=Page_Home}"
+                                                  ItemsSource="{Binding EngCheck1, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                                  RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                                  CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                             <DataGrid.Columns>
                                                 <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0" CellTemplate="{StaticResource NameColumnDataTemplate}"/>
                                             </DataGrid.Columns>
@@ -474,9 +541,9 @@
                                     </Grid>
                                 </materialDesign:ColorZone>
                             </Border>
-                            <Border MinWidth="220" Width="Auto" Height="244"
-                        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                        Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border MinWidth="220" Width="Auto"
+                                    BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                    Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                                 </Border.Effect>
@@ -497,10 +564,10 @@
                                             </StackPanel>
                                         </ContentControl>
                                         <DataGrid x:Name="DataGrid_EngChecks2" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}"
-                                          ItemsSource="{Binding EngCheck2, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                                  DataContext="{Binding ElementName=Page_Home}"
+                                                  ItemsSource="{Binding EngCheck2, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                                  RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                                  CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                             <DataGrid.Columns>
                                                 <DataGridTemplateColumn Header="JobNbr" DisplayIndex="0" CellTemplate="{StaticResource NameColumnDataTemplate}"/>
                                             </DataGrid.Columns>
@@ -508,9 +575,9 @@
                                     </Grid>
                                 </materialDesign:ColorZone>
                             </Border>
-                            <Border MinWidth="340" Width="Auto" Height="244"
-                            BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                            Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border MinWidth="340" Width="Auto"
+                                    BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                    Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                                 </Border.Effect>
@@ -524,17 +591,17 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Kind="TaskAuto" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Releasing" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                                 <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="163 0 0 0" Height="18" Padding="0" Foreground="White" Width="Auto">
                                                     <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
                                                 </Button>
                                             </StackPanel>
                                         </ContentControl>
                                         <DataGrid x:Name="DataGrid_EngRelease" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}"
-                                          ItemsSource="{Binding EngReleases, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                                  DataContext="{Binding ElementName=Page_Home}"
+                                                  ItemsSource="{Binding EngReleases, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                                  RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                                  CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
 
                                             <DataGrid.Columns>
                                                 <DataGridTemplateColumn Header="Parent" DisplayIndex="0">
@@ -554,9 +621,9 @@
                                     </Grid>
                                 </materialDesign:ColorZone>
                             </Border>
-                            <Border MinWidth="340" Width="Auto" Height="244"
-                        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                        Margin="8" Padding="6 4" CornerRadius="1">
+                            <Border MinWidth="340" Width="Auto"
+                                    BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                    Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                                 </Border.Effect>
@@ -570,16 +637,16 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Kind="ZipBoxOutline" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Archive" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                             </StackPanel>
                                         </ContentControl>
                                         <DataGrid x:Name="DataGrid_EngArchive" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True" IsTextSearchEnabled="True"
-                                          ItemsSource="{Binding EngArchive, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
-                                          PreviewKeyDown="DataGrid_EngArchive_PreviewKeyDown"
-                                          MouseDoubleClick="DataGrid_EngArchive_MouseDoubleClick"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                                  DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True" IsTextSearchEnabled="True"
+                                                  ItemsSource="{Binding EngArchive, UpdateSourceTrigger=PropertyChanged}" LostFocus="DataGrid_LostFocus"
+                                                  PreviewKeyDown="DataGrid_EngArchive_PreviewKeyDown"
+                                                  MouseDoubleClick="DataGrid_EngArchive_MouseDoubleClick"
+                                                  RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                                  CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                         </DataGrid>
                                     </Grid>
                                 </materialDesign:ColorZone>
@@ -590,10 +657,10 @@
 
                 <StackPanel Margin="12 0" Background="Transparent">
                     <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="CNC" BorderBrush="#FFFFC46C"/>
-                    <WrapPanel Orientation="Horizontal" Height="260" Margin="4">
-                        <Border MinWidth="340" Width="Auto" Height="244"
-                        BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
-                        Margin="8" Padding="6 4" CornerRadius="1">
+                    <StackPanel x:Name="SPnl_Section_CNC" Orientation="Horizontal" Height="200" Margin="4">
+                        <Border MinWidth="340" Width="Auto"
+                                BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
+                                Margin="8" Padding="6 4" CornerRadius="1">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="18" Color="#000" Direction="-90" Opacity="0.3" ShadowDepth="4" />
                             </Border.Effect>
@@ -608,7 +675,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="SawBlade" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Wks Working" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                             <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="136 0 0 0" Height="18" Padding="0" Foreground="White" Width="Auto">
                                                 <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
                                             </Button>
@@ -616,15 +683,15 @@
                                     </ContentControl>
 
                                     <DataGrid x:Name="DataGrid_CncWorkingWks" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
-                                          ItemsSource="{Binding CncWksEntries, UpdateSourceTrigger=PropertyChanged}"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                              DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
+                                              ItemsSource="{Binding CncWksEntries, UpdateSourceTrigger=PropertyChanged}"
+                                              RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                              CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                     </DataGrid>
                                 </Grid>
                             </materialDesign:ColorZone>
                         </Border>
-                        <Border MinWidth="340" Width="Auto" Height="244"
+                        <Border MinWidth="340" Width="Auto"
                         BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
                         Margin="8" Padding="6 4" CornerRadius="1">
                             <Border.Effect>
@@ -640,22 +707,22 @@
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="SawBlade" Margin="0 0 4 0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Pnl Working" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=22}"
-                                                   FontWeight="Bold" Foreground="#e9e9e5"/>
+                                                   FontWeight="DemiBold" Foreground="#e9e9e5"/>
                                             <Button Style="{StaticResource MaterialDesignFlatButton}" Margin="136 0 0 0" Height="18" Padding="0" Foreground="White" Width="Auto">
                                                 <materialDesign:PackIcon Kind="NotificationsOff" Margin="0" VerticalAlignment="Center"/>
                                             </Button>
                                         </StackPanel>
                                     </ContentControl>
                                     <DataGrid x:Name="DataGrid_CncWorkingPnl" Style="{StaticResource DataGrid_QuickAction_Style}" Grid.Row="1"
-                                          DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
-                                          ItemsSource="{Binding CncPnlEntries, UpdateSourceTrigger=PropertyChanged}"
-                                          RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
-                                          CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
+                                              DataContext="{Binding ElementName=Page_Home}" AutoGenerateColumns="True"
+                                              ItemsSource="{Binding CncPnlEntries, UpdateSourceTrigger=PropertyChanged}"
+                                              RowStyle="{StaticResource DataGrid_QuickAction_RowStyle}"
+                                              CellStyle="{StaticResource DataGrid_QuickAction_CellStyle}">
                                     </DataGrid>
                                 </Grid>
                             </materialDesign:ColorZone>
                         </Border>
-                    </WrapPanel>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

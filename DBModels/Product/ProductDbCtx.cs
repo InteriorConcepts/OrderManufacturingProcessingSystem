@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace OMPS.Models.Product;
+namespace OMPS.DBModels.Product;
 
 public partial class ProductDbCtx : DbContext
 {

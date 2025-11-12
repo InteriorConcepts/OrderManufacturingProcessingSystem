@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OMPS.Models.Order;
+namespace OMPS.DBModels.Order;
 
 public partial class AIcManuf
 {

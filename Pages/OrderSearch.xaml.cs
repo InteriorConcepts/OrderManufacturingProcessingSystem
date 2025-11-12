@@ -476,14 +476,14 @@ namespace OMPS.Pages
             Debug.WriteLine(cell.Column.Header.ToString());
             if (cell.Column.Header.ToString() is "JobNbr")
             {
+                Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
 #if NEWDBSQL
                 if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
-                Ext.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
+                Ext.MainViewModel.EngOrder_VM?.JobNbr = item.SupplyOrderRef;
 #else
                 if (!Ext.IsJobNumValid(item.JobNbr)) return;
                 Ext.MainViewModel.EngOrder_VM?.JobNbr = item.JobNbr;
 #endif
-                Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
