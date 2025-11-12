@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace OMPS.DBModels.Product;
 
-public partial class AIcProdBom
+public partial class IcProdBom
 {
-    public Guid AIcProdBomId { get; set; }
+    public Guid ProdBomId { get; set; }
 
     public Guid ProductId { get; set; }
 

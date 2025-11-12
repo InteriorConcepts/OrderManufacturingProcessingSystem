@@ -1,7 +1,7 @@
 ﻿using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using MyApp.DataAccess.Generated;
-using OMPS.DBModels;
+using OMPS.OldDBModels;
 using OMPS.Pages;
 using OMPS.ViewModels;
 using OMPS.Windows;
@@ -641,7 +641,7 @@ namespace OMPS
         internal static async Task<bool> DeleteItemLine(Guid manufid, string job)
         {
 #if NEWDBSQL
-            using (var ctx = new DBModels.Order.OrderDbCtx())
+            using (var ctx = new OldDBModels.Order.OrderDbCtx())
             {
                 var txt = await ctx.AIcManufs
                     .Where(p => p.ManufId == manufid && p.JobNbr == job)

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Humanizer;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
-using OMPS.DBModels;
+using OMPS.OldDBModels;
 using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
@@ -261,7 +261,7 @@ namespace OMPS.Pages
         //
 
 #if NEWDBSQL
-        public IQueryable<DBModels.Order.AIcColorSet> GetColorSets(DBModels.Order.OrderDbCtx ctx)
+        public IQueryable<OldDBModels.Order.AIcColorSet> GetColorSets(OldDBModels.Order.OrderDbCtx ctx)
         {
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
@@ -278,7 +278,7 @@ namespace OMPS.Pages
 
         public async Task<List<RecentOrder>> LoadColorSetsAsync()
         {
-            using var context = new DBModels.Order.OrderDbCtx();
+            using var context = new OldDBModels.Order.OrderDbCtx();
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
 
@@ -294,7 +294,7 @@ namespace OMPS.Pages
 
         public async Task<List<EngOrder>> GetColorSetEngOrderAsync()
         {
-            using var context = new DBModels.Order.OrderDbCtx();
+            using var context = new OldDBModels.Order.OrderDbCtx();
             return await GetColorSets(context)
                 .Where(o => o.Engined == false)
                 .Select(o => new EngOrder

@@ -21,7 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Diagnostics;
-using OMPS.DBModels;
+using OMPS.OldDBModels;
 
 namespace OMPS.Pages
 {

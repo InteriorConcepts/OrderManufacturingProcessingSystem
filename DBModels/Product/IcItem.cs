@@ -7,6 +7,8 @@ public partial class IcItem
 {
     public Guid ItemId { get; set; }
 
+    public Guid? ProductItemId { get; set; }
+
     public string Item { get; set; } = null!;
 
     public string? Description { get; set; }
@@ -38,8 +40,6 @@ public partial class IcItem
     public string? ProductSubCategory { get; set; }
 
     public double? ListPrice { get; set; }
-
-    public decimal? ColorPosInName { get; set; }
 
     public string? PartLocation { get; set; }
 

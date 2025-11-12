@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OMPS.DBModels.Product;
 
-public partial class AIcMfgBom
+public partial class IcMfgBom
 {
     public Guid MfgBomId { get; set; }
 

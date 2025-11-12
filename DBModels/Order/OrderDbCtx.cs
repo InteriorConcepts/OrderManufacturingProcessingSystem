@@ -186,7 +186,7 @@ public partial class OrderDbCtx : DbContext
             entity.Property(e => e.CustOrderNbr).HasMaxLength(50);
             entity.Property(e => e.Dept).HasMaxLength(8);
             entity.Property(e => e.Description).HasMaxLength(250);
-            entity.Property(e => e.IDNbr)
+            entity.Property(e => e.Idnbr)
                 .HasMaxLength(50)
                 .HasColumnName("IDNbr");
             entity.Property(e => e.ItemCore).HasMaxLength(50);

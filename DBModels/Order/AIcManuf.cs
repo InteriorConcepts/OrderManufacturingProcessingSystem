@@ -25,7 +25,7 @@ public partial class AIcManuf
 
     public string? ItemNbr { get; set; }
 
-    public string? IDNbr { get; set; }
+    public string? Idnbr { get; set; }
 
     public string? CatalogNbr { get; set; }
 

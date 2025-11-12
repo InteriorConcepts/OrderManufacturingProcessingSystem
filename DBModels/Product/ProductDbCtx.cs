@@ -16,11 +16,11 @@ public partial class ProductDbCtx : DbContext
     {
     }
 
-    public virtual DbSet<AIcMfgBom> AIcMfgBoms { get; set; }
-
-    public virtual DbSet<AIcProdBom> AIcProdBoms { get; set; }
-
     public virtual DbSet<IcItem> IcItems { get; set; }
+
+    public virtual DbSet<IcMfgBom> IcMfgBoms { get; set; }
+
+    public virtual DbSet<IcProdBom> IcProdBoms { get; set; }
 
     public virtual DbSet<IcProductCatalog> IcProductCatalogs { get; set; }
 
@@ -29,11 +29,55 @@ public partial class ProductDbCtx : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AIcMfgBom>(entity =>
+        modelBuilder.Entity<IcItem>(entity =>
         {
-            entity.HasKey(e => e.MfgBomId);
+            entity.HasKey(e => e.ItemId).HasName("PK__IC_Item");
 
-            entity.ToTable("aIC_MfgBom", "dbo");
+            entity.ToTable("_IC_Items", "dbo");
+
+            entity.HasIndex(e => e.Item, "IX__IC_Item").IsUnique();
+
+            entity.Property(e => e.ItemId)
+                .ValueGeneratedNever()
+                .HasColumnName("ItemID");
+            entity.Property(e => e.CatalogNbr).HasMaxLength(50);
+            entity.Property(e => e.ChangeDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.ChangedById).HasColumnName("ChangedByID");
+            entity.Property(e => e.ColorBy).HasMaxLength(50);
+            entity.Property(e => e.CreationDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.Description).HasMaxLength(50);
+            entity.Property(e => e.Directional).HasMaxLength(50);
+            entity.Property(e => e.Item).HasMaxLength(50);
+            entity.Property(e => e.ItemDepth).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ItemFin).HasMaxLength(50);
+            entity.Property(e => e.ItemHeight).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ItemWeight)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("itemWeight");
+            entity.Property(e => e.ItemWidth).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.PartLocation).HasMaxLength(50);
+            entity.Property(e => e.PriceCategory).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ProductCatalog).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ProductCategory)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.ProductItemId).HasColumnName("ProductItemID");
+            entity.Property(e => e.ProductSubCategory)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.RecordDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.ScrapFactor).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.SizeDivisor).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.UofM).HasMaxLength(50);
+            entity.Property(e => e.WorkCtr).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<IcMfgBom>(entity =>
+        {
+            entity.HasKey(e => e.MfgBomId).HasName("PK_aIC_MfgBom");
+
+            entity.ToTable("_IC_MfgBom", "dbo");
 
             entity.HasIndex(e => e.ItemNbr, "IX_aIC_MfgBom");
 
@@ -57,20 +101,22 @@ public partial class ProductDbCtx : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.WorkCtr).HasMaxLength(8);
 
-            entity.HasOne(d => d.Product).WithMany(p => p.AIcMfgBoms)
+            entity.HasOne(d => d.Product).WithMany(p => p.IcMfgBoms)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK_aIC_MfgBom__IC_ProductCatalog");
         });
 
-        modelBuilder.Entity<AIcProdBom>(entity =>
+        modelBuilder.Entity<IcProdBom>(entity =>
         {
-            entity.ToTable("aIC_ProdBom", "dbo");
+            entity.HasKey(e => e.ProdBomId).HasName("PK_aIC_ProdBom");
+
+            entity.ToTable("_IC_ProdBom", "dbo");
 
             entity.HasIndex(e => e.ProductCode, "IX_aIC_ProdBom");
 
-            entity.Property(e => e.AIcProdBomId)
+            entity.Property(e => e.ProdBomId)
                 .ValueGeneratedNever()
-                .HasColumnName("aIC_ProdBomID");
+                .HasColumnName("ProdBomID");
             entity.Property(e => e.Assembled).HasMaxLength(50);
             entity.Property(e => e.ChangeDate).HasColumnType("datetime");
             entity.Property(e => e.ChangedById).HasColumnName("ChangedByID");
@@ -96,54 +142,10 @@ public partial class ProductDbCtx : DbContext
                 .IsFixedLength();
             entity.Property(e => e.WorkCtr).HasMaxLength(20);
 
-            entity.HasOne(d => d.Product).WithMany(p => p.AIcProdBoms)
+            entity.HasOne(d => d.Product).WithMany(p => p.IcProdBoms)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_aIC_ProdBom__IC_ProductCatalog");
-        });
-
-        modelBuilder.Entity<IcItem>(entity =>
-        {
-            entity.HasKey(e => e.ItemId).HasName("PK__IC_Item");
-
-            entity.ToTable("_IC_Items", "dbo");
-
-            entity.HasIndex(e => e.Item, "IX__IC_Item").IsUnique();
-
-            entity.Property(e => e.ItemId)
-                .ValueGeneratedNever()
-                .HasColumnName("ItemID");
-            entity.Property(e => e.CatalogNbr).HasMaxLength(50);
-            entity.Property(e => e.ChangeDate).HasColumnType("smalldatetime");
-            entity.Property(e => e.ChangedById).HasColumnName("ChangedByID");
-            entity.Property(e => e.ColorBy).HasMaxLength(50);
-            entity.Property(e => e.ColorPosInName).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.CreationDate).HasColumnType("smalldatetime");
-            entity.Property(e => e.Description).HasMaxLength(50);
-            entity.Property(e => e.Directional).HasMaxLength(50);
-            entity.Property(e => e.Item).HasMaxLength(50);
-            entity.Property(e => e.ItemDepth).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ItemFin).HasMaxLength(50);
-            entity.Property(e => e.ItemHeight).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ItemWeight)
-                .HasColumnType("decimal(18, 0)")
-                .HasColumnName("itemWeight");
-            entity.Property(e => e.ItemWidth).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.PartLocation).HasMaxLength(50);
-            entity.Property(e => e.PriceCategory).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ProductCatalog).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ProductCategory)
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.ProductSubCategory)
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.RecordDate).HasColumnType("smalldatetime");
-            entity.Property(e => e.ScrapFactor).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.SizeDivisor).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.UofM).HasMaxLength(50);
-            entity.Property(e => e.WorkCtr).HasMaxLength(50);
         });
 
         modelBuilder.Entity<IcProductCatalog>(entity =>

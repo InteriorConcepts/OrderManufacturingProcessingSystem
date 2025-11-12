@@ -325,7 +325,7 @@ public partial class IcProductCatalog
 
     public bool SystemsFurn { get; set; }
 
-    public virtual ICollection<AIcMfgBom> AIcMfgBoms { get; set; } = new List<AIcMfgBom>();
+    public virtual ICollection<IcMfgBom> IcMfgBoms { get; set; } = new List<IcMfgBom>();
 
-    public virtual ICollection<AIcProdBom> AIcProdBoms { get; set; } = new List<AIcProdBom>();
+    public virtual ICollection<IcProdBom> IcProdBoms { get; set; } = new List<IcProdBom>();
 }

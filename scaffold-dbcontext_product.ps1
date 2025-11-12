@@ -1,1 +1,1 @@
-﻿Scaffold-DbContext "Server=Win2022srv03;Database=IC_EMQ;Integrated Security=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/Product -Context ProductDbCtx -Tables _IC_ProductCatalog, _IC_Items, aIC_MfgBom, aIC_ProdBom -Force -Verbose
+﻿Scaffold-DbContext "Server=Win2022srv03;Database=IC_EMQ;Integrated Security=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir DBModels/Product -Context ProductDbCtx -Tables _IC_ProductCatalog, _IC_Items, _IC_MfgBom, _IC_ProdBom -Force -Verbose
