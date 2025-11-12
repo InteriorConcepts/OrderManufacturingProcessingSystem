@@ -50,12 +50,7 @@ namespace OMPS
                 App.Current.Shutdown(-1);
             }
 
-            MainWindow = new OMPS.Windows.MainWindow()
-            {
-                DataContext = Ext.MainViewModel = new Main_ViewModel()
-            };
-            MainWindow.Show();
-
+            Ext.MainViewModel = new Main_ViewModel();
             base.OnStartup(e);
         }
 
