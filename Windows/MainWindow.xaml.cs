@@ -3,7 +3,7 @@ using Microsoft.Win32;
 using MyApp.DataAccess.Generated;
 using OMPS.Components;
 using OMPS.Pages;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;

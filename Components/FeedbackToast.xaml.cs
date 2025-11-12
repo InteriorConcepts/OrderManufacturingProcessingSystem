@@ -1,5 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;

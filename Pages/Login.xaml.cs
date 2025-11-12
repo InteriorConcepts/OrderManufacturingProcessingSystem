@@ -1,6 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
 using System.Diagnostics;

@@ -1,5 +1,4 @@
-﻿using OMPS.Core;
-using OMPS.Pages;
+﻿using OMPS.Pages;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
@@ -10,10 +9,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Reflection;
 
-namespace OMPS.viewModel
+namespace OMPS.ViewModels
 {
 
-    public class OrderSearch_ViewModel : ObservableObject
+    public class OrderSearch_ViewModel : ViewModels.ViewModelBase
     {
         public OrderSearch_ViewModel()
         {
@@ -21,7 +20,7 @@ namespace OMPS.viewModel
         }
     }
 
-    public class EngOrder_ViewModel : ObservableObject
+    public class EngOrder_ViewModel : ViewModels.ViewModelBase
     {
         public EngOrder_ViewModel()
         {
@@ -29,7 +28,7 @@ namespace OMPS.viewModel
         }
     }
 
-    public class Login_ViewModel : ObservableObject
+    public class Login_ViewModel : ViewModels.ViewModelBase
     {
         public bool LoginCompleted
         {
@@ -47,7 +46,7 @@ namespace OMPS.viewModel
         }
     }
 
-    public class Main_ViewModel : ObservableObject
+    public class Main_ViewModel : ViewModels.ViewModelBase
     {
 
         public bool WidgetMode {

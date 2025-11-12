@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OMPS"
         xmlns:Components="clr-namespace:OMPS.Components"
         xmlns:pages="clr-namespace:OMPS.Pages"
-        xmlns:viewModel="clr-namespace:OMPS.viewModel"
+        xmlns:viewModel="clr-namespace:OMPS.ViewModels"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         FontSize="{Binding MainViewModel.FontSize_Base}" FontWeight="Normal"

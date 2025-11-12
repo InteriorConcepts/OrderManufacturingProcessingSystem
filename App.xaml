@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:OMPS"
              xmlns:conv="clr-namespace:OMPS.Converters"
              xmlns:helpers="clr-namespace:OMPS"
-             xmlns:viewModel="clr-namespace:OMPS.viewModel"
+             xmlns:viewModel="clr-namespace:OMPS.ViewModels"
              xmlns:pages="clr-namespace:OMPS.Pages"
              xmlns:windows="clr-namespace:OMPS.Windows"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"

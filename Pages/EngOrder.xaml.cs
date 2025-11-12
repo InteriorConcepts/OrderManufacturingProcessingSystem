@@ -6,7 +6,7 @@ using OMPS.Components;
 using OMPS.DBModels;
 using OMPS.DBModels.Order;
 using OMPS.DBModels.Product;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
@@ -183,8 +183,8 @@ namespace OMPS.Pages
             }
         } = [];
 #if NEWDBSQL
-        public List<Models.Order.AIcManuf> _mfgItemLines = [];
-        public IReadOnlyCollection<Models.Order.AIcManuf> MfgItemLines => this._mfgItemLines;
+        public List<DBModels.Order.AIcManuf> _mfgItemLines = [];
+        public IReadOnlyCollection<DBModels.Order.AIcManuf> MfgItemLines => this._mfgItemLines;
 #else
         public ObservableCollection<example_queries_GetItemLinesByJobResult> MfgItemLines { get; set; } = [];
 #endif
@@ -282,7 +282,7 @@ namespace OMPS.Pages
             this.progbar_itemlines.Visibility = Visibility.Visible;
             this.datagrid_main.BeginInit();
 #if NEWDBSQL
-            using (var ctx = new Models.Order.OrderDbCtx())
+            using (var ctx = new DBModels.Order.OrderDbCtx())
             {
                 this._mfgItemLines = await ctx.AIcManufs
                     .Where(p => p.JobNbr == job)
@@ -759,7 +759,7 @@ namespace OMPS.Pages
                 if (Ext.PopupConfirmation("Are you sure you want to delete this item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Stop) is not MessageBoxResult.Yes) return;
             }
 #if NEWDBSQL
-            if (this.datagrid_main.SelectedItem is not Models.Order.AIcManuf line) return;
+            if (this.datagrid_main.SelectedItem is not DBModels.Order.AIcManuf line) return;
             var res = await Ext.DeleteItemLine(line.ManufId, line.JobNbr);
 #else
             if (this.datagrid_main.SelectedItem is not example_queries_GetItemLinesByJobResult line) return;
@@ -850,7 +850,7 @@ namespace OMPS.Pages
             if (SCH.Global.Config is null || !SCH.Global.Config.InitializationSuccessfull) return;
             Debug.WriteLine($"Try Query GUID lookup ({lookupGuid})");
 #if NEWDBSQL
-            using (var ctx = new Models.Product.ProductDbCtx())
+            using (var ctx = new DBModels.Product.ProductDbCtx())
             {
                 var res = await ctx.IcItems
                     .Where(p => p.ItemId.ToString() == lookupGuid.ToString())
@@ -985,7 +985,7 @@ namespace OMPS.Pages
             if (this.ColorSetInfo.ColorSetId.ToString().Length < 8) return;
             try
             {
-                using var context = new Models.Order.OrderDbCtx();
+                using var context = new DBModels.Order.OrderDbCtx();
                 var dborder = await context.AIcColorSets
                     .Where(o => o.ColorSetId == ColorSetInfo.ColorSetId)
                     .FirstAsync();

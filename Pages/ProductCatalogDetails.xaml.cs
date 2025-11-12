@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyApp.DataAccess.Generated;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Diagnostics;
-using OMPS.Models;
+using OMPS.DBModels;
 
 namespace OMPS.Pages
 {

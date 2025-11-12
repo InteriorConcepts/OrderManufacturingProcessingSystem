@@ -3,8 +3,8 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyApp.DataAccess.Generated;
-using OMPS.Models;
-using OMPS.viewModel;
+using OMPS.DBModels;
+using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
 using System.Collections.Generic;
@@ -50,8 +50,8 @@ namespace OMPS.Pages
         #region Properties
         public bool isLoaded { get; set; } = false;
 
-        private List<Models.Product.IcProductCatalog> _products = [];
-        public IReadOnlyList<Models.Product.IcProductCatalog> Products => _products;
+        private List<DBModels.Product.IcProductCatalog> _products = [];
+        public IReadOnlyList<DBModels.Product.IcProductCatalog> Products => _products;
 
         public const ushort ITEMLIMIT_MAX = 500;
         public const ushort ITEMLIMIT_MIN = 1;
@@ -103,11 +103,11 @@ namespace OMPS.Pages
         }
 
         // Query method
-        public IQueryable<Models.Product.IcProductCatalog> LoadProductsQueryAsync(Models.Product.ProductDbCtx ctx)
+        public IQueryable<DBModels.Product.IcProductCatalog> LoadProductsQueryAsync(DBModels.Product.ProductDbCtx ctx)
             => ctx.IcProductCatalogs
                     .Where(p => p.Status == "A")
                     .OrderBy(p => p.ProductCode)
-                    .Select(p => new Models.Product.IcProductCatalog
+                    .Select(p => new DBModels.Product.IcProductCatalog
                     {
                         ProductId = p.ProductId,
                         ProductCode = p.ProductCode,
@@ -116,7 +116,7 @@ namespace OMPS.Pages
                     .AsNoTracking() // No change tracking
                     .AsSplitQuery();
 
-        public IQueryable<Models.Product.IcProductCatalog> LoadActiveProductsQueryAsync(Models.Product.ProductDbCtx ctx)
+        public IQueryable<DBModels.Product.IcProductCatalog> LoadActiveProductsQueryAsync(DBModels.Product.ProductDbCtx ctx)
             => this.LoadProductsQueryAsync(ctx);
 
         public async Task LoadProductsAsync(string? pcodeFilter = null, string? pdescFilter = null)
@@ -126,7 +126,7 @@ namespace OMPS.Pages
             await Task.Run(async () =>
             {
                 Debug.WriteLine("Products");
-                using var ctx = new Models.Product.ProductDbCtx();
+                using var ctx = new DBModels.Product.ProductDbCtx();
                 // Safe read-only query
                 var query = this.LoadActiveProductsQueryAsync(ctx);
                 if (!(pcodeFilter is null or ""))
@@ -151,10 +151,10 @@ namespace OMPS.Pages
         }
 
         // Update method
-        public async Task UpdateProductAsync(Models.Product.IcProductCatalog product)
+        public async Task UpdateProductAsync(DBModels.Product.IcProductCatalog product)
         {
 #if NEWDBSQL
-            using var context = new Models.Product.ProductDbCtx();
+            using var context = new DBModels.Product.ProductDbCtx();
             var dbProduct = await context.IcProductCatalogs.FindAsync(product.ProductId);
             if (dbProduct is null) return;
             // Update the tracked entity
@@ -201,7 +201,7 @@ namespace OMPS.Pages
         private async void datagrid_main_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (this.datagrid_main.SelectedIndex is -1) return;
-            if (this.datagrid_main.SelectedItem is not Models.Product.IcProductCatalog prod) return;
+            if (this.datagrid_main.SelectedItem is not DBModels.Product.IcProductCatalog prod) return;
             Ext.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
             Ext.MainViewModel.ProductCatalogDetails_VM?.ProductCode = prod.ProductCode;
         }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using MyApp.DataAccess.Generated;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
 using System.Collections;
@@ -59,8 +59,8 @@ namespace OMPS.Pages
         internal static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
 
 #if NEWDBSQL
-        public List<Models.Order.AIcColorSet> _colorSetInfos = [];
-        public IReadOnlyCollection<Models.Order.AIcColorSet> ColorSetInfos => this._colorSetInfos;
+        public List<DBModels.Order.AIcColorSet> _colorSetInfos = [];
+        public IReadOnlyCollection<DBModels.Order.AIcColorSet> ColorSetInfos => this._colorSetInfos;
 #else
         public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
 #endif
@@ -97,7 +97,7 @@ namespace OMPS.Pages
             this.datagrid_orders.BeginEdit();
 
 #if NEWDBSQL
-            using (var ctx = new Models.Order.OrderDbCtx())
+            using (var ctx = new DBModels.Order.OrderDbCtx())
             {
                 var cutoff = DateTime.Now.AddDays(-60);
                 this._colorSetInfos = await ctx.AIcColorSets
@@ -213,7 +213,7 @@ namespace OMPS.Pages
         {
             if (e.ChangedButton is not MouseButton.Left) return;
 #if NEWDBSQL
-            if (datagrid_orders.SelectedItem is not Models.Order.AIcColorSet item) return;
+            if (datagrid_orders.SelectedItem is not DBModels.Order.AIcColorSet item) return;
             if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
             Ext.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
 #else
@@ -229,7 +229,7 @@ namespace OMPS.Pages
         private void OrdersViewSource_Filter(object sender, FilterEventArgs e)
         {
 #if NEWDBSQL
-            if (e.Item is not Models.Order.AIcColorSet item)
+            if (e.Item is not DBModels.Order.AIcColorSet item)
             {
                 return;
             }
@@ -273,7 +273,7 @@ namespace OMPS.Pages
         {
 
 #if NEWDBSQL
-            if (row.Item is not Models.Order.AIcColorSet item) return;
+            if (row.Item is not DBModels.Order.AIcColorSet item) return;
 
             var matchesC = Ext.JobFoldersC?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
             var matchesH = Ext.JobFoldersH?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
@@ -443,7 +443,7 @@ namespace OMPS.Pages
         {
             //return;
 #if NEWDBSQL
-            if (row.Item is not Models.Order.AIcColorSet item) return;
+            if (row.Item is not DBModels.Order.AIcColorSet item) return;
 #else
             if (row.Item is not example_queries_GetColorSetsResult item) return;
 #endif
@@ -467,7 +467,7 @@ namespace OMPS.Pages
         {
             if (e.ChangedButton is not MouseButton.Left) return;
 #if NEWDBSQL
-            if (this.datagrid_orders.SelectedItem is not Models.Order.AIcColorSet item) return;
+            if (this.datagrid_orders.SelectedItem is not DBModels.Order.AIcColorSet item) return;
 #else
             if (this.datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
 #endif

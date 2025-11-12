@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OMPS.Windows"
         xmlns:Components="clr-namespace:OMPS.Components"
         xmlns:pages="clr-namespace:OMPS.Pages"
-        xmlns:viewModel="clr-namespace:OMPS.viewModel"
+        xmlns:viewModel="clr-namespace:OMPS.ViewModels"
         xmlns:Ext="clr-namespace:OMPS"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"

@@ -1,5 +1,5 @@
 ﻿using OMPS.Components;
-using OMPS.viewModel;
+using OMPS.ViewModels;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;

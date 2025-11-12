@@ -1,4 +1,4 @@
-﻿using OMPS.viewModel;
+﻿using OMPS.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
