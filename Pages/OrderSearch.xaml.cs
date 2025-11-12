@@ -58,12 +58,8 @@ namespace OMPS.Pages
         internal static MainWindow ParentWindow { get => Ext.MainWindow; }
         internal static double DataGridFontSize { get => MainViewModel.FontSize_Base; }
 
-#if NEWDBSQL
-        public List<OldDBModels.Order.AIcColorSet> _colorSetInfos = [];
-        public IReadOnlyCollection<OldDBModels.Order.AIcColorSet> ColorSetInfos => this._colorSetInfos;
-#else
-        public ObservableCollection<example_queries_GetColorSetsResult> ColorSetInfos { get; set; } = [];
-#endif
+        public List<DBModels.Order.AIcColorSet> _colorSetInfos = [];
+        public IReadOnlyCollection<DBModels.Order.AIcColorSet> ColorSetInfos => this._colorSetInfos;
         #endregion
 
 
@@ -96,8 +92,7 @@ namespace OMPS.Pages
             this.progbar_orders.Value = 50;
             this.datagrid_orders.BeginEdit();
 
-#if NEWDBSQL
-            using (var ctx = new OldDBModels.Order.OrderDbCtx())
+            using (var ctx = new DBModels.Order.OrderDbCtx())
             {
                 var cutoff = DateTime.Now.AddDays(-60);
                 this._colorSetInfos = await ctx.AIcColorSets
@@ -110,38 +105,6 @@ namespace OMPS.Pages
                     .ToListAsync();
             }
             OnPropertyChanged(nameof(ColorSetInfos));
-#else
-            this.ColorSetInfos.Clear();
-            await Task.Run(() =>
-            {
-                try
-                {
-                    Debug.WriteLine(0);
-                    var data_orders = Ext.Queries.GetColorSets(filters);
-                    Debug.WriteLine(1);
-
-                    Application.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        for (int i = 0; i < data_orders.Count; i++)
-                        {
-                            Debug.WriteLine("Order");
-                            this.ColorSetInfos.Add(data_orders[i]);
-                        }
-
-                        if (this.datagrid_orders.Items.Count is not 0)
-                        {
-                            this.datagrid_orders.ScrollIntoView(this.datagrid_orders.Items[0]);
-                        }
-                        Debug.WriteLine(2);
-                    });
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-                }
-            });
-#endif
             this.datagrid_orders.EndInit();
             this.RefreshDelay.Start();
             Console.WriteLine("Finished Query");
@@ -212,33 +175,18 @@ namespace OMPS.Pages
         private void datagrid_orders_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton is not MouseButton.Left) return;
-#if NEWDBSQL
-            if (datagrid_orders.SelectedItem is not OldDBModels.Order.AIcColorSet item) return;
+            if (datagrid_orders.SelectedItem is not DBModels.Order.AIcColorSet item) return;
             if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
             Ext.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
-#else
-            if (datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
-            if (!Ext.IsJobNumValid(item.JobNbr)) return;
-            //Ext.MainWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;
-            //Ext.MainWindow.Page_EngOrder.JobNbr = item.JobNbr;
-            Ext.MainViewModel.EngOrder_VM?.JobNbr = item.JobNbr;
-#endif
             Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
         }
 
         private void OrdersViewSource_Filter(object sender, FilterEventArgs e)
         {
-#if NEWDBSQL
-            if (e.Item is not OldDBModels.Order.AIcColorSet item)
+            if (e.Item is not DBModels.Order.AIcColorSet item)
             {
                 return;
             }
-#else
-            if (e.Item is not example_queries_GetColorSetsResult item)
-            {
-                return;
-            }
-#endif
 
             // Get text from TextBox
             var filterText = Txt_JobNbr.Text.ToLower();
@@ -249,11 +197,7 @@ namespace OMPS.Pages
                 e.Accepted = true;
                 return;
             }
-#if NEWDBSQL
             e.Accepted = (item.SupplyOrderRef is not null && item.SupplyOrderRef.Contains(filterText));
-#else
-            e.Accepted = item.JobNbr.Contains(filterText);
-#endif
         }
 
         private void Txt_JobNbr_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -271,18 +215,10 @@ namespace OMPS.Pages
 
         public static void SetupOrderRowHeader(DataGridRow row)
         {
-
-#if NEWDBSQL
-            if (row.Item is not OldDBModels.Order.AIcColorSet item) return;
+            if (row.Item is not DBModels.Order.AIcColorSet item) return;
 
             var matchesC = Ext.JobFoldersC?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
             var matchesH = Ext.JobFoldersH?.FirstOrDefault(d => d.Name == item.SupplyOrderRef);
-#else
-            if (row.Item is not example_queries_GetColorSetsResult item) return;
-
-            var matchesC = Ext.JobFoldersC?.FirstOrDefault(d => d.Name == item.JobNbr);
-            var matchesH = Ext.JobFoldersH?.FirstOrDefault(d => d.Name == item.JobNbr);
-#endif
 
             bool foundC = matchesC is not null,
                  foundH = matchesH is not null;
@@ -442,11 +378,7 @@ namespace OMPS.Pages
         public static void SetOrdersRowHeader(DataGridRow row)
         {
             //return;
-#if NEWDBSQL
-            if (row.Item is not OldDBModels.Order.AIcColorSet item) return;
-#else
-            if (row.Item is not example_queries_GetColorSetsResult item) return;
-#endif
+            if (row.Item is not DBModels.Order.AIcColorSet item) return;
 
             if (row.Template.FindName("Grid_RowHeader", row) is Grid)
             {
@@ -466,24 +398,15 @@ namespace OMPS.Pages
         private async void datagrid_orders_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton is not MouseButton.Left) return;
-#if NEWDBSQL
-            if (this.datagrid_orders.SelectedItem is not OldDBModels.Order.AIcColorSet item) return;
-#else
-            if (this.datagrid_orders.SelectedItem is not example_queries_GetColorSetsResult item) return;
-#endif
+            if (this.datagrid_orders.SelectedItem is not DBModels.Order.AIcColorSet item) return;
             if (this.datagrid_orders.SelectedCells is not IList<DataGridCellInfo> cells || cells.Count is 0) return;
             var cell = this.datagrid_orders.CurrentCell;
             Debug.WriteLine(cell.Column.Header.ToString());
             if (cell.Column.Header.ToString() is "JobNbr")
             {
                 Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
-#if NEWDBSQL
                 if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
                 Ext.MainViewModel.EngOrder_VM?.JobNbr = item.SupplyOrderRef;
-#else
-                if (!Ext.IsJobNumValid(item.JobNbr)) return;
-                Ext.MainViewModel.EngOrder_VM?.JobNbr = item.JobNbr;
-#endif
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
@@ -511,11 +434,7 @@ namespace OMPS.Pages
             GC.SuppressFinalize(this);
             this.RefreshDelay.Elapsed -= this.RefreshDelay_Elapsed;
             this.RefreshDelay.Dispose();
-#if NEWDBSQL
             this._colorSetInfos.Clear();
-#else
-            this.ColorSetInfos.Clear();
-#endif
         }
     }
 }

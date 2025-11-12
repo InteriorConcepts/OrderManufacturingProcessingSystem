@@ -3,7 +3,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyApp.DataAccess.Generated;
-using OMPS.OldDBModels;
+using OMPS.DBModels;
 using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
@@ -50,8 +50,8 @@ namespace OMPS.Pages
         #region Properties
         public bool isLoaded { get; set; } = false;
 
-        private List<OldDBModels.Product.IcProductCatalog> _products = [];
-        public IReadOnlyList<OldDBModels.Product.IcProductCatalog> Products => _products;
+        private List<DBModels.Product.IcProductCatalog> _products = [];
+        public IReadOnlyList<DBModels.Product.IcProductCatalog> Products => _products;
 
         public const ushort ITEMLIMIT_MAX = 500;
         public const ushort ITEMLIMIT_MIN = 1;
@@ -103,11 +103,11 @@ namespace OMPS.Pages
         }
 
         // Query method
-        public IQueryable<OldDBModels.Product.IcProductCatalog> LoadProductsQueryAsync(OldDBModels.Product.ProductDbCtx ctx)
+        public IQueryable<DBModels.Product.IcProductCatalog> LoadProductsQueryAsync(DBModels.Product.ProductDbCtx ctx)
             => ctx.IcProductCatalogs
                     .Where(p => p.Status == "A")
                     .OrderBy(p => p.ProductCode)
-                    .Select(p => new OldDBModels.Product.IcProductCatalog
+                    .Select(p => new DBModels.Product.IcProductCatalog
                     {
                         ProductId = p.ProductId,
                         ProductCode = p.ProductCode,
@@ -116,17 +116,16 @@ namespace OMPS.Pages
                     .AsNoTracking() // No change tracking
                     .AsSplitQuery();
 
-        public IQueryable<OldDBModels.Product.IcProductCatalog> LoadActiveProductsQueryAsync(OldDBModels.Product.ProductDbCtx ctx)
+        public IQueryable<DBModels.Product.IcProductCatalog> LoadActiveProductsQueryAsync(DBModels.Product.ProductDbCtx ctx)
             => this.LoadProductsQueryAsync(ctx);
 
         public async Task LoadProductsAsync(string? pcodeFilter = null, string? pdescFilter = null)
         {
             this.datagrid_main.BeginInit();
-#if NEWDBSQL
             await Task.Run(async () =>
             {
                 Debug.WriteLine("Products");
-                using var ctx = new OldDBModels.Product.ProductDbCtx();
+                using var ctx = new DBModels.Product.ProductDbCtx();
                 // Safe read-only query
                 var query = this.LoadActiveProductsQueryAsync(ctx);
                 if (!(pcodeFilter is null or ""))
@@ -146,15 +145,13 @@ namespace OMPS.Pages
             });
 
             OnPropertyChanged(nameof(Products));
-#endif
             this.datagrid_main.EndInit();
         }
 
         // Update method
-        public async Task UpdateProductAsync(OldDBModels.Product.IcProductCatalog product)
+        public async Task UpdateProductAsync(DBModels.Product.IcProductCatalog product)
         {
-#if NEWDBSQL
-            using var context = new OldDBModels.Product.ProductDbCtx();
+            using var context = new DBModels.Product.ProductDbCtx();
             var dbProduct = await context.IcProductCatalogs.FindAsync(product.ProductId);
             if (dbProduct is null) return;
             // Update the tracked entity
@@ -163,7 +160,6 @@ namespace OMPS.Pages
 
             // Reload collection
             await LoadProductsAsync();
-#endif
         }
 
         public void Dispose()
@@ -201,7 +197,7 @@ namespace OMPS.Pages
         private async void datagrid_main_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (this.datagrid_main.SelectedIndex is -1) return;
-            if (this.datagrid_main.SelectedItem is not OldDBModels.Product.IcProductCatalog prod) return;
+            if (this.datagrid_main.SelectedItem is not DBModels.Product.IcProductCatalog prod) return;
             Ext.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
             Ext.MainViewModel.ProductCatalogDetails_VM?.ProductCode = prod.ProductCode;
         }

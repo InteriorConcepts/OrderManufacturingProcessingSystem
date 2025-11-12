@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Humanizer;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
-using OMPS.OldDBModels;
+using OMPS.DBModels;
 using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
@@ -260,8 +260,7 @@ namespace OMPS.Pages
 
         //
 
-#if NEWDBSQL
-        public IQueryable<OldDBModels.Order.AIcColorSet> GetColorSets(OldDBModels.Order.OrderDbCtx ctx)
+        public IQueryable<DBModels.Order.AIcColorSet> GetColorSets(DBModels.Order.OrderDbCtx ctx)
         {
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
@@ -278,7 +277,7 @@ namespace OMPS.Pages
 
         public async Task<List<RecentOrder>> LoadColorSetsAsync()
         {
-            using var context = new OldDBModels.Order.OrderDbCtx();
+            using var context = new DBModels.Order.OrderDbCtx();
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
 
@@ -294,7 +293,7 @@ namespace OMPS.Pages
 
         public async Task<List<EngOrder>> GetColorSetEngOrderAsync()
         {
-            using var context = new OldDBModels.Order.OrderDbCtx();
+            using var context = new DBModels.Order.OrderDbCtx();
             return await GetColorSets(context)
                 .Where(o => o.Engined == false)
                 .Select(o => new EngOrder
@@ -304,26 +303,10 @@ namespace OMPS.Pages
                     Eng = o.Engined
                 }).ToListAsync();
         }
-#endif
 
         public async void GetNewOrders()
         {
-#if NEWDBSQL
             _newOrders = await this.LoadColorSetsAsync();
-            OnPropertyChanged(nameof(NewOrders));
-#else
-            var now = DateTime.Now;
-            //this.DataGrid_NewOrders.EndInit();
-            var data_orders =
-                Ext.Queries.GetColorSets("%").
-                    OrderBy(i => i.OrderDate);
-            List<RecentOrder> temp = [];
-            foreach (var item in data_orders)
-            {
-                temp.Add(new() { JobNbr = item.JobNbr, OrderNbr = item.OrderNumber });
-            }
-            _newOrders = temp;
-#endif
             OnPropertyChanged(nameof(NewOrders));
         }
 
@@ -331,22 +314,8 @@ namespace OMPS.Pages
         {
             var now = DateTime.Now;
             var cutoff = DateTime.Now.AddDays(-30);
-#if NEWDBSQL
             _engWorking = await GetColorSetEngOrderAsync();
             OnPropertyChanged(nameof(EngWorking));
-#else
-            var jobs = Ext.Queries.GetColorSets("%").Select(i => i.JobNbr);
-            var colorSetDatas =
-                jobs.SelectMany(Ext.Queries.GetColorSet).
-                Where(i => i.Engined is false);
-            List<EngOrder> temp = [];
-            foreach (var item in colorSetDatas)
-            {
-                temp.Add(new EngOrder { Name = item.SupplyOrderRef, PreEng = item.Preengined, Eng = item.Engined });
-            }
-            _engWorking = temp;
-            OnPropertyChanged(nameof(EngWorking));
-#endif
         }
 
         public void GetLocalFolders()
