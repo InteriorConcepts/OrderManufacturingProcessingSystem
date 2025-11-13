@@ -177,7 +177,7 @@ namespace OMPS.Pages
             if (e.ChangedButton is not MouseButton.Left) return;
             if (datagrid_orders.SelectedItem is not DBModels.Order.AIcColorSet item) return;
             if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
-            Ext.MainViewModel.EngOrder_VM.JobNbr = item.SupplyOrderRef;
+            Ext.MainViewModel.EngOrder_ViewModel.JobNbr = item.SupplyOrderRef;
             Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
         }
 
@@ -406,12 +406,12 @@ namespace OMPS.Pages
             {
                 Ext.MainViewModel.CurrentPage = PageTypes.EngOrder;
                 if (item.SupplyOrderRef is null || !Ext.IsJobNumValid(item.SupplyOrderRef)) return;
-                Ext.MainViewModel.EngOrder_VM?.JobNbr = item.SupplyOrderRef;
+                Ext.MainViewModel.EngOrder_ViewModel?.JobNbr = item.SupplyOrderRef;
                 return;
             }
             if (cell.Column.Header.ToString() is "QuoteNbr" or "OrderNumber")
             {
-                Ext.MainViewModel.QuoteOrder_VM?.QuoteNbr = item.QuoteNbr;
+                Ext.MainViewModel.QuoteOrder_View?.QuoteNbr = item.QuoteNbr;
                 Ext.MainViewModel.CurrentPage = PageTypes.QuoteOrder;
             }
             //Ext.MainWindow.Tab_Create_EngOrder().page?.JobNbr = item.JobNbr;

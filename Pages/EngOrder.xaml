@@ -1,23 +1,27 @@
 ﻿<UserControl x:Class="OMPS.Pages.EngOrder"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:OMPS"
-      xmlns:conv="clr-namespace:OMPS.Converters"
-      xmlns:Components="clr-namespace:OMPS.Components"
-      xmlns:pages="clr-namespace:OMPS.Pages"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      x:Name="Page_EngOrder" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-      mc:Ignorable="d" UseLayoutRounding="False"
-      d:DesignHeight="1000" d:DesignWidth="1025"
-      DataContext="{Binding ElementName=Page_EngOrder}"
-      PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
-      FontSize="{Binding DataGridFontSize, ElementName=Page_EngOrder, FallbackValue=12}"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OMPS"
+             xmlns:conv="clr-namespace:OMPS.Converters"
+             xmlns:Components="clr-namespace:OMPS.Components"
+             xmlns:pages="clr-namespace:OMPS.Pages"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+             xmlns:dbmodels_order="clr-namespace:OMPS.DBModels.Order"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:ViewModels="clr-namespace:OMPS.ViewModels"
+             x:Name="Page_EngOrder" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+             mc:Ignorable="d" UseLayoutRounding="False"
+             d:DesignHeight="1000" d:DesignWidth="1025"
+             d:DataContext="{d:DesignInstance Type=ViewModels:EngOrder_ViewModel, IsDesignTimeCreatable=True}"
+             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
       >
-
     <UserControl.Resources>
-        <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
+        <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}"/>
         <!--
             Make two more styles for the edit pane's combobox and checkboxes and assign it to them
         -->
@@ -89,8 +93,23 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="RowEditInputTextBox" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="247"/>
+        </Style>
+
+        <Style x:Key="RowEditInputComboBox" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignComboBox}">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="247"/>
+        </Style>
+
+        <Style x:Key="RowEditInputCheckBox" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="247"/>
+        </Style>
+
         <Style x:Key="InputStyle" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
-            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
             <Setter Property="Margin" Value="0 4"/>
             <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
             <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
@@ -100,17 +119,17 @@
             <Setter Property="Padding" Value="0 1"/>
             <Setter Property="TextWrapping" Value="NoWrap"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="FontSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"/>
+            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
         </Style>
 
         <Style x:Key="InputLookupStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
             <Setter Property="materialDesign:TextFieldAssist.HasLeadingIcon" Value="True"/>
-            <Setter Property="materialDesign:TextFieldAssist.LeadingIconSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4, FallbackValue=12}"/>
+            <Setter Property="materialDesign:TextFieldAssist.LeadingIconSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
             <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="LinkVariant"/>
         </Style>
 
         <Style x:Key="BtnLookupStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="0 4"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -118,8 +137,8 @@
         </Style>
 
         <Style x:Key="BtnLookupImageStyle" TargetType="Image">
-            <Setter Property="Width" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2_1, FallbackValue=16}"/>
-            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Width" Value="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}"/>
+            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
             <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
             <Setter Property="Source" Value="pack://application:,,,/OMPS;component/Images/Binoculars.png"/>
@@ -128,11 +147,11 @@
         </Style>
 
         <Style x:Key="InputLabel" TargetType="Label" BasedOn="{StaticResource MaterialDesignLabel}">
-            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
             <Setter Property="Padding" Value="0 1 2 1"/>
             <Setter Property="Margin" Value="0 4"/>
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="FontSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"/>
+            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
         </Style>
 
         <Style x:Key="InputComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
@@ -141,15 +160,15 @@
             <Setter Property="BorderThickness" Value="0.5"/>
             <Setter Property="Padding" Value="2 1"/>
             <Setter Property="Margin" Value="0 4"/>
-            <Setter Property="Height" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2, FallbackValue=18}"/>
+            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="FontSize" Value="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"/>
+            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
         </Style>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding ElementName=Page_EngOrder}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -172,7 +191,7 @@
                         Style="{StaticResource MaterialDesignFlatButton}" Foreground="LightSkyBlue"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Center"
                         Padding="6 0" Margin="0 0 4 0" Cursor="Hand"
-                        Click="Btn_RefreshHeader_Click">
+                        Command="{Binding RefreshHeaderCommand}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="Refresh" VerticalAlignment="Center"/>
                         <materialDesign:PackIcon Margin="6 0 0 0"
@@ -186,7 +205,7 @@
                         IsEnabled="{Binding ColorSetInfo_HasChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
                         Padding="6 0" Margin="0 0 4 0" Cursor="Hand"
-                        Click="Btn_SaveHeader_Click">
+                        Command="{Binding SaveHeaderCommand}">
                     <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
                         <TextBlock Text="Save Header" VerticalAlignment="Center"/>
                         <materialDesign:PackIcon Width="18" Height="18" Kind="FloppyDisc" VerticalAlignment="Center"
@@ -199,17 +218,17 @@
                           Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                          Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
+                          Command="{Binding ToggleTopBarCommand}" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
                 <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="False"
                           Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                          Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
+                          Command="{Binding ToggleSideBarCommand}" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
                 <CheckBox x:Name="Btn_ToggleFiltersPnl" Content="Filter Bar" IsChecked="False"
                           Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                          Click="Btn_FilterClose_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
+                          Command="{Binding ToggleFilterBarCommand}" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
@@ -241,15 +260,15 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
                             </StackPanel>
                             <StackPanel MinWidth="80" MaxWidth="95" Width="Auto" Margin="0 0 4 0">
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct, StringFormat=C2, FallbackValue='$1,234.00', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty, FallbackValue='DefaultValue', Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" Text="{Binding Path=ColorSetInfo.Engineer, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.OrderNumber, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.LineNumber, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.SupplyOrderRef, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.QuoteNbr, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.NetProduct, StringFormat=C2, FallbackValue='$1,234.00', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.ShipByDate, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.LineItem, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.Qty, FallbackValue='DefaultValue', Mode=TwoWay}"/>
+                                <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" Text="{Binding ColorSetInfo.Engineer, FallbackValue='DefaultValue', Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
                             <StackPanel MinWidth="73" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
@@ -264,15 +283,15 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Ped Cushion:"/>
                             </StackPanel>
                             <StackPanel MinWidth="80" MaxWidth="95" Margin="0 0 4 0">
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.FrameFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.FrameFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.MetalFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.MetalFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.ShelfFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.ShelfFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.TblLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblLegFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}" SelectedItem="{Binding Path=ColorSetInfo.TblBaseFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblBaseFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}" SelectedItem="{Binding Path=ColorSetInfo.TblLegBaseFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}" SelectedItem="{Binding Path=ColorSetInfo.TblSlimLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}" SelectedItem="{Binding Path=ColorSetInfo.TangentLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.FrameFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.FrameFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.MetalFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.MetalFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.ShelfFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.ShelfFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding ColorSetInfo.TblLegFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.TblLegFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}" SelectedItem="{Binding ColorSetInfo.TblBaseFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.TblBaseFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}" SelectedItem="{Binding ColorSetInfo.TblLegBaseFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}" SelectedItem="{Binding ColorSetInfo.TblSlimLegFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}" SelectedItem="{Binding ColorSetInfo.TangentLegFin, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding ColorSetInfo.PedCushionColor, Mode=TwoWay}" SelectedValue="{Binding ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
                             <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
@@ -286,32 +305,32 @@
                                 <Label Style="{StaticResource InputLabel}" Content="HC Door Lam:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Curve Lam:"/>
                             </StackPanel>
-                            <StackPanel x:Name="SPnl_LookupButtons" Width="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2_1, FallbackValue=16}">
-                                <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                            <StackPanel x:Name="SPnl_LookupButtons" Width="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}">
+                                <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="wks" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="wks" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="web" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="web" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="mel" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="mel" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="lam" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="lam" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="chs" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="chs" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="acr" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="acr" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="hcd" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="hcd" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
-                                <Button Tag="crv" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                <Button Tag="crv" Style="{StaticResource BtnLookupStyle}" Command="{Binding Matl_LookupCommand}">
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
                             </StackPanel>
@@ -328,16 +347,16 @@
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
-                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
-                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
-                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
-                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
-                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
+                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Command="{Binding ExtProc_ImpMfgCommand}" />
+                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Command="{Binding ExtProc_EngPrcCommand}" />
+                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Command="{Binding ExtProc_MatlCommand}" />
+                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Command="{Binding ExtProc_CutlstCommand}" />
+                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Command="{Binding ExtProc_SlExpCommand}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Height="Auto">
                             <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
-                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" Width="Auto" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay}"/>
+                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" Width="Auto" MaxWidth="800" Text="{Binding ColorSetInfo.Notes, Mode=TwoWay}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -619,12 +638,18 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
-                    <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
-                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H6}" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
-                             PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
+                    <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="{Binding MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
+                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="{Binding MainViewModel.FontSize_H6}" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch"
+                             VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:KeyTrigger FiredOn="KeyDown" Key="Return">
+                                <behaviors:InvokeCommandAction Command="{Binding MfgLinesFitlerCommand}" PassEventArgsToCommand="True"/>
+                            </behaviors:KeyTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </TextBox>
                     <Button x:Name="Btn_FilterSave" Grid.Column="2"
-                            Height="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
-                            Width="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
+                            Height="{Binding MainViewModel.FontSize_H2}"
+                            Width="{Binding MainViewModel.FontSize_H2}"
                             Padding="0"
                             IsEnabled="True"
                             HorizontalAlignment="Center"
@@ -637,17 +662,17 @@
                             VerticalAlignment="Center"
                             Kind="AddBox"/>
                     </Button>
-                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" Opacity="0.7" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H6}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
+                    <Label x:Name="Lbl_FilterInfo" Grid.Column="3" Opacity="0.7" FontSize="{Binding MainViewModel.FontSize_H6}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
                         <TextBlock>
                         Ex:&#x00A0;&#x00A0;<Italic><Underline>Jnt+D&amp;T+yes</Underline></Italic>&#x00A0;&#x00A0;or&#x00A0;&#x00A0;<Italic><Underline>Rivet+300-0</Underline></Italic>
                         </TextBlock>
                     </Label>
                     <Button x:Name="Btn_FilterClose" Grid.Column="5"
-                            Click="Btn_FilterClose_Click"
+                            Command="{Binding ToggleFilterBarCommand}"
                             Padding="0"
                             materialDesign:ButtonAssist.CornerRadius="1"
-                            Height="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
-                            Width="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H2}"
+                            Height="{Binding MainViewModel.FontSize_H2}"
+                            Width="{Binding MainViewModel.FontSize_H2}"
                             IsEnabled="True"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
@@ -661,13 +686,15 @@
                     </Button>
                 </Grid>
                 <Separator Grid.Row="1" Margin="0 1"/>
-                <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
+                <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="{Binding MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
                 <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                     <WrapPanel x:Name="WPnl_SavedFilters" Orientation="Horizontal" VerticalAlignment="Stretch">
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="yes+F" Click="Btn_SavedFilters_Click" Content="Assembled" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Til+p1-" Click="Btn_SavedFilters_Click" Content="Panels" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Tub+Tube" Click="Btn_SavedFilters_Click" Content="Tubes" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Pmd" Click="Btn_SavedFilters_Click" Content="Pmold" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5}"/>
+                        <!--
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="yes+F" Click="Btn_SavedFilters_Click" Content="Assembled" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Til+p1-" Click="Btn_SavedFilters_Click" Content="Panels" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Tub+Tube" Click="Btn_SavedFilters_Click" Content="Tubes" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Pmd" Click="Btn_SavedFilters_Click" Content="Pmold" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        -->
                     </WrapPanel>
                 </ScrollViewer>
             </Grid>
@@ -704,27 +731,18 @@
             <DataGrid x:Name="datagrid_main" Grid.Row="0" Visibility="Visible"
                       ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
                       IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
-                      FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H4}"
+                      FontSize="{Binding MainViewModel.FontSize_H4}"
                       Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                      CellEditEnding="DataGrid_CellEditEnding" SnapsToDevicePixels="True"
-                      RowEditEnding="DataGrid_RowEditEnding"
+                      SnapsToDevicePixels="True"
                       IsTextSearchEnabled="True" Background="#222"
-                      AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
-                      LoadingRow="DataGrid_LoadingRow"
                       BorderBrush="LightGray"
                       BorderThickness="0"
-                      Loaded="datagrid_main_Loaded"
-                      SelectionChanged="datagrid_main_SelectionChanged"
                       EnableRowVirtualization="True" EnableColumnVirtualization="False"
                       VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
                       VirtualizingPanel.ScrollUnit="Item"
-                      MouseDoubleClick="datagrid_main_MouseDoubleClick"
-                      PreviewMouseDown="datagrid_main_PreviewMouseDown"
-                      PreviewKeyDown="datagrid_main_PreviewKeyDown"
                       SelectionMode="Single" IsTabStop="True" HeadersVisibility="All"
-                      Unloaded="datagrid_main_Unloaded"
                       CanUserReorderColumns="False"
-                      GridLinesVisibility="None" LostFocus="datagrid_main_LostFocus">
+                      GridLinesVisibility="None">
                 <DataGrid.Resources>
                     <!-- Fix Column Headers Presenter -->
                     <Style TargetType="DataGridColumnHeadersPresenter">
@@ -879,9 +897,9 @@
                       PreviewKeyDown="datagrid_main_PreviewKeyDown" SelectionMode="Single" IsTabStop="True" RowHeaderWidth="36" HeadersVisibility="All">
             </DataGrid>
             -->
-            <DockPanel x:Name="pnl_dock" Visibility="Collapsed" LastChildFill="False" Grid.Column="1" DataContext="{Binding ElementName=Page_EngOrder}">
+            <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
-                                          FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
+                                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
                     <Grid Width="Auto" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
@@ -897,13 +915,13 @@
                         <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
                             <Label Content="Row Edit Pane" HorizontalAlignment="Center"
                                    Padding="0" Margin="0"
-                                   FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H3, FallbackValue=16}"
+                                   FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
                                    Foreground="#DDD"
                                    FontWeight="DemiBold"/>
                             <Label Content="Unsaved changes, Grid is locked" HorizontalAlignment="Center"
                                    Padding="0" Margin="0" Visibility="{Binding Pending_LineChanges, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=true, FallbackValue=Visibility.Hidden}"
                                    Foreground="#fc7"
-                                   FontSize="{Binding ElementName=Page_EngOrder, Path=MainViewModel.FontSize_H5, FallbackValue=10}"
+                                   FontSize="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"
                                    FontWeight="Regular"/>
                         </StackPanel>
                         <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Margin="0" Padding="0"
@@ -918,7 +936,7 @@
                                                 <TextBlock Text="ItemNbr"/>
                                                 <Button x:Name="Btn_itemNbrLookup" Grid.Column="1" Grid.Row="0" Height="18" Tag="ItemNbr"
                                                             Padding="0" Margin="0" BorderThickness="0"
-                                                            Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                            Background="Transparent" Command="{Binding RowEdit_LookupCommand}">
                                                     <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                     </Image>
                                                 </Button>
@@ -934,7 +952,7 @@
                                                 <TextBlock Text="Description"/>
                                                 <Button Grid.Column="1" Grid.Row="0" Height="18" Tag="Description"
                                                             Padding="0" Margin="0" BorderThickness="0"
-                                                            Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                            Background="Transparent" Command="{Binding RowEdit_LookupCommand}">
                                                     <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                     </Image>
                                                 </Button>
@@ -975,56 +993,932 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Area"/>
                                 </WrapPanel>
                                 <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch"
-                                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-                                                DataContext="{Binding ElementName=Page_EngOrder, Path=CurrentItem}">
+                                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                    <behaviors:Interaction.Triggers>
+                                        <behaviors:EventTrigger EventName="PreviewKeyDown">
+                                            <behaviors:InvokeCommandAction
+                                                Command="{Binding RowEditInputGotFocusCommand}"
+                                                EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                EventArgsConverterParameter="{Binding .}"/>
+                                        </behaviors:EventTrigger>
+                                    </behaviors:Interaction.Triggers>
                                     <WrapPanel.BindingGroup>
                                         <BindingGroup Name="BGroup_LineEdits"/>
                                     </WrapPanel.BindingGroup>
-                                    <TextBox Height="30" Width="247" Text="{Binding PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Text="{Binding Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding IDNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Fabwidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <!--GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown"-->
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="PartNbr" Text="{Binding CurrentItem.PartNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="ItemNbr" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding CurrentItem.ItemNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="CatalogNbr" Text="{Binding CurrentItem.CatalogNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Qty" Text="{Binding CurrentItem.Qty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Multiplier" Text="{Binding CurrentItem.Multiplier, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Description" x:Name="Txt_RowEdit_Desc" Text="{Binding CurrentItem.Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="UofM" Text="{Binding CurrentItem.UofM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <!--PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown"-->
+                                    <ComboBox Style="{StaticResource RowEditInputComboBox}" Tag="Type" SelectedValue="{Binding CurrentItem.Type, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding TypeValues}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="SelectionChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxSelectionChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="PreviewMouseWheel">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxPreviewMouseWheelCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </ComboBox>
+
+                                    <ComboBox Style="{StaticResource RowEditInputComboBox}" Tag="SubType" SelectedValue="{Binding CurrentItem.SubType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding SubTypeValues}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="SelectionChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxSelectionChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="PreviewMouseWheel">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxPreviewMouseWheelCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </ComboBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Idnbr" Text="{Binding CurrentItem.Idnbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <!--Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown"-->
+                                    <CheckBox Style="{StaticResource RowEditInputCheckBox}" Tag="Explode" IsChecked="{Binding CurrentItem.Explode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="Checked">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditCheckBoxCheckChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                                </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="Unchecked">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditCheckBoxCheckChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </CheckBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Assembled" Text="{Binding CurrentItem.Assembled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="AssyNbr" Text="{Binding CurrentItem.AssyNbr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="TileIndicator" Text="{Binding CurrentItem.TileIndicator, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="ItemFin" Text="{Binding CurrentItem.ItemFin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <ComboBox Style="{StaticResource RowEditInputComboBox}" Tag="ColorBy" SelectedValue="{Binding CurrentItem.ColorBy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ColorByValues}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="SelectionChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxSelectionChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="PreviewMouseWheel">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxPreviewMouseWheelCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </ComboBox>
+
+                                    <ComboBox Style="{StaticResource RowEditInputComboBox}" Tag="WorkCtr" SelectedValue="{Binding CurrentItem.WorkCtr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding WorkCtrValues}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="SelectionChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxSelectionChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="PreviewMouseWheel">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditComboBoxPreviewMouseWheelCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </ComboBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="ItemCore" Text="{Binding CurrentItem.ItemCore, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Dept" Text="{Binding CurrentItem.Dept, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="ScrapFactor" Text="{Binding CurrentItem.ScrapFactor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="SizeDivisor" Text="{Binding CurrentItem.SizeDivisor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Depth" Text="{Binding CurrentItem.Depth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Width" Text="{Binding CurrentItem.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Height" Text="{Binding CurrentItem.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Fabwidth" Text="{Binding CurrentItem.Fabwidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="FabHeight" Text="{Binding CurrentItem.FabHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option01" Text="{Binding CurrentItem.Option01, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option02" Text="{Binding CurrentItem.Option02, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option03" Text="{Binding CurrentItem.Option03, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option04" Text="{Binding CurrentItem.Option04, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option05" Text="{Binding CurrentItem.Option05, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option06" Text="{Binding CurrentItem.Option06, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option07" Text="{Binding CurrentItem.Option07, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option08" Text="{Binding CurrentItem.Option08, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option09" Text="{Binding CurrentItem.Option09, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Option10" Text="{Binding CurrentItem.Option10, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="CoreSize" Text="{Binding CurrentItem.CoreSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
+                                    <TextBox Style="{StaticResource RowEditInputTextBox}" Tag="Area" Text="{Binding CurrentItem.Area, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="TextChanged">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditTextBoxTextChangedCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="GotKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputGotFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                            <behaviors:EventTrigger EventName="LostKeyboardFocus">
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{Binding RowEditInputLostFocusCommand}"
+                                                    EventArgsConverter="{conv:ContextualEventArgsConverter}"
+                                                    EventArgsConverterParameter="{Binding .}"/>
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                    </TextBox>
+
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>
 
                         <!--
                             <ScrollViewer Name="dataSideGridScrollViewer" Grid.Column="0" Grid.Row="0" Width="414" Grid.ColumnSpan="5" Margin="0 0 0 0"
-                                          Loaded="dataSideGridScrollViewer_Loaded" FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
+                                          Loaded="dataSideGridScrollViewer_Loaded" FontSize="{Binding MainViewModel.FontSize_H4, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}"
                                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
                                           VirtualizingPanel.IsVirtualizing="True">
                                 <Grid x:Name="grid_dataeditregion" Width="414" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" >
@@ -1036,8 +1930,8 @@
                             </ScrollViewer>
                             -->
                         <Button Grid.Row="2" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
-                                    BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
-                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
+                                    BorderThickness="0" Command="{Binding RevertItemLineEditsCommand}"
+                                    IsEnabled="{Binding Pending_LineChangesCount, Converter={conv:GreaterThanZeroConverter}}" Height="24"
                                     Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -1049,8 +1943,8 @@
                         </Button>
                         <Button Grid.Row="2" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                                    VerticalContentAlignment="Center" Command="{Binding AcceptItemLineEditsCommand}"
+                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}"
                                     Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -1062,8 +1956,8 @@
                         </Button>
                         <Button Grid.Row="2" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
-                                    IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
+                                    VerticalContentAlignment="Center" Command="{Binding DeleteItemLineCommand}"
+                                    IsEnabled="{Binding CurrentItem, Converter={conv:NullToBooleanConverter}}"
                                     Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -1075,8 +1969,8 @@
                         </Button>
                         <Button Grid.Row="2" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                    VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
-                                    IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
+                                    VerticalContentAlignment="Center" Command="{Binding NewItemLineCommand}"
+                                    IsEnabled="{Binding CurrentItem, Converter={conv:NullToBooleanConverter}}"
                                     Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -1096,25 +1990,25 @@
                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                         Checked="RadioButton_Checked"/>
+                         />
             <RadioButton x:Name="RadioBtn_View_QDO" Content="Quote Items Ordered" Tag="QuoteDetailOrdered" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                         Checked="RadioButton_Checked"/>
+                         />
             <RadioButton x:Name="RadioBtn_View_M" Content="Manuf Items" Tag="IceManuf"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                         IsChecked="True" Checked="RadioButton_Checked"/>
+                         IsChecked="True"/>
             <RadioButton x:Name="RadioBtn_View_MP" Content="Manuf Parts" Tag="IceManufParts" IsEnabled="False"
                          FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
                          VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                         Checked="RadioButton_Checked"/>
+                         />
         </DockPanel>
     </Grid>
 </UserControl>

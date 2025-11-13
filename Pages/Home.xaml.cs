@@ -545,13 +545,13 @@ namespace OMPS.Pages
             {
                 if (obj is not DataGridRow dgr || dgr.DataContext is not PathEntry pe) return;
                 MainViewModel.CurrentPage = PageTypes.EngOrder;
-                MainViewModel.EngOrder_VM?.JobNbr = pe.Name;
+                MainViewModel.EngOrder_ViewModel?.JobNbr = pe.Name;
             }
             if (sender is Button btn)
             {
                 if (btn.DataContext is not PathEntry pe) return;
                 MainViewModel.CurrentPage = PageTypes.EngOrder;
-                MainViewModel.EngOrder_VM?.JobNbr = pe.Name;
+                MainViewModel.EngOrder_ViewModel?.JobNbr = pe.Name;
             }
         }
 

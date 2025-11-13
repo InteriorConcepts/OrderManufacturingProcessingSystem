@@ -522,6 +522,13 @@ namespace OMPS
 
 
         #region "Properties"
+        public enum PropUpdateResult
+        {
+            SameValue,
+            Worked,
+            Error,
+            NoPropOrCantWrite
+        }
         internal static (string, PropUpdateResult, Type?, object?) UpdateProperty(object dataItem, string propertyName, object value)
         {
             var property = dataItem.GetType().GetProperty(propertyName);

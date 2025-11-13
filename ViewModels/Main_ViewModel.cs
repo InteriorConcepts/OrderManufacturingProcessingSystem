@@ -12,40 +12,6 @@ using System.Reflection;
 namespace OMPS.ViewModels
 {
 
-    public class OrderSearch_ViewModel : ViewModels.ViewModelBase
-    {
-        public OrderSearch_ViewModel()
-        {
-
-        }
-    }
-
-    public class EngOrder_ViewModel : ViewModels.ViewModelBase
-    {
-        public EngOrder_ViewModel()
-        {
-
-        }
-    }
-
-    public class Login_ViewModel : ViewModels.ViewModelBase
-    {
-        public bool LoginCompleted
-        {
-            get;
-            set
-            {
-                field = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Login_ViewModel()
-        {
-
-        }
-    }
-
     public class Main_ViewModel : ViewModels.ViewModelBase
     {
 
@@ -211,13 +177,15 @@ namespace OMPS.ViewModels
             }
         } = UrlBase;
 
-        public Home? Home_VM { get; set; }
-        public Login? Login_VM { get; set; }
-        public OrderSearch? OrderSearch_VM { get; set; }
-        public EngOrder? EngOrder_VM { get; set; }
-        public QuoteOrder? QuoteOrder_VM { get; set; }
-        public ProductCatalogSearch? ProductCatalogSearch_VM { get; set; }
-        public ProductCatalogDetails? ProductCatalogDetails_VM { get; set; }
+        public EngOrder_ViewModel? EngOrder_ViewModel { get; set; }
+
+        public Home? Home_View { get; set; }
+        public Login? Login_View { get; set; }
+        public OrderSearch? OrderSearch_View { get; set; }
+        public EngOrder? EngOrder_View { get; set; }
+        public QuoteOrder? QuoteOrder_View { get; set; }
+        public ProductCatalogSearch? ProductCatalogSearch_View { get; set; }
+        public ProductCatalogDetails? ProductCatalogDetails_View { get; set; }
 
         public bool Home_IsSelected { get => this.CurrentPage is PageTypes.Home; }
         public bool Login_IsSelected { get => this.CurrentPage is PageTypes.Login; }
@@ -227,11 +195,11 @@ namespace OMPS.ViewModels
         public bool ProductCatalogSearch_IsSelected { get => this.CurrentPage is PageTypes.ProductCatalogSearch; }
         public bool ProductCatalogDetails_IsSelected { get => this.CurrentPage is PageTypes.ProductCatalogDetails; }
 
-        public bool EngOrder_IsEnabled { get => this.EngOrder_VM is not null && this.EngOrder_VM.JobNbr is not null or ""; }
-        public bool OrderSearch_IsEnabled { get => this.OrderSearch_VM is not null && (this.OrderSearch_VM.ColorSetInfos.Count is not 0 || OrderSearch_IsSelected); }
-        public bool QuoteOrder_IsEnabled { get => this.QuoteOrder_VM is not null && this.QuoteOrder_VM.QuoteNbr is not null or ""; }
-        public bool ProductCatalogSearch_IsEnabled { get => this.ProductCatalogSearch_VM is not null && this.ProductCatalogSearch_VM.IsLoaded; }
-        public bool ProductCatalogDetails_IsEnabled { get => this.ProductCatalogDetails_VM is not null && this.ProductCatalogDetails_VM.IsLoaded; }
+        public bool EngOrder_IsEnabled { get => this.EngOrder_View is not null && this.EngOrder_ViewModel?.JobNbr is not null or ""; }
+        public bool OrderSearch_IsEnabled { get => this.OrderSearch_View is not null && (this.OrderSearch_View.ColorSetInfos.Count is not 0 || OrderSearch_IsSelected); }
+        public bool QuoteOrder_IsEnabled { get => this.QuoteOrder_View is not null && this.QuoteOrder_View.QuoteNbr is not null or ""; }
+        public bool ProductCatalogSearch_IsEnabled { get => this.ProductCatalogSearch_View is not null && this.ProductCatalogSearch_View.IsLoaded; }
+        public bool ProductCatalogDetails_IsEnabled { get => this.ProductCatalogDetails_View is not null && this.ProductCatalogDetails_View.IsLoaded; }
 
         public bool CanPrevious {
             get => this.PreviousPage is not PageTypes.None or PageTypes.Login;
@@ -321,7 +289,7 @@ namespace OMPS.ViewModels
                 PageTypes.Home => "",
                 PageTypes.Login => "",
                 PageTypes.OrderSearch => "",
-                PageTypes.EngOrder => $"?job={this.EngOrder_VM?.JobNbr}&tab={this.EngOrder_VM?.dpnl_ViewsBar.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked is true)?.Tag}",
+                PageTypes.EngOrder => $"?job={this.EngOrder_ViewModel?.JobNbr}&tab={this.EngOrder_View?.dpnl_ViewsBar.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked is true)?.Tag}",
                 PageTypes.QuoteOrder => "",
                 PageTypes.ProductCatalogSearch => "",
                 PageTypes.ProductCatalogDetails => "",
@@ -335,24 +303,24 @@ namespace OMPS.ViewModels
             {
                 case PageTypes.Home:
                     //if (this.Home_VM?.NewOrders?.Count is not 0) return;
-                    this.Home_VM?.LoadData();
+                    this.Home_View?.LoadData();
                     Debug.WriteLine("Load Home");
                     break;
                 case PageTypes.Login:
                     break;
                 case PageTypes.OrderSearch:
-                    if (this.OrderSearch_VM?.ColorSetInfos?.Count is not 0) return;
+                    //if (this.OrderSearch_View?.ColorSetInfos?.Count is not 0) return;
                     Debug.WriteLine("Load Orders");
-                    this.OrderSearch_VM?.LoadRecentOrders();
+                    this.OrderSearch_View?.LoadRecentOrders();
                     break;
                 case PageTypes.EngOrder:
                     break;
                 case PageTypes.QuoteOrder:
                     break;
                 case PageTypes.ProductCatalogSearch:
-                    if (this.ProductCatalogSearch_VM?.Products?.Count is not 0) return;
+                    if (this.ProductCatalogSearch_View?.Products?.Count is not 0) return;
                     Debug.WriteLine("Load Products");
-                    this.ProductCatalogSearch_VM?.LoadProducts();
+                    this.ProductCatalogSearch_View?.LoadProducts();
                     break;
                 case PageTypes.ProductCatalogDetails:
                     break;
@@ -383,13 +351,17 @@ namespace OMPS.ViewModels
 
         public void Init()
         {
-            this.Home_VM = new();
-            this.Login_VM = new();
-            this.OrderSearch_VM = new() { };
-            this.EngOrder_VM = new() { };
-            this.QuoteOrder_VM = new();
-            this.ProductCatalogSearch_VM = new() { };
-            this.ProductCatalogDetails_VM = new();
+            this.Home_View = new();
+            this.Login_View = new();
+            this.OrderSearch_View = new() { };
+
+            this.EngOrder_View = new() { };
+            this.EngOrder_ViewModel = new(this.EngOrder_View);
+            this.EngOrder_View.DataContext = this.EngOrder_ViewModel;
+
+            this.QuoteOrder_View = new();
+            this.ProductCatalogSearch_View = new() { };
+            this.ProductCatalogDetails_View = new();
         }
     }
 }

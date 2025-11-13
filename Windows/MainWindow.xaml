@@ -271,13 +271,13 @@
                             
                         </StackPanel>
                         
-                        <ContentControl Grid.Row="1" x:Name="CC_Landing" Background="Transparent" Content="{Binding Home_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                        <ContentControl Grid.Row="1" x:Name="CC_Login" Background="Transparent" Content="{Binding Login_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                        <ContentControl Grid.Row="1" x:Name="CC_OrderSearch" Background="Transparent" Content="{Binding OrderSearch_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                        <ContentControl Grid.Row="1" x:Name="CC_EngOrder" Background="Transparent" Content="{Binding EngOrder_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                        <ContentControl Grid.Row="1" x:Name="CC_QuoteOrder" Background="Transparent" Content="{Binding QuoteOrder_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                        <ContentControl Grid.Row="1" x:Name="CC_ProductCatalogSearch" Background="Transparent" Content="{Binding ProductCatalogSearch_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
-                        <ContentControl Grid.Row="1" x:Name="CC_ProductCatalogDetails" Background="Transparent" Content="{Binding ProductCatalogDetails_VM, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_Landing" Background="Transparent" Content="{Binding Home_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_Login" Background="Transparent" Content="{Binding Login_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_OrderSearch" Background="Transparent" Content="{Binding OrderSearch_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_EngOrder" Background="Transparent" Content="{Binding EngOrder_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_QuoteOrder" Background="Transparent" Content="{Binding QuoteOrder_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_ProductCatalogSearch" Background="Transparent" Content="{Binding ProductCatalogSearch_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <ContentControl Grid.Row="1" x:Name="CC_ProductCatalogDetails" Background="Transparent" Content="{Binding ProductCatalogDetails_View, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                     </Grid>
                 </materialDesign:ColorZone>
 

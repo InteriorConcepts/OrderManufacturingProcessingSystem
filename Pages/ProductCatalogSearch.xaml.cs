@@ -199,7 +199,7 @@ namespace OMPS.Pages
             if (this.datagrid_main.SelectedIndex is -1) return;
             if (this.datagrid_main.SelectedItem is not DBModels.Product.IcProductCatalog prod) return;
             Ext.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
-            Ext.MainViewModel.ProductCatalogDetails_VM?.ProductCode = prod.ProductCode;
+            Ext.MainViewModel.ProductCatalogDetails_View?.ProductCode = prod.ProductCode;
         }
     }
 }
