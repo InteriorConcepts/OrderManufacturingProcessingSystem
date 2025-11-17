@@ -13,13 +13,12 @@
         mc:Ignorable="d"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
-        DataContext="{Binding ElementName=LookupFinderWindow}"
         Closing="LookupFinderWindow_Closing"
         Title="LookupFinder"
         Height="375"
         Width="600">
     <Window.Resources>
-        <CollectionViewSource x:Key="DataViewSource" x:Name="DataViewSource" Source="{Binding Data}" Filter="CollectionViewSource_Filter"/>
+        <CollectionViewSource x:Key="DataViewSource" x:Name="DataViewSource" Source="{Binding Items, UpdateSourceTrigger=PropertyChanged}" Filter="CollectionViewSource_Filter"/>
         <!-- Custom DataGridColumnHeader Style with Search Box -->
         
     </Window.Resources>
@@ -27,17 +26,17 @@
         <BitmapCache RenderAtScale="1.5" EnableClearType="True" SnapsToDevicePixels="True"/>
     </Window.CacheMode>
     <Border CornerRadius="2" Background="#292929" BorderBrush="{StaticResource MaterialDesign.Brush.Primary}" BorderThickness="1">
-        <Grid DataContext="{Binding ElementName=LookupFinderWindow}">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="{Binding MainVM.FontSize_Base, FallbackValue=32, Converter={conv:ScalingConverter}, ConverterParameter=2.0}"/>
+                <RowDefinition Height="{Binding MainViewModel.FontSize_Base, FallbackValue=32, Converter={conv:ScalingConverter}, ConverterParameter=2.0}"/>
                 <RowDefinition Height="48"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="{Binding MainVM.FontSize_Base, FallbackValue=16, Converter={conv:ScalingConverter}, ConverterParameter=1.0}"/>
+                <RowDefinition Height="{Binding MainViewModel.FontSize_Base, FallbackValue=16, Converter={conv:ScalingConverter}, ConverterParameter=1.0}"/>
             </Grid.RowDefinitions>
             <Label x:Name="Txtblk_Title" Grid.Row="0" Content="Lookup" Margin="0" Padding="0"
                    HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Center" VerticalAlignment="Stretch"
-                   FontWeight="Medium" FontSize="{Binding MainVM.FontSize_Base, FallbackValue=18, Converter={conv:ScalingConverter}, ConverterParameter=1.5}"
+                   FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_Base, FallbackValue=18, Converter={conv:ScalingConverter}, ConverterParameter=1.5}"
                    
                    Background="#0066CC"/>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -46,7 +45,7 @@
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          materialDesign:TextFieldAssist.ClearButtonSize="14"
                          AcceptsReturn="False" TextWrapping="NoWrap"
-                         FontSize="{Binding Path=MainViewModel.FontSize_H4}"
+                         FontSize="{Binding MainViewModel.FontSize_H4}"
                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignFilledTextBox}" Width="125"
                          PreviewKeyDown="Txt_PreviewKeyDown" />
@@ -55,13 +54,13 @@
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          materialDesign:TextFieldAssist.ClearButtonSize="14"
                          AcceptsReturn="False" TextWrapping="NoWrap"
-                         FontSize="{Binding Path=MainViewModel.FontSize_H4}"
+                         FontSize="{Binding MainViewModel.FontSize_H4}"
                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
                          Style="{StaticResource MaterialDesignFilledTextBox}" Width="440"
                          PreviewKeyDown="Txt_PreviewKeyDown" />
             </StackPanel>
             <DataGrid x:Name="DataGrid_Lookup" Grid.Row="2"
-                      FontSize="{Binding Path=MainViewModel.FontSize_H4}"
+                      FontSize="{Binding MainViewModel.FontSize_H4}"
                       ItemsSource="{Binding Source={StaticResource DataViewSource}}"
                       CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserReorderColumns="False"
                       AutoGenerateColumns="True"

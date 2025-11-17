@@ -21,7 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Diagnostics;
-using OMPS.OldDBModels;
+using OMPS.DBModels;
 
 namespace OMPS.Pages
 {
@@ -77,9 +77,11 @@ namespace OMPS.Pages
         {
             await Task.Run(() =>
             {
+                /*
                 var res_items = Ext.Queries.GetProductSubPartsByProductCode(this.ProductCode);
                 if (res_items is null) return;
                 if (res_items.Count is 0) return;
+                */
             });
         }
         #endregion

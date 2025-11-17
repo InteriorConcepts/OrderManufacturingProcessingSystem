@@ -472,7 +472,7 @@
                                     </Grid>
                                 </materialDesign:ColorZone>
                             </Border>
-                            <Border MinWidth="220" Width="Auto" Height="204"
+                            <Border MinWidth="220" Width="Auto"
                                     BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"
                                     Margin="8" Padding="6 4" CornerRadius="1">
                                 <Border.Effect>

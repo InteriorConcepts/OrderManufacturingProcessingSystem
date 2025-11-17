@@ -1,7 +1,7 @@
 ﻿using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using MyApp.DataAccess.Generated;
-using OMPS.OldDBModels;
+using OMPS.DBModels.Order;
 using OMPS.Pages;
 using OMPS.ViewModels;
 using OMPS.Windows;
@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using static OMPS.Pages.EngOrder;
 using static System.Net.WebRequestMethods;
 
@@ -456,7 +457,7 @@ namespace OMPS
             ]).Select(s => s.ToLower()).ToImmutableList();
 
         public static readonly ImmutableList<PropertyInfo> MfgItem_FilterProps = [..
-                typeof(example_queries_GetItemLinesByJobResult).
+                typeof(DBModels.Order.AIcManuf).
                     GetProperties().
                     Where(p => p.PropertyType != typeof(Guid) &&
                                          p.PropertyType != typeof(DateTime) &&
@@ -465,11 +466,11 @@ namespace OMPS
             ];
         public static string[] MfgItem_FilterGroups = [];
         public static string[][] MfgItem_GroupFilters = [];
-        public static bool MfgItems_Filter_Desc(example_queries_GetItemLinesByJobResult item, string filterText)
+        public static bool MfgItems_Filter_Desc(DBModels.Order.AIcManuf item, string filterText)
         {
-            return (item.Description.Contains(filterText, StringComparison.CurrentCultureIgnoreCase));
+            return ((item.Description ?? "").Contains(filterText, StringComparison.CurrentCultureIgnoreCase));
         }
-        public static bool MfgItems_Filter(example_queries_GetItemLinesByJobResult item, string filterText)
+        public static bool MfgItems_Filter(DBModels.Order.AIcManuf item, string filterText)
         {
             byte i = 0;
             for (byte j = 0; j < MfgItem_GroupFilters.Length; j++)
@@ -518,10 +519,17 @@ namespace OMPS
             //e.Accepted = false;
             return false;
         }
-#endregion
+        #endregion
 
 
         #region "Properties"
+        public static T? GetValue<T>(object value) where T : struct
+        {
+            if (value == null || value is DBNull) return null;
+            if (value is T) return (T)value;
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+
         internal static (string, PropUpdateResult, Type?, object?) UpdateProperty(object dataItem, string propertyName, object value)
         {
             var property = dataItem.GetType().GetProperty(propertyName);
@@ -530,7 +538,9 @@ namespace OMPS
                 try
                 {
                     var prevValue = property.GetValue(dataItem);
-                    var convertedValue = Convert.ChangeType(value, property.PropertyType);
+
+                    object? convertedValue = ChangeType(value, property.PropertyType);
+
                     //Debug.WriteLine($"{prevValue} | {convertedValue}");
                     if (!((object?)prevValue as object)?.Equals((object?)convertedValue as object) ?? true)
                     {
@@ -542,9 +552,15 @@ namespace OMPS
                         return (propertyName, PropUpdateResult.SameValue, property.PropertyType, null);
                     }
                 }
-                catch (Exception ex)
+                catch (InvalidCastException ex)
                 {
                     // Handle conversion errors
+                    Debug.WriteLine($"Error updating property: {ex.Message}");
+                    return (propertyName, PropUpdateResult.ConversionFailed, property.PropertyType, null);
+                }
+                catch (Exception ex)
+                {
+                    // Handle errors
                     Debug.WriteLine($"Error updating property: {ex.Message}");
                     return (propertyName, PropUpdateResult.Error, property.PropertyType, null);
                 }
@@ -553,6 +569,86 @@ namespace OMPS
             {
                 return (propertyName, PropUpdateResult.NoPropOrCantWrite, null, null);
             }
+        }
+
+        public static object ChangeType(object value, Type conversion)
+        {
+            var t = conversion;
+
+            if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                if (value == null)
+                {
+                    return null;
+                }
+
+                t = Nullable.GetUnderlyingType(t);
+            }
+
+            return Convert.ChangeType(value, t);
+        }
+
+        /// <summary>
+        /// [ <c>public static Type GetNullableType(Type TypeToConvert)</c> ]
+        /// <para></para>
+        /// Convert any Type to its Nullable&lt;T&gt; form, if possible
+        /// </summary>
+        /// <param name="TypeToConvert">The Type to convert</param>
+        /// <returns>
+        /// The Nullable&lt;T&gt; converted from the original type, the original type if it was already nullable, or null 
+        /// if either <paramref name="TypeToConvert"/> could not be converted or if it was null.
+        /// </returns>
+        /// <remarks>
+        /// To qualify to be converted to a nullable form, <paramref name="TypeToConvert"/> must contain a non-nullable value 
+        /// type other than System.Void.  Otherwise, this method will return a null.
+        /// </remarks>
+        /// <seealso cref="Nullable&lt;T&gt;"/>
+        public static Type? GetNullableType(Type TypeToConvert)
+        {
+            // Abort if no type supplied
+            if (TypeToConvert == null)
+                return null;
+
+            // If the given type is already nullable, just return it
+            if (IsTypeNullable(TypeToConvert))
+                return TypeToConvert;
+
+            // If the type is a ValueType and is not System.Void, convert it to a Nullable<Type>
+            if (TypeToConvert.IsValueType && TypeToConvert != typeof(void))
+                return typeof(Nullable<>).MakeGenericType(TypeToConvert);
+
+            // Done - no conversion
+            return null;
+        }
+
+        /// <summary>
+        /// [ <c>public static bool IsTypeNullable(Type TypeToTest)</c> ]
+        /// <para></para>
+        /// Reports whether a given Type is nullable (Nullable&lt; Type &gt;)
+        /// </summary>
+        /// <param name="TypeToTest">The Type to test</param>
+        /// <returns>
+        /// true = The given Type is a Nullable&lt; Type &gt;; false = The type is not nullable, or <paramref name="TypeToTest"/> 
+        /// is null.
+        /// </returns>
+        /// <remarks>
+        /// This method tests <paramref name="TypeToTest"/> and reports whether it is nullable (i.e. whether it is either a 
+        /// reference type or a form of the generic Nullable&lt; T &gt; type).
+        /// </remarks>
+        /// <seealso cref="GetNullableType"/>
+        public static bool IsTypeNullable(Type TypeToTest)
+        {
+            // Abort if no type supplied
+            if (TypeToTest == null)
+                return false;
+
+            // If this is not a value type, it is a reference type, so it is automatically nullable
+            //  (NOTE: All forms of Nullable<T> are value types)
+            if (!TypeToTest.IsValueType)
+                return true;
+
+            // Report whether an underlying Type exists (if it does, TypeToTest is a nullable Type)
+            return Nullable.GetUnderlyingType(TypeToTest) != null;
         }
 
         public static (DependencyProperty dp, object value)? DpValueFromInputType<T>(T value) where T : Control
@@ -614,6 +710,7 @@ namespace OMPS
 
 
         #region "Item Line Modification"
+        /*
         internal static bool UpdateItemLineData(Guid manufid, example_queries_GetItemLinesByJobResult item)
         {
             if (item is null) return false;
@@ -629,19 +726,26 @@ namespace OMPS
             if (res is null) return false;
             return true;
         }
+        */
 
-        internal static bool CopyItemLineData(Guid manufid, example_queries_GetItemLinesByJobResult item)
+        internal async static Task<bool> CopyItemLineData(Guid manufid)
         {
-            if (item is null) return false;
-            var res = Ext.Queries.CopyManufItemLineByManufID(" (COPY)", manufid);
-            if (res is null) return false;
-            return true;
+            using (var ctx = new OrderDbCtx())
+            {
+                var dbline = await ctx.AIcManufs
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(i => i.ManufId == manufid);
+                if (dbline is null) return false;
+                dbline.Description += " (COPY)";
+                dbline.ManufId = Guid.Empty;
+                await ctx.AIcManufs.AddAsync(dbline);
+                return true;
+            }
         }
 
         internal static async Task<bool> DeleteItemLine(Guid manufid, string job)
         {
-#if NEWDBSQL
-            using (var ctx = new OldDBModels.Order.OrderDbCtx())
+            using (var ctx = new DBModels.Order.OrderDbCtx())
             {
                 var txt = await ctx.AIcManufs
                     .Where(p => p.ManufId == manufid && p.JobNbr == job)
@@ -650,13 +754,6 @@ namespace OMPS
                 if (txt is not 1) return false;
                 return true;
             }
-#else
-            return await Task.Run<bool>(() =>
-            {
-                var res = Ext.Queries.DeleteManufItemLineByManufID(job, manufid);
-                return (res is not null);
-            });
-#endif
         }
         #endregion
 
