@@ -58,7 +58,10 @@ namespace OMPS
             Notify_engrelease,
             Notify_cncwks,
             Notify_cncpnl,
-            EngOrder_VertBorder,
+            DataGridGridLinesVisibility,
+            Home_showSection_orders,
+            Home_showSection_eng,
+            Home_showSection_cnc,
             Shortcuts,
         }
         internal static void ValidateAppSettings()
@@ -135,13 +138,31 @@ namespace OMPS
             }
         }
 
+        internal static (bool success, bool value) ReadSettingAsBool(AppConfigKey key)
+        {
+
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                if (appSettings[key.ToString()] is not string str)
+                {
+                    return (false, false);
+                }
+                else
+                    return (true, bool.TryParse(str, out bool val) ? val : false);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return (false, false);
+            }
+        }
+
         internal static (bool success, bool value) ReadSettingAsBool(string key)
         {
 
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
-                string result = appSettings[key] ?? "false";
                 if (appSettings[key] is not string str)
                 {
                     return (false, false);
@@ -791,6 +812,90 @@ namespace OMPS
         }
         #endregion
 
+
+        public class CustomComboBoxDisplayValues
+        {
+            public string DisplayName => $"{ValuePrefix}  {Value}  {ValueSuffix}".Trim();
+            public string? ValuePrefix = "";
+            public string? ValueSuffix = "";
+            public object Value = "";
+            public CustomComboBoxDisplayValues(object value, string? prefix = null, string? suffix = null)
+            {
+                this.ValuePrefix = prefix;
+                this.ValueSuffix = suffix;
+                this.Value = value;
+            }
+        }
+        public static string[] WorkCtrStrs { get; } = [
+            "300-00",
+            "300-01",
+            "300-02",
+            "300-03",
+            "300-04",
+            "300-05",
+            "300-06",
+            "300-07",
+            "310-00",
+            "310-01",
+            "310-02",
+            "310-03",
+            "310-04",
+            "320-00",
+            "330-00",
+            "330-01",
+            "330-02",
+            "340-00",
+            "340-01",
+            "360-00",
+            "600-00",
+            "600-01",
+            "600-02",
+            "600-03",
+            "600-04",
+            "600-05",
+            "610-00",
+            "620-00",
+            "620-01",
+            "620-02",
+            "850-00",
+            "850-01",
+            "OS",
+        ];
+        public static CustomComboBoxDisplayValues[] WorkCtrValues { get; } = [
+            new(value: "300-00", suffix: "Assembly Frames"),
+            new(value: "300-01", suffix: "Cut Panel Molding"),
+            new(value: "300-02", suffix: "Tube Cutting"),
+            new(value: "300-03", suffix: "Drill & Tap - Assy"),
+            new(value: "300-04", suffix: "Sleeving - Assy"),
+            new(value: "300-05", suffix: "Joint Picking"),
+            new(value: "300-06", suffix: "Shiploose Packing"),
+            new(value: "300-07", suffix: "Frame Skid"),
+            new(value: "310-00", suffix: "Wood Dept - Jobs"),
+            new(value: "310-01", suffix: "Cnc Machine"),
+            new(value: "310-02", suffix: "Tabelsaws"),
+            new(value: "310-03", suffix: "T-Edge"),
+            new(value: "310-04", suffix: "Detail/Edgeband"),
+            new(value: "320-00", suffix: "Welding Dept - Jobs"),
+            new(value: "330-00", suffix: "Fabric Dept - Jobs"),
+            new(value: "330-01", suffix: "Fabric Cutting"),
+            new(value: "330-02", suffix: "Fabric Application"),
+            new(value: "340-00", suffix: "Parts Picking - Jobs"),
+            new(value: "340-01", suffix: "Ped Picking"),
+            new(value: "360-00", suffix: "Sheet Metal - Jobs"),
+            new(value: "600-00", suffix: "Engineering"),
+            new(value: "600-01", suffix: "Eng Pre"),
+            new(value: "600-02", suffix: "Eng Jobs"),
+            new(value: "600-03", suffix: "Eng 1st Check"),
+            new(value: "600-04", suffix: "Eng 2nd Check"),
+            new(value: "600-05", suffix: "Eng Release"),
+            new(value: "610-00", suffix: "Eng Quoting"),
+            new(value: "620-00", suffix: "Eng - Programs"),
+            new(value: "620-01", suffix: "Eng Programs Ws"),
+            new(value: "620-02", suffix: "Eng Programs Panels"),
+            new(value: "850-00", suffix: "Shiping - Crating"),
+            new(value: "850-01", suffix: "Shiping Jobs"),
+            new(value: "OS", suffix: "Outside Service - Jobs"),
+        ];
 
 
         public const string extProc_ImportEngMfg_exe = "P:\\!CRM\\IceMfgImport.exe";

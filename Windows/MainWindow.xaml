@@ -8,7 +8,7 @@
         xmlns:conv="clr-namespace:OMPS.Converters"
         xmlns:pages="clr-namespace:OMPS.Pages"
         xmlns:viewModel="clr-namespace:OMPS.ViewModels"
-        xmlns:Ext="clr-namespace:OMPS" Width="1025" Height="600"
+        xmlns:Ext="clr-namespace:OMPS" Width="1280" Height="800"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         UseLayoutRounding="True" Closing="MainWindow_Closing"
         Title="MainWindow" MinHeight="600" MinWidth="1025" Background="Transparent" AllowsTransparency="False"

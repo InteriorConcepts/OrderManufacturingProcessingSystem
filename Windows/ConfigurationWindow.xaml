@@ -67,9 +67,15 @@
                                 <Button x:Name="Btn_FontSizeDown" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" IsEnabled="{Binding MainViewModel.FontSize_CanBeSmaller, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_FontSizeDown_Click">
                                     <materialDesign:PackIcon Height="20" Width="22" Kind="FormatFontSizeDecrease" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Button>
-                                <Button x:Name="Btn_FontSizeUp" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" IsEnabled="{Binding MainVM.FontSize_CanBeLarger, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_FontSizeUp_Click">
+                                <Button x:Name="Btn_FontSizeUp" Height="24" Width="24" Style="{StaticResource MaterialDesignFlatButton}" Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Margin="4 0 0 0" Padding="3 3" IsEnabled="{Binding MainViewModel.FontSize_CanBeLarger, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="Btn_FontSizeUp_Click">
                                     <materialDesign:PackIcon Height="20" Width="22" Kind="FormatFontSizeIncrease" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel x:Name="SPnl_DataGridLines" VerticalAlignment="Stretch" Margin="8 8">
+                            <TextBlock FontSize="{Binding MainViewModel.FontSize_Base}" Margin="0 0 12 0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Data Grid, Grid Lines: "/>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox x:Name="Cmbx_GridLines" Width="Auto" FontSize="{Binding MainViewModel.FontSize_Base}" Margin="12 2 0 2" SelectionChanged="Cmbx_GridLines_SelectionChanged"/>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel x:Name="SPnl_Timezone" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="8 8">

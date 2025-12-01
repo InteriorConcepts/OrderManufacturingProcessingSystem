@@ -25,6 +25,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using static OMPS.Ext;
 using static OMPS.Pages.Home;
 
 namespace OMPS.Pages
@@ -45,6 +46,11 @@ namespace OMPS.Pages
             this.LoadShortcutsFromSettings();
             this.Refresher.Elapsed += Refresher_Elapsed;
             this.Refresher.Start();
+        }
+
+        private void Page_Home_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.AdjustVisibilityBasedOnSettings();
         }
 
         public uint infrequency = 0;
@@ -157,6 +163,17 @@ namespace OMPS.Pages
                     default:
                         break;
                 }
+            }
+        }
+
+        public void AdjustVisibilityBasedOnSettings()
+        {
+            foreach (var settingKey in new string[] { "orders", "eng", "cnc" })
+            {
+                if (Enum.TryParse<AppConfigKey>($"Home_showSection_{settingKey}", true, out AppConfigKey configKey) is false) continue;
+                if (Ext.ReadSettingAsBool(configKey) is (bool, bool) res && !res.success) continue;
+                if (res.value is true) continue;
+                this.ToggleSectionVisibility(settingKey);
             }
         }
 
@@ -688,24 +705,100 @@ namespace OMPS.Pages
         }
 
 
+        // Source - https://stackoverflow.com/a
+        // Posted by CrimsonX, modified by community. See post 'Timeline' for change history
+        // Retrieved 2025-12-01, License - CC BY-SA 4.0
+
+        /// <summary>
+        /// Finds a Child of a given item in the visual tree. 
+        /// </summary>
+        /// <param name="parent">A direct parent of the queried item.</param>
+        /// <typeparam name="T">The type of the queried item.</typeparam>
+        /// <param name="childName">x:Name or Name of child. </param>
+        /// <returns>The first parent item that matches the submitted type parameter or null if not found</returns> 
+        public static T? FindChild<T>(DependencyObject parent, string childName)
+           where T : DependencyObject
+        {
+            // Confirm parent and childName are valid. 
+            if (parent == null) return null;
+
+            T? foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                // If the child is not of the request child type child
+                T? childType = child as T;
+                if (childType == null)
+                {
+                    // recursively drill down the tree
+                    foundChild = FindChild<T>(child, childName);
+
+                    // If the child is found, break so we do not overwrite the found child. 
+                    if (foundChild != null) break;
+                }
+                else if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    // If the child's name is set for search
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    {
+                        // if the child's name is of the request name
+                        foundChild = (T)child;
+                        break;
+                    }
+                }
+                else
+                {
+                    // child element found.
+                    foundChild = (T)child;
+                    break;
+                }
+            }
+
+            return foundChild;
+        }
+
+
         public const byte HomeSectionCollapsedHeight = 12;
         public const byte HomeSectionShortcutsRegularHeight = 120;
         public const byte HomeSectionRegularHeight = 200;
         private void Btn_ToggleSectionVis(object sender, RoutedEventArgs e)
         {
             if (sender is not Button btn || btn.Tag?.ToString()?.ToLower() is not string tag) return;
-            FrameworkElement? c = tag switch
+            Ext.AddUpdateAppSettings($"Home_showSection_{tag}", (!Ext.ReadSettingAsBool($"Home_showSection_{tag}").value).ToString());
+            this.ToggleSectionVisibility(tag);
+        }
+
+        private void ToggleSectionVisibility(string sectionName)
+        {
+            ContentControl? cc = sectionName switch
+            {
+                "orders" => this.CC_orders,
+                "eng" => this.CC_engineering,
+                "cnc" => this.CC_cnc,
+                _ => null
+            };
+            if (cc is null) return;
+            if (FindChild<Button>(cc, "Btn_VisToggle") is not Button btn) return;
+            FrameworkElement? c = sectionName switch
             {
                 "quick access" => this.SPnl_Shortcuts,
                 "orders" => this.SPnl_Section_Orders,
-                "engineering" => this.SPnl_Section_Engineering,
+                "eng" => this.SPnl_Section_Engineering,
                 "cnc" => this.SPnl_Section_CNC,
                 _ => null
             };
-            if (c is null) return;
+            if (c is null || sectionName is "quick access") return;
             bool isHidden = c.Height is HomeSectionCollapsedHeight;
-            c.Height = (isHidden ? (tag is "quick access" ? HomeSectionShortcutsRegularHeight : HomeSectionRegularHeight) : HomeSectionCollapsedHeight);
+            cc.Opacity = isHidden ? 1 : 0.4;
+            c.Height = (isHidden ? (sectionName is "quick access" ? HomeSectionShortcutsRegularHeight : HomeSectionRegularHeight) : HomeSectionCollapsedHeight);
             c.Visibility = (isHidden ? Visibility.Visible : Visibility.Hidden);
+            if (LogicalTreeHelper.GetParent(c) is ScrollViewer sv)
+            {
+                sv.HorizontalScrollBarVisibility = (isHidden ? ScrollBarVisibility.Auto : ScrollBarVisibility.Hidden);
+            }
             var icon = (btn.Content as FrameworkElement)?.FindName("PackIco_SectionVisState") as PackIcon;
             if (icon is null) return;
             icon.Kind = (isHidden ? PackIconKind.VisibilityOutline : PackIconKind.VisibilityOffOutline);

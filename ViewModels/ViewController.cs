@@ -73,6 +73,16 @@ namespace OMPS.ViewModels
             }
         } = false;
 
+        public DataGridGridLinesVisibility DataGridGridLinesVisibility {
+            get => field;
+            set
+            {
+                if (value == field) return;
+                field = value;
+                OnPropertyChanged(nameof(DataGridGridLinesVisibility));
+            }
+        } = DataGridGridLinesVisibility.Horizontal;
+
         public double FontSize_MAX { get; } = 18;
         public double FontSize_MIN { get; } = 12;
 

@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -32,6 +33,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using static MaterialDesignThemes.Wpf.Theme.ToolBar;
+using static OMPS.Ext;
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS.Pages
@@ -50,9 +53,8 @@ namespace OMPS.Pages
             //this.FrmFin.ItemSource = Finishes_Default;
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
             this.PropertyChanged += this.EngOrder_PropertyChanged;
-#if !NEWDBSQL
-            this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
-#endif
+
+
             foreach (Control cntrl in SPnl_LookupInputs.Children)
             {
                 DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(TextBox.TagProperty, typeof(TextBox));
@@ -64,6 +66,7 @@ namespace OMPS.Pages
         {
             if (this.IsLoadingJobData) return;
             if (e.PropertyName is not string propName) return;
+            //MessageBox.Show(propName);
             if (sender is not DBModels.Order.AIcColorSet obj) return;
             if (obj.GetType().GetProperty(propName) is not PropertyInfo propInfo) return;
             if (propInfo.GetValue(obj) is not object val) return;
@@ -100,7 +103,11 @@ namespace OMPS.Pages
             get => field;
             set
             {
-                if (value is null) return;
+                if (value is null)
+                {
+                    field = null;
+                    return;
+                }
                 if (field == value) return;
                 var i = new AIcManuf();
                 i.CopyPropertiesFrom(value);
@@ -121,23 +128,29 @@ namespace OMPS.Pages
         public bool IsLoadingJobData { get; set; } = false;
         private DateTime? Last_ManufData = null;
 
-        public bool Pending_LineChanges
+        public string UnsavedChangesPrompt
         {
-            get => Pending_LineChangesCount is not 0;
+            get => $"Unsaved changes ({Pending_LineChangesCount}), Grid is locked";
         }
-        public ushort Pending_LineChangesCount {
+        public ObservableCollection<string> Pending_LineChanges
+        {
             get => field;
             set
             {
                 if (field == value) return;
+                if (field == null) return;
                 field = value;
-                //this.datagrid_main.IsHitTestVisible = (value is 0);
-                OnPropertyChanged(nameof(Pending_LineChangesCount));
-                OnPropertyChanged(nameof(Pending_LineChanges));
-                OnPropertyChanged(nameof(NoPending_LineChanges));
             }
-        } = 0;
+        } = [];
+        public bool IsPending_LineChanges
+        {
+            get => Pending_LineChangesCount is not 0;
+        }
+        public ushort Pending_LineChangesCount {
+            get => (ushort)Pending_LineChanges.Count;
+        }
         public bool NoPending_LineChanges { get => Pending_LineChangesCount is 0; }
+
 
         internal DataGrid? CurrentGrid { get; set; }
         public Dictionary<string, string[]> ItemLineFilers { get; set; } = [];
@@ -145,7 +158,42 @@ namespace OMPS.Pages
         public string[] ColorByValues { get; } = ["NA", "AccFin", "Aveera-TopFin", "FrmFin", "PmoldFin", "PedFin", "ShelfFin", "TangentLegFin", "TblBaseFin", "TblLegFin", "TblLegBaseFin", "TblLegExtraFin", "TblSlimLegFin", "Chase", "Fab", "FabChase", "FabLam", "FabMel", "Acrylic", "AcrylicFab", "AcrylicLam", "AcrylicMel", "Lam", "LamChase", "Mel", "MelChase", "MelLam", "WSEfin"];
         public string[] TypeValues { get; } = ["Acc", "Accessory", "Acclaim", "Assy", "Aveera Collection", "Catch-All", "CC", "Ch", "Dtr", "Ergo", "Ergonomic Accessories", "Fab", "Frame", "Jnt", "Manuf", "Matl", "Met", "Metal Products", "Ped", "Pedestal", "Pmd", "Pnl", "Pre", "Project Board", "Seating", "She", "Shelf", "Soft Seating", "Special", "Storage Cabinet", "Symmetry", "Table", "Tableo", "Tbl", "Til", "Tile", "Tub", "Type", "WBB", "Wks", "Wsta", "WTil"];
         public string[] SubTypeValues { get; } = ["Acc", "Accessory", "Accessory-Pnl", "Accessory-She", "Adj Ht Base", "Arch-Leg", "Arch-leg Flip-top", "Arch-leg Flip-top Pin-clip", "Arch-leg Pin-clip", "Arch-leg X-base", "Arch-leg X-base Flip-top", "aStatic", "BOM", "Book Case", "Bookcase", "BORCO", "Cabinet", "Cart", "C-Bal", "C-Balance", "CC", "CCC", "CCL", "CCLC", "CCS", "CCSC", "Center Drawer", "Chase Panel Powered", "Clamp Mount", "Collaboration", "Conference Chair", "Configurable", "Connector", "CPU", "CPU Holder", "Crank2", "Crank3", "Cushion", "Deck", "DK", "Door", "Dot", "Down Under Unit", "Drafting", "Dtr", "edge", "Electrical", "Executive Chair", "Fastener", "File Center", "Fixed Pedestal", "Footrest", "Frame", "Freestanding", "GLASS", "Glass Tile", "Guest Chair", "Hanging Pedestal", "HCDoor", "H-leg", "Insert", "Jnt", "Keyboard", "Keyboard Platform", "Lateral", "Lateral File", "Lateral File-Open Shelves", "Lateral File-Storage Cab", "Leg", "Leg Arch", "Leg Arch X", "Leg H", "Leg Post", "Leg T", "Leg T X", "LegPost", "Lighting", "Locker", "Lounge", "Matl", "Media Cabinet", "MFG", "Mi", "Misc", "Mobile Pedestal", "Monitor", "Monitor Arm", "Motion", "Note", "OMD", "Open", "Open Front", "Option", "Ottoman", "Paper Management", "PaperManagement", "Ped", "Pin-clip", "Pmd", "Pnl", "Post Leg", "Post-leg", "Post-leg Pin-clip", "Project Board", "Reach", "Recon Part", "ReconPart", "Shelf", "Slim Post-leg Pin-clip Ht Adj 24-34", "Special", "SST", "Stackable Multi-Purpose", "Stick", "Stool Chair", "Storage", "Storage Cabinet", "SubType", "Table", "Tangent", "Task Chair", "TBL", "Teacher Desk", "Technology Ed Furniture", "Tedge", "T-edge", "TIL", "Tile", "T-leg", "T-leg Flip-top", "T-leg Flip-top Pin-clip", "T-leg Pin-clip", "T-leg X-base", "Tote", "Tote Storage", "TRESPA", "Trough", "Tub", "tun", "Unique Shape", "Vertical File", "Wardrobe", "WBT", "WCA", "WCF", "WCL", "WCS", "WDR", "WHR", "Wire Management", "WireManagement", "wkd", "wks", "WksDeckShelf", "WKSEDGE", "WKSP", "WksShelvesDecks", "worksurcae", "Worksurface", "WRD", "wrks", "WRT", "WS12", "WS89", "WSA", "WSB", "WSB12", "WSB9", "WSC", "WSD", "WSE", "WSEdge", "WSF", "WSL", "WSP", "WSR", "WstaClusterCoreRing", "WstaClusterCoreRings", "WSVEM", "WVCAL", "WVCAR", "WVCCL", "WVCCR", "WVCEM", "WVCFM", "WVCPM", "WVCQL", "WVCQR", "WVCRL", "WVCRR", "WVCTM", "WVSAM", "WVSEM", "WVSRL", "WVSRR", "WVVEM", "WVVFM", "WVVPM", "WVVQL", "WVVQR", "WVVRL", "WVVRR", "WVVTM", "WXA", "WXC"];
-        public string[] WorkCtrValues { get; } = ["300-00", "300-01", "300-02", "300-04", "300-05", "300-06", "300-07", "310-00", "310-01", "310-02", "310-03", "310-04", "320-00", "330-00", "330-01", "330-02", "340-00", "340-01", "600-00", "600-01", "600-02", "600-03", "600-04", "600-05", "610-00", "620-00", "620-01", "620-02", "850-00", "850-01"];
+
+        public string[] WorkCtrValues { get; } = [
+            "300-00",
+            "300-01",
+            "300-02",
+            "300-03",
+            "300-04",
+            "300-05",
+            "300-06",
+            "300-07",
+            "310-00",
+            "310-01",
+            "310-02",
+            "310-03",
+            "310-04",
+            "320-00",
+            "330-00",
+            "330-01",
+            "330-02",
+            "340-00",
+            "340-01",
+            "360-00",
+            "600-00",
+            "600-01",
+            "600-02",
+            "600-03",
+            "600-04",
+            "600-05",
+            "610-00",
+            "620-00",
+            "620-01",
+            "620-02",
+            "850-00",
+            "850-01",
+            "OS",
+        ];
         public string[] Finishes_BS { get; } = ["NA", "SL", "BK"];
         public string[] Finishes_Omt { get; } = ["NA", "BK", "BL", "GN", "RD", "SL", "WH"];
         public string[] Finishes_SlimLeg { get; } = ["NA", "CH", "PL"];
@@ -199,7 +247,8 @@ namespace OMPS.Pages
             try
             {
                 this.LastCell = null;
-                this.Pending_LineChangesCount = 0;
+                this.Pending_LineChanges = [];
+                this.Pending_LineChanges.CollectionChanged += this.Pending_LineChanges_CollectionChanged;
                 this.IsLoadingJobData = true;
                 this.CurrentGrid?.Visibility = Visibility.Collapsed;
                 await this.LoadColorSetData(job);
@@ -251,6 +300,7 @@ namespace OMPS.Pages
                         .FirstOrDefaultAsync();
                     if (res is null) return;
                     this.ColorSetInfo = res;
+                    this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
                     OnPropertyChanged(nameof(ColorSetInfo));
                 }
             });
@@ -460,6 +510,14 @@ namespace OMPS.Pages
             await this.LoadDataForJob(e);
         }
 
+
+        private void Pending_LineChanges_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Pending_LineChangesCount));
+            OnPropertyChanged(nameof(IsPending_LineChanges));
+            OnPropertyChanged(nameof(NoPending_LineChanges));
+            OnPropertyChanged(nameof(UnsavedChangesPrompt));
+        }
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = new TextBlock()
@@ -577,7 +635,7 @@ namespace OMPS.Pages
             if (this.datagrid_main.SelectedItem is not AIcManuf line) return;
             if (CurrentItem is null) return;
             List<(string, PropUpdateResult, Type?, object?)> changes = [];
-            var i = 0;
+            var i = -1;
             using (var ctx = new OrderDbCtx())
             {
                 var dbline = await ctx.AIcManufs
@@ -595,7 +653,12 @@ namespace OMPS.Pages
                 this.datagrid_main.BeginEdit();
                 foreach (var item in txts)
                 {
+                    i++;
                     var lbl = lbls[i];
+                    if (lbl.Tag is null)
+                    {
+                        continue;
+                    }
                     var dpinfo = Ext.DpValueFromInputType(item);
                     if (dpinfo is not (DependencyProperty, object) dpinfoval) continue;
                     var binding = item.GetBindingExpression(dpinfoval.dp);
@@ -603,27 +666,27 @@ namespace OMPS.Pages
                     var propertyName = binding.ParentBinding.Path.Path;
                     if (propertyName is null ||
                         Ext.DataGrid_Manuf_ColumnsExcludedHidden.Contains(propertyName) ||
-                        Ext.DataGrid_Manuf_ColumnsReadonly.Contains(propertyName))
+                        Ext.DataGrid_Manuf_ColumnsReadonly.Contains(propertyName) ||
+                        !this.Pending_LineChanges.Contains(propertyName))
                     {
                         continue;
                     }
+
                     var value = CurrentItem.GetType()?.GetProperty(propertyName)?.GetValue(CurrentItem, null);
-                    if (value is not object && value is null) continue;
+                    //if (value is not object && value is null) continue;
                     var propRes = Ext.UpdateProperty(line, propertyName, value);
                     _ = Ext.UpdateProperty(dbline, propertyName, value);
+                    MessageBox.Show(value?.ToString());
                     switch (propRes.Item2)
                     {
                         case PropUpdateResult.SameValue:
-                            if (lbl.Tag is not null)
-                            {
-                                lbl.Tag = null;
-                                this.Pending_LineChangesCount -= 1;
-                            }
+                            this.Pending_LineChanges.Remove(propertyName);
+                            lbl.Tag = null;
                             break;
                         case PropUpdateResult.Worked:
                             changes.Add(propRes);
                             lbl.Tag = "good";
-                            this.Pending_LineChangesCount -= 1;
+                            this.Pending_LineChanges.Remove(propertyName);
                             break;
                         case PropUpdateResult.Error:
                             lbl.Tag = "error";
@@ -649,16 +712,15 @@ namespace OMPS.Pages
                             ).Show();
                             break;
                     }
-                    i++;
                 }
                 this.datagrid_main.CommitEdit();
                 await ctx.SaveChangesAsync();
             }
-            if (this.Pending_LineChangesCount is 0)
+            if (this.Pending_LineChanges.Count is 0)
             {
                 Ext.MainWindow.MainToastContainer.CreateToast(
                     "Eng Order",
-                    "Item line changes saved"
+                    $"Saved {changes} Item Line changes successfully"
                 ).Show();
             } else
             {
@@ -713,7 +775,7 @@ namespace OMPS.Pages
             this.CurrentItem = (AIcManuf)this.datagrid_main.SelectedItem;
             this.WPnl_EditInputs.BindingGroup.UpdateSources();
             Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Item line changes discarded").Show();
-            this.Pending_LineChangesCount = 0;
+            this.Pending_LineChanges = [];
         }
 
         private async void Btn_DeleteItemLine_Click(object? sender, RoutedEventArgs e)
@@ -894,25 +956,30 @@ namespace OMPS.Pages
             if (this.ColorSetInfo.ColorSetId.ToString().Length < 8) return;
             try
             {
+                byte orderChangesMade = 0;
                 using var context = new DBModels.Order.OrderDbCtx();
                 var dborder = await context.AIcColorSets
                     .Where(o => o.ColorSetId == ColorSetInfo.ColorSetId)
                     .FirstAsync();
                 if (dborder is null) return;
-                var props = dborder.GetType().GetProperties(BindingFlags.Default).ToList();
+                var props = dborder.GetType().GetProperties(BindingFlags.Default | BindingFlags.Public | BindingFlags.Instance).ToList();
                 foreach (var prop in CollectionsMarshal.AsSpan(props))
                 {
                     if (!this.ColorSetInfo_Changes.ContainsKey(prop.Name)) continue;
-                    var orderprop = ColorSetInfo.GetType().GetProperty(prop.Name, BindingFlags.Default);
+                    var orderprop = ColorSetInfo.GetType().GetProperty(prop.Name, BindingFlags.Default | BindingFlags.Public | BindingFlags.Instance);
                     if (orderprop is null) continue;
+                    var dbval = prop.GetValue(dborder);
                     var orderval = orderprop.GetValue(ColorSetInfo);
-                    if (orderval != prop.GetValue(dborder))
+                    if (orderval != dbval)
                     {
+                        Debug.WriteLine($"{prop.Name} | {dbval} => {orderval}");
                         prop.SetValue(dborder, orderval);
+                        orderChangesMade++;
                     }
                 }
                 await context.SaveChangesAsync();
-                Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", $"Saved {this.ColorSetInfo_Changes.Count} header changes successfully", FeedbackToast.IconTypes.Info).Show();
+                Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", $"Saved {orderChangesMade} header changes successfully", FeedbackToast.IconTypes.Info).Show();
+                this.ColorSetInfo_Changes = [];
             } catch
             {
                 Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Header changes not saved successfully :(", FeedbackToast.IconTypes.Error).Show();
@@ -1023,32 +1090,36 @@ namespace OMPS.Pages
             //if (cntrl.Background is not null && cntrl.Background.Opacity == 50 / 255.0) return;
             Debug.WriteLine("%");
             var foo = Ext.DpValueFromInputType(cntrl);
-            if (foo is not (DependencyProperty, object) pair || pair.dp is null || pair.value is null) return;
+            if (foo is not (DependencyProperty, object) pair || pair.dp is null) return;
             //if (txt.Background is not null && txt.Background.Opacity is 50) return;
             if (this.datagrid_main.SelectedItem is not object obj ||
                 cntrl.GetBindingExpression(pair.dp) is not BindingExpression be ||
                 be.ParentBinding.Path is not PropertyPath pp ||
-                obj.GetType().GetProperty(pp.Path) is not PropertyInfo pi ||
-                pi.GetValue(obj) is not object value)
+                obj.GetType().GetProperty(pp.Path) is not PropertyInfo pi)
             {
                 return;
             }
+            object? value = pi.GetValue(obj);
             Debug.WriteLine("%%");
-            if (pair.value.ToString()?.Equals(value.ToString(), StringComparison.Ordinal) ?? false)
+            if (pair.value.ToString()?.Equals($"{value?.ToString()}", StringComparison.Ordinal) ?? false)
             {
                 Debug.WriteLine("Same value as data context object");
-                this.Pending_LineChangesCount -= 1;
-                lbl.Tag = null;
+                if (this.Pending_LineChanges.Contains(pi.Name))
+                {
+                    this.Pending_LineChanges.Remove(pi.Name);
+                    lbl.Tag = null;
+                }
                 //cntrl.Background = null;
             }
             else
             {
-                if (lbl.Tag is not "warn")
+                if (!this.Pending_LineChanges.Contains(pi.Name))
                 {
-                    this.Pending_LineChangesCount += 1;
+                    this.Pending_LineChanges.Add(pi.Name);
                     lbl.Tag = "warn";
                 }
             }
+            OnPropertyChanged(nameof(Pending_LineChanges));
             Debug.WriteLine(this.Pending_LineChangesCount);
             //cntrl.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
         }
@@ -1106,7 +1177,7 @@ namespace OMPS.Pages
 
         private void datagrid_main_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.Pending_LineChanges)
+            if (this.IsPending_LineChanges)
             {
                 Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Unsaved changes in Row Edit Pane, Grid is locked", FeedbackToast.IconTypes.Warn).Show();
                 e.Handled = true;
@@ -1127,11 +1198,57 @@ namespace OMPS.Pages
             */
         }
 
+        private static readonly Regex _regex_notnumeric = new("[^0-9.]+");
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            //e.Handled = (e.Text is " " || _regex_notnumeric.IsMatch(e.Text));
+        }
+
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+
             var ctrl = ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control);
             if (!ctrl)
             {
+                if (sender is not TextBox txt || txt.Tag is not string tag) return;
+                var numeric = tag?.ToLower() is "numeric";
+                if (numeric)
+                {
+                    switch (e.Key)
+                    {
+                        case Key.Left:
+                        case Key.Right:
+                        case Key.Tab:
+                        case Key.Delete:
+                        case Key.Back:
+                        case Key.D1:
+                        case Key.NumPad1:
+                        case Key.D2:
+                        case Key.NumPad2:
+                        case Key.D3:
+                        case Key.NumPad3:
+                        case Key.D4:
+                        case Key.NumPad4:
+                        case Key.D5:
+                        case Key.NumPad5:
+                        case Key.D6:
+                        case Key.NumPad6:
+                        case Key.D7:
+                        case Key.NumPad7:
+                        case Key.D8:
+                        case Key.NumPad8:
+                        case Key.D9:
+                        case Key.NumPad9:
+                        case Key.D0:
+                        case Key.NumPad0:
+                            e.Handled = false;
+                            break;
+                        default:
+                            e.Handled = true;
+                            break;
+                    }
+                    return;
+                }
                 switch (e.Key)
                 {
                     case Key.Escape:
@@ -1227,7 +1344,34 @@ namespace OMPS.Pages
                 MessageBox.Show(str);
             }, DispatcherPriority.Loaded);
         }
-        #endregion
 
+        private void Btn_RevertItemLinePropEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            if (btn.TemplatedParent is not Label lbl) return;
+            this.RevertItemLineInput(lbl);
+        }
+
+        private void RevertItemLineInput(Label inputLabel)
+        {
+            byte i = (byte)this.WPnl_EditLabels.Children.IndexOf(inputLabel);
+            Control? inputControl = this.WPnl_EditInputs.Children[i] as Control;
+            if (inputControl is null) return;
+            var dpinfo = Ext.DpValueFromInputType(inputControl);
+            if (dpinfo is null || !dpinfo.HasValue) return;
+            if (this.datagrid_main.SelectedItem is not object obj ||
+                inputControl.GetBindingExpression(dpinfo.Value.dp) is not BindingExpression be ||
+                be.ParentBinding.Path is not PropertyPath pp ||
+                obj.GetType().GetProperty(pp.Path) is not PropertyInfo pi)
+            {
+                return;
+            }
+            object? value = pi.GetValue(obj);
+            this.CurrentItem?.GetType().GetProperty(pi.Name)?.SetValue(this.CurrentItem, value);
+            be?.UpdateTarget();
+            this.Pending_LineChanges.Remove(pi.Name);
+            inputLabel.Tag = null;
+        }
+        #endregion
     }
 }

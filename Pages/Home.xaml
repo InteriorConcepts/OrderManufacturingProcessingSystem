@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1525"
              DataContext="{Binding ElementName=Page_Home}"
-             FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}">
+             FontSize="{Binding DataContext.FontSize_H4, FallbackValue=12}" Loaded="Page_Home_Loaded">
 
     <UserControl.Resources>
         <!-- Context Menu fallback for DataGrids -->
@@ -59,7 +59,7 @@
                             <DropShadowEffect BlurRadius="6" Color="#000" Direction="-45" Opacity="0.3" ShadowDepth="3" />
                         </TextBlock.Effect>
                     </TextBlock>
-                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}"
+                    <Button x:Name="Btn_VisToggle" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}"
                             FontSize="{Binding ElementName=Page_Home, Path=MainViewModel.FontSize_H2, FallbackValue=20}" Background="#9666"
                             Foreground="{StaticResource MaterialDesign.Brush.Foreground}" Padding="8" materialDesign:ButtonAssist.CornerRadius="6"
                             Tag="{Binding Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}"
@@ -381,7 +381,7 @@
                                              VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Button>
                 <StackPanel Margin="12 0" Background="Transparent">
-                    <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Orders" BorderBrush="#FF70FF6C"/>
+                    <ContentControl x:Name="CC_orders" Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Orders" BorderBrush="#FF70FF6C"/>
 
                     <StackPanel x:Name="SPnl_Section_Orders" Orientation="Horizontal" Height="200" Margin="4">
                         <Border MinWidth="340"
@@ -425,7 +425,7 @@
                 </StackPanel>
 
                 <StackPanel Margin="12 0" Background="Transparent">
-                    <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Engineering" BorderBrush="#FF6CB8FF"/>
+                    <ContentControl x:Name="CC_engineering" Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="Eng" BorderBrush="#FF6CB8FF"/>
                     <ScrollViewer x:Name="ScrollViewer_Section_Engineering" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" BorderBrush="#353535" BorderThickness="2">
                         <StackPanel x:Name="SPnl_Section_Engineering" Orientation="Horizontal" Height="200" Margin="4">
                             <Border MinWidth="340"
@@ -644,7 +644,7 @@
                 </StackPanel>
 
                 <StackPanel Margin="12 0" Background="Transparent">
-                    <ContentControl Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="CNC" BorderBrush="#FFFFC46C"/>
+                    <ContentControl x:Name="CC_cnc" Template="{StaticResource QuickPreview_Section_HeaderTemplate}" Tag="CNC" BorderBrush="#FFFFC46C"/>
                     <StackPanel x:Name="SPnl_Section_CNC" Orientation="Horizontal" Height="200" Margin="4">
                         <Border MinWidth="340"
                                 BorderBrush="#FF6CB8FF" Background="#1F1F1F" BorderThickness="0"

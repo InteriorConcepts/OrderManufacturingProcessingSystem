@@ -36,6 +36,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="{Binding MainViewModel.FontSize_H7, FallbackValue=8}"/>
+                                    <ColumnDefinition Width="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"/>
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Content -->
@@ -53,6 +54,17 @@
                                                Margin="0,0,0,0"
                                                VerticalAlignment="Center">
                                 </materialDesign:PackIcon>
+                                
+                                <!-- Single Revert Button -->
+                                <Button Grid.Column="2" Padding="0" Margin="0" VerticalAlignment="Center"
+                                        BorderThickness="0" Click="Btn_RevertItemLinePropEdit_Click"
+                                        Visibility="{TemplateBinding Tag, Converter={conv:NullToVisibilityConverter}}"
+                                        IsEnabled="{TemplateBinding Tag, Converter={conv:NullToBooleanConverter}}"
+                                        Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <materialDesign:PackIcon Kind="UndoVariant" Foreground="#FFC38966"
+                                                             Width="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"
+                                                             Height="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"/>
+                                </Button>
                             </Grid>
                         </Border>
                         <ControlTemplate.Resources>
@@ -222,10 +234,10 @@
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
                 -->
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="{Binding MainViewModel.FontSize_H4, FallbackValue=26, Converter={conv:ScalingConverter}, ConverterParameter=2.2}"/>
+                            <RowDefinition Height="{Binding MainViewModel.FontSize_H4, FallbackValue=48, Converter={conv:ScalingConverter}, ConverterParameter=4}"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
@@ -240,16 +252,16 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Qty:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
                             </StackPanel>
-                            <StackPanel MinWidth="80" MaxWidth="95" Margin="0 0 4 0">
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber,      FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber,       FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef,   FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr,         FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct,       FallbackValue='$1,234.00',      Mode=TwoWay, StringFormat=C2}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate,       FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem,         FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty,              FallbackValue='DefaultValue',   Mode=TwoWay}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Engineer,         FallbackValue='DefaultValue',   Mode=TwoWay}" IsReadOnly="False"/>
+                            <StackPanel MinWidth="80" MaxWidth="115" Margin="0 0 4 0">
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber,      FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber,       FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef,   FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct,       FallbackValue='$1,234.00',      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate,       FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty,              FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Engineer,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
                             <StackPanel MinWidth="73" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
@@ -263,16 +275,16 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Tangent Leg:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Ped Cushion:"/>
                             </StackPanel>
-                            <StackPanel MinWidth="80" MaxWidth="95" Margin="0 0 4 0">
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.FrameFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.FrameFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.MetalFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.MetalFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.ShelfFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.ShelfFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.TblLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblLegFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}" SelectedItem="{Binding Path=ColorSetInfo.TblBaseFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblBaseFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}" SelectedItem="{Binding Path=ColorSetInfo.TblLegBaseFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblLegBaseFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}" SelectedItem="{Binding Path=ColorSetInfo.TblSlimLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TblSlimLegFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}" SelectedItem="{Binding Path=ColorSetInfo.TangentLegFin, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.TangentLegFin, Mode=TwoWay}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
+                            <StackPanel MinWidth="80" MaxWidth="105" Margin="0 0 4 0">
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.FrameFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.FrameFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.MetalFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.MetalFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.ShelfFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.ShelfFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.TblLegFin,         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblLegFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}"       SelectedItem="{Binding Path=ColorSetInfo.TblBaseFin,        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblBaseFin,         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}"      SelectedItem="{Binding Path=ColorSetInfo.TblLegBaseFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblLegBaseFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}"  SelectedItem="{Binding Path=ColorSetInfo.TblSlimLegFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblSlimLegFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}"  SelectedItem="{Binding Path=ColorSetInfo.TangentLegFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TangentLegFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}"  SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor,    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
                             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
@@ -315,16 +327,16 @@
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
                             </StackPanel>
-                            <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="410" Margin="0 0 4 0">
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric1Id}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLamId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksEdgeId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.TflpnlId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamPnlId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.ChaseDoorId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.AcrylicId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamHcdoorId}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamCurveId}"/>
+                            <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="455" Margin="0 0 4 0">
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric1Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLamId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksEdgeId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.TflpnlId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamPnlId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.ChaseDoorId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.AcrylicId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamHcdoorId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamCurveId, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
                             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
@@ -335,9 +347,9 @@
                                 <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch">
                             <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
-                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay}"/>
+                            <TextBox Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" AcceptsReturn="True" MinLines="2" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="False" MinWidth="500" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -345,7 +357,7 @@
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Colors+"/>
                     </TabItem.Header>
-                    <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -386,7 +398,7 @@
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Misc"/>
                     </TabItem.Header>
-                    <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="240"/>
                             <ColumnDefinition Width="320"/>
@@ -429,7 +441,7 @@
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Quote Parts"/>
                     </TabItem.Header>
-                    <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -566,7 +578,7 @@
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Mfg Reports"/>
                     </TabItem.Header>
-                    <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="220"/>
@@ -594,7 +606,7 @@
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pre1"/>
                     </TabItem.Header>
-                    <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                     </Grid>
                 </TabItem>
             </TabControl>
@@ -660,7 +672,7 @@
                             Kind="CloseBox"/>
                     </Button>
                 </Grid>
-                <Separator Grid.Row="1" Margin="0 1"/>
+                <Separator Grid.Row="1" Margin="0 1" Grid.ColumnSpan="2"/>
                 <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="{Binding MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
                 <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                     <WrapPanel x:Name="WPnl_SavedFilters" Orientation="Horizontal" VerticalAlignment="Stretch">
@@ -675,7 +687,7 @@
         <Grid x:Name="grid_data" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="415"/>
+                <ColumnDefinition Width="435"/>
             </Grid.ColumnDefinitions>
             <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False" Foreground="White" Background="{x:Static local:Ext.AccentColorBrush50}" BorderBrush="{x:Static local:Ext.AccentColorBrush}"/>
 
@@ -721,10 +733,14 @@
                       MouseDoubleClick="datagrid_main_MouseDoubleClick"
                       PreviewMouseDown="datagrid_main_PreviewMouseDown"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown"
-                      SelectionMode="Single" IsTabStop="True" HeadersVisibility="All"
+                      SelectionMode="Single" IsTabStop="True"
+                      HeadersVisibility="All"
                       Unloaded="datagrid_main_Unloaded" 
                       CanUserReorderColumns="False"
-                      GridLinesVisibility="None" LostFocus="datagrid_main_LostFocus">
+                      GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility}"
+                      LostFocus="datagrid_main_LostFocus"
+                      HorizontalGridLinesBrush="#FF555555"
+                      VerticalGridLinesBrush="#FF555555">
                 <DataGrid.Resources>
                     <!-- Fix Column Headers Presenter -->
                     <Style TargetType="DataGridColumnHeadersPresenter">
@@ -744,13 +760,11 @@
 
                 </DataGrid.Resources>
                 <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="FontWeight" Value="DemiBold"/>
-                        <Setter Property="BorderThickness" Value="0 0 1 0"/>
-                        <Setter Property="BorderBrush" Value="#444"/>
+                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                         <Setter Property="Background" Value="#333"/>
+                        <Setter Property="BorderThickness" Value="0 0 1 0"/>
                         <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
-                        <Setter Property="Padding" Value="4"/>
+                        <Setter Property="Padding" Value="16 6 16 4"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
                 <!--
@@ -792,8 +806,8 @@
                         <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
                         <Setter Property="FontWeight" Value="DemiBold"/>
                         <Setter Property="Padding" Value="0"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0 0 0 1"/>
+                        <Setter Property="BorderBrush" Value="#FF555555"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="DataGridRowHeader">
@@ -809,7 +823,7 @@
                                                               Margin="0"
                                                               Width="60"
                                                               HorizontalAlignment="Left"
-                                                              VerticalAlignment="Stretch"
+                                                              VerticalAlignment="Center"
                                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                         </Border>
                                         <Thumb x:Name="PART_TopHeaderGripper" VerticalAlignment="Top"/>
@@ -827,10 +841,10 @@
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                        <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=20}"/>
+                        <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, ElementName=Page_EngOrder, FallbackValue=20}"/>
                         <Setter Property="SnapsToDevicePixels" Value="True"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <!--<Setter Property="Padding" Value="{Binding MainViewModel.FontSize_H4, ElementName=Page_EngOrder, FallbackValue=2, Converter={conv:ScalingConverter}, ConverterParameter=0.16666666}"/>-->
                         <Setter Property="Background" Value="#222"/>
                         <Setter Property="BorderBrush" Value="#555"/>
                         <Setter Property="Foreground" Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
@@ -873,10 +887,39 @@
                     <DataGridTextColumn Header="Qty" Binding="{Binding Qty}"/>
                     <DataGridTextColumn Header="Multiplier" Binding="{Binding Multiplier}"/>
                     <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                    <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
                     <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
                     <DataGridTextColumn Header="SubType" Binding="{Binding SubType}"/>
                     <DataGridTextColumn Header="IDNbr" Binding="{Binding Idnbr}"/>
-                    <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
+                    <DataGridTextColumn Header="Explode" Binding="{Binding Explode}"/>
+                    <DataGridTextColumn Header="Assembled" Binding="{Binding Assembled}"/>
+                    <DataGridTextColumn Header="AssyNbr" Binding="{Binding AssyNbr}"/>
+                    <DataGridTextColumn Header="TileIndicator" Binding="{Binding TileIndicator}"/>
+                    <DataGridTextColumn Header="ItemFin" Binding="{Binding ItemFin}"/>
+                    <DataGridTextColumn Header="ColorBy" Binding="{Binding ColorBy}"/>
+                    <DataGridTextColumn Header="WorkCtr" Binding="{Binding WorkCtr}"/>
+                    <DataGridTextColumn Header="ItemCore" Binding="{Binding ItemCore}"/>
+                    <DataGridTextColumn Header="Dept" Binding="{Binding Dept}"/>
+                    <DataGridTextColumn Header="ScrapFactor" Binding="{Binding ScrapFactor}"/>
+                    <DataGridTextColumn Header="SizeDivisor" Binding="{Binding SizeDivisor}"/>
+                    <DataGridTextColumn Header="CoreSize" Binding="{Binding CoreSize}"/>
+                    <DataGridTextColumn Header="Depth" Binding="{Binding Depth}"/>
+                    <DataGridTextColumn Header="Width" Binding="{Binding Width}"/>
+                    <DataGridTextColumn Header="Height" Binding="{Binding Height}"/>
+                    <DataGridTextColumn Header="FabWidth" Binding="{Binding Fabwidth}"/>
+                    <DataGridTextColumn Header="FabHeight" Binding="{Binding FabHeight}"/>
+                    <DataGridTextColumn Header="Option01" Binding="{Binding Option01}"/>
+                    <DataGridTextColumn Header="Option02" Binding="{Binding Option02}"/>
+                    <DataGridTextColumn Header="Option03" Binding="{Binding Option03}"/>
+                    <DataGridTextColumn Header="Option04" Binding="{Binding Option04}"/>
+                    <DataGridTextColumn Header="Option05" Binding="{Binding Option05}"/>
+                    <DataGridTextColumn Header="Option06" Binding="{Binding Option06}"/>
+                    <DataGridTextColumn Header="Option07" Binding="{Binding Option07}"/>
+                    <DataGridTextColumn Header="Option08" Binding="{Binding Option08}"/>
+                    <DataGridTextColumn Header="Option09" Binding="{Binding Option09}"/>
+                    <DataGridTextColumn Header="Option10" Binding="{Binding Option10}"/>
+                    <DataGridTextColumn Header="Area" Binding="{Binding Area}"/>
+
                 </DataGrid.Columns>
             </DataGrid>
             <!--
@@ -904,6 +947,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="{Binding MainViewModel.FontSize_H1, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=1.50}"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="4"/>
                             <RowDefinition Height="24"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Stretch">
@@ -912,17 +956,18 @@
                                    FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
                                    Foreground="#DDD"
                                    FontWeight="DemiBold"/>
-                            <Label Content="Unsaved changes, Grid is locked" HorizontalAlignment="Center"
-                                   Padding="0" Margin="0" Visibility="{Binding Pending_LineChanges, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=true, FallbackValue=Visibility.Hidden}"
+                            <Label Content="{Binding UnsavedChangesPrompt}" HorizontalAlignment="Center"
+                                   Padding="0" Margin="0" Visibility="{Binding IsPending_LineChanges, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=true, FallbackValue=Visibility.Hidden}"
                                    Foreground="#fc7"
                                    FontSize="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"
                                    FontWeight="Regular"/>
                         </StackPanel>
-                        <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Margin="0" Padding="0"
+                        <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Margin="0" Padding="0" FontSize="{Binding MainViewModel.FontSize_H4}"
                                             HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
                             <WrapPanel x:Name="WPnl_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                             Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                                <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                <WrapPanel x:Name="WPnl_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch"
+                                           VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="PartNbr"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
                                         <Label.Content>
@@ -940,7 +985,7 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="CatalogNbr"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Qty"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Multiplier"/>
-                                    <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
+                                    <Label Style="{StaticResource LabelWithIndicator}" Height="60" VerticalContentAlignment="Center">
                                         <Label.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="Description"/>
@@ -986,50 +1031,56 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Option10"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Area"/>
                                 </WrapPanel>
-                                <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch"
+                                <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="268" VerticalAlignment="Stretch"
                                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                                                 DataContext="{Binding CurrentItem}">
                                     <WrapPanel.BindingGroup>
                                         <BindingGroup Name="BGroup_LineEdits"/>
                                     </WrapPanel.BindingGroup>
-                                    <TextBox Height="30" Width="247" Text="{Binding PartNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding CatalogNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Multiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" x:Name="Txt_RowEdit_Desc" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding UofM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Idnbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Assembled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding AssyNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding TileIndicator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ItemFin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding ColorBy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="247" SelectedValue="{Binding WorkCtr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ItemCore, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding ScrapFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding SizeDivisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding CoreSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Fabwidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding FabHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option02, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option03, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option04, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option05, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option06, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option07, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option08, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option09, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Option10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding Area, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding PartNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding CatalogNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Multiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="60" Width="287" TextAlignment="Left" VerticalContentAlignment="Top" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" x:Name="Txt_RowEdit_Desc" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding UofM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding SubType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Idnbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <CheckBox Height="30" Width="287" IsChecked="{Binding Explode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Assembled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding AssyNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding TileIndicator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding ItemFin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding ColorBy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding WorkCtr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding WorkCtr, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Converter={conv:StringToWorkCtrCustom}}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <TextBox Height="30" Width="287" Text="{Binding ItemCore, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding ScrapFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding SizeDivisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding CoreSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Fabwidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding FabHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option02, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option03, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option04, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option05, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option06, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option07, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option08, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option09, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Option10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="287" Text="{Binding Area, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>
@@ -1047,22 +1098,22 @@
                                 </Grid>
                             </ScrollViewer>
                             -->
-                        <Button Grid.Row="2" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="3" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
-                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
+                                    IsEnabled="{Binding IsPending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
                                     Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                                               Text="Revert"/>
+                                               Text="Discard"/>
                                 <materialDesign:PackIcon Kind="UndoVariant" Foreground="#d0763e"
                                                              Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
                                                              Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="2" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="3" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
-                                    IsEnabled="{Binding Pending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                                    IsEnabled="{Binding IsPending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
                                     Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
                                 <TextBlock Margin="0 0 2 0" VerticalAlignment="Center" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -1072,7 +1123,7 @@
                                                              Height="{Binding MainViewModel.FontSize_H4, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="2" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="3" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
                                     IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"
@@ -1085,7 +1136,7 @@
                                                              Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
                             </StackPanel>
                         </Button>
-                        <Button Grid.Row="2" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
+                        <Button Grid.Row="3" Grid.Column="3" x:Name="Btn_NewItemLine" Padding="4 1" Margin="4 0 4 0"
                                     BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
                                     IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=datagrid_main}"

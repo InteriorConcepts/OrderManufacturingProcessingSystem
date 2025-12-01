@@ -21,6 +21,7 @@ namespace OMPS.Windows
     public partial class ConfigurationWindow : Window
     {
         public ObservableCollection<TimeZoneInfo> TimeZoneInfos = [];
+        public ObservableCollection<DataGridGridLinesVisibility> DataGridGridLinesVisibilities = [];
         public ConfigurationWindow()
         {
             InitializeComponent();
@@ -33,6 +34,12 @@ namespace OMPS.Windows
                 this.Cmbx_Tiemzones.Items.Add($"{tz.DisplayName} {desc}");
             }
             this.Cmbx_Tiemzones.SelectedIndex = TimeZoneInfos.IndexOf(TimeZoneInfo.Local);
+            foreach (var ev in Enum.GetValues<DataGridGridLinesVisibility>().Cast<DataGridGridLinesVisibility>())
+            {
+                this.DataGridGridLinesVisibilities.Add(ev);
+                this.Cmbx_GridLines.Items.Add(ev);
+            }
+            this.Cmbx_GridLines.SelectedIndex = DataGridGridLinesVisibilities.IndexOf(MainViewModel.DataGridGridLinesVisibility);
             //TimeZoneInfo.GetSystemTimeZones().Select(z => (offset: z.BaseUtcOffset, display: z.DisplayName, name: (z.IsDaylightSavingTime(TimeZoneInfo.ConvertTime(DateTime.Now, z)) ? z.DaylightName : z.StandardName)));
 
         }
@@ -72,6 +79,13 @@ namespace OMPS.Windows
             if (this.Cmbx_Tiemzones.SelectedIndex is int indx && indx is -1) return;
             if (indx > TimeZoneInfos.Count - 1) return;
             Ext.MainViewModel.CurrentTimezone = this.TimeZoneInfos[indx];
+        }
+
+        private void Cmbx_GridLines_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.Cmbx_GridLines.SelectedIndex is int indx && indx is -1) return;
+            if (indx > DataGridGridLinesVisibilities.Count - 1) return;
+            Ext.MainViewModel.DataGridGridLinesVisibility = this.DataGridGridLinesVisibilities[indx];
         }
     }
 }

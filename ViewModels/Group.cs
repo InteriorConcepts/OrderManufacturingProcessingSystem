@@ -51,7 +51,7 @@ namespace OMPS.ViewModels
         {
             new("EngOrder", "canModifyItemLine"),
             new("EngOrder", "canModifyHeaderGeneral"),
-            new("EngOrder", "canModifyHeaderOther"),
+            new("EngOrder", "canModifyHeaderExtended"),
             new("EngOrder", "canDeleteItemLine"),
         };
     }
