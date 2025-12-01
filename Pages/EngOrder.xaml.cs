@@ -30,6 +30,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Linq;
 using SCH = SQL_And_Config_Handler;
 
@@ -52,11 +53,10 @@ namespace OMPS.Pages
 #if !NEWDBSQL
             this.ColorSetInfo.PropertyChanged += this.ColorSetInfo_PropertyChanged;
 #endif
-            for (int i = 0; i < this.SPnl_LookupInputs.Children.Count; i++)
+            foreach (Control cntrl in SPnl_LookupInputs.Children)
             {
-                TextBox cntrl = this.SPnl_LookupInputs.Children.OfType<TextBox>().ElementAt(i);
                 DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(TextBox.TagProperty, typeof(TextBox));
-                dpd.AddValueChanged(cntrl, LabelInputLookupPair_TagChanged);
+                dpd.AddValueChanged(cntrl as TextBox, LabelInputLookupPair_TagChanged);
             }
         }
 
@@ -314,6 +314,7 @@ namespace OMPS.Pages
                 this.grid_header.Visibility is Visibility.Collapsed ?
                 Visibility.Visible :
                 Visibility.Collapsed;
+            this.grid_header.ShowGridLines = true;
             this.Btn_CollapseTopBar.IsChecked = this.grid_header.Visibility is Visibility.Visible;
         }
 
@@ -373,21 +374,20 @@ namespace OMPS.Pages
             if (this.datagrid_main.SelectedCells.Count is 0) return;
             if (this.datagrid_main.CurrentCell.Column is not DataGridColumn col) return;
             var colIdx = col.DisplayIndex;
-            if (this.WPnl_EditInputs.Children.OfType<Control>().ToArray() is not Control[] txts) return;
-            if (txts.Length - 1 < colIdx) return;
             this.pnl_dock.Focus();
             //this.grid_dataeditregion.Focus();
             this.WPnl_DataEditRegion.Focus();
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             Debug.WriteLine(colIdx);
-            if (txts[colIdx] is not TextBox txt) return;
+            if (colIdx > this.WPnl_EditInputs.Children.Count - 1) return;
+            if (this.WPnl_EditInputs.Children[colIdx] is not TextBox txt) return;
             txt.Focus();
             txt.Select(txt.Text.Length, 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RevertEditControls()
         {
-            if (this.WPnl_EditInputs is null || this.WPnl_EditInputs.Children is null) return;
             /*
             this.WPnl_EditInputs.BindingGroup.CancelEdit();
             var tmp = WPnl_EditInputs.DataContext;
@@ -395,13 +395,15 @@ namespace OMPS.Pages
             this.WPnl_EditInputs.DataContext = tmp;
             this.WPnl_EditInputs.BindingGroup.UpdateSources();
             */
-            if (this.WPnl_EditLabels.Children.OfType<Control>() is not IEnumerable<Control> cntrls) return;
-            foreach (var item in cntrls)
+            //var t = DateTime.Now;
+            /*
+            if (this.WPnl_EditLabels.Children.OfType<Label>() is not IEnumerable<Control> cntrls) return;
+            foreach (Label item in cntrls)
             {
                 item.Tag = null;
             }
             if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> inputs) return;
-            foreach (var item in inputs)
+            foreach (Control item in inputs)
             {
                 var dpinfo = Ext.DpValueFromInputType(item);
                 if (dpinfo is null) continue;
@@ -409,6 +411,20 @@ namespace OMPS.Pages
                 if (be is null) continue;
                 be.UpdateTarget();
             }
+            */
+            
+            foreach (Label item in this.WPnl_EditLabels.Children)
+            {
+                item.Tag = null;
+            }
+            foreach (Control item in this.WPnl_EditInputs.Children)
+            {
+                var dpinfo = Ext.DpValueFromInputType(item);
+                if (dpinfo is null) continue;
+                item.GetBindingExpression(dpinfo.Value.dp)?.UpdateTarget();
+            }
+            
+            //MessageBox.Show((DateTime.Now - t).TotalMilliseconds.ToString());
         }
 
         public void DoMfgItemsFilter()
@@ -471,6 +487,7 @@ namespace OMPS.Pages
                 Visibility.Collapsed :
                 Visibility.Visible;
             e.Column.IsReadOnly = Ext.DataGrid_Manuf_ColumnsReadonly.Contains(headerNameLower);
+            
         }
 
         private void dataSideGridScrollViewer_Loaded(object sender, RoutedEventArgs e)
@@ -541,14 +558,6 @@ namespace OMPS.Pages
 
         private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (var col in this.datagrid_main.Columns)
-            {
-                if (col.Header is not string headerName) continue;
-                if (Ext.DataGrid_Manuf_ColumnsOrder.IndexOf(headerName.ToLower()) is int idx && idx is not -1)
-                {
-                    col.DisplayIndex = idx;
-                }
-            }
         }
 
         private void datagrid_main_Unloaded(object sender, RoutedEventArgs e)
@@ -565,8 +574,6 @@ namespace OMPS.Pages
                 if (Ext.PopupConfirmation("Accept changes made to item line? This action cannot be undone.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) is not MessageBoxResult.Yes) return;
             }
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
-            var lbls = this.WPnl_EditLabels.Children.OfType<Label>().ToArray();
-            if (this.WPnl_EditInputs.Children.OfType<Control>() is not IEnumerable<Control> txts) return;
             if (this.datagrid_main.SelectedItem is not AIcManuf line) return;
             if (CurrentItem is null) return;
             List<(string, PropUpdateResult, Type?, object?)> changes = [];
@@ -583,6 +590,8 @@ namespace OMPS.Pages
                     ).Show();
                     return;
                 }
+                var lbls = this.WPnl_EditLabels.Children.OfType<Label>().ToArray().AsSpan();
+                var txts = this.WPnl_EditInputs.Children.OfType<Control>().ToArray().AsSpan();
                 this.datagrid_main.BeginEdit();
                 foreach (var item in txts)
                 {
@@ -620,20 +629,23 @@ namespace OMPS.Pages
                             lbl.Tag = "error";
                             Ext.MainWindow.MainToastContainer.CreateToast(
                                 "Eng Order",
-                                $"Item line- Error for property '{propertyName}'"
+                                $"Item line- Error for property '{propertyName}'",
+                                FeedbackToast.IconTypes.Error
                             ).Show();
                             break;
                         case PropUpdateResult.NoPropOrCantWrite:
                             lbl.Tag = "warn";
                             Ext.MainWindow.MainToastContainer.CreateToast(
                                 "Eng Order",
-                                $"Item line- NoPropOrCantWrite for property '{propertyName}'"
+                                $"Item line- NoPropOrCantWrite for property '{propertyName}'",
+                                FeedbackToast.IconTypes.Error
                             ).Show();
                             break;
                         case PropUpdateResult.ConversionFailed:
                             Ext.MainWindow.MainToastContainer.CreateToast(
                                 "Eng Order",
-                                $"Item line- ConversionFailed for property '{propertyName}'"
+                                $"Item line- ConversionFailed for property '{propertyName}'",
+                                FeedbackToast.IconTypes.Error
                             ).Show();
                             break;
                     }
@@ -652,7 +664,8 @@ namespace OMPS.Pages
             {
                 Ext.MainWindow.MainToastContainer.CreateToast(
                     "Eng Order",
-                    "Item line changes encountered an error with a property"
+                    "Item line changes encountered an error with a property",
+                    FeedbackToast.IconTypes.Error
                 ).Show();
             }
             /*
@@ -697,6 +710,8 @@ namespace OMPS.Pages
             }
             //if (this.grid_dataeditregion.Children.OfType<TextBox>() is not IEnumerable<TextBox> txts) return;
             this.RevertEditControls();
+            this.CurrentItem = (AIcManuf)this.datagrid_main.SelectedItem;
+            this.WPnl_EditInputs.BindingGroup.UpdateSources();
             Ext.MainWindow.MainToastContainer.CreateToast("Eng Order", "Item line changes discarded").Show();
             this.Pending_LineChangesCount = 0;
         }
@@ -884,7 +899,8 @@ namespace OMPS.Pages
                     .Where(o => o.ColorSetId == ColorSetInfo.ColorSetId)
                     .FirstAsync();
                 if (dborder is null) return;
-                foreach (var prop in dborder.GetType().GetProperties(BindingFlags.Default))
+                var props = dborder.GetType().GetProperties(BindingFlags.Default).ToList();
+                foreach (var prop in CollectionsMarshal.AsSpan(props))
                 {
                     if (!this.ColorSetInfo_Changes.ContainsKey(prop.Name)) continue;
                     var orderprop = ColorSetInfo.GetType().GetProperty(prop.Name, BindingFlags.Default);
@@ -1186,6 +1202,32 @@ namespace OMPS.Pages
                 e.Handled = true;
             }
         }
+
+        private void datagrid_main_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is null) return;
+            Dispatcher.BeginInvoke(() =>
+            {
+                string str = "";
+                byte i = 0;
+                foreach (var col in this.datagrid_main.Columns.OrderBy(c => Ext.DataGrid_Manuf_ColumnsOrder.IndexOf(c.Header.ToString()?.ToLower() ?? "")))
+                {
+                    if (col.Header is not string headerName) continue;
+                    if (Ext.DataGrid_Manuf_ColumnsOrder.IndexOf(headerName.ToLower()) is int idx && idx is not -1)
+                    {
+                        col.DisplayIndex = idx;
+                        str += headerName.PadRight(24, ' ') + col.DisplayIndex.ToString().PadLeft(2, '0') + "\n";
+                    }
+                    else
+                    {
+                        col.DisplayIndex = Ext.DataGrid_Manuf_ColumnsOrder.Count + i++;
+                    }
+                }
+                Clipboard.SetText(str);
+                MessageBox.Show(str);
+            }, DispatcherPriority.Loaded);
+        }
         #endregion
+
     }
 }

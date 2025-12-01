@@ -35,6 +35,7 @@ namespace OMPS.Pages
     /// </summary>
     public partial class OrderSearch : UserControl, INotifyPropertyChanged, IDisposable
     {
+        public byte firstLoad = 0;
         public OrderSearch()
         {
             InitializeComponent();

@@ -10,6 +10,7 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       x:Name="Page_EngOrder" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
       mc:Ignorable="d" UseLayoutRounding="False"
+      d:DataContext="{d:DesignInstance Type=pages:EngOrder, IsDesignTimeCreatable=True}"
       d:DesignHeight="1000" d:DesignWidth="1025"
       PreviewKeyDown="Page_EngOrder_PreviewKeyDown"
       FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
@@ -34,7 +35,7 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="{Binding MainViewModel.FontSize_H7, FallbackValue=8}"/>
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Content -->
@@ -148,9 +149,9 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding ElementName=Page_EngOrder}">
+    <Grid x:Name="grid_main" DataContext="{Binding ElementName=Page_EngOrder}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="34"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -180,7 +181,7 @@
                                                  Kind="Reload"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="Btn_SaveHeader" Height="22" Width="Auto"
+                <Button x:Name="Btn_SaveHeader" Height="22"
                         Style="{StaticResource MaterialDesignFlatButton}" Foreground="LightSkyBlue"
                         IsEnabled="{Binding ColorSetInfo_HasChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
@@ -195,17 +196,17 @@
                     </StackPanel>
                 </Button>
                 <CheckBox x:Name="Btn_CollapseTopBar" Content="Header" IsChecked="True"
-                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                           Click="Btn_CollapseTopBar_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}" materialDesign:CheckBoxAssist.CheckBoxSize="0"/>
                 <CheckBox x:Name="Btn_CollapseSideGrid" Content="Row Edit Pane" IsChecked="False"
-                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                           Click="Btn_CollapseSideGrid_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
                 <CheckBox x:Name="Btn_ToggleFiltersPnl" Content="Filter Bar" IsChecked="False"
-                          Width="Auto" Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
+                          Height="{Binding MainViewModel.FontSize_H1_3, FallbackValue=20}"
                           Padding="4 0" Margin="1 3"
                           FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
                           Click="Btn_FilterClose_Click" Style="{StaticResource MaterialDesignFilterChipCheckBox}"/>
@@ -213,22 +214,22 @@
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
             <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
-                
+
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
-                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="General"/>
+                        <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="General"/>
                     </TabItem.Header>
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
                 -->
-                    <Grid Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="{Binding MainViewModel.FontSize_H4, FallbackValue=26, Converter={conv:ScalingConverter}, ConverterParameter=2.2}"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <!--Column 1 : General Info-->
-                            <StackPanel MinWidth="76" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                            <StackPanel MinWidth="76" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
                                 <Label Style="{StaticResource InputLabel}" Content="Order Nbr:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Line Nbr:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Job Nbr:"/>
@@ -239,7 +240,7 @@
                                 <Label Style="{StaticResource InputLabel}" Content="Qty:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
                             </StackPanel>
-                            <StackPanel MinWidth="80" MaxWidth="95" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel MinWidth="80" MaxWidth="95" Margin="0 0 4 0">
                                 <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber,      FallbackValue='DefaultValue',   Mode=TwoWay}"/>
                                 <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber,       FallbackValue='DefaultValue',   Mode=TwoWay}"/>
                                 <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef,   FallbackValue='DefaultValue',   Mode=TwoWay}"/>
@@ -251,7 +252,7 @@
                                 <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Engineer,         FallbackValue='DefaultValue',   Mode=TwoWay}" IsReadOnly="False"/>
                             </StackPanel>
                             <!--Column 2 : Basic Colors-->
-                            <StackPanel MinWidth="73" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                            <StackPanel MinWidth="73" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
                                 <Label Style="{StaticResource InputLabel}" Content="Frame:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Metal Comp:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Shelf:"/>
@@ -274,7 +275,7 @@
                                 <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}" SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3 : Materials-->
-                            <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
                                 <Label Style="{StaticResource InputLabel}" Content="Fabric:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Wks Lam:"/>
                                 <Label Style="{StaticResource InputLabel}" Content="Wks Edge:"/>
@@ -314,7 +315,7 @@
                                     <Image Style="{StaticResource BtnLookupImageStyle}"/>
                                 </Button>
                             </StackPanel>
-                            <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="410" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="410" Margin="0 0 4 0">
                                 <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric1Id}"/>
                                 <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLamId}"/>
                                 <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksEdgeId}"/>
@@ -326,7 +327,7 @@
                                 <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamCurveId}"/>
                             </StackPanel>
                             <!--Column 4 : Buttons-->
-                            <StackPanel Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
                                 <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
                                 <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
                                 <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
@@ -334,15 +335,15 @@
                                 <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="Auto">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
-                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" Width="Auto" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay}"/>
+                            <TextBox Style="{StaticResource InputStyle}" IsReadOnly="False" MinWidth="500" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
-                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Colors+"/>
+                        <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Colors+"/>
                     </TabItem.Header>
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
@@ -383,7 +384,7 @@
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
-                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Misc"/>
+                        <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Misc"/>
                     </TabItem.Header>
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.ColumnDefinitions>
@@ -426,7 +427,7 @@
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
-                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Quote Parts"/>
+                        <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Quote Parts"/>
                     </TabItem.Header>
                     <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
@@ -434,7 +435,7 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Horizontal">
                             <!--Column 1-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 01" CheckValue="{Binding ColorSetInfo.Part01, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 02" CheckValue="{Binding ColorSetInfo.Part02, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 03" CheckValue="{Binding ColorSetInfo.Part03, Mode=TwoWay}"/>
@@ -447,7 +448,7 @@
                                 <Components:LabelCheckPair LabelText="Part 10" CheckValue="{Binding ColorSetInfo.Part10, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 2-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 11" CheckValue="{Binding ColorSetInfo.Part11, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 12" CheckValue="{Binding ColorSetInfo.Part12, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 13" CheckValue="{Binding ColorSetInfo.Part13, Mode=TwoWay}"/>
@@ -460,7 +461,7 @@
                                 <Components:LabelCheckPair LabelText="Part 20" CheckValue="{Binding ColorSetInfo.Part20, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 3-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 21" CheckValue="{Binding ColorSetInfo.Part21, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 22" CheckValue="{Binding ColorSetInfo.Part22, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 23" CheckValue="{Binding ColorSetInfo.Part23, Mode=TwoWay}"/>
@@ -473,7 +474,7 @@
                                 <Components:LabelCheckPair LabelText="Part 30" CheckValue="{Binding ColorSetInfo.Part30, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 4-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 31" CheckValue="{Binding ColorSetInfo.Part31, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 32" CheckValue="{Binding ColorSetInfo.Part32, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 33" CheckValue="{Binding ColorSetInfo.Part33, Mode=TwoWay}"/>
@@ -486,7 +487,7 @@
                                 <Components:LabelCheckPair LabelText="Part 40" CheckValue="{Binding ColorSetInfo.Part40, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 5-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 41" CheckValue="{Binding ColorSetInfo.Part41, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 42" CheckValue="{Binding ColorSetInfo.Part42, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 43" CheckValue="{Binding ColorSetInfo.Part43, Mode=TwoWay}"/>
@@ -499,7 +500,7 @@
                                 <Components:LabelCheckPair LabelText="Part 50" CheckValue="{Binding ColorSetInfo.Part50, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 6-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 51" CheckValue="{Binding ColorSetInfo.Part51, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 52" CheckValue="{Binding ColorSetInfo.Part52, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 53" CheckValue="{Binding ColorSetInfo.Part53, Mode=TwoWay}"/>
@@ -512,7 +513,7 @@
                                 <Components:LabelCheckPair LabelText="Part 60" CheckValue="{Binding ColorSetInfo.Part60, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 7-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 61" CheckValue="{Binding ColorSetInfo.Part61, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 62" CheckValue="{Binding ColorSetInfo.Part62, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 63" CheckValue="{Binding ColorSetInfo.Part63, Mode=TwoWay}"/>
@@ -525,7 +526,7 @@
                                 <Components:LabelCheckPair LabelText="Part 70" CheckValue="{Binding ColorSetInfo.Part70, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 8-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 71" CheckValue="{Binding ColorSetInfo.Part71, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 72" CheckValue="{Binding ColorSetInfo.Part72, Mode=TwoWay}"/>
                                 <Components:LabelCheckPair LabelText="Part 73" CheckValue="{Binding ColorSetInfo.Part73, Mode=TwoWay}"/>
@@ -538,7 +539,7 @@
                                 <Components:LabelCheckPair LabelText="Part 80" CheckValue="{Binding ColorSetInfo.Part80, Mode=TwoWay}"/>
                             </StackPanel>
                             <!--Column 9-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 81" CheckValue="{Binding ColorSetInfo.Part81, Mode=TwoWay}" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 82" CheckValue="{Binding ColorSetInfo.Part82, Mode=TwoWay}" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 83" CheckValue="{Binding ColorSetInfo.Part83, Mode=TwoWay}" IsEnabled="False"/>
@@ -551,7 +552,7 @@
                                 <Components:LabelCheckPair LabelText="Part 90" CheckValue="{Binding ColorSetInfo.Part90, Mode=TwoWay}" IsEnabled="False"/>
                             </StackPanel>
                             <!--Column 10-->
-                            <StackPanel Height="Auto" Width="Auto" Margin="0 0 4 0">
+                            <StackPanel Margin="0 0 4 0">
                                 <Components:LabelCheckPair LabelText="Part 91" CheckValue="{Binding ColorSetInfo.Part91, Mode=TwoWay}" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 92" CheckValue="{Binding ColorSetInfo.Part92, Mode=TwoWay}" IsEnabled="False"/>
                                 <Components:LabelCheckPair LabelText="Part 93" CheckValue="{Binding ColorSetInfo.Part93, Mode=TwoWay}" IsEnabled="False"/>
@@ -563,7 +564,7 @@
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
-                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Mfg Reports"/>
+                        <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Mfg Reports"/>
                     </TabItem.Header>
                     <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                         <Grid.ColumnDefinitions>
@@ -591,14 +592,14 @@
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
-                        <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pre1"/>
+                        <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pre1"/>
                     </TabItem.Header>
                     <Grid Height="270" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
                     </Grid>
                 </TabItem>
             </TabControl>
         </Grid>
-        <DockPanel x:Name="dpnl_DataFilter" Grid.Row="2" Height="48" Visibility="Visible" Background="#222">
+        <DockPanel x:Name="dpnl_DataFilter" Grid.Row="2" Visibility="Visible" Background="#222">
             <Grid Margin="8 2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50*"/>
@@ -611,10 +612,10 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Row="0" Margin="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="250"/>
                         <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="260"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
@@ -663,10 +664,10 @@
                 <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="{Binding MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
                 <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                     <WrapPanel x:Name="WPnl_SavedFilters" Orientation="Horizontal" VerticalAlignment="Stretch">
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="yes+F" Click="Btn_SavedFilters_Click" Content="Assembled" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Til+p1-" Click="Btn_SavedFilters_Click" Content="Panels" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Tub+Tube" Click="Btn_SavedFilters_Click" Content="Tubes" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Pmd" Click="Btn_SavedFilters_Click" Content="Pmold" Padding="2 1" Margin="0 0 3 1" Height="Auto" Width="Auto" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="yes+F" Click="Btn_SavedFilters_Click" Content="Assembled" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Til+p1-" Click="Btn_SavedFilters_Click" Content="Panels" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Tub+Tube" Click="Btn_SavedFilters_Click" Content="Tubes" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Pmd" Click="Btn_SavedFilters_Click" Content="Pmold" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
                     </WrapPanel>
                 </ScrollViewer>
             </Grid>
@@ -674,7 +675,7 @@
         <Grid x:Name="grid_data" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="415"/>
             </Grid.ColumnDefinitions>
             <ProgressBar Panel.ZIndex="99" x:Name="progbar_itemlines" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False" Foreground="White" Background="{x:Static local:Ext.AccentColorBrush50}" BorderBrush="{x:Static local:Ext.AccentColorBrush}"/>
 
@@ -708,7 +709,7 @@
                       CellEditEnding="DataGrid_CellEditEnding" SnapsToDevicePixels="True"
                       RowEditEnding="DataGrid_RowEditEnding"
                       IsTextSearchEnabled="True" Background="#222"
-                      AutoGeneratingColumn="DataGrid_IceManuf_AutoGeneratingColumn"
+                      AutoGenerateColumns="False"
                       LoadingRow="DataGrid_LoadingRow"
                       BorderBrush="LightGray"
                       BorderThickness="0"
@@ -721,7 +722,7 @@
                       PreviewMouseDown="datagrid_main_PreviewMouseDown"
                       PreviewKeyDown="datagrid_main_PreviewKeyDown"
                       SelectionMode="Single" IsTabStop="True" HeadersVisibility="All"
-                      Unloaded="datagrid_main_Unloaded"
+                      Unloaded="datagrid_main_Unloaded" 
                       CanUserReorderColumns="False"
                       GridLinesVisibility="None" LostFocus="datagrid_main_LostFocus">
                 <DataGrid.Resources>
@@ -826,7 +827,7 @@
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                        <Setter Property="Height" Value="Auto"/>
+                        <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=20}"/>
                         <Setter Property="SnapsToDevicePixels" Value="True"/>
                         <Setter Property="BorderThickness" Value="1"/>
                         <Setter Property="Padding" Value="0"/>
@@ -865,6 +866,18 @@
                         </Style.Triggers>
                     </Style>
                 </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PartNbr" Binding="{Binding PartNbr}"/>
+                    <DataGridTextColumn Header="ItemNbr" Binding="{Binding ItemNbr}"/>
+                    <DataGridTextColumn Header="CatalogNbr" Binding="{Binding CatalogNbr}"/>
+                    <DataGridTextColumn Header="Qty" Binding="{Binding Qty}"/>
+                    <DataGridTextColumn Header="Multiplier" Binding="{Binding Multiplier}"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
+                    <DataGridTextColumn Header="SubType" Binding="{Binding SubType}"/>
+                    <DataGridTextColumn Header="IDNbr" Binding="{Binding Idnbr}"/>
+                    <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
+                </DataGrid.Columns>
             </DataGrid>
             <!--
             <DataGrid x:Name="datagrid_MP" Grid.Row="0" Visibility="Collapsed"
@@ -881,7 +894,7 @@
             <DockPanel x:Name="pnl_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
                 <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
                                           FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
-                    <Grid Width="Auto" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                    <Grid VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
@@ -889,11 +902,11 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="{Binding MainViewModel.FontSize_H1, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=1.50}"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="24"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Stretch">
                             <Label Content="Row Edit Pane" HorizontalAlignment="Center"
                                    Padding="0" Margin="0"
                                    FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
@@ -955,6 +968,7 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Dept"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="ScrapFactor"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="SizeDivisor"/>
+                                    <Label Style="{StaticResource LabelWithIndicator}" Content="CoreSize"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Depth"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Width"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Height"/>
@@ -970,7 +984,6 @@
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Option08"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Option09"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Option10"/>
-                                    <Label Style="{StaticResource LabelWithIndicator}" Content="CoreSize"/>
                                     <Label Style="{StaticResource LabelWithIndicator}" Content="Area"/>
                                 </WrapPanel>
                                 <WrapPanel x:Name="WPnl_EditInputs" Orientation="Vertical" Width="248" VerticalAlignment="Stretch"
@@ -988,7 +1001,7 @@
                                     <TextBox Height="30" Width="247" Text="{Binding UofM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <ComboBox Height="30" Width="247" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <ComboBox Height="30" Width="247" SelectedValue="{Binding SubType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding IDNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="247" Text="{Binding Idnbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <CheckBox Height="30" Width="247" IsChecked="{Binding Explode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Assembled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding AssyNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
@@ -1000,6 +1013,7 @@
                                     <TextBox Height="30" Width="247" Text="{Binding Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding ScrapFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding SizeDivisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="247" Text="{Binding CoreSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
@@ -1015,7 +1029,6 @@
                                     <TextBox Height="30" Width="247" Text="{Binding Option08, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Option09, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Option10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="247" Text="{Binding CoreSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                     <TextBox Height="30" Width="247" Text="{Binding Area, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                 </WrapPanel>
                             </WrapPanel>

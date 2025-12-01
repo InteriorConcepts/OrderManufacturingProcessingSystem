@@ -334,14 +334,14 @@ namespace OMPS.ViewModels
             switch (pageType)
             {
                 case PageTypes.Home:
-                    //if (this.Home_VM?.NewOrders?.Count is not 0) return;
+                    if (this.Home_VM?.firstLoad is not 0) return;
                     this.Home_VM?.LoadData();
                     Debug.WriteLine("Load Home");
                     break;
                 case PageTypes.Login:
                     break;
                 case PageTypes.OrderSearch:
-                    if (this.OrderSearch_VM?.ColorSetInfos?.Count is not 0) return;
+                    if (this.OrderSearch_VM?.firstLoad is not 0) return;
                     Debug.WriteLine("Load Orders");
                     this.OrderSearch_VM?.LoadRecentOrders();
                     break;
@@ -350,7 +350,7 @@ namespace OMPS.ViewModels
                 case PageTypes.QuoteOrder:
                     break;
                 case PageTypes.ProductCatalogSearch:
-                    if (this.ProductCatalogSearch_VM?.Products?.Count is not 0) return;
+                    if (this.ProductCatalogSearch_VM?.firstLoad is not 0) return;
                     Debug.WriteLine("Load Products");
                     this.ProductCatalogSearch_VM?.LoadProducts();
                     break;

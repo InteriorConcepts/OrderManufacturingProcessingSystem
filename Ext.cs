@@ -451,9 +451,12 @@ namespace OMPS
             ]).Select(s => s.ToLower()).ToImmutableList();
         public static readonly ImmutableList<string> DataGrid_Manuf_ColumnsOrder = ImmutableList.Create([
                 "PartNbr", "ItemNbr", "CatalogNbr", "Qty", "Multiplier",
-                "Description", "UofM", "Type", "SubType", "IDNbr", "Explode",
+                "Description", "UofM", "Type", "SubType", "Idnbr", "Explode",
                 "Assembled", "AssyNbr", "TileIndicator", "ItemFin", "ColorBy",
-                "WorkCtr"
+                "WorkCtr", "ItemCore", "Dept", "ScrapFactor", "SizeDivisor",
+                "CoreSize", "Depth", "Width", "Height", "FabWidth", "FabHeight",
+                "Option01", "Option02", "Option03", "Option04", "Option05",
+                "Option06", "Option07", "Option08", "Option09", "Option10"
             ]).Select(s => s.ToLower()).ToImmutableList();
 
         public static readonly ImmutableList<PropertyInfo> MfgItem_FilterProps = [..

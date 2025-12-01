@@ -35,84 +35,14 @@ namespace OMPS.Pages
     /// </summary>
     public partial class Home : UserControl, INotifyPropertyChanged
     {
+        public byte firstLoad = 0;
         public Home()
         {
             InitializeComponent();
             //
             this.DataContext = this;
             //
-            if (Ext.ReadSetting<string>(Ext.AppConfigKey.Shortcuts) is (bool, string) res && res.success && !string.IsNullOrWhiteSpace(res.value))
-            {
-                var split = res.value.Split(';');
-                if (split is null || split.Length is 0) return;
-                if (TryFindResource("Home_ShortcutButton") is not object obj || obj is not ControlTemplate ct) return;
-                foreach (var shortcut in split)
-                {
-                    if (shortcut.Split('+') is not string[] infoSplit || infoSplit is null || (infoSplit.Length is not 3 && infoSplit.Length is not 4)) continue;
-                    (string type, string name, string dest, string img) = (infoSplit[0].ToLower(), infoSplit[1], infoSplit[2], infoSplit[3]);
-                    var cc = new ContentControl() { Template = ct, Tag = infoSplit[2] };
-                    var sp = new StackPanel() { };
-                    FrameworkElement? ico = null;
-                    //MessageBox.Show(String.Join("\n", infoSplit));
-                    if (img.Length is not 0)
-                    {
-                        if (img.StartsWith("/"))
-                        {
-                            ico = new Image() { };
-                            ((Image)ico).Source = new BitmapImage(new Uri(
-                                @"pack://application:,,,/OMPS;component" +
-                                img
-                            ));
-                        } else
-                        {
-                            ico = new PackIcon() { Kind = PackIconKind.None };
-                            if (Enum.TryParse<PackIconKind>(img, true, out PackIconKind val) is true)
-                            {
-                                ((PackIcon)ico).Kind = val;
-                            }
-                            else
-                            {
-                                img = "";
-                            }
-                        }
-                    }
-                    if (img.Length is 0)
-                    {
-                        ico ??= new PackIcon();
-                        ((PackIcon)ico).Kind = type switch
-                        {
-                            "link" => PackIconKind.ExternalLink,
-                            "program" => PackIconKind.Application,
-                            "folder" => PackIconKind.Folder,
-                            "file" => PackIconKind.File,
-                            _ => PackIconKind.None,
-                        };
-                    }
-                    sp.Children.Add(ico);
-                    var lbl = new TextBlock()
-                    {
-                        Text = infoSplit[1]
-                    };
-                    lbl.SetBinding(TextBlock.FontSizeProperty, new Binding("DataContext.FontSize_H4"));
-                    sp.Children.Add(lbl);
-                    cc.Content = sp;
-                    switch (type)
-                    {
-                        case "link":
-                            this.SPnl_Shortcuts_Links.Children.Add(cc);
-                            break;
-                        case "program":
-                            this.SPnl_Shortcuts_Programs.Children.Add(cc);
-                            break;
-                        case "file":
-                        case "folder":
-                            this.SPnl_Shortcuts_FilesFolders.Children.Add(cc);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+            this.LoadShortcutsFromSettings();
             this.Refresher.Elapsed += Refresher_Elapsed;
             this.Refresher.Start();
         }
@@ -150,6 +80,84 @@ namespace OMPS.Pages
                 infrequency = 0;
             }
             infrequency++;
+        }
+
+        public void LoadShortcutsFromSettings()
+        {
+            if (Ext.ReadSetting<string>(Ext.AppConfigKey.Shortcuts) is not (bool, string) res || !res.success || string.IsNullOrWhiteSpace(res.value)) return;
+            var split = res.value.Split(';');
+            if (split is null || split.Length is 0) return;
+            if (TryFindResource("Home_ShortcutButton") is not object obj || obj is not ControlTemplate ct) return;
+            foreach (var shortcut in split)
+            {
+                if (shortcut.Split('+') is not string[] infoSplit || infoSplit is null || (infoSplit.Length is not 3 && infoSplit.Length is not 4)) continue;
+                (string type, string name, string dest, string img) = (infoSplit[0].ToLower(), infoSplit[1], infoSplit[2], infoSplit[3]);
+                FrameworkElement? ico = null;
+                //MessageBox.Show(String.Join("\n", infoSplit));
+                if (img.Length is not 0)
+                {
+                    if (img.StartsWith("/"))
+                    {
+                        ico = new Image() { };
+                        ((Image)ico).Source = new BitmapImage(new Uri(
+                            @"pack://application:,,,/OMPS;component" +
+                            img
+                        ));
+                    }
+                    else
+                    {
+                        ico = new PackIcon() { Kind = PackIconKind.None };
+                        if (Enum.TryParse<PackIconKind>(img, true, out PackIconKind val) is true)
+                        {
+                            ((PackIcon)ico).Kind = val;
+                        }
+                        else
+                        {
+                            img = "";
+                        }
+                    }
+                }
+                if (img.Length is 0)
+                {
+                    ico ??= new PackIcon();
+                    ((PackIcon)ico).Kind = type switch
+                    {
+                        "link" => PackIconKind.ExternalLink,
+                        "program" => PackIconKind.Application,
+                        "folder" => PackIconKind.Folder,
+                        "file" => PackIconKind.File,
+                        _ => PackIconKind.None,
+                    };
+                }
+                var lbl = new TextBlock()
+                {
+                    Text = infoSplit[1]
+                };
+                lbl.SetBinding(TextBlock.FontSizeProperty, new Binding("DataContext.FontSize_H4"));
+                var sp = new StackPanel() { };
+                sp.Children.Add(ico);
+                sp.Children.Add(lbl);
+                var cc = new ContentControl() {
+                    Template = ct,
+                    Tag = infoSplit[2],
+                    Content = sp
+                };
+                switch (type)
+                {
+                    case "link":
+                        this.SPnl_Shortcuts_Links.Children.Add(cc);
+                        break;
+                    case "program":
+                        this.SPnl_Shortcuts_Programs.Children.Add(cc);
+                        break;
+                    case "file":
+                    case "folder":
+                        this.SPnl_Shortcuts_FilesFolders.Children.Add(cc);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         #region Events
@@ -599,7 +607,7 @@ namespace OMPS.Pages
             this.LoadData();
         }
 
-        private async void btn_reload_Click(object sender, RoutedEventArgs e)
+        private void btn_reload_Click(object sender, RoutedEventArgs e)
         {
             this.LoadData();
             Ext.MainWindow.MainToastContainer.CreateToast("Home", "Data refreshed").Show();

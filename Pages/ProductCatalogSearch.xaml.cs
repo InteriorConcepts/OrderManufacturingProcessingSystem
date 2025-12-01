@@ -34,6 +34,7 @@ namespace OMPS.Pages
     /// </summary>
     public partial class ProductCatalogSearch : UserControl, INotifyPropertyChanged, IDisposable
     {
+        public byte firstLoad = 0;
         public ProductCatalogSearch()
         {
             InitializeComponent();
