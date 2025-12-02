@@ -39,10 +39,6 @@ namespace OMPS.Pages
         private async void ProductCatalogDetails_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName is not string propName) return;
-            if (propName is "ProductCode")
-            {
-                await this.LoadProductData();
-            }
         }
 
 
@@ -61,8 +57,19 @@ namespace OMPS.Pages
                 if (value == field) return;
                 field = value;
                 OnPropertyChanged(nameof(ProductCode));
+                this.LoadAllProductData();
             }
-        } = "";
+        } = "Default";
+
+        internal DataGrid? CurrentGrid { get; set; }
+
+        public DBModels.Product.IcProductCatalog ProductInfo { get; set; } = new();
+
+        public List<DBModels.Product.IcProdBom> _prodBoms = [];
+        public IReadOnlyCollection<DBModels.Product.IcProdBom> ProdBoms => this._prodBoms;
+
+        public List<DBModels.Product.IcMfgBom> _mfgItems = [];
+        public IReadOnlyCollection<DBModels.Product.IcMfgBom> MfgItems => this._mfgItems;
 
         internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
         internal static MainWindow ParentWindow { get => Ext.MainWindow; }
@@ -73,16 +80,91 @@ namespace OMPS.Pages
 
 
         #region "Methods"
-        public async Task LoadProductData()
+        public async Task LoadAllProductData()
         {
-            await Task.Run(() =>
+            await LoadProductInfo();
+            await LoadProductBomItems();
+            await LoadProductMfgItems();
+        }
+
+        public async Task LoadProductInfo()
+        {
+            await Task.Run(async () =>
             {
-                /*
-                var res_items = Ext.Queries.GetProductSubPartsByProductCode(this.ProductCode);
-                if (res_items is null) return;
-                if (res_items.Count is 0) return;
-                */
+                using var ctx = new DBModels.Product.ProductDbCtx();
+                var query = ctx.IcProductCatalogs
+                    .Where(p => p.ProductCode == this.ProductCode);
+                var res = await query.FirstOrDefaultAsync();
+                if (res is null) return;
+                this.ProductInfo = res;
+                this.ProductInfo.PropertyChanged += ProductInfo_PropertyChanged; ;
+                OnPropertyChanged(nameof(ProductInfo));
             });
+        }
+
+        public async Task LoadProductBomItems()
+        {
+            this.DataGrid_ProdBoms.BeginInit();
+            await Task.Run(async () =>
+            {
+                using var ctx = new DBModels.Product.ProductDbCtx();
+                var query = ctx.IcProdBoms
+                    .Include(e => e.Product)
+                    .Where(p => p.Product != null && p.Product.ProductCode == this.ProductCode);
+                var res = await query.ToListAsync();
+                if (res is null) return;
+                this._prodBoms = res;
+                OnPropertyChanged(nameof(ProdBoms));
+            });
+            this.DataGrid_ProdBoms.EndInit();
+        }
+
+        public async Task LoadProductMfgItems()
+        {
+            this.DataGrid_MfgItems.BeginInit();
+            await Task.Run(async () =>
+            {
+                using var ctx = new DBModels.Product.ProductDbCtx();
+                var query = ctx.IcMfgBoms
+                    .Include(e => e.Product)
+                    .Where(p => p.Product != null && p.Product.ProductCode == this.ProductCode);
+                var res = await query.ToListAsync();
+                if (res is null) return;
+                this._mfgItems = res;
+                OnPropertyChanged(nameof(MfgItems));
+            });
+            this.DataGrid_MfgItems.EndInit();
+        }
+
+        public void ToggleHeader()
+        {
+            this.grid_header.Visibility =
+                this.grid_header.Visibility is Visibility.Collapsed ?
+                Visibility.Visible :
+                Visibility.Collapsed;
+            this.grid_header.ShowGridLines = true;
+            this.Btn_CollapseTopBar.IsChecked = this.grid_header.Visibility is Visibility.Visible;
+        }
+
+        public void ToggleSideGrid()
+        {
+            /*
+            this.pnl_dock.Visibility =
+                this.pnl_dock.Visibility is Visibility.Collapsed ?
+                Visibility.Visible :
+                Visibility.Collapsed;
+            this.RowSpan = (this.pnl_dock.Visibility is Visibility.Collapsed ? 2 : 1);
+            Grid.SetColumnSpan(datagrid_main, RowSpan);
+            this.Btn_CollapseSideGrid.IsChecked = this.pnl_dock.Visibility is Visibility.Visible;
+            */
+        }
+
+        public void ToggleDataGrid()
+        {
+            var currentlyHidden = this.grid_dataGrids.Visibility is Visibility.Collapsed;
+            this.grid_dataGrids.Visibility = currentlyHidden ? Visibility.Visible : Visibility.Collapsed;
+            this.grid_header.ShowGridLines = true;
+            this.Btn_CollapseDataGrid.IsChecked = currentlyHidden;
         }
         #endregion
 
@@ -92,7 +174,12 @@ namespace OMPS.Pages
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        #endregion
+
+        private void ProductInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is not string propName) return;
+            MessageBox.Show(propName);
+        }
 
         private void Btn_RefreshHeader_Click(object sender, RoutedEventArgs e)
         {
@@ -106,12 +193,61 @@ namespace OMPS.Pages
 
         private void Btn_CollapseTopBar_Click(object sender, RoutedEventArgs e)
         {
+            this.ToggleHeader();
+        }
 
+        private void Btn_CollapseDataGrid_Click(object sender, RoutedEventArgs e)
+        {
+            this.ToggleDataGrid();
         }
 
         private void Btn_CollapseSideGrid_Click(object sender, RoutedEventArgs e)
         {
+            this.ToggleSideGrid();
+        }
+
+        private void RadioButton_DataGridView_Checked(object sender, RoutedEventArgs e)
+        {
 
         }
+
+        private void MfgItemsViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            // Assuming 'MyDataItem' is the type of objects in collection
+            if (sender is not DBModels.Product.IcMfgBom item)
+            {
+                return;
+            }
+
+            // Get text from TextBox
+            var filterText = "";
+            // If the filter text is empty, accept all items
+            if (filterText is null || filterText is "")
+            {
+                e.Accepted = true;
+                return;
+            }
+            //e.Accepted = Ext.MfgItems_Filter(item, filterText);
+        }
+        private void ProdBomsViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            // Assuming 'MyDataItem' is the type of objects in collection
+            if (sender is not DBModels.Product.IcProdBom item)
+            {
+                return;
+            }
+
+            // Get text from TextBox
+            var filterText = "";
+            // If the filter text is empty, accept all items
+            if (filterText is null || filterText is "")
+            {
+                e.Accepted = true;
+                return;
+            }
+            //e.Accepted = Ext.MfgItems_Filter(item, filterText);
+        }
+        #endregion
+
     }
 }

@@ -112,7 +112,9 @@ namespace OMPS.Pages
                     {
                         ProductId = p.ProductId,
                         ProductCode = p.ProductCode,
-                        Description = p.Description
+                        Description = p.Description,
+                        Type = p.Type,
+                        SubType = p.SubType,
                     })
                     .AsNoTracking() // No change tracking
                     .AsSplitQuery();
@@ -123,12 +125,10 @@ namespace OMPS.Pages
         public async Task LoadProductsAsync(string? pcodeFilter = null, string? pdescFilter = null)
         {
             this.datagrid_main.BeginInit();
-#if NEWDBSQL
             await Task.Run(async () =>
             {
                 Debug.WriteLine("Products");
                 using var ctx = new DBModels.Product.ProductDbCtx();
-                // Safe read-only query
                 var query = this.LoadActiveProductsQueryAsync(ctx);
                 if (!(pcodeFilter is null or ""))
                 {
@@ -147,14 +147,12 @@ namespace OMPS.Pages
             });
 
             OnPropertyChanged(nameof(Products));
-#endif
             this.datagrid_main.EndInit();
         }
 
         // Update method
         public async Task UpdateProductAsync(DBModels.Product.IcProductCatalog product)
         {
-#if NEWDBSQL
             using var context = new DBModels.Product.ProductDbCtx();
             var dbProduct = await context.IcProductCatalogs.FindAsync(product.ProductId);
             if (dbProduct is null) return;
@@ -164,7 +162,6 @@ namespace OMPS.Pages
 
             // Reload collection
             await LoadProductsAsync();
-#endif
         }
 
         public void Dispose()
@@ -202,7 +199,9 @@ namespace OMPS.Pages
         private async void datagrid_main_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (this.datagrid_main.SelectedIndex is -1) return;
+            if (e.OriginalSource is not TextBlock txtblk) return;
             if (this.datagrid_main.SelectedItem is not DBModels.Product.IcProductCatalog prod) return;
+            if (this.datagrid_main.CurrentCell.Column.Header.ToString() is not "ProductCode") return;
             Ext.MainViewModel.CurrentPage = PageTypes.ProductCatalogDetails;
             Ext.MainViewModel.ProductCatalogDetails_VM?.ProductCode = prod.ProductCode;
         }

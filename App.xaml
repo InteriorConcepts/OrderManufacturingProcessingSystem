@@ -69,6 +69,72 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+
+
+
+
+
+
+            <Style x:Key="BtnLookupStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="0 4"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+
+            <Style x:Key="BtnLookupImageStyle" TargetType="Image">
+                <Setter Property="Width" Value="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}"/>
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
+                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
+                <Setter Property="Source" Value="pack://application:,,,/OMPS;component/Images/Binoculars.png"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+
+            <Style x:Key="InputLabel" TargetType="Label" BasedOn="{StaticResource MaterialDesignLabel}">
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
+                <Setter Property="Padding" Value="0 1 2 1"/>
+                <Setter Property="Margin" Value="0 4"/>
+                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
+            </Style>
+
+            <Style x:Key="InputComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
+                <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
+                <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
+                <Setter Property="BorderThickness" Value="0.5"/>
+                <Setter Property="Padding" Value="2 1"/>
+                <Setter Property="Margin" Value="0 4"/>
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
+            </Style>
+
+            <Style x:Key="InputStyle" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
+                <Setter Property="Margin" Value="0 4"/>
+                <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
+                <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
+                <Setter Property="BorderThickness" Value="0.5"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="Padding" Value="0 1"/>
+                <Setter Property="TextWrapping" Value="NoWrap"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="MinWidth" Value="70"/>
+                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
+            </Style>
+
+            <Style x:Key="InputLookupStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
+                <Setter Property="materialDesign:TextFieldAssist.HasLeadingIcon" Value="True"/>
+                <Setter Property="materialDesign:TextFieldAssist.LeadingIconSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
+                <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="LinkVariant"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

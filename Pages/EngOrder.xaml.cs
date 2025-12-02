@@ -614,17 +614,6 @@ namespace OMPS.Pages
             e.Handled = true;
         }
 
-        private void datagrid_main_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void datagrid_main_Unloaded(object sender, RoutedEventArgs e)
-        {
-            //this.grid_dataeditregion.Children.Clear();
-            //this.grid_dataeditregion.RowDefinitions.Clear();
-        }
-
-
         private async void Btn_AcceptItemLineEdits_Click(object? sender, RoutedEventArgs e)
         {
             if (sender is not null)
@@ -813,19 +802,6 @@ namespace OMPS.Pages
             await this.LoadManufData(this.JobNbr);
         }
 
-        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-
-        }
-
-        private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
-        {
-            if (e.EditAction == DataGridEditAction.Commit)
-            {
-                // Row changes committed
-            }
-        }
-
         private void Btn_AcceptChanges_Click(object sender, RoutedEventArgs e)
         {
             // Force commit any pending edits
@@ -838,11 +814,6 @@ namespace OMPS.Pages
             // Cancel pending edits
             datagrid_main.CancelEdit(DataGridEditingUnit.Row);
             datagrid_main.CancelEdit(DataGridEditingUnit.Cell);
-        }
-
-        private void Btn_FilterClose_Click_1(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private async void LabelInputLookupPair_TagChanged(object? sender, EventArgs e)

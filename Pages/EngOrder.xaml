@@ -18,9 +18,7 @@
 
     <UserControl.Resources>
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItemLines}" Filter="MfgItemsViewSource_Filter"/>
-        <!--
-            Make two more styles for the edit pane's combobox and checkboxes and assign it to them
-        -->
+
         <Style x:Key="LabelWithIndicator" TargetType="Label">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Width" Value="150"/>
@@ -54,7 +52,7 @@
                                                Margin="0,0,0,0"
                                                VerticalAlignment="Center">
                                 </materialDesign:PackIcon>
-                                
+
                                 <!-- Single Revert Button -->
                                 <Button Grid.Column="2" Padding="0" Margin="0" VerticalAlignment="Center"
                                         BorderThickness="0" Click="Btn_RevertItemLinePropEdit_Click"
@@ -101,64 +99,6 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="InputStyle" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
-            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-            <Setter Property="Margin" Value="0 4"/>
-            <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
-            <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
-            <Setter Property="BorderThickness" Value="0.5"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="Padding" Value="0 1"/>
-            <Setter Property="TextWrapping" Value="NoWrap"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
-        </Style>
-
-        <Style x:Key="InputLookupStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
-            <Setter Property="materialDesign:TextFieldAssist.HasLeadingIcon" Value="True"/>
-            <Setter Property="materialDesign:TextFieldAssist.LeadingIconSize" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"/>
-            <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="LinkVariant"/>
-        </Style>
-
-        <Style x:Key="BtnLookupStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Margin" Value="0 4"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
-        </Style>
-
-        <Style x:Key="BtnLookupImageStyle" TargetType="Image">
-            <Setter Property="Width" Value="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}"/>
-            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
-            <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
-            <Setter Property="Source" Value="pack://application:,,,/OMPS;component/Images/Binoculars.png"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-        </Style>
-
-        <Style x:Key="InputLabel" TargetType="Label" BasedOn="{StaticResource MaterialDesignLabel}">
-            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-            <Setter Property="Padding" Value="0 1 2 1"/>
-            <Setter Property="Margin" Value="0 4"/>
-            <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
-        </Style>
-
-        <Style x:Key="InputComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
-            <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
-            <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
-            <Setter Property="BorderThickness" Value="0.5"/>
-            <Setter Property="Padding" Value="2 1"/>
-            <Setter Property="Margin" Value="0 4"/>
-            <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid x:Name="grid_main" DataContext="{Binding ElementName=Page_EngOrder}">
@@ -225,7 +165,7 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="grid_header" Grid.Row="1">
-            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" FontSize="13" Style="{StaticResource MaterialDesignNavigationRailTabControl}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
+            <TabControl x:Name="header_tabcontrol" Grid.ColumnSpan="2" Background="#292929" TabStripPlacement="Right" Style="{StaticResource MaterialDesignNavigationRailTabControl}" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
 
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
@@ -234,7 +174,7 @@
                     <!--
                 Use Grid for vertical stacks, then nested StackPanels for further splitting
                 -->
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=282, Converter={conv:ScalingConverter}, ConverterParameter=23}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="{Binding MainViewModel.FontSize_H4, FallbackValue=48, Converter={conv:ScalingConverter}, ConverterParameter=4}"/>
@@ -349,7 +289,7 @@
                         </StackPanel>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch">
                             <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
-                            <TextBox Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" AcceptsReturn="True" MinLines="2" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="False" MinWidth="500" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
+                            <TextBox Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Top" TextAlignment="Left" AcceptsReturn="True" MinLines="2" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="False" MinWidth="500" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -718,14 +658,12 @@
                       IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
                       FontSize="{Binding MainViewModel.FontSize_H4}"
                       Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                      CellEditEnding="DataGrid_CellEditEnding" SnapsToDevicePixels="True"
-                      RowEditEnding="DataGrid_RowEditEnding"
+                      SnapsToDevicePixels="True"
                       IsTextSearchEnabled="True" Background="#222"
                       AutoGenerateColumns="False"
                       LoadingRow="DataGrid_LoadingRow"
                       BorderBrush="LightGray"
                       BorderThickness="0"
-                      Loaded="datagrid_main_Loaded"
                       SelectionChanged="datagrid_main_SelectionChanged"
                       EnableRowVirtualization="True" EnableColumnVirtualization="False"
                       VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
@@ -735,7 +673,6 @@
                       PreviewKeyDown="datagrid_main_PreviewKeyDown"
                       SelectionMode="Single" IsTabStop="True"
                       HeadersVisibility="All"
-                      Unloaded="datagrid_main_Unloaded" 
                       CanUserReorderColumns="False"
                       GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility}"
                       LostFocus="datagrid_main_LostFocus"

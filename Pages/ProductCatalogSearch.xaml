@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:OMPS"
              xmlns:Components="clr-namespace:OMPS.Components" xmlns:pages="clr-namespace:OMPS.Pages"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DataContext="{d:DesignInstance Type=pages:ProductCatalogSearch}"
              x:Name="Page_ProductCatalogSearch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=pages:ProductCatalogSearch, IsDesignTimeCreatable=True}"
              d:DesignHeight="600" d:DesignWidth="1025"
              DataContext="{Binding ElementName=Page_ProductCatalogSearch}" Background="#292929"
              FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <CollectionViewSource x:Key="ProductsViewSource" Source="{Binding Products}" Filter="ProductsViewSource_Filter"/>
     </UserControl.Resources>
-    <Grid DataContext="{Binding ElementName=Page_ProductCatalogSearch}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -73,35 +73,18 @@
                   AutoGenerateColumns="False" MouseDoubleClick="datagrid_main_MouseDoubleClick"
                   EnableColumnVirtualization="False" Background="#292929" HeadersVisibility="Column"
                   EnableRowVirtualization="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
+                  GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility, ElementName=Page_ProductCatalogSearch}"
+                  FontSize="{Binding MainViewModel.FontSize_H4, ElementName=Page_ProductCatalogSearch, FallbackValue=12}">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                     <Setter Property="BorderThickness" Value="0 0 1 0"/>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn x:Name="DgHeader_PC" Header="ProductCode" DisplayIndex="0">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding ProductCode}" Foreground="LightSkyBlue" Cursor="Hand" Background="Transparent"
-                                            VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                            FontSize="{Binding ElementName=Page_ProductCatalogSearch, Path=MainViewModel.FontSize_H4}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn x:Name="DgHeader_PD" Header="Description" DisplayIndex="1">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Description}" Background="Transparent"
-                                           VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"
-                                           FontSize="{Binding ElementName=Page_ProductCatalogSearch, Path=MainViewModel.FontSize_H4}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="DgHeader_PC" Header="ProductCode"   Binding="{Binding ProductCode}"/>
+                <DataGridTextColumn x:Name="DgHeader_PD" Header="Description"   Binding="{Binding Description}"/>
+                <DataGridTextColumn x:Name="DgHeader_PT" Header="Type"          Binding="{Binding Type}"/>
+                <DataGridTextColumn x:Name="DgHeader_PS" Header="SubType"       Binding="{Binding SubType}"/>
             </DataGrid.Columns>
         </DataGrid>
 
