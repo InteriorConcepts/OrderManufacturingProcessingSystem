@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
-using MyApp.DataAccess.Generated;
 using OMPS.Components;
 using OMPS.DBModels;
 using OMPS.DBModels.Order;
@@ -33,7 +32,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 using static OMPS.Ext;
 using SCH = SQL_And_Config_Handler;
 
@@ -54,12 +52,38 @@ namespace OMPS.Pages
             this.JobNbrChanged += this.EngOrder_JobNbrChanged;
             this.PropertyChanged += this.EngOrder_PropertyChanged;
 
+            this.EngOrder_LoookupButtons = [.. this.SPnl_LookupButtons.Children.OfType<Button>().Concat(this.SPnl_LookupButtonsExtra.Children.OfType<Button>())];
+            this.EngOrder_LookupInputs = [.. this.SPnl_LookupInputs.Children.OfType<TextBox>().Concat(this.SPnl_LookupInputsExtra.Children.OfType<TextBox>())];
 
             foreach (Control cntrl in SPnl_LookupInputs.Children)
             {
                 DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(TextBox.TagProperty, typeof(TextBox));
                 dpd.AddValueChanged(cntrl as TextBox, LabelInputLookupPair_TagChanged);
             }
+
+            Ext.EngOrder_Filters?.PropertyChanged += ((object? sender, PropertyChangedEventArgs e) =>
+            {
+                if (e.PropertyName is not "filters") return;
+                this.WPnl_SavedFilters.Children.Clear();
+                foreach (var filter in Ext.EngOrder_Filters.filters ?? [])
+                {
+                    var btn = new Button()
+                    {
+                        Style = FindResource("MaterialDesignPaperButton") as Style,
+                        Tag = filter.value,
+                        Content = filter.name,
+                        Padding = new(4, 1, 4, 1),
+                        Margin = new(0, 0, 3, 1),
+                    };
+                    btn.SetBinding(
+                        Button.FontSizeProperty,
+                        new Binding("MainViewModel.FontSize_H5") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }
+                    );
+                    btn.Click += this.Btn_SavedFilters_Click;
+                    this.WPnl_SavedFilters.Children.Add(btn);
+                }
+            });
+            Ext.EngOrder_Filters?.filters = Ext.EngOrder_Filters.filters;
         }
 
         private void ColorSetInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -479,11 +503,32 @@ namespace OMPS.Pages
 
         public void DoMfgItemsFilter()
         {
-            var filterText = this.Txt_Filter.Text.ToLower().Trim();
-            Ext.MfgItem_FilterGroups = filterText.Split(' ');
+            var filterText = new TextRange(this.Txt_Filter.Document.ContentStart, this.Txt_Filter.Document.ContentEnd).Text.ToLower().Trim();
+            Ext.MfgItem_FilterGroups = [.. filterText.Split("||").Select(s => s.Trim())];
             Ext.MfgItem_GroupFilters = [.. Ext.MfgItem_FilterGroups.Select(g => g.Split('+', StringSplitOptions.RemoveEmptyEntries))];
             var viewSource = (CollectionViewSource)Resources["MfgItemsViewSource"];
             viewSource?.View?.Refresh();
+        }
+
+        private void RevertItemLineInput(Label inputLabel)
+        {
+            byte i = (byte)this.WPnl_EditLabels.Children.IndexOf(inputLabel);
+            Control? inputControl = this.WPnl_EditInputs.Children[i] as Control;
+            if (inputControl is null) return;
+            var dpinfo = Ext.DpValueFromInputType(inputControl);
+            if (dpinfo is null || !dpinfo.HasValue) return;
+            if (this.datagrid_main.SelectedItem is not object obj ||
+                inputControl.GetBindingExpression(dpinfo.Value.dp) is not BindingExpression be ||
+                be.ParentBinding.Path is not PropertyPath pp ||
+                obj.GetType().GetProperty(pp.Path) is not PropertyInfo pi)
+            {
+                return;
+            }
+            object? value = pi.GetValue(obj);
+            this.CurrentItem?.GetType().GetProperty(pi.Name)?.SetValue(this.CurrentItem, value);
+            be?.UpdateTarget();
+            this.Pending_LineChanges.Remove(pi.Name);
+            inputLabel.Tag = null;
         }
         #endregion
 
@@ -586,19 +631,53 @@ namespace OMPS.Pages
         private void Txt_Filter_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key is not Key.Enter) return;
+            e.Handled = true;
+            
             this.DoMfgItemsFilter();
+        }
+
+        // Doesn't highlight correctly, indicies are messed up
+        private void Txt_Filter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Unhook event to prevent recursion during formatting changes
+            Txt_Filter.TextChanged -= Txt_Filter_TextChanged;
+
+            // Get the current text
+            TextRange textRange = new TextRange(Txt_Filter.Document.ContentStart, Txt_Filter.Document.ContentEnd);
+            string fullText = textRange.Text;
+
+            // Clear previous formatting
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
+
+            // Example: Highlight the keyword "public"
+            Regex publicRegex = new Regex(@"\+|\=");
+            foreach (Match match in publicRegex.Matches(fullText))
+            {
+                // Create a new TextRange for the matched text
+                TextPointer start = Txt_Filter.Document.ContentStart.GetPositionAtOffset(match.Index);
+                TextPointer end = Txt_Filter.Document.ContentStart.GetPositionAtOffset(match.Index + match.Length);
+                Debug.WriteLine(match.Index + " " + (match.Index + match.Length));
+                TextRange wordRange = new TextRange(start, end);
+
+                Debug.WriteLine(wordRange.Text);
+                // Apply color
+                wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.DodgerBlue);
+            }
+
+            // Re-hook event
+            Txt_Filter.TextChanged += Txt_Filter_TextChanged;
         }
 
         private void MfgItemsViewSource_Filter(object sender, FilterEventArgs e)
         {
             // Assuming 'MyDataItem' is the type of objects in collection
-            if (sender is not DBModels.Order.AIcManuf item)
+            if (e.Item is not DBModels.Order.AIcManuf item)
             {
                 return;
             }
 
             // Get text from TextBox
-            var filterText = this.Txt_Filter.Text.ToLower().Trim();
+            var filterText = new TextRange( this.Txt_Filter.Document.ContentStart, this.Txt_Filter.Document.ContentEnd).Text.ToLower().Trim();
             // If the filter text is empty, accept all items
             if (filterText is null || filterText is "")
             {
@@ -845,12 +924,13 @@ namespace OMPS.Pages
             }
         }
 
-        private async void BtnLookup_Click(object sender, EventArgs e)
+        public IList<Button> EngOrder_LoookupButtons = [];
+        public IList<TextBox> EngOrder_LookupInputs = [];
+        private async void BtnLookup_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button btn) return;
-            var txt = (TextBox)SPnl_LookupInputs.Children[SPnl_LookupButtons.Children.IndexOf(btn)];
+            if (this.EngOrder_LookupInputs[this.EngOrder_LoookupButtons.IndexOf(btn)] is not TextBox txt) return;
             Debug.WriteLine("Try TextBox");
-            if (txt is null) return;
             var (partFilter, descFilter, partConstraint, descConstraint) = btn.Tag.ToString() switch
             {
                 "fab" => (null, null, "%", "Fab%"),
@@ -1278,7 +1358,28 @@ namespace OMPS.Pages
         {
             if (sender is not Button btn) return;
             if (btn.Tag is not string filterStr) return;
-            this.Txt_Filter.Text = filterStr;
+            bool add = false;
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) ||  Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                add = true;
+            }
+            var existingText = new TextRange(this.Txt_Filter.Document.ContentStart, this.Txt_Filter.Document.ContentEnd).Text.Trim();
+            FlowDocument flowDoc = new();
+            this.Txt_Filter.Document.Blocks.Clear();
+            if (add)
+            {
+                flowDoc.Blocks.Add(new Paragraph(new Run(
+                    existingText +
+                    "+" +
+                    filterStr
+                )));
+            } else
+            {
+                flowDoc.Blocks.Add(new Paragraph(new Run(
+                    filterStr
+                )));
+            }
+            this.Txt_Filter.Document = flowDoc;
             this.DoMfgItemsFilter();
         }
 
@@ -1323,26 +1424,66 @@ namespace OMPS.Pages
             this.RevertItemLineInput(lbl);
         }
 
-        private void RevertItemLineInput(Label inputLabel)
+        private void Btn_FilterSave_Click(object sender, RoutedEventArgs e)
         {
-            byte i = (byte)this.WPnl_EditLabels.Children.IndexOf(inputLabel);
-            Control? inputControl = this.WPnl_EditInputs.Children[i] as Control;
-            if (inputControl is null) return;
-            var dpinfo = Ext.DpValueFromInputType(inputControl);
-            if (dpinfo is null || !dpinfo.HasValue) return;
-            if (this.datagrid_main.SelectedItem is not object obj ||
-                inputControl.GetBindingExpression(dpinfo.Value.dp) is not BindingExpression be ||
-                be.ParentBinding.Path is not PropertyPath pp ||
-                obj.GetType().GetProperty(pp.Path) is not PropertyInfo pi)
+            if (Ext.EngOrder_Filters is null) return;
+            if (new TextRange(this.Txt_Filter.Document.ContentStart, this.Txt_Filter.Document.ContentEnd).Text is not string filterContents ||
+                filterContents.Trim() is "") return;
+            string filterName = Microsoft.VisualBasic.Interaction.InputBox(
+                "Name for filter",
+                "Filter Creation Popup",
+                $"Filter {Ext.EngOrder_Filters.filters.Count, 2}"
+            );
+            if (filterName.Trim() is "")
             {
+                Ext.MainWindow.MainToastContainer.CreateToast(
+                    "EngOrder",
+                    $"Filter name cannot be blank",
+                    FeedbackToast.IconTypes.Warn,
+                    2500
+                ).Show();
                 return;
             }
-            object? value = pi.GetValue(obj);
-            this.CurrentItem?.GetType().GetProperty(pi.Name)?.SetValue(this.CurrentItem, value);
-            be?.UpdateTarget();
-            this.Pending_LineChanges.Remove(pi.Name);
-            inputLabel.Tag = null;
+            var existsOverride = true;
+            if (Ext.EngOrder_Filters.filters.FindIndex(o => o.name.Equals(filterName, StringComparison.CurrentCultureIgnoreCase)) is int found && found is not -1)
+            {
+                var res = MessageBox.Show($"Filter with name '{filterName}' already exists, replace it? This action is not reversible.", "Filter Creation Popup", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                existsOverride = (res is MessageBoxResult.Yes);
+            }
+            if (!existsOverride)
+            {
+                Ext.MainWindow.MainToastContainer.CreateToast(
+                    "EngOrder",
+                    $"Filter with name '{filterName}' already exists",
+                    FeedbackToast.IconTypes.Error,
+                    2500
+                ).Show();
+                return;
+            }
+            Ext.FilterSet? filter = null;
+            if (found is not -1)
+            {
+                filter = Ext.EngOrder_Filters.filters[found];
+                filter.name = filterName;
+                filter.value = filterContents;
+            } else
+            {
+                filter = new()
+                {
+                    name = filterName,
+                    value = filterContents
+                };
+                Ext.EngOrder_Filters.filters.Add(filter);
+            }
+            Ext.EngOrder_Filters.filters = Ext.EngOrder_Filters.filters;
+            Ext.Save(Ext.TomlConfigTypes.EngOrder_SavedFilters, Ext.EngOrder_Filters);
+        }
+
+        private void Btn_FilterHelp_Click(object sender, RoutedEventArgs e)
+        {
+
         }
         #endregion
+
     }
 }

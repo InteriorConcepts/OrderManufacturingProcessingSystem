@@ -1,7 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MyApp.DataAccess.Generated;
 using OMPS.ViewModels;
 using OMPS.Windows;
 using System;
@@ -71,7 +70,7 @@ namespace OMPS.Pages
         public List<DBModels.Product.IcMfgBom> _mfgItems = [];
         public IReadOnlyCollection<DBModels.Product.IcMfgBom> MfgItems => this._mfgItems;
 
-        internal static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
         internal static MainWindow ParentWindow { get => Ext.MainWindow; }
         internal static double DataGridFontSize { get => Ext.MainViewModel.FontSize_Base; }
 
@@ -82,9 +81,14 @@ namespace OMPS.Pages
         #region "Methods"
         public async Task LoadAllProductData()
         {
+            isLoaded = true;
+            this.ProgressBar_Show();
+
             await LoadProductInfo();
             await LoadProductBomItems();
             await LoadProductMfgItems();
+
+            this.ProgressBar_Hide();
         }
 
         public async Task LoadProductInfo()
@@ -134,6 +138,18 @@ namespace OMPS.Pages
                 OnPropertyChanged(nameof(MfgItems));
             });
             this.DataGrid_MfgItems.EndInit();
+        }
+
+        public void ProgressBar_Show()
+        {
+            this.progbar.Value = 50;
+            this.progbar.IsEnabled = true;
+            this.progbar.Visibility = Visibility.Visible;
+        }
+        public void ProgressBar_Hide()
+        {
+            this.progbar.IsEnabled = false;
+            this.progbar.Visibility = Visibility.Collapsed;
         }
 
         public void ToggleHeader()

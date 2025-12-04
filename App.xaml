@@ -10,7 +10,8 @@
              StartupUri="Windows/MainWindow.xaml"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             ThemeMode="Dark">
+             ThemeMode="Dark"
+             >
             
              <!---->
     <Application.Resources>
@@ -96,10 +97,15 @@
 
             <Style x:Key="InputLabel" TargetType="Label" BasedOn="{StaticResource MaterialDesignLabel}">
                 <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-                <Setter Property="Padding" Value="0 1 2 1"/>
-                <Setter Property="Margin" Value="0 4"/>
-                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                <Setter Property="Padding" Value="0 1 4 1"/>
+                <Setter Property="Margin" Value="{Binding MainViewModel.HeaderInputMargins, FallbackValue=4}"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Top"/>
                 <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
+            </Style>
+
+            <Style x:Key="InputMultilineLabel" TargetType="Label" BasedOn="{StaticResource InputLabel}">
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
             </Style>
 
             <Style x:Key="InputComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
@@ -117,7 +123,7 @@
 
             <Style x:Key="InputStyle" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
                 <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
-                <Setter Property="Margin" Value="0 4"/>
+                <Setter Property="Margin" Value="{Binding MainViewModel.HeaderInputMargins, FallbackValue=4}"/>
                 <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
                 <Setter Property="materialDesign:TextFieldAssist.OutlinedBorderActiveThickness" Value="0.5"/>
                 <Setter Property="BorderThickness" Value="0.5"/>
@@ -126,6 +132,38 @@
                 <Setter Property="Padding" Value="0 1"/>
                 <Setter Property="TextWrapping" Value="NoWrap"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="MinWidth" Value="70"/>
+                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
+            </Style>
+
+            <Style x:Key="InputMultilineStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
+                <Setter Property="MinLines" Value="2"/>
+                <Setter Property="TextAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Top"/>
+                <Setter Property="AcceptsReturn" Value="True"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style x:Key="InputCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+                <Setter Property="Height" Value="{Binding MainViewModel.FontSize_H2, FallbackValue=18}"/>
+                <Setter Property="Margin" Value="{Binding MainViewModel.HeaderInputMargins, FallbackValue=4}"/>
+                <Setter Property="Padding" Value="0 1"/>
+                <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            </Style>
+
+            <Style x:Key="InputDatePickerStyle" TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignOutlinedDatePicker}">
+                <Setter Property="materialDesign:DatePickerAssist.OutlinedBorderActiveThickness" Value="0.5"/>
+                <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="1"/>
+                <Setter Property="BorderThickness" Value="0.5"/>
+                <Setter Property="Padding" Value="0 1"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Margin" Value="{Binding MainViewModel.HeaderInputMargins, FallbackValue=4}"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
                 <Setter Property="MinWidth" Value="70"/>
                 <Setter Property="FontSize" Value="{Binding MainViewModel.FontSize_H4}"/>
             </Style>

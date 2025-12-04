@@ -1,30 +1,46 @@
-﻿using Humanizer;
-using Microsoft.EntityFrameworkCore;
-using MyApp.DataAccess.Generated;
-using OMPS.DBModels.Order;
-using OMPS.Pages;
-using OMPS.ViewModels;
-using OMPS.Windows;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
-using System.Windows;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+
+using Humanizer;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Xaml.Behaviors.Media;
+
+using OMPS.Components;
+using OMPS.DBModels.Order;
+using OMPS.Pages;
+using OMPS.ViewModels;
+using OMPS.Windows;
+
+using TOML_Helper;
+
+using Tomlyn;
+using Tomlyn.Model;
+using Tomlyn.Syntax;
+
 using static OMPS.Pages.EngOrder;
-using static System.Net.WebRequestMethods;
+using static TOML_Helper.TOML_Handler.Config_Toml;
 
 
 namespace OMPS
@@ -44,9 +60,480 @@ namespace OMPS
     public static class Ext
     {
 
-        public static Color AccentColor = SystemParameters.WindowGlassColor;
+        public static Color AccentColor => System.Windows.SystemParameters.WindowGlassColor;
         public static SolidColorBrush AccentColorBrush => new SolidColorBrush(AccentColor);
         public static SolidColorBrush AccentColorBrush50 => new SolidColorBrush(Color.FromArgb(127, AccentColor.R, AccentColor.G, AccentColor.B));
+
+        #region Toml Config Files
+        #region Toml Utils
+        public enum TomlConfigTypes
+        {
+            EngOrder_SavedFilters
+        }
+
+        internal static Dictionary<TomlConfigTypes, TomlTable> TomlConfigTables = [];
+
+        internal static bool IsFilePathValid(string filePath)
+        {
+            return filePath != null && !(filePath.Trim() == "") && File.Exists(filePath);
+        }
+
+        internal static bool IsFileLocked(string filePath)
+        {
+            FileStream? fileStream = null;
+            FileInfo fileInfo = new FileInfo(filePath);
+            try
+            {
+                fileStream = fileInfo.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                fileStream?.Close();
+            }
+
+            return false;
+        }
+
+        internal static TomlValue<T?> Get<T>(TomlConfigTypes configType) where T: class, new()
+        {
+            return new TomlValue<T?>(TryGet<T>(configType).Value);
+        }
+
+        internal static TomlValue<T?> Get<T>(TomlConfigTypes configType, string fullKeyPath) where T : class, new()
+        {
+            return new TomlValue<T?>(TryGet<T>(configType, fullKeyPath).Value);
+        }
+
+        internal static TomlTryValue<T?> TryGet<T>(TomlConfigTypes configType) where T : class, new()
+        {
+            T? value = ((typeof(T) == typeof(string)) ? null : ((T?)Activator.CreateInstance(typeof(T), Array.Empty<object>())));
+            bool passed = true;
+            int num = 0;
+            try
+            {
+                if (TomlConfigTables.TryGetValue(configType, out TomlTable? obj) is false || obj is null/*!IsConfigTomlLoaded*/)
+                {
+                    throw new Exception("TOMLTable 'TomlTable' has not been loaded yet and is null.", new NullReferenceException());
+                }
+
+                Type typeFromHandle = typeof(T);
+                if (typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    //value = (T)((TomlArray)obj).ToObjList<object>();
+                    //return new TomlTryValue<T?>(passed, value);
+                }
+
+                if (typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    value = (T)((TomlTable)obj).ToDictionary<string>();
+                    return new TomlTryValue<T?>(passed, value);
+                }
+
+                //value = (T?)obj;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                passed = false;
+                value = null;
+            }
+
+            return new TomlTryValue<T?>(passed, value);
+        }
+
+        internal static TomlTryValue<T?> TryGet<T>(TomlConfigTypes configType, string fullKeyPath) where T : class, new()
+        {
+            object? obj = null;
+            T? value = ((typeof(T) == typeof(string)) ? null : ((T?)Activator.CreateInstance(typeof(T), Array.Empty<object>())));
+            bool passed = true;
+            int num = 0;
+            try
+            {
+                if (TomlConfigTables.TryGetValue(configType, out TomlTable? TomlTable) is false || TomlTable is null/*!IsConfigTomlLoaded*/)
+                {
+                    throw new Exception("TOMLTable 'TomlTable' has not been loaded yet and is null.", new NullReferenceException());
+                }
+
+                string[] array = fullKeyPath.Split('.');
+                string[] array2 = array;
+                foreach (string key in array2)
+                {
+                    if (obj == null)
+                    {
+                        if (TomlTable.ContainsKey(key))
+                        {
+                            obj = (TomlTable)TomlTable[key];
+                        } else
+                        {
+                            continue;
+                        }
+                    }
+                    else if (obj is TomlTable tomlTable && tomlTable.ContainsKey(key))
+                    {
+                        obj = tomlTable[key];
+                    }
+
+                    if (num++ == array.Length - 1)
+                    {
+                        Type typeFromHandle = typeof(T);
+                        if (typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(List<>) && obj is TomlArray tomlArr)
+                        {
+                            value = (T)(tomlArr).ToObjList<object>();
+                            break;
+                        }
+
+                        if (typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(List<>) && obj is TomlTableArray tomlTblArr)
+                        {
+                            var res = ParseTomlTablArrayAs<T>(tomlTblArr);
+                            if (res is null || !res.Passed)
+                            {
+                                throw new Exception($"TomlTableArray could not be parsed as Type 'T' ({typeFromHandle.FullName})");
+                            }
+                            value = res.Value;
+                            break;
+                        }
+
+                        if (typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(Dictionary<,>) && obj is TomlTable tomlTbl)
+                        {
+                            value = (T)(tomlTbl).ToDictionary<string>();
+                            break;
+                        }
+
+                        value = (T)obj;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                passed = false;
+                value = null;
+            }
+
+            return new TomlTryValue<T?>(passed, value);
+        }
+
+        internal static TomlTryValue<T?> ParseAs<T>(TomlConfigTypes configType) where T : class, new()
+        {
+            T? res = null;
+            bool passed = false;
+            try
+            {
+                if (TomlConfigTables.TryGetValue(configType, out TomlTable? TomlTable) is false || TomlTable is null/*!IsConfigTomlLoaded*/)
+                {
+                    throw new Exception("TOMLTable 'TomlTable' has not been loaded yet and is null.", new NullReferenceException());
+                }
+                if (Ext.ParseTomlTableAs<T>(TomlTable) is not TomlTryValue<T?> parseRes || parseRes.Passed is false || parseRes.Value is null)
+                {
+                    throw new Exception("");
+                }
+                res = parseRes.Value;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+            return new TomlTryValue<T?>(passed, res);
+        }
+
+        public static TomlTryValue<T?> ParseTomlTablArrayAs<T>(TomlTableArray tomlTblArr) where T : class, new()
+        {
+            T? value = ((typeof(T) == typeof(string)) ? null : ((T?)Activator.CreateInstance(typeof(T), Array.Empty<object>())));
+            bool passed = true;
+            try
+            {
+
+                if (tomlTblArr is null)
+                {
+                    return new TomlTryValue<T?>(false, null);
+                }
+                Type typeFromHandle = typeof(T);
+                if (typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    Type innerType = typeFromHandle.GetGenericArguments()[0];
+                    T? items = ((T?)Activator.CreateInstance(typeof(T), Array.Empty<object>()));
+                    MethodInfo? mi = typeof(Ext).GetMethod(nameof(ParseTomlTableAs));
+                    MethodInfo? gmi = mi?.MakeGenericMethod(innerType);
+                    if (gmi is null)
+                    {
+                        return new TomlTryValue<T?>(false, null);
+                    }
+                    foreach (TomlTable tblInArr in tomlTblArr.ToArray())
+                    {
+                        var invokeRes = gmi.Invoke(null, [tblInArr]);
+                        if (invokeRes is null ||
+                            invokeRes.GetType().GetProperty("Passed")?.GetValue(invokeRes, null) is not bool invokePass || invokePass is false ||
+                            invokeRes.GetType().GetProperty("Value")?.GetValue(invokeRes, null) is not object invokeVal || invokeVal is null
+                            )
+                        {
+                            continue;
+                        }
+                        if (items is IList lst)
+                        {
+                            lst.Add(invokeVal);
+                        }
+                    }
+                    value = items;
+                } else
+                {
+                    passed = false;
+                }
+                return new TomlTryValue<T?>(passed, value);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return new TomlTryValue<T?>(false, null);
+            }
+        }
+
+        public static TomlTryValue<T?> ParseTomlTableAs<T>(TomlTable tomlTable) where T : class, new()
+        {
+            T? res = default(T);
+            bool passed = false;
+            try
+            {
+                if (Toml.Parse(Toml.FromModel(tomlTable)) is not DocumentSyntax ds)
+                {
+                    throw new Exception("TOMLTable 'TomlTable' did not have its string representation successfully parsed.");
+                }
+                res = ds.ToModel<T>(new TomlModelOptions() { IgnoreMissingProperties = true, IncludeFields = true });
+                passed = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+            return new TomlTryValue<T?>(passed, res);
+        }
+
+        internal static TomlValue<T?> Set<T>(TomlConfigTypes configType, string fullKeyPath, T? value, bool saveToFileAfter = false) where T : class, new()
+        {
+            string[] array = fullKeyPath.Split('.');
+            int num = 0;
+            object? obj = null;
+            string[] array2 = array;
+            if (TomlConfigTables.TryGetValue(configType, out TomlTable? TomlTable) is false || TomlTable is null/*!IsConfigTomlLoaded*/)
+            {
+                throw new Exception("TOMLTable 'TomlTable' has not been loaded yet and is null.", new NullReferenceException());
+            }
+            foreach (string text in array2)
+            {
+                Console.WriteLine(text);
+                if (num == array.Length - 1)
+                {
+                    break;
+                }
+
+                if (obj == null)
+                {
+                    if (!TomlTable.ContainsKey(text))
+                    {
+                        TomlTable.Add(text, Toml.ToModel(Toml.FromModel(new Dictionary<string, object>())));
+                    }
+
+                    obj = TomlTable[text];
+                }
+                else
+                {
+                    if (!((TomlTable)obj).ContainsKey(text))
+                    {
+                        ((TomlTable)obj).Add(text, Toml.ToModel(Toml.FromModel(new Dictionary<string, object>())));
+                    }
+
+                    if (obj is TomlTable tomlTable)
+                    {
+                        obj = tomlTable[text];
+                    }
+                }
+
+                Console.WriteLine(text);
+                num++;
+            }
+
+            Type typeFromHandle = typeof(T);
+            if ((object)typeFromHandle != null && typeFromHandle.IsGenericType && typeFromHandle.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                if (obj is not null)
+                {
+                    ((TomlTable)obj)[array.Last()] = Toml.ToModel(Toml.FromModel(value));
+                    return Get<T>(configType, fullKeyPath);
+                }
+            }
+
+            if (obj is not null)
+            {
+                ((TomlTable)obj)[array.Last()] = value;
+            }
+            if (value is string)
+            {
+                return new TomlValue<T?>(value);
+            }
+
+            /*
+            if (saveToFileAfter)
+            {
+                Save();
+            }
+            */
+
+            return Get<T>(configType, fullKeyPath);
+        }
+
+        internal static void Clear(TomlConfigTypes configType, string fullKeyPath)
+        {
+            Set(configType, fullKeyPath, new Dictionary<string, string>());
+        }
+
+        internal static void Remove(TomlConfigTypes configType, string fullKeyPath, int levels = -1)
+        {
+            string text = fullKeyPath;
+            if (TomlConfigTables.TryGetValue(configType, out TomlTable? TomlTable) is false || TomlTable is null/*!IsConfigTomlLoaded*/)
+            {
+                throw new Exception("TOMLTable 'TomlTable' has not been loaded yet and is null.", new NullReferenceException());
+            }
+            if (!text.Contains('.'))
+            {
+                TomlTable.Remove(text);
+            }
+            else if (levels >= 1)
+            {
+                for (int i = 0; i < levels; i++)
+                {
+                    Set<object>(configType, text, null);
+                    text = text.Substring(0, text.LastIndexOf('.'));
+                }
+            }
+        }
+
+        public static (bool, TomlTable?) LoadTomlFromFile(string filePath)
+        {
+            if (!IsFilePathValid(filePath))
+            {
+                return (false, null);
+            }
+
+            if (IsFileLocked(filePath))
+            {
+                Console.WriteLine("File is locked or in-use by another process");
+                return (false, null);
+            }
+
+            string text = File.ReadAllText(filePath);
+            Toml.TryToModel<object>(text, out object? model, out DiagnosticsBag? _);
+            if (model == null)
+            {
+                return (false, null);
+            }
+
+            TomlTable item = Toml.ToModel(text);
+            return (true, item);
+        }
+
+        public static (bool, string?) TomlConfigToPath(TomlConfigTypes configType)
+        {
+            var filePath = Path.GetFullPath($".\\{Enum.GetName<TomlConfigTypes>(configType)}.toml");
+            if (!Ext.IsFilePathValid(filePath))
+            {
+                return (false, null);
+            }
+            return (true, filePath);
+        }
+
+        public static bool Save(TomlConfigTypes configType)
+        {
+            return Save(configType, TomlConfigTables[configType]);
+        }
+
+        public static bool Save(TomlConfigTypes configType, object obj)
+        {
+            string? path = TomlConfigToPath(configType).Item2;
+            if (path is null) return false;
+            string realPath = SymLinkPaths.GetRealPath(path);
+            if (!IsFilePathValid(realPath))
+            {
+                return false;
+            }
+
+            string text = Toml.FromModel(obj);
+            string[] value = text.Split(new string[3]
+            {
+                Environment.NewLine,
+                "\r",
+                "\n"
+            }, StringSplitOptions.RemoveEmptyEntries);
+            string text2 = string.Join(Environment.NewLine, value);
+            Console.WriteLine(text2);
+            Console.WriteLine(Regex.Matches(text2.Trim(), "\\[([^\\]])\\]").Count);
+            text2 = text2.Replace(Environment.NewLine + "[", Environment.NewLine + Environment.NewLine + "[");
+            File.WriteAllText(realPath, text2.Trim());
+            return true;
+        }
+        #endregion
+
+        public class FilterSet
+        {
+            public string name { get; set; }
+            public string value { get; set; }
+        }
+
+        public class EngOrder_FiltersConfig: INotifyPropertyChanged
+        {
+            public EngOrder_FiltersConfig()
+            {
+
+            }
+            public List<FilterSet> filters {
+                get => field;
+                set
+                {
+                    field = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+
+            protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+
+            private void This_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName is not string propName) return;
+                OnPropertyChanged(propName);
+            }
+        }
+
+        public static EngOrder_FiltersConfig? EngOrder_Filters { get; set; } = null;
+        public static void LoadAllTomlConfigs()
+        {
+            foreach (var config in Enum.GetValues<TomlConfigTypes>())
+            {
+                var pathRes = Ext.TomlConfigToPath(config);
+                if (pathRes.Item1 is false || pathRes.Item2 is not string path) continue;
+                var (flag, tomlTable) = LoadTomlFromFile(path);
+                if (flag is false || tomlTable is null) continue;
+                TomlConfigTables[config] = tomlTable;
+            }
+            if ((Ext.EngOrder_Filters = Ext.ParseAs<EngOrder_FiltersConfig>(TomlConfigTypes.EngOrder_SavedFilters)) == null || Ext.EngOrder_Filters.filters is null)
+            {
+                Ext.MainWindow.MainToastContainer.CreateToast("Application", $"Config '{nameof(Ext.EngOrder_Filters)}' failed to load", FeedbackToast.IconTypes.Error).Show();
+                Ext.EngOrder_Filters = default;
+            }
+        }
+
+        #endregion
 
         #region "App.config"
         public enum AppConfigKey
@@ -71,12 +558,12 @@ namespace OMPS
                 NameValueCollection? appSettings = ConfigurationManager.AppSettings;
                 if (appSettings is null)
                 {
-                    MessageBox.Show("AppSettings not loaded correctly.");
+                    System.Windows.MessageBox.Show("AppSettings not loaded correctly.");
                     return;
                 }
                 if (appSettings.Count is 0)
                 {
-                    MessageBox.Show("AppSettings is empty.");
+                    System.Windows.MessageBox.Show("AppSettings is empty.");
                     return;
                 }
 #if false
@@ -93,7 +580,7 @@ namespace OMPS
             }
             catch (ConfigurationErrorsException)
             {
-                MessageBox.Show("Error reading AppSettings");
+                System.Windows.MessageBox.Show("Error reading AppSettings");
             }
         }
 
@@ -235,7 +722,7 @@ namespace OMPS
             }
             catch (ConfigurationErrorsException)
             {
-                MessageBox.Show("Error writing AppSettings");
+                System.Windows.MessageBox.Show("Error writing AppSettings");
             }
         }
         #endregion
@@ -354,8 +841,6 @@ namespace OMPS
 #pragma warning restore WPF0001
         */
 
-        internal static readonly example_queriesQueries Queries = new();
-
 
         #region "Job Format"
         internal static bool IsJobNumValid(string job)
@@ -377,25 +862,25 @@ namespace OMPS
 
         #region "Storyboard / Animations"
 
-        internal static T SetTarget<T>(this T anim, DependencyProperty prop, DependencyObject obj) where T : AnimationTimeline
+        internal static T SetTarget<T>(this T anim, System.Windows.DependencyProperty prop, System.Windows.DependencyObject obj) where T : AnimationTimeline
         {
-            return Ext.SetTarget(anim, new PropertyPath(prop), obj);
+            return Ext.SetTarget(anim, new System.Windows.PropertyPath(prop), obj);
         }
 
-        internal static T SetTarget<T>(this T anim, PropertyPath path, DependencyObject obj) where T : AnimationTimeline
+        internal static T SetTarget<T>(this T anim, System.Windows.PropertyPath path, System.Windows.DependencyObject obj) where T : AnimationTimeline
         {
             _ = Ext.SetTargetObject(anim, obj);
             _ = Ext.SetTargetProperty(anim, path);
             return anim;
         }
 
-        internal static T SetTargetObject<T>(this T anim, DependencyObject obj) where T : AnimationTimeline
+        internal static T SetTargetObject<T>(this T anim, System.Windows.DependencyObject obj) where T : AnimationTimeline
         {
             Storyboard.SetTarget(anim, obj);
             return anim;
         }
 
-        internal static T SetTargetProperty<T>(this T anim, PropertyPath path) where T : AnimationTimeline
+        internal static T SetTargetProperty<T>(this T anim, System.Windows.PropertyPath path) where T : AnimationTimeline
         {
             Storyboard.SetTargetProperty(anim, path);
             return anim;
@@ -417,9 +902,9 @@ namespace OMPS
             };
         }
 
-        internal static MessageBoxResult PopupConfirmation(string text, string caption, MessageBoxButton btns, MessageBoxImage img)
+        internal static System.Windows.MessageBoxResult PopupConfirmation(string text, string caption, System.Windows.MessageBoxButton btns, System.Windows.MessageBoxImage img)
         {
-            return MessageBox.Show(text, caption, btns, img);
+            return System.Windows.MessageBox.Show(text, caption, btns, img);
         }
 
         internal static DataTable ConvertListToDataTable<T>(List<T> items)
@@ -460,6 +945,37 @@ namespace OMPS
 
         #region Filters
 
+        public static class FastPropertyAccessor
+        {
+            private static readonly Dictionary<string, Func<object, object>> _cache =
+                new Dictionary<string, Func<object, object>>();
+            private static readonly object _lock = new object();
+
+            public static Func<object, object> GetAccessor(Type type, string propertyName)
+            {
+                string key = $"{type.FullName}.{propertyName}";
+
+                lock (_lock) // Ensure thread safety for the cache
+                {
+                    if (!_cache.TryGetValue(key, out Func<object, object>? accessor))
+                    {
+                        var objParameter = Expression.Parameter(typeof(object), "obj");
+                        var typedObj = Expression.Convert(objParameter, type);
+                        var property = Expression.Property(typedObj, propertyName);
+                        var propertyAsObject = Expression.Convert(property, typeof(object));
+
+                        accessor = Expression.Lambda<Func<object, object>>(propertyAsObject, objParameter).Compile();
+                        _cache[key] = accessor;
+                    }
+                    return accessor;
+                }
+            }
+
+            // Usage example:
+            // var accessor = FastPropertyAccessor.GetAccessor(typeof(Person), "FirstName");
+            // string firstName = (string)accessor(personInstance);
+        }
+
         public static readonly ImmutableList<string> DataGrid_Manuf_ColumnsExcludedHidden = ImmutableList.Create([
                 "ManufId", "ColorSetId", "ProductId",
                 "ProductLinkId", "ItemId", "JobNbr", "QuoteNbr", "CustOrderNbr",
@@ -488,12 +1004,26 @@ namespace OMPS
                                          !DataGrid_Manuf_ColumnsExcludedHidden.Contains(p.Name.ToLower())
                     )
             ];
+        public static readonly ImmutableList<string> MfgItem_FilterPropNames = [..
+                MfgItem_FilterProps.Select(o => o.Name.ToLower())
+            ];
+        public static readonly ImmutableList<Func<object, object>> MfgItem_FilterPropAccessors = [..
+                MfgItem_FilterProps.Select(p => FastPropertyAccessor.GetAccessor(typeof(DBModels.Order.AIcManuf), p.Name))
+            ];
+
+        public static readonly ImmutableList<string> MfgItem_FilterComparisonOperations = [
+            "=", "!=", "^=", "!^=", "$=", "!$=", "~=", "!~="
+        ];
+        public static readonly ImmutableList<char> MfgItem_OperatorsChars = [
+            '!', '^', '$', '~', '='
+        ];
         public static string[] MfgItem_FilterGroups = [];
         public static string[][] MfgItem_GroupFilters = [];
         public static bool MfgItems_Filter_Desc(DBModels.Order.AIcManuf item, string filterText)
         {
             return ((item.Description ?? "").Contains(filterText, StringComparison.CurrentCultureIgnoreCase));
         }
+
         public static bool MfgItems_Filter(DBModels.Order.AIcManuf item, string filterText)
         {
             byte i = 0;
@@ -508,26 +1038,71 @@ namespace OMPS
                     if (filter.Contains('='))
                     {
                         //Debug.WriteLine("PropName");
-                        var split = filter.Split('=');
-                        string pName = split[0],
-                                pValue = split[1];
-                        //Debug.WriteLine(pName);
-                        if (item.GetType().GetProperty(pName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase) is not PropertyInfo pInfo) continue;
-                        //Debug.WriteLine("has prop");
-                        if (pInfo.GetValue(item) is not object obj || obj.ToString() is not string value) continue;
-                        //Debug.WriteLine("has prop val");
-                        if (!value.Contains(pValue, StringComparison.CurrentCultureIgnoreCase)) continue;
-                        //Debug.WriteLine("has val");
+                        // Start of op characters
+                        var opIndex = filter.IndexOfAny([.. Ext.MfgItem_OperatorsChars]);
+                        // Index of last op charcater '='
+                        var eqIndex = filter.IndexOf('=');
+                        //
+                        string pName = filter[..opIndex],
+                               compValue = filter[(eqIndex + 1)..];
+
+                        // Use double quotes to use any trailing spaces with the filter instead of trimming it off
+                        if (compValue.StartsWith("\"") && compValue.EndsWith("\""))
+                        {
+                            compValue = compValue[1..^1];
+                        }
+                        //Debug.WriteLine("'" + compValue + "'");
+                        // String value comparison operation code
+                        string op = filter[opIndex..(eqIndex + 1)];
+
+                        // Property
+                        if (Ext.MfgItem_FilterPropNames.IndexOf(pName) is int propIndex &&
+                            (propIndex is -1 || Ext.MfgItem_FilterPropAccessors[propIndex] is not Func<object, object> accessor)) continue;
+                        
+                        string pValue = (accessor(item)?.ToString() ?? "");
+
+                        switch (op)
+                        {
+                            case "=":
+                                if (pValue.Equals(compValue, StringComparison.CurrentCultureIgnoreCase) is true) break;
+                                continue;
+                            case "!=":
+                                if (pValue.Equals(compValue, StringComparison.CurrentCultureIgnoreCase) is false) break;
+                                continue;
+                            case "~=":
+                                if (pValue.Contains(compValue, StringComparison.CurrentCultureIgnoreCase) is true) break;
+                                continue;
+                            case "!~=":
+                                if (pValue.Contains(compValue, StringComparison.CurrentCultureIgnoreCase) is false) break;
+                                continue;
+                            case "^=":
+                                if (pValue.StartsWith(compValue, StringComparison.CurrentCultureIgnoreCase) is true) break;
+                                continue;
+                            case "!^=":
+                                if (pValue.StartsWith(compValue, StringComparison.CurrentCultureIgnoreCase) is false) break;
+                                continue;
+                            case "$=":
+                                if (pValue.EndsWith(compValue, StringComparison.CurrentCultureIgnoreCase) is true) break;
+                                continue;
+                            case "!$=":
+                                if (pValue.EndsWith(compValue, StringComparison.CurrentCultureIgnoreCase) is false) break;
+                                continue;
+                            default:
+                                System.Windows.MessageBox.Show($"Unknown filter comparison operation '{op}'");
+                                continue;
+                        }
+
                         groupReqd.Remove(filter);
                         if (groupReqd.Count is not 0) continue;
                         return true;
                     }
                     else
                     {
-                        for (byte l = 0; l < MfgItem_FilterProps.Count; l++)
+                        for (byte l = 0; l < MfgItem_FilterPropAccessors.Count; l++)
                         {
-                            var property = MfgItem_FilterProps[l];
-                            if (property.GetValue(item) is not object obj || obj.ToString() is not string value) continue;
+                            var accessor = MfgItem_FilterPropAccessors[l];
+                            if (accessor(item) is not object obj) continue;
+                            string value = (obj?.ToString() ?? "");
                             //Debug.WriteLine(filter + " == " + value);
                             if (!value.Contains(filter, StringComparison.CurrentCultureIgnoreCase)) continue;
                             groupReqd.Remove(filter);
@@ -675,7 +1250,7 @@ namespace OMPS
             return Nullable.GetUnderlyingType(TypeToTest) != null;
         }
 
-        public static (DependencyProperty dp, object value)? DpValueFromInputType<T>(T value) where T : Control
+        public static (System.Windows.DependencyProperty dp, object value)? DpValueFromInputType<T>(T value) where T : Control
         {
             if (value is TextBox txt)
             {
@@ -791,15 +1366,15 @@ namespace OMPS
             return cell;
         }
 
-        internal static Point GetColumnPositionSimple(DataGrid grid, int columnIndex)
+        internal static System.Windows.Point GetColumnPositionSimple(DataGrid grid, int columnIndex)
         {
             var header = FindVisualChild<DataGridColumnHeadersPresenter>(grid)
                 ?.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridColumnHeader;
 
-            return header?.TransformToAncestor(grid).Transform(new Point(0, 0)) ?? new Point(0, 0);
+            return header?.TransformToAncestor(grid).Transform(new System.Windows.Point(0, 0)) ?? new System.Windows.Point(0, 0);
         }
 
-        internal static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        internal static T? FindVisualChild<T>(System.Windows.DependencyObject parent) where T : System.Windows.DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {

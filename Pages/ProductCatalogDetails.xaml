@@ -13,7 +13,8 @@
              DataContext="{Binding ElementName=Page_ProductCatalogDetails}"
              mc:Ignorable="d" UseLayoutRounding="False"
              d:DesignHeight="1000" d:DesignWidth="1025"
-             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}">
+             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+             >
     <UserControl.Resources>
         <CollectionViewSource x:Key="ProdBomViewSource" x:Name="ProdBomViewSource" Source="{Binding ProdBoms}" Filter="ProdBomsViewSource_Filter"/>
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItems}" Filter="MfgItemsViewSource_Filter"/>
@@ -88,12 +89,12 @@
                                 <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DockPanel}}}"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding ElementName=grid_dataGrids, Path=Visibility}" Value="Visible">
-                                <Setter Property="Height" Value="280"/>
+                                <Setter Property="Height" Value="250"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-                <TabControl x:Name="header_tabcontrol" Background="#292929" TabStripPlacement="Right" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
+                <TabControl x:Name="header_tabcontrol" Background="#292929" Padding="2" TabStripPlacement="Right" Style="{StaticResource MaterialDesignNavigationRailTabControl}">
 
                     <TabItem Height="40">
                         <TabItem.Header>
@@ -104,219 +105,164 @@
                     -->
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-                                <!--Column 1 : General Info-->
-                                <WrapPanel MinWidth="76" HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Stretch" Margin="0">
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
+                            <WrapPanel Grid.Row="0" MinWidth="76" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0">
+                                <StackPanel Orientation="Horizontal" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Width="136" Content="Product Code:"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Width="484" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Width="136" Content="Description:"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Width="484" Text="{Binding Path=ProductInfo.Description, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <Separator/>
+                            </WrapPanel>
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <WrapPanel MinWidth="76" HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0">
+                                    <WrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                        <Label Content="Basic" FontSize="{Binding MainViewModel.FontSize_H3}" FontWeight="DemiBold"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Status:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.Status, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Type:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.Type, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Sub Type:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.SubType, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
 
-                                </WrapPanel>
-                                <WrapPanel MinWidth="76" HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Stretch" Margin="0">
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="2">
-                                        <Label Style="{StaticResource InputLabel}" Content="Product Info:"/>
-                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ProductInfo.ProductCode, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
+                                    <WrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                        <Label Content="Physical Specs" FontSize="{Binding MainViewModel.FontSize_H3}" FontWeight="DemiBold"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Depth:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.Depth, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Width:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.Width, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Height:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.Height, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Weight:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.Weight, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
 
+                                    <WrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                        <Label Content="Misc" FontSize="{Binding MainViewModel.FontSize_H3}" FontWeight="DemiBold"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="ColorBy:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.ColorBy, FallbackValue='NA',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <CheckBox Content="Explode" Width="114" IsChecked="{Binding Path=ProductInfo.Explode}"/>
+                                            <CheckBox Content="PreList" Width="114" IsChecked="{Binding Path=ProductInfo.PreList}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="UNSPSC Code:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.UnspscCode, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <CheckBox Content="Systems Furn" IsChecked="{Binding Path=ProductInfo.SystemsFurn}" Width="248"/>
+                                    </WrapPanel>
+
+                                    <WrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                        <Label Content="Pricing" FontSize="{Binding MainViewModel.FontSize_H3}" FontWeight="DemiBold"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="List Price:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.CurrentList, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Std Net Price:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.StdNetPrice, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Current Cost:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.CurrentUcost, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
+
+                                    <WrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                        <Label Content="Grades" FontSize="{Binding MainViewModel.FontSize_H3}" FontWeight="DemiBold"/>
+                                        <StackPanel Orientation="Horizontal" Margin="2 0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Std Price Grade:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="196" Text="{Binding Path=ProductInfo.StdPriceGrade, FallbackValue=1,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Acrylic Grade:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.AcrGrd, FallbackValue=0.0,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Fabric Grade:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.FabGrd, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0">
+                                            <Label Style="{StaticResource InputLabel}" Width="136" Content="Laminate Grade:"/>
+                                            <TextBox Style="{StaticResource InputStyle}" Width="112" Text="{Binding Path=ProductInfo.LamGrd, FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </WrapPanel>
                                 </WrapPanel>
-                            </StackPanel>
+                            </ScrollViewer>
                         </Grid>
                     </TabItem>
                     <TabItem Height="40" Width="100">
                         <TabItem.Header>
                             <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Categories"/>
                         </TabItem.Header>
-                        <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-                                <!--Column 1 : Extra Materials-->
-                                <!--
-                                <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                    <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Acrylic2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
-                                    <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
-                                    <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric3ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
-                                    <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.WksLam2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
-                                    <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.LamPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
-                                    <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.MelPnl2ID, Mode=TwoWay}" LookupButtonPressed="LabelInputLookupPair_LookupInputChanged"/>
-                                    <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
-                                    <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
-                                    <Components:LabelComboPair LabelText="UnderWsPnl" LabelWidth="80" InputText="{Binding ColorSetInfo.UnderWsPnlType, Mode=TwoWay}"/>
-                                </StackPanel>
-                                -->
-                                <!--Column 2 : Misc Toggles-->
-                                <!--<StackPanel Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                    <Components:LabelCheckPair LabelText="Preengined" InputText="{Binding ColorSetInfo.Preengined, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="Engined" InputText="{Binding ColorSetInfo.Engined, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="KeyAlike" InputText="{Binding ColorSetInfo.KeyAlike, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="KeyEaStaAlike" InputText="{Binding ColorSetInfo.KeyEaStaAlike, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="MasterKey" InputText="{Binding ColorSetInfo.MasterKey, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="EarlyElectrical" InputText="{Binding ColorSetInfo.EarlyElectrical, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="XQ" InputText="{Binding ColorSetInfo.XQ, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="UpdateRecord" InputText="{Binding ColorSetInfo.UpdateRecord, Mode=TwoWay}"/>
-                                    <Components:LabelCheckPair LabelText="InstallByIC" InputText="{Binding ColorSetInfo.InstallByIC, Mode=TwoWay}"/>
-                                </StackPanel>-->
-                                <!--Column 3 : Misc Colors-->
-                                <!--<StackPanel Width="116" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                    <Components:LabelComboPair LabelText="PmoldFin" LabelWidth="62" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.PmoldFin, Mode=TwoWay}"/>
-                                    <Components:LabelComboPair LabelText="AccFin" LabelWidth="62" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.AccFin, Mode=TwoWay}"/>
-                                </StackPanel>-->
+                                <WrapPanel MinWidth="76" HorizontalAlignment="Left" Orientation="Vertical" Margin="0">
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 01:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category01, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 02:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category02, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 03:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category03, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 04:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category04, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 05:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category05, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 06:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category06, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 07:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category07, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 08:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category08, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Width="112" Content="Category 09:"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Width="286" Text="{Binding Path=ProductInfo.Category09, FallbackValue='',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </WrapPanel>
+                                <WrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                    <CheckBox Content="Furn Catalog" IsChecked="{Binding Path=ProductInfo.FurnCatalog}"/>
+                                </WrapPanel>
                             </StackPanel>
                         </Grid>
                     </TabItem>
@@ -324,7 +270,7 @@
                         <TabItem.Header>
                             <TextBlock Width="Auto" FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pricing+"/>
                         </TabItem.Header>
-                        <Grid Height="270" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="240"/>
                                 <ColumnDefinition Width="320"/>
@@ -367,124 +313,127 @@
                     </TabItem>
                 </TabControl>
             </Grid>
-            <Grid x:Name="grid_dataGrids">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="24"/>
-                </Grid.RowDefinitions>
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=grid_header, Path=Visibility}" Value="Collapsed">
-                                <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DockPanel}}}"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-                <DataGrid x:Name="DataGrid_ProdBoms" Grid.Row="0"
-                          ItemsSource="{Binding Source={StaticResource ProdBomViewSource}}"
-                          IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
-                          FontSize="{Binding MainViewModel.FontSize_H4}"
-                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                          SnapsToDevicePixels="True"
-                          IsTextSearchEnabled="True" Background="#222"
-                          AutoGenerateColumns="False"
-                          BorderBrush="LightGray"
-                          BorderThickness="0"
-                          EnableRowVirtualization="True" EnableColumnVirtualization="False"
-                          VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingPanel.ScrollUnit="Item"
-                          SelectionMode="Single" IsTabStop="True"
-                          HeadersVisibility="Column"
-                          CanUserReorderColumns="False"
-                          GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility}"
-                          HorizontalGridLinesBrush="#FF555555"
-                          VerticalGridLinesBrush="#FF555555"
-                          Visibility="{Binding ElementName=RadioBtn_DataGridView_ProdBom, Path=IsChecked, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=false}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn x:Name="DgHeader_ProdBom_ParentCode" Header="Parent Code" Binding="{Binding ElementName=Page_ProductCatalogDetails, Path=ProductCode}"/>
-                        <DataGridTextColumn x:Name="DgHeader_ProdBom_PC" Header="ProductCode" Binding="{Binding ProductCode}"/>
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
-                        <DataGridTextColumn Header="SubType" Binding="{Binding SubType}"/>
-                        <DataGridTextColumn Header="Qty" Binding="{Binding Qty}"/>
-                        <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
-                        <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
-                        <DataGridTextColumn Header="Assembled" Binding="{Binding Assembled}"/>
-                        <DataGridTextColumn Header="WorkCtr" Binding="{Binding WorkCtr}"/>
-                        <DataGridTextColumn Header="Dept" Binding="{Binding Dept}"/>
-                        <DataGridTextColumn Header="ColorBy" Binding="{Binding ColorBy}"/>
-                        <DataGridTextColumn Header="Depth" Binding="{Binding Depth}"/>
-                        <DataGridTextColumn Header="Width" Binding="{Binding Width}"/>
-                        <DataGridTextColumn Header="Length" Binding="{Binding Length}"/>
-                        <DataGridTextColumn Header="Height" Binding="{Binding Height}"/>
-                        <DataGridTextColumn Header="ListPrice" Binding="{Binding ListPrice}"/>
-                        <DataGridTextColumn Header="Cost" Binding="{Binding Cost}"/>
-                        <DataGridTextColumn Header="Weight" Binding="{Binding Weight}"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
-                        <DataGridTextColumn Header="CreationDate" Binding="{Binding CreationDate}"/>
-                        <DataGridTextColumn Header="ChangeDate" Binding="{Binding ChangeDate}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <DataGrid x:Name="DataGrid_MfgItems" Grid.Row="0"
-                          ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
-                          IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
-                          FontSize="{Binding MainViewModel.FontSize_H4}"
-                          Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                          SnapsToDevicePixels="True"
-                          IsTextSearchEnabled="True" Background="#222"
-                          AutoGenerateColumns="False"
-                          BorderBrush="LightGray"
-                          BorderThickness="0"
-                          EnableRowVirtualization="True" EnableColumnVirtualization="False"
-                          VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
-                          VirtualizingPanel.ScrollUnit="Item"
-                          SelectionMode="Single" IsTabStop="True"
-                          HeadersVisibility="Column"
-                          CanUserReorderColumns="False"
-                          GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility}"
-                          HorizontalGridLinesBrush="#FF555555"
-                          VerticalGridLinesBrush="#FF555555"
-                          Visibility="{Binding ElementName=RadioBtn_DataGridView_MfgItems, Path=IsChecked, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=false}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn x:Name="DgHeader_MfgItems_ParentCode" Header="Parent Code" Binding="{Binding ElementName=Page_ProductCatalogDetails, Path=ProductCode}"/>
-                        <DataGridTextColumn x:Name="DgHeader_IN" Header="ItemNbr" Binding="{Binding ItemNbr}"/>
-                        <DataGridTextColumn Header="Desc" Binding="{Binding Description}"/>
-                        <DataGridTextColumn Header="Qty" Binding="{Binding Qty}"/>
-                        <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
-                        <DataGridTextColumn Header="Cost" Binding="{Binding Cost}"/>
-                        <DataGridTextColumn Header="Assembled" Binding="{Binding Assembled}"/>
-                        <DataGridTextColumn Header="WorkCtr" Binding="{Binding WorkCtr}"/>
-                        <DataGridTextColumn Header="Dept" Binding="{Binding Dept}"/>
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
-                        <DataGridTextColumn Header="CreationDate" Binding="{Binding CreationDate}"/>
-                        <DataGridTextColumn Header="ChangeDate" Binding="{Binding ChangeDate}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="1" LastChildFill="False" Background="#222">
-                    <DockPanel.Style>
-                        <Style TargetType="DockPanel">
+            <Border BorderThickness="0 2 0 0" BorderBrush="{StaticResource MaterialDesignDarkSeparatorBackground}">
+                <Grid x:Name="grid_dataGrids">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="24"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=grid_dataGrids, Path=Visibility}" Value="Collapsed">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                <DataTrigger Binding="{Binding ElementName=grid_header, Path=Visibility}" Value="Collapsed">
+                                    <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DockPanel}}}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </DockPanel.Style>
-                    <Label Content="Data Grids" Margin="8 0 8 0" Foreground="LightGray"/>
-                    <RadioButton x:Name="RadioBtn_DataGridView_ProdBom" Content="Product Bom" Tag="ProdBom"
-                         FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                         Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
-                         VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                         IsChecked="True" Checked="RadioButton_DataGridView_Checked"/>
-                    <RadioButton x:Name="RadioBtn_DataGridView_MfgItems" Content="Mfg Items" Tag="MfgItems"
-                         FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                         Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                         Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
-                         VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                         IsChecked="False" Checked="RadioButton_DataGridView_Checked"/>
-                </DockPanel>
-            </Grid>
+                    </Grid.Style>
+                    <ProgressBar Panel.ZIndex="99" x:Name="progbar" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False" Foreground="{x:Static local:Ext.AccentColorBrush}" Background="Transparent" BorderBrush="{x:Static local:Ext.AccentColorBrush50}"/>
+                    <DataGrid x:Name="DataGrid_ProdBoms" Grid.Row="0"
+                              ItemsSource="{Binding Source={StaticResource ProdBomViewSource}}"
+                              IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
+                              FontSize="{Binding MainViewModel.FontSize_H4}"
+                              Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                              SnapsToDevicePixels="True"
+                              IsTextSearchEnabled="True" Background="#222"
+                              AutoGenerateColumns="False"
+                              BorderBrush="LightGray"
+                              BorderThickness="0"
+                              EnableRowVirtualization="True" EnableColumnVirtualization="False"
+                              VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.ScrollUnit="Item"
+                              SelectionMode="Single" IsTabStop="True"
+                              HeadersVisibility="Column"
+                              CanUserReorderColumns="False"
+                              GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility}"
+                              HorizontalGridLinesBrush="#FF555555"
+                              VerticalGridLinesBrush="#FF555555"
+                              Visibility="{Binding ElementName=RadioBtn_DataGridView_ProdBom, Path=IsChecked, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=false}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="DgHeader_ProdBom_ParentCode" Header="Parent Code" Binding="{Binding ElementName=Page_ProductCatalogDetails, Path=ProductCode}"/>
+                            <DataGridTextColumn x:Name="DgHeader_ProdBom_PC" Header="ProductCode" Binding="{Binding ProductCode}"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
+                            <DataGridTextColumn Header="SubType" Binding="{Binding SubType}"/>
+                            <DataGridTextColumn Header="Qty" Binding="{Binding Qty}"/>
+                            <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                            <DataGridTextColumn Header="Assembled" Binding="{Binding Assembled}"/>
+                            <DataGridTextColumn Header="WorkCtr" Binding="{Binding WorkCtr}"/>
+                            <DataGridTextColumn Header="Dept" Binding="{Binding Dept}"/>
+                            <DataGridTextColumn Header="ColorBy" Binding="{Binding ColorBy}"/>
+                            <DataGridTextColumn Header="Depth" Binding="{Binding Depth}"/>
+                            <DataGridTextColumn Header="Width" Binding="{Binding Width}"/>
+                            <DataGridTextColumn Header="Length" Binding="{Binding Length}"/>
+                            <DataGridTextColumn Header="Height" Binding="{Binding Height}"/>
+                            <DataGridTextColumn Header="ListPrice" Binding="{Binding ListPrice}"/>
+                            <DataGridTextColumn Header="Cost" Binding="{Binding Cost}"/>
+                            <DataGridTextColumn Header="Weight" Binding="{Binding Weight}"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                            <DataGridTextColumn Header="CreationDate" Binding="{Binding CreationDate}"/>
+                            <DataGridTextColumn Header="ChangeDate" Binding="{Binding ChangeDate}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="DataGrid_MfgItems" Grid.Row="0"
+                              ItemsSource="{Binding Source={StaticResource MfgItemsViewSource}}"
+                              IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
+                              FontSize="{Binding MainViewModel.FontSize_H4}"
+                              Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                              SnapsToDevicePixels="True"
+                              IsTextSearchEnabled="True" Background="#222"
+                              AutoGenerateColumns="False"
+                              BorderBrush="LightGray"
+                              BorderThickness="0"
+                              EnableRowVirtualization="True" EnableColumnVirtualization="False"
+                              VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.ScrollUnit="Item"
+                              SelectionMode="Single" IsTabStop="True"
+                              HeadersVisibility="Column"
+                              CanUserReorderColumns="False"
+                              GridLinesVisibility="{Binding MainViewModel.DataGridGridLinesVisibility}"
+                              HorizontalGridLinesBrush="#FF555555"
+                              VerticalGridLinesBrush="#FF555555"
+                              Visibility="{Binding ElementName=RadioBtn_DataGridView_MfgItems, Path=IsChecked, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=false}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="DgHeader_MfgItems_ParentCode" Header="Parent Code" Binding="{Binding ElementName=Page_ProductCatalogDetails, Path=ProductCode}"/>
+                            <DataGridTextColumn x:Name="DgHeader_IN" Header="ItemNbr" Binding="{Binding ItemNbr}"/>
+                            <DataGridTextColumn Header="Desc" Binding="{Binding Description}"/>
+                            <DataGridTextColumn Header="Qty" Binding="{Binding Qty}"/>
+                            <DataGridTextColumn Header="UofM" Binding="{Binding UofM}"/>
+                            <DataGridTextColumn Header="Cost" Binding="{Binding Cost}"/>
+                            <DataGridTextColumn Header="Assembled" Binding="{Binding Assembled}"/>
+                            <DataGridTextColumn Header="WorkCtr" Binding="{Binding WorkCtr}"/>
+                            <DataGridTextColumn Header="Dept" Binding="{Binding Dept}"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
+                            <DataGridTextColumn Header="CreationDate" Binding="{Binding CreationDate}"/>
+                            <DataGridTextColumn Header="ChangeDate" Binding="{Binding ChangeDate}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="1" LastChildFill="False" Background="#222">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=grid_dataGrids, Path=Visibility}" Value="Collapsed">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+                        <Label Content="Data Grids" Margin="8 0 8 0" Foreground="LightGray"/>
+                        <RadioButton x:Name="RadioBtn_DataGridView_ProdBom" Content="Product Bom" Tag="ProdBom"
+                             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                             Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                             Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                             VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                             IsChecked="True" Checked="RadioButton_DataGridView_Checked"/>
+                        <RadioButton x:Name="RadioBtn_DataGridView_MfgItems" Content="Mfg Items" Tag="MfgItems"
+                             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                             Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                             Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                             VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                             IsChecked="False" Checked="RadioButton_DataGridView_Checked"/>
+                    </DockPanel>
+                </Grid>
+            </Border>
         </DockPanel>
     </Grid>
 </UserControl>

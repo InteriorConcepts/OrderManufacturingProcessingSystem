@@ -2,7 +2,6 @@
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MyApp.DataAccess.Generated;
 using OMPS.DBModels;
 using OMPS.ViewModels;
 using OMPS.Windows;

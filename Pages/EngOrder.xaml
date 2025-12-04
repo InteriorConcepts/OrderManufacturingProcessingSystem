@@ -171,410 +171,472 @@
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="General"/>
                     </TabItem.Header>
-                    <!--
-                Use Grid for vertical stacks, then nested StackPanels for further splitting
-                -->
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=282, Converter={conv:ScalingConverter}, ConverterParameter=23}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="{Binding MainViewModel.FontSize_H4, FallbackValue=48, Converter={conv:ScalingConverter}, ConverterParameter=4}"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-                            <!--Column 1 : General Info-->
-                            <StackPanel MinWidth="76" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
-                                <Label Style="{StaticResource InputLabel}" Content="Order Nbr:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Line Nbr:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Job Nbr:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Quote:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Net Product:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Ship By Date:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Item:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Qty:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}}">
+                        <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <!--Column 1 : General Info-->
+                                <StackPanel MinWidth="76" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Order Nbr:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Line Nbr:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job Nbr:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Quote:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Net Product:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Ship By Date:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Item:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Qty:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Engineer:"/>
+                                </StackPanel>
+                                <StackPanel MinWidth="80" HorizontalAlignment="Left" VerticalAlignment="Top" MaxWidth="115" Margin="0 0 4 0">
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber,      FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber,       FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef,   FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct,       FallbackValue='$1,234.00',      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate,       FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty,              FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Engineer,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
+                                </StackPanel>
+                                <!--Column 2 : Basic Colors-->
+                                <StackPanel MinWidth="73" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Frame:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Metal Comp:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Shelf:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Gib Leg:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Val Base:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Omt Leg:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Tbl Slim Leg:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Tangent Leg:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Ped Cushion:"/>
+                                </StackPanel>
+                                <StackPanel MinWidth="80" HorizontalAlignment="Left" MaxWidth="105" Margin="0 0 4 0">
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.FrameFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.FrameFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.MetalFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.MetalFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.ShelfFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.ShelfFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.TblLegFin,         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblLegFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}"       SelectedItem="{Binding Path=ColorSetInfo.TblBaseFin,        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblBaseFin,         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}"      SelectedItem="{Binding Path=ColorSetInfo.TblLegBaseFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblLegBaseFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}"  SelectedItem="{Binding Path=ColorSetInfo.TblSlimLegFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblSlimLegFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}"  SelectedItem="{Binding Path=ColorSetInfo.TangentLegFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TangentLegFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}"  SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor,    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <!--Column 3 : Materials-->
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Fabric:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Wks Lam:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Wks Edge:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Mel Pnl:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Lam Pnl:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Chase Door:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Acrylic:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="HC Door Lam:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Curve Lam:"/>
+                                </StackPanel>
+                                <StackPanel x:Name="SPnl_LookupButtons" Width="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}">
+                                    <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="wks" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="web" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="mel" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="lam" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="chs" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="acr" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="hcd" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                    <Button Tag="crv" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                        <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                    </Button>
+                                </StackPanel>
+                                <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="455" Margin="0 0 4 0">
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric1Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLamId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksEdgeId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.TflpnlId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamPnlId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.ChaseDoorId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.AcrylicId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamHcdoorId, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamCurveId, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <!--Column 4 : Buttons-->
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
+                                    <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
+                                    <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
+                                    <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
+                                    <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
+                                    <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel MinWidth="80" MaxWidth="115" Margin="0 0 4 0">
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderNumber,      FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineNumber,       FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.SupplyOrderRef,   FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.NetProduct,       FallbackValue='$1,234.00',      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.ShipByDate,       FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.LineItem,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Qty,              FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Engineer,         FallbackValue='DefaultValue',   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
+                                <Label Style="{StaticResource InputMultilineLabel}" Content="Notes:"/>
+                                <TextBox Style="{StaticResource InputMultilineStyle}" MinWidth="500" MaxWidth="800"
+                                         Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
                             </StackPanel>
-                            <!--Column 2 : Basic Colors-->
-                            <StackPanel MinWidth="73" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
-                                <Label Style="{StaticResource InputLabel}" Content="Frame:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Metal Comp:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Shelf:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Gib Leg:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Val Base:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Omt Leg:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Tbl Slim Leg:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Tangent Leg:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Ped Cushion:"/>
-                            </StackPanel>
-                            <StackPanel MinWidth="80" MaxWidth="105" Margin="0 0 4 0">
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.FrameFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.FrameFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.MetalFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.MetalFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.ShelfFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.ShelfFin,           Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}"  SelectedItem="{Binding Path=ColorSetInfo.TblLegFin,         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblLegFin,          Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_BS}"       SelectedItem="{Binding Path=ColorSetInfo.TblBaseFin,        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblBaseFin,         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Omt}"      SelectedItem="{Binding Path=ColorSetInfo.TblLegBaseFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblLegBaseFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_SlimLeg}"  SelectedItem="{Binding Path=ColorSetInfo.TblSlimLegFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TblSlimLegFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_TangLeg}"  SelectedItem="{Binding Path=ColorSetInfo.TangentLegFin,     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.TangentLegFin,      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_PedCush}"  SelectedItem="{Binding Path=ColorSetInfo.PedCushionColor,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding Path=ColorSetInfo.PedCushionColor,    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                            <!--Column 3 : Materials-->
-                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
-                                <Label Style="{StaticResource InputLabel}" Content="Fabric:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Wks Lam:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Wks Edge:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Mel Pnl:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Lam Pnl:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Chase Door:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Acrylic:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="HC Door Lam:"/>
-                                <Label Style="{StaticResource InputLabel}" Content="Curve Lam:"/>
-                            </StackPanel>
-                            <StackPanel x:Name="SPnl_LookupButtons" Width="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}">
-                                <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="wks" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="web" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="mel" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="lam" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="chs" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="acr" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="hcd" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                                <Button Tag="crv" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
-                                    <Image Style="{StaticResource BtnLookupImageStyle}"/>
-                                </Button>
-                            </StackPanel>
-                            <StackPanel x:Name="SPnl_LookupInputs" MinWidth="290" MaxWidth="455" Margin="0 0 4 0">
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric1Id, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLamId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksEdgeId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.TflpnlId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamPnlId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.ChaseDoorId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.AcrylicId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamHcdoorId, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamCurveId, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                            <!--Column 4 : Buttons-->
-                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20 0 4 0">
-                                <Button x:Name="Btn_ExtProc_ImpMfg" Content="Mfg Import" Tag="IceMfgImp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_ImpMfg_Click" />
-                                <Button x:Name="Btn_ExtProc_EngPrc" Content="Eng Process" Tag="IceEngProc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_EngPrc_Click" />
-                                <Button x:Name="Btn_ExtProc_Matl" Content="Material Calc" Tag="IceMatlCalc" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Matl_Click" />
-                                <Button x:Name="Btn_ExtProc_Cutlst" Content="CNC Cutlist" Tag="CNC CutList" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_Cutlst_Click" />
-                                <Button x:Name="Btn_ExtProc_SlExp" Content="Syteline Export" Tag="SyteLineExp" Padding="4 2" Margin="0 1" FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}" Style="{StaticResource MaterialDesignPaperButton}" Click="Btn_ExtProc_SlExp_Click" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Stretch">
-                            <Label Style="{StaticResource InputLabel}" Content="Notes:"/>
-                            <TextBox Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Top" TextAlignment="Left" AcceptsReturn="True" MinLines="2" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="False" MinWidth="500" MaxWidth="800" Text="{Binding Path=ColorSetInfo.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding MainViewModel.FontSize_H4, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=3}"/>
-                        </StackPanel>
-                    </Grid>
+                        </WrapPanel>
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Colors+"/>
                     </TabItem.Header>
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-                            <!--Column 1 : Extra Materials-->
-                            <StackPanel Width="280" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelInputLookupPair LabelText="Acrylic 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Acrylic2Id, Mode=TwoWay}" />
-                                <Components:LabelInputLookupPair LabelText="Fabric 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric2Id, Mode=TwoWay}" />
-                                <Components:LabelInputLookupPair LabelText="Fabric 3" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Fabric3Id, Mode=TwoWay}" />
-                                <Components:LabelInputLookupPair LabelText="Wks Lam 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.WksLam2Id, Mode=TwoWay}" />
-                                <Components:LabelInputLookupPair LabelText="Lam Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.LamPnl2Id, Mode=TwoWay}" />
-                                <Components:LabelInputLookupPair LabelText="Mel Pnl 2" LabelWidth="80" InputLookup="{Binding ColorSetInfo.Tflpnl2Id, Mode=TwoWay}" />
-                                <Components:LabelInputPair LabelText="Custom1" LabelWidth="80" InputText=""/>
-                                <Components:LabelInputPair LabelText="Custom2" LabelWidth="80" InputText=""/>
-                                <Components:LabelComboPair LabelText="UnderWsPnl" LabelWidth="80" InputText="{Binding ColorSetInfo.UnderWsPnlType, Mode=TwoWay}"/>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}}">
+                        <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <!--Column 1 : Extra Materials-->
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0">
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                        <Label Style="{StaticResource InputLabel}" Content="Acrylic 2:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Fabric 2:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Fabric 3:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Wks Lam 2:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Lam Pnl 2:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Mel Pnl 2:"/>
+                                    </StackPanel>
+                                    <StackPanel x:Name="SPnl_LookupButtonsExtra" Width="{Binding MainViewModel.FontSize_H2_1, FallbackValue=16}">
+                                        <Button Tag="acr" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                            <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                        </Button>
+                                        <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                            <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                        </Button>
+                                        <Button Tag="fab" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                            <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                        </Button>
+                                        <Button Tag="wks" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                            <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                        </Button>
+                                        <Button Tag="lam" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                            <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                        </Button>
+                                        <Button Tag="mel" Style="{StaticResource BtnLookupStyle}" Click="BtnLookup_Click">
+                                            <Image Style="{StaticResource BtnLookupImageStyle}"/>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel x:Name="SPnl_LookupInputsExtra" MinWidth="290" MaxWidth="455" Margin="0 0 4 0">
+                                        <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Acrylic2Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric2Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Fabric3Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.WksLam2Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.LamPnl2Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBox Style="{StaticResource InputLookupStyle}" Tag="{Binding ColorSetInfo.Tflpnl2Id, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!--Column 2 : Misc Colors-->
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Custom 1:" IsEnabled="False"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Custom 2:" IsEnabled="False"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="UnderWsPnl:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="PmoldFin:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="AccFin:"/>
+                                </StackPanel>
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0">
+                                    <TextBox Style="{StaticResource InputStyle}" Text="-" IsEnabled="False"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="-" IsEnabled="False"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.UnderWsPnlType, FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.PmoldFin, FallbackValue='', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding Finishes_Default}" SelectedItem="{Binding Path=ColorSetInfo.AccFin, FallbackValue='', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <!--Column 2 : Misc Toggles-->
+                                <StackPanel Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Preengined"      IsChecked="{Binding ColorSetInfo.Preengined, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Engined"         IsChecked="{Binding ColorSetInfo.Engined, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="KeyAlike"        IsChecked="{Binding ColorSetInfo.KeyAlike, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="KeyEaStaAlike"   IsChecked="{Binding ColorSetInfo.KeyEaStaAlike, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="MasterKey"       IsChecked="{Binding ColorSetInfo.MasterKey, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="EarlyElectrical" IsChecked="{Binding ColorSetInfo.EarlyElectrical, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="XQ"              IsChecked="{Binding ColorSetInfo.Xq, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="UpdateRecord"    IsChecked="{Binding ColorSetInfo.UpdateRecord, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="InstallByIC"     IsChecked="{Binding ColorSetInfo.InstallByIc, Mode=TwoWay}"/>
+                                </StackPanel>
                             </StackPanel>
-                            <!--Column 2 : Misc Toggles-->
-                            <StackPanel Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Preengined" CheckValue="{Binding ColorSetInfo.Preengined, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Engined" CheckValue="{Binding ColorSetInfo.Engined, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="KeyAlike" CheckValue="{Binding ColorSetInfo.KeyAlike, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="KeyEaStaAlike" CheckValue="{Binding ColorSetInfo.KeyEaStaAlike, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="MasterKey" CheckValue="{Binding ColorSetInfo.MasterKey, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="EarlyElectrical" CheckValue="{Binding ColorSetInfo.EarlyElectrical, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="XQ" CheckValue="{Binding ColorSetInfo.Xq, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="UpdateRecord" CheckValue="{Binding ColorSetInfo.UpdateRecord, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="InstallByIC" CheckValue="{Binding ColorSetInfo.InstallByIc, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 3 : Misc Colors-->
-                            <StackPanel Width="116" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0 0 4 0">
-                                <Components:LabelComboPair LabelText="PmoldFin" LabelWidth="62" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.PmoldFin, Mode=TwoWay}"/>
-                                <Components:LabelComboPair LabelText="AccFin" LabelWidth="62" ItemSource="{Binding Finishes_Default}" InputText="{Binding ColorSetInfo.AccFin, Mode=TwoWay}"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
+                        </WrapPanel>
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Misc"/>
                     </TabItem.Header>
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="240"/>
-                            <ColumnDefinition Width="320"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="0" Margin="0 0 4 0">
-                            <Components:LabelInputPair LabelWidth="90" LabelText="Name" InputText="{Binding ColorSetInfo.Name, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="90" LabelText="CompanyName" InputText="{Binding ColorSetInfo.CompanyName, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="90" LabelText="CompanyID" InputText=""/>
-                            <Components:LabelInputPair LabelWidth="90" LabelText="QuoteNbr" InputText="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="90" LabelText="CustOrderID" InputText=""/>
-                            <Components:LabelInputPair LabelWidth="90" LabelText="OrderType" InputText="{Binding ColorSetInfo.OrderType, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="90" LabelText="OpportunityNbr" InputText="{Binding ColorSetInfo.OpportunityNbr, Mode=TwoWay}"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Margin="0 0 4 0">
-                            <Components:LabelInputPair LabelWidth="70" LabelText="ShiptoName" InputText="{Binding ColorSetInfo.ShiptoName, Mode=TwoWay}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Components:LabelDatePickPair Grid.Column="0" Grid.Row="0" LabelWidth="70" LabelText="OrderDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.OrderDate, Mode=TwoWay}" InputText=""/>
-                                <Components:LabelDatePickPair Grid.Column="0" Grid.Row="1" LabelWidth="70" LabelText="OnSiteDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.OnSiteDate, Mode=TwoWay}"/>
-                                <Components:LabelDatePickPair Grid.Column="1" Grid.Row="0" LabelWidth="70" LabelText="CreationDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.CreationDate, Mode=TwoWay}"/>
-                                <Components:LabelDatePickPair Grid.Column="1" Grid.Row="1" LabelWidth="70" LabelText="ChangeDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.ChangeDate, Mode=TwoWay}"/>
-                            </Grid>
-                            <Components:LabelInputPair Grid.Column="1" Grid.Row="5" LabelWidth="70"
-                                                   LabelText="ColorSetID"
-                                                   InputText="{Binding ColorSetInfo.ColorSetId, Mode=OneWay}" InputReadOnly="True"/>
-                        </StackPanel>
-                    </Grid>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}}">
+                        <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Name:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Company Name:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="CompanyID:" IsEnabled="False"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="QuoteNbr:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="CustOrderID:" IsEnabled="False"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="OrderType:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="OpportunityNbr:"/>
+                                </StackPanel>
+                                <StackPanel Margin="0">
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.Name,             FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.CompanyName,      FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="-" IsEnabled="False"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.QuoteNbr,         FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="-" IsEnabled="False"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OrderType,        FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding Path=ColorSetInfo.OpportunityNbr,   FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0 0 4 0" Orientation="Horizontal">
+                                    <StackPanel>
+                                        <Label Style="{StaticResource InputLabel}" Content="Ship to Name:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Order Date:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="On-Site Date:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Creation Date:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="Change Date:"/>
+                                        <Label Style="{StaticResource InputLabel}" Content="ColorSetID:"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.ShiptoName,   FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DatePicker Style="{StaticResource InputDatePickerStyle}" SelectedDate="{Binding ColorSetInfo.OrderDate, Mode=TwoWay}"/>
+                                        <DatePicker Style="{StaticResource InputDatePickerStyle}" SelectedDate="{Binding ColorSetInfo.OnSiteDate, Mode=TwoWay}"/>
+                                        <DatePicker Style="{StaticResource InputDatePickerStyle}" SelectedDate="{Binding ColorSetInfo.CreationDate, Mode=TwoWay}"/>
+                                        <DatePicker Style="{StaticResource InputDatePickerStyle}" SelectedDate="{Binding ColorSetInfo.ChangeDate, Mode=TwoWay}"/>
+                                        <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.ColorSetId,   FallbackValue='DefaultValue', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </WrapPanel>
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Quote Parts"/>
                     </TabItem.Header>
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Horizontal">
-                            <!--Column 1-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 01" CheckValue="{Binding ColorSetInfo.Part01, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 02" CheckValue="{Binding ColorSetInfo.Part02, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 03" CheckValue="{Binding ColorSetInfo.Part03, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 04" CheckValue="{Binding ColorSetInfo.Part04, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 05" CheckValue="{Binding ColorSetInfo.Part05, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 06" CheckValue="{Binding ColorSetInfo.Part06, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 07" CheckValue="{Binding ColorSetInfo.Part07, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 08" CheckValue="{Binding ColorSetInfo.Part08, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 09" CheckValue="{Binding ColorSetInfo.Part09, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 10" CheckValue="{Binding ColorSetInfo.Part10, Mode=TwoWay}"/>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}}">
+                        <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <!--Column 1-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 01" IsChecked="{Binding ColorSetInfo.Part01, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 02" IsChecked="{Binding ColorSetInfo.Part02, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 03" IsChecked="{Binding ColorSetInfo.Part03, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 04" IsChecked="{Binding ColorSetInfo.Part04, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 05" IsChecked="{Binding ColorSetInfo.Part05, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 06" IsChecked="{Binding ColorSetInfo.Part06, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 07" IsChecked="{Binding ColorSetInfo.Part07, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 08" IsChecked="{Binding ColorSetInfo.Part08, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 09" IsChecked="{Binding ColorSetInfo.Part09, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 10" IsChecked="{Binding ColorSetInfo.Part10, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 2-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 11" IsChecked="{Binding ColorSetInfo.Part11, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 12" IsChecked="{Binding ColorSetInfo.Part12, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 13" IsChecked="{Binding ColorSetInfo.Part13, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 14" IsChecked="{Binding ColorSetInfo.Part14, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 15" IsChecked="{Binding ColorSetInfo.Part15, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 16" IsChecked="{Binding ColorSetInfo.Part16, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 17" IsChecked="{Binding ColorSetInfo.Part17, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 18" IsChecked="{Binding ColorSetInfo.Part18, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 19" IsChecked="{Binding ColorSetInfo.Part19, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 20" IsChecked="{Binding ColorSetInfo.Part20, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 3-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 21" IsChecked="{Binding ColorSetInfo.Part21, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 22" IsChecked="{Binding ColorSetInfo.Part22, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 23" IsChecked="{Binding ColorSetInfo.Part23, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 24" IsChecked="{Binding ColorSetInfo.Part24, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 25" IsChecked="{Binding ColorSetInfo.Part25, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 26" IsChecked="{Binding ColorSetInfo.Part26, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 27" IsChecked="{Binding ColorSetInfo.Part27, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 28" IsChecked="{Binding ColorSetInfo.Part28, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 29" IsChecked="{Binding ColorSetInfo.Part29, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 30" IsChecked="{Binding ColorSetInfo.Part30, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 4-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 31" IsChecked="{Binding ColorSetInfo.Part31, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 32" IsChecked="{Binding ColorSetInfo.Part32, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 33" IsChecked="{Binding ColorSetInfo.Part33, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 34" IsChecked="{Binding ColorSetInfo.Part34, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 35" IsChecked="{Binding ColorSetInfo.Part35, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 36" IsChecked="{Binding ColorSetInfo.Part36, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 37" IsChecked="{Binding ColorSetInfo.Part37, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 38" IsChecked="{Binding ColorSetInfo.Part38, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 39" IsChecked="{Binding ColorSetInfo.Part39, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 40" IsChecked="{Binding ColorSetInfo.Part40, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 5-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 41" IsChecked="{Binding ColorSetInfo.Part41, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 42" IsChecked="{Binding ColorSetInfo.Part42, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 43" IsChecked="{Binding ColorSetInfo.Part43, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 44" IsChecked="{Binding ColorSetInfo.Part44, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 45" IsChecked="{Binding ColorSetInfo.Part45, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 46" IsChecked="{Binding ColorSetInfo.Part46, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 47" IsChecked="{Binding ColorSetInfo.Part47, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 48" IsChecked="{Binding ColorSetInfo.Part48, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 49" IsChecked="{Binding ColorSetInfo.Part49, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 50" IsChecked="{Binding ColorSetInfo.Part50, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 6-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 51" IsChecked="{Binding ColorSetInfo.Part51, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 52" IsChecked="{Binding ColorSetInfo.Part52, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 53" IsChecked="{Binding ColorSetInfo.Part53, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 54" IsChecked="{Binding ColorSetInfo.Part54, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 55" IsChecked="{Binding ColorSetInfo.Part55, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 56" IsChecked="{Binding ColorSetInfo.Part56, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 57" IsChecked="{Binding ColorSetInfo.Part57, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 58" IsChecked="{Binding ColorSetInfo.Part58, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 59" IsChecked="{Binding ColorSetInfo.Part59, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 60" IsChecked="{Binding ColorSetInfo.Part60, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 7-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 61" IsChecked="{Binding ColorSetInfo.Part61, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 62" IsChecked="{Binding ColorSetInfo.Part62, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 63" IsChecked="{Binding ColorSetInfo.Part63, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 64" IsChecked="{Binding ColorSetInfo.Part64, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 65" IsChecked="{Binding ColorSetInfo.Part65, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 66" IsChecked="{Binding ColorSetInfo.Part66, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 67" IsChecked="{Binding ColorSetInfo.Part67, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 68" IsChecked="{Binding ColorSetInfo.Part68, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 69" IsChecked="{Binding ColorSetInfo.Part69, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 70" IsChecked="{Binding ColorSetInfo.Part70, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 8-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 71" IsChecked="{Binding ColorSetInfo.Part71, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 72" IsChecked="{Binding ColorSetInfo.Part72, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 73" IsChecked="{Binding ColorSetInfo.Part73, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 74" IsChecked="{Binding ColorSetInfo.Part74, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 75" IsChecked="{Binding ColorSetInfo.Part75, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 76" IsChecked="{Binding ColorSetInfo.Part76, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 77" IsChecked="{Binding ColorSetInfo.Part77, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 78" IsChecked="{Binding ColorSetInfo.Part78, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 79" IsChecked="{Binding ColorSetInfo.Part79, Mode=TwoWay}"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 80" IsChecked="{Binding ColorSetInfo.Part80, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <!--Column 9-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 81" IsChecked="{Binding ColorSetInfo.Part81, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 82" IsChecked="{Binding ColorSetInfo.Part82, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 83" IsChecked="{Binding ColorSetInfo.Part83, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 84" IsChecked="{Binding ColorSetInfo.Part84, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 85" IsChecked="{Binding ColorSetInfo.Part85, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 86" IsChecked="{Binding ColorSetInfo.Part86, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 87" IsChecked="{Binding ColorSetInfo.Part87, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 88" IsChecked="{Binding ColorSetInfo.Part88, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 89" IsChecked="{Binding ColorSetInfo.Part89, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 90" IsChecked="{Binding ColorSetInfo.Part90, Mode=TwoWay}" IsEnabled="False"/>
+                                </StackPanel>
+                                <!--Column 10-->
+                                <StackPanel Margin="0 0 4 0">
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 91" IsChecked="{Binding ColorSetInfo.Part91, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 92" IsChecked="{Binding ColorSetInfo.Part92, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 93" IsChecked="{Binding ColorSetInfo.Part93, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 94" IsChecked="{Binding ColorSetInfo.Part94, Mode=TwoWay}" IsEnabled="False"/>
+                                    <CheckBox Style="{StaticResource InputCheckBoxStyle}" Content="Part 95" IsChecked="{Binding ColorSetInfo.Part95, Mode=TwoWay}" IsEnabled="False"/>
+                                </StackPanel>
                             </StackPanel>
-                            <!--Column 2-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 11" CheckValue="{Binding ColorSetInfo.Part11, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 12" CheckValue="{Binding ColorSetInfo.Part12, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 13" CheckValue="{Binding ColorSetInfo.Part13, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 14" CheckValue="{Binding ColorSetInfo.Part14, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 15" CheckValue="{Binding ColorSetInfo.Part15, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 16" CheckValue="{Binding ColorSetInfo.Part16, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 17" CheckValue="{Binding ColorSetInfo.Part17, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 18" CheckValue="{Binding ColorSetInfo.Part18, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 19" CheckValue="{Binding ColorSetInfo.Part19, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 20" CheckValue="{Binding ColorSetInfo.Part20, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 3-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 21" CheckValue="{Binding ColorSetInfo.Part21, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 22" CheckValue="{Binding ColorSetInfo.Part22, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 23" CheckValue="{Binding ColorSetInfo.Part23, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 24" CheckValue="{Binding ColorSetInfo.Part24, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 25" CheckValue="{Binding ColorSetInfo.Part25, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 26" CheckValue="{Binding ColorSetInfo.Part26, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 27" CheckValue="{Binding ColorSetInfo.Part27, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 28" CheckValue="{Binding ColorSetInfo.Part28, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 29" CheckValue="{Binding ColorSetInfo.Part29, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 30" CheckValue="{Binding ColorSetInfo.Part30, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 4-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 31" CheckValue="{Binding ColorSetInfo.Part31, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 32" CheckValue="{Binding ColorSetInfo.Part32, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 33" CheckValue="{Binding ColorSetInfo.Part33, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 34" CheckValue="{Binding ColorSetInfo.Part34, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 35" CheckValue="{Binding ColorSetInfo.Part35, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 36" CheckValue="{Binding ColorSetInfo.Part36, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 37" CheckValue="{Binding ColorSetInfo.Part37, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 38" CheckValue="{Binding ColorSetInfo.Part38, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 39" CheckValue="{Binding ColorSetInfo.Part39, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 40" CheckValue="{Binding ColorSetInfo.Part40, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 5-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 41" CheckValue="{Binding ColorSetInfo.Part41, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 42" CheckValue="{Binding ColorSetInfo.Part42, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 43" CheckValue="{Binding ColorSetInfo.Part43, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 44" CheckValue="{Binding ColorSetInfo.Part44, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 45" CheckValue="{Binding ColorSetInfo.Part45, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 46" CheckValue="{Binding ColorSetInfo.Part46, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 47" CheckValue="{Binding ColorSetInfo.Part47, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 48" CheckValue="{Binding ColorSetInfo.Part48, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 49" CheckValue="{Binding ColorSetInfo.Part49, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 50" CheckValue="{Binding ColorSetInfo.Part50, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 6-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 51" CheckValue="{Binding ColorSetInfo.Part51, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 52" CheckValue="{Binding ColorSetInfo.Part52, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 53" CheckValue="{Binding ColorSetInfo.Part53, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 54" CheckValue="{Binding ColorSetInfo.Part54, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 55" CheckValue="{Binding ColorSetInfo.Part55, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 56" CheckValue="{Binding ColorSetInfo.Part56, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 57" CheckValue="{Binding ColorSetInfo.Part57, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 58" CheckValue="{Binding ColorSetInfo.Part58, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 59" CheckValue="{Binding ColorSetInfo.Part59, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 60" CheckValue="{Binding ColorSetInfo.Part60, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 7-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 61" CheckValue="{Binding ColorSetInfo.Part61, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 62" CheckValue="{Binding ColorSetInfo.Part62, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 63" CheckValue="{Binding ColorSetInfo.Part63, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 64" CheckValue="{Binding ColorSetInfo.Part64, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 65" CheckValue="{Binding ColorSetInfo.Part65, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 66" CheckValue="{Binding ColorSetInfo.Part66, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 67" CheckValue="{Binding ColorSetInfo.Part67, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 68" CheckValue="{Binding ColorSetInfo.Part68, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 69" CheckValue="{Binding ColorSetInfo.Part69, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 70" CheckValue="{Binding ColorSetInfo.Part70, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 8-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 71" CheckValue="{Binding ColorSetInfo.Part71, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 72" CheckValue="{Binding ColorSetInfo.Part72, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 73" CheckValue="{Binding ColorSetInfo.Part73, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 74" CheckValue="{Binding ColorSetInfo.Part74, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 75" CheckValue="{Binding ColorSetInfo.Part75, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 76" CheckValue="{Binding ColorSetInfo.Part76, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 77" CheckValue="{Binding ColorSetInfo.Part77, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 78" CheckValue="{Binding ColorSetInfo.Part78, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 79" CheckValue="{Binding ColorSetInfo.Part79, Mode=TwoWay}"/>
-                                <Components:LabelCheckPair LabelText="Part 80" CheckValue="{Binding ColorSetInfo.Part80, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <!--Column 9-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 81" CheckValue="{Binding ColorSetInfo.Part81, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 82" CheckValue="{Binding ColorSetInfo.Part82, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 83" CheckValue="{Binding ColorSetInfo.Part83, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 84" CheckValue="{Binding ColorSetInfo.Part84, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 85" CheckValue="{Binding ColorSetInfo.Part85, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 86" CheckValue="{Binding ColorSetInfo.Part86, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 87" CheckValue="{Binding ColorSetInfo.Part87, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 88" CheckValue="{Binding ColorSetInfo.Part88, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 89" CheckValue="{Binding ColorSetInfo.Part89, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 90" CheckValue="{Binding ColorSetInfo.Part90, Mode=TwoWay}" IsEnabled="False"/>
-                            </StackPanel>
-                            <!--Column 10-->
-                            <StackPanel Margin="0 0 4 0">
-                                <Components:LabelCheckPair LabelText="Part 91" CheckValue="{Binding ColorSetInfo.Part91, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 92" CheckValue="{Binding ColorSetInfo.Part92, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 93" CheckValue="{Binding ColorSetInfo.Part93, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 94" CheckValue="{Binding ColorSetInfo.Part94, Mode=TwoWay}" IsEnabled="False"/>
-                                <Components:LabelCheckPair LabelText="Part 95" CheckValue="{Binding ColorSetInfo.Part95, Mode=TwoWay}" IsEnabled="False"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
+                        </WrapPanel>
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Mfg Reports"/>
                     </TabItem.Header>
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="220"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 4 0">
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__WksSheets" InputText="{Binding ColorSetInfo.JobWksSheets, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Worksurfaces" InputText="{Binding ColorSetInfo.JobWorksurfaces, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Frames" InputText="{Binding ColorSetInfo.JobFrames, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Tubes" InputText="{Binding ColorSetInfo.JobTubes, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Pmold" InputText="{Binding ColorSetInfo.JobPmold, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__PnlSheets" InputText="{Binding ColorSetInfo.JobPnlSheets, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Panels" InputText="{Binding ColorSetInfo.JobPanels, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__FabricSides" InputText="{Binding ColorSetInfo.JobFabricSides, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__Doors" InputText="{Binding ColorSetInfo.JobDoors, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="95" LabelText="Job__HCDoors" InputText="{Binding ColorSetInfo.JobHcdoors, Mode=TwoWay}"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 4 0">
-                            <Components:LabelInputPair LabelWidth="112" LabelText="Job__TagColor" InputText="{Binding ColorSetInfo.JobTagColor, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="112" LabelText="Job__PartsNote" InputText="{Binding ColorSetInfo.JobPartsNote, Mode=TwoWay}"/>
-                            <Components:LabelInputPair LabelWidth="112" LabelText="Job__ProductionNote" InputText="{Binding ColorSetInfo.JobProductionNote, Mode=TwoWay}"/>
-                        </StackPanel>
-                    </Grid>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}}">
+                        <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__WksSheets:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__Worksurfaces:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__Frames:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__Tubes:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__Pmold:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__PnlSheets:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__Panels:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__FabricSides:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__Doors:"/>
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__HCDoors:"/>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0">
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobWksSheets, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobWorksurfaces, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobFrames, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobTubes, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobPmold, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobPnlSheets, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobPanels, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobFabricSides, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobDoors, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobHcdoors, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 4 0">
+                                    <Label Style="{StaticResource InputLabel}" Content="Job__TagColor:"/>
+                                    <Label Style="{StaticResource InputMultilineLabel}" Content="Job__PartsNote:"/>
+                                    <Label Style="{StaticResource InputMultilineLabel}" Content="Job__ProductionNote:"/>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 4 0">
+                                    <TextBox Style="{StaticResource InputStyle}" Text="{Binding ColorSetInfo.JobTagColor, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputMultilineStyle}" Text="{Binding ColorSetInfo.JobPartsNote, Mode=TwoWay}"/>
+                                    <TextBox Style="{StaticResource InputMultilineStyle}" Text="{Binding ColorSetInfo.JobProductionNote, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </WrapPanel>
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem Height="40" Width="100">
                     <TabItem.Header>
                         <TextBlock FontWeight="Medium" FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=14}" Text="Pre1"/>
                     </TabItem.Header>
-                    <Grid Height="{Binding MainViewModel.FontSize_H4, FallbackValue=270, Converter={conv:ScalingConverter}, ConverterParameter=21.6666667}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="3">
-                    </Grid>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}}">
+                        <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                            </StackPanel>
+                        </WrapPanel>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
         </Grid>
         <DockPanel x:Name="dpnl_DataFilter" Grid.Row="2" Visibility="Visible" Background="#222">
             <Grid Margin="8 2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="3"/>
-                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="48"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Row="0" Margin="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40"/>
-                        <ColumnDefinition Width="250"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="260"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <Label x:Name="Lbl_Filter" Grid.Column="0" Content="Filter:  " FontSize="{Binding MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
-                    <TextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="{Binding MainViewModel.FontSize_H6}" Text="" HorizontalAlignment="Stretch" TextWrapping="NoWrap" VerticalAlignment="Stretch" VerticalContentAlignment="Center" UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
-                             PreviewKeyDown="Txt_Filter_PreviewKeyDown"/>
+                    <RichTextBox x:Name="Txt_Filter" Grid.Column="1" FontSize="{Binding MainViewModel.FontSize_H6}"
+                                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                                 UseLayoutRounding="True" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
+                                 PreviewKeyDown="Txt_Filter_PreviewKeyDown" TextChanged="Txt_Filter_TextChanged"/>
                     <Button x:Name="Btn_FilterSave" Grid.Column="2"
+                            Click="Btn_FilterSave_Click"
                             Height="{Binding MainViewModel.FontSize_H2}"
                             Width="{Binding MainViewModel.FontSize_H2}"
                             Padding="0"
@@ -591,17 +653,35 @@
                     </Button>
                     <Label x:Name="Lbl_FilterInfo" Grid.Column="3" Opacity="0.7" FontSize="{Binding MainViewModel.FontSize_H6}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="5 0" Padding="0">
                         <TextBlock>
-                        Ex:&#x00A0;&#x00A0;<Italic><Underline>Jnt+D&amp;T+yes</Underline></Italic>&#x00A0;&#x00A0;or&#x00A0;&#x00A0;<Italic><Underline>Rivet+300-0</Underline></Italic>
+                        Ex:&#x00A0;&#x00A0;<Italic><Underline>Jnt+D&amp;T+yes</Underline></Italic>&#x00A0;&#x00A0;or&#x00A0;&#x00A0;<Italic><Underline>Description~=Rivet+WorkCtr=300-00</Underline></Italic>
                         </TextBlock>
                     </Label>
-                    <Button x:Name="Btn_FilterClose" Grid.Column="5"
+                    <Button x:Name="Btn_FilterHelp" Grid.Column="4"
+                            Click="Btn_FilterHelp_Click"
+                            Padding="0"
+                            materialDesign:ButtonAssist.CornerRadius="1"
+                            Height="{Binding MainViewModel.FontSize_H2}"
+                            Width="{Binding MainViewModel.FontSize_H2}"
+                            Margin="0"
+                            IsEnabled="True"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            ToolTip="Filters Help"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="{StaticResource MaterialDesign.Brush.Foreground}">
+                        <materialDesign:PackIcon
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Kind="HelpCircle"/>
+                    </Button>
+                    <Button x:Name="Btn_FilterClose" Grid.Column="6"
                             Click="Btn_FilterClose_Click"
                             Padding="0"
                             materialDesign:ButtonAssist.CornerRadius="1"
                             Height="{Binding MainViewModel.FontSize_H2}"
                             Width="{Binding MainViewModel.FontSize_H2}"
                             IsEnabled="True"
-                            HorizontalAlignment="Right"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             ToolTip="Close Filters"
                             Style="{StaticResource MaterialDesignFlatButton}"
@@ -616,10 +696,7 @@
                 <Label Grid.Row="2" Grid.Column="0" x:Name="Lbl_FiltersSaved" Content="Saved " FontSize="{Binding MainViewModel.FontSize_H5}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Margin="0" Padding="0"/>
                 <ScrollViewer Grid.Row="2" Grid.Column="1" ScrollViewer.PanningMode="VerticalOnly" Margin="0 1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                     <WrapPanel x:Name="WPnl_SavedFilters" Orientation="Horizontal" VerticalAlignment="Stretch">
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="yes+F" Click="Btn_SavedFilters_Click" Content="Assembled" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Til+p1-" Click="Btn_SavedFilters_Click" Content="Panels" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Tub+Tube" Click="Btn_SavedFilters_Click" Content="Tubes" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
-                        <Button Style="{StaticResource MaterialDesignFlatSecondaryButton}" Tag="Pmd" Click="Btn_SavedFilters_Click" Content="Pmold" Padding="2 1" Margin="0 0 3 1" FontSize="{Binding MainViewModel.FontSize_H5}"/>
+                        
                     </WrapPanel>
                 </ScrollViewer>
             </Grid>
@@ -974,50 +1051,50 @@
                                     <WrapPanel.BindingGroup>
                                         <BindingGroup Name="BGroup_LineEdits"/>
                                     </WrapPanel.BindingGroup>
-                                    <TextBox Height="30" Width="287" Text="{Binding PartNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding CatalogNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Multiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="60" Width="287" TextAlignment="Left" VerticalContentAlignment="Top" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" x:Name="Txt_RowEdit_Desc" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding UofM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding SubType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Idnbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <CheckBox Height="30" Width="287" IsChecked="{Binding Explode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Assembled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding AssyNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding TileIndicator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding ItemFin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding ColorBy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <ComboBox Height="30" Width="287" SelectedValue="{Binding WorkCtr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding WorkCtr, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown">
+                                    <TextBox Height="30" Width="267" Text="{Binding PartNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" x:Name="Txt_RowEdit_ItemNbr" Text="{Binding ItemNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding CatalogNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Multiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="60" Width="267" TextAlignment="Left" VerticalContentAlignment="Top" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" x:Name="Txt_RowEdit_Desc" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding UofM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="267" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="267" SelectedValue="{Binding SubType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Idnbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <CheckBox Height="30" Width="267" IsChecked="{Binding Explode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="TextBox_TextChanged" Unchecked="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Assembled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding AssyNbr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding TileIndicator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding ItemFin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="267" SelectedValue="{Binding ColorBy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <ComboBox Height="30" Width="267" SelectedValue="{Binding WorkCtr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding WorkCtr, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_EngOrder, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Converter={conv:StringToWorkCtrCustom}}"/>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
-                                    <TextBox Height="30" Width="287" Text="{Binding ItemCore, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding ScrapFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding SizeDivisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding CoreSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding Fabwidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Tag="numeric" Text="{Binding FabHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option02, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option03, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option04, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option05, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option06, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option07, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option08, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option09, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Option10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
-                                    <TextBox Height="30" Width="287" Text="{Binding Area, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding ItemCore, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding ScrapFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding SizeDivisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding CoreSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Fabwidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding FabHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option01, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option02, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option03, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option04, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option05, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option06, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option07, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option08, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option09, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Option10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                    <TextBox Height="30" Width="267" Text="{Binding Area, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
                                 </WrapPanel>
                             </WrapPanel>
                         </ScrollViewer>

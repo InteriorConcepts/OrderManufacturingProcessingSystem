@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using MyApp.DataAccess.Generated;
 using OMPS.ViewModels;
 using OMPS.Windows;
 using System;

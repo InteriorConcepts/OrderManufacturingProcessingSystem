@@ -1,6 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
-using MyApp.DataAccess.Generated;
 using OMPS.Components;
 using OMPS.Pages;
 using OMPS.ViewModels;

@@ -244,9 +244,15 @@
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_ProdCatSearch" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-                                             Content="PCat Search" Tag="{x:Static local:PageTypes.ProductCatalogSearch}" Padding="10 0"
+                                             Content="Prod Search" Tag="{x:Static local:PageTypes.ProductCatalogSearch}" Padding="10 0"
                                              Visibility="{Binding ProductCatalogSearch_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
                                              Height="21" IsChecked="{Binding ProductCatalogSearch_IsSelected, Mode=OneWay}"
+                                             Checked="RadioButton_Checked"
+                                             FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
+                                <RadioButton x:Name="TabBtn_ProdCatDetails" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+                                             Content="Prod Details" Tag="{x:Static local:PageTypes.ProductCatalogDetails}" Padding="10 0"
+                                             Visibility="{Binding ProductCatalogDetails_IsEnabled, Mode=OneWay, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=False}"
+                                             Height="21" IsChecked="{Binding ProductCatalogDetails_IsSelected, Mode=OneWay}"
                                              Checked="RadioButton_Checked"
                                              FontSize="{Binding FontSize_H3, FallbackValue=14}"/>
                                 <RadioButton x:Name="TabBtn_OrderSearch" Style="{StaticResource MaterialDesignTabRadioButtonBottom}"

@@ -1,9 +1,17 @@
-﻿using OMPS.Components;
-using OMPS.ViewModels;
+﻿using System.Collections.ObjectModel;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
+
+using OMPS.Components;
+using OMPS.ViewModels;
+
+using Tomlyn;
+using Tomlyn.Model;
+
+using static TOML_Helper.TOML_Handler.Config_Toml;
+
 using SCH = SQL_And_Config_Handler;
 
 namespace OMPS
@@ -50,9 +58,27 @@ namespace OMPS
                 App.Current.Shutdown(-1);
             }
 
+            Ext.LoadAllTomlConfigs();
+            
+            
+            /*
+            if (Ext.TryGet<EngOrder_FiltersConfig>(Ext.TomlConfigTypes.EngOrder_SavedFilters, "settings") is TomlTryValue<EngOrder_FiltersConfig> tv && tv is not null && tv.Passed is true && tv.Value is EngOrder_FiltersConfig obj)
+            {
+                MessageBox.Show(String.Join("\n", obj.filters.Select(i => $"{i.name}\t\t{i.value}")));
+            } else
+            {
+                MessageBox.Show("Toml Failed");
+            }
+            */
+            
+            
+
             Ext.MainViewModel = new Main_ViewModel();
             base.OnStartup(e);
         }
+
+
+        public static Main_ViewModel MainViewModel { get => Ext.MainViewModel; }
 
         protected override void OnExit(ExitEventArgs e)
         {
