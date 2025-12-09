@@ -18,6 +18,86 @@
     <UserControl.Resources>
         <CollectionViewSource x:Key="ProdBomViewSource" x:Name="ProdBomViewSource" Source="{Binding ProdBoms}" Filter="ProdBomsViewSource_Filter"/>
         <CollectionViewSource x:Key="MfgItemsViewSource" x:Name="MfgItemsViewSource" Source="{Binding MfgItems}" Filter="MfgItemsViewSource_Filter"/>
+
+        <Style x:Key="LabelWithIndicator" TargetType="Label">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Border Background="Transparent" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                TextElement.Foreground="{StaticResource MaterialDesign.Brush.Foreground}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="{Binding MainViewModel.FontSize_H7, FallbackValue=8}"/>
+                                    <ColumnDefinition Width="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Content -->
+                                <ContentPresenter Grid.Column="0"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True"/>
+
+                                <!-- Indicator Dot -->
+                                <materialDesign:PackIcon Grid.Column="1" Panel.ZIndex="-2"
+                                       Foreground="{TemplateBinding Background}" 
+                                       Width="{Binding MainViewModel.FontSize_H7, FallbackValue=8}" 
+                                       Height="{Binding MainViewModel.FontSize_H7, FallbackValue=8}" 
+                                       Kind="Circle" 
+                                       Margin="0,0,0,0"
+                                       VerticalAlignment="Center">
+                                </materialDesign:PackIcon>
+
+                                <!-- Single Revert Button -->
+                                <Button Grid.Column="2" Padding="0" Margin="0" VerticalAlignment="Center"
+                                        BorderThickness="0" Click="Btn_RevertItemLinePropEdit_Click"
+                                        Visibility="{TemplateBinding Tag, Converter={conv:NullToVisibilityConverter}}"
+                                        IsEnabled="{TemplateBinding Tag, Converter={conv:NullToBooleanConverter}}"
+                                        Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <materialDesign:PackIcon Kind="UndoVariant" Foreground="#FFC38966"
+                                                     Width="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"
+                                                     Height="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Resources>
+                            <!-- Force inheritance for all TextBlocks within this template -->
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="Foreground" 
+                                Value="{StaticResource MaterialDesign.Brush.Foreground}"/>
+                            </Style>
+                        </ControlTemplate.Resources>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Tag" Value="none">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="error">
+                    <Setter Property="BorderBrush" Value="#d44"/>
+                    <Setter Property="Background" Value="#d44"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="warn">
+                    <Setter Property="BorderBrush" Value="#fc7"/>
+                    <Setter Property="Background" Value="#fc7"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="good">
+                    <Setter Property="BorderBrush" Value="#4a8"/>
+                    <Setter Property="Background" Value="#4a8"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="blue">
+                    <Setter Property="BorderBrush" Value="#48a"/>
+                    <Setter Property="Background" Value="#48a"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -51,7 +131,7 @@
                 </Button>
                 <Button x:Name="Btn_SaveHeader" Height="22"
                         Style="{StaticResource MaterialDesignFlatButton}" Foreground="LightSkyBlue"
-                        IsEnabled="{Binding ColorSetInfo_HasChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                        IsEnabled="{Binding ProductInfo_HasChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
                         VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
                         Padding="6 0" Margin="0 0 4 0" Cursor="Hand"
                         Click="Btn_SaveHeader_Click">
@@ -278,37 +358,6 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <!--<StackPanel Grid.Column="0" Margin="0 0 4 0">
-                                <Components:LabelInputPair LabelWidth="90" LabelText="Name" InputText="{Binding ColorSetInfo.Name, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="90" LabelText="CompanyName" InputText="{Binding ColorSetInfo.CompanyName, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="90" LabelText="CompanyID" InputText="{Binding ColorSetInfo.CompanyID, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="90" LabelText="QuoteNbr" InputText="{Binding ColorSetInfo.QuoteNbr, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="90" LabelText="CustOrderID" InputText="{Binding ColorSetInfo.CustOrderID, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="90" LabelText="OrderType" InputText="{Binding ColorSetInfo.OrderType, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="90" LabelText="OpportunityNbr" InputText="{Binding ColorSetInfo.OpportunityNbr, Mode=TwoWay}"/>
-                            </StackPanel>-->
-                            <!--<StackPanel Grid.Column="1" Margin="0 0 4 0">
-                                <Components:LabelInputPair LabelWidth="70" LabelText="DropShipID" InputText="{Binding ColorSetInfo.DropShipID, Mode=TwoWay}" InputReadOnly="True"/>
-                                <Components:LabelInputPair LabelWidth="70" LabelText="ExterpriseID" InputText="{Binding ColorSetInfo.EnterpriseID, Mode=TwoWay}"/>
-                                <Components:LabelInputPair LabelWidth="70" LabelText="ShiptoName" InputText="{Binding ColorSetInfo.ShiptoName, Mode=TwoWay}"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <Components:LabelDatePickPair Grid.Column="0" Grid.Row="0" LabelWidth="70" LabelText="OrderDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.OrderDate, Mode=TwoWay}" InputText=""/>
-                                    <Components:LabelDatePickPair Grid.Column="0" Grid.Row="1" LabelWidth="70" LabelText="OnSiteDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.OnSiteDate, Mode=TwoWay}"/>
-                                    <Components:LabelDatePickPair Grid.Column="1" Grid.Row="0" LabelWidth="70" LabelText="CreationDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.CreationDate, Mode=TwoWay}"/>
-                                    <Components:LabelDatePickPair Grid.Column="1" Grid.Row="1" LabelWidth="70" LabelText="ChangeDate" InputReadOnly="True" SelectedDate="{Binding ColorSetInfo.ChangeDate, Mode=TwoWay}"/>
-                                </Grid>
-                                <Components:LabelInputPair Grid.Column="1" Grid.Row="5" LabelWidth="70"
-                                                       LabelText="ColorSetID"
-                                                       InputText="{Binding ColorSetInfo.ColorSetID, Mode=OneWay}" InputReadOnly="True"/>
-                            </StackPanel>-->
                         </Grid>
                     </TabItem>
                 </TabControl>
@@ -319,6 +368,10 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="24"/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="435"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.Style>
                         <Style TargetType="Grid">
                             <Style.Triggers>
@@ -328,7 +381,10 @@
                             </Style.Triggers>
                         </Style>
                     </Grid.Style>
-                    <ProgressBar Panel.ZIndex="99" x:Name="progbar" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False" Foreground="{x:Static local:Ext.AccentColorBrush}" Background="Transparent" BorderBrush="{x:Static local:Ext.AccentColorBrush50}"/>
+                    <ProgressBar Panel.ZIndex="99" x:Name="progbar" Height="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                 Value="0" Maximum="100" IsIndeterminate="True" IsEnabled="False"
+                                 Foreground="{x:Static local:Ext.AccentColorBrush}" Background="Transparent"
+                                 BorderBrush="{x:Static local:Ext.AccentColorBrush50}"/>
                     <DataGrid x:Name="DataGrid_ProdBoms" Grid.Row="0"
                               ItemsSource="{Binding Source={StaticResource ProdBomViewSource}}"
                               IsReadOnly="True" ScrollViewer.IsDeferredScrollingEnabled="False"
@@ -339,6 +395,7 @@
                               AutoGenerateColumns="False"
                               BorderBrush="LightGray"
                               BorderThickness="0"
+                              SelectionChanged="DataGrid_ProdBoms_SelectionChanged"
                               EnableRowVirtualization="True" EnableColumnVirtualization="False"
                               VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
                               VirtualizingPanel.ScrollUnit="Item"
@@ -408,6 +465,183 @@
                             <DataGridTextColumn Header="ChangeDate" Binding="{Binding ChangeDate}"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <DockPanel x:Name="pnl_ProdBoms_dock" Visibility="Visible" LastChildFill="False" Grid.Column="1">
+                        <materialDesign:ColorZone VerticalAlignment="Stretch" Background="#222"
+                                                  FontSize="{Binding DataGridFontSize, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=12}">
+                            <Grid VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="{Binding MainViewModel.FontSize_H1, FallbackValue=36, Converter={conv:ScalingConverter}, ConverterParameter=1.50}"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="4"/>
+                                    <RowDefinition Height="24"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Grid.ColumnSpan="5" VerticalAlignment="Stretch">
+                                    <Label Content="Row Edit Pane" HorizontalAlignment="Center"
+                                           Padding="0" Margin="0"
+                                           FontSize="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                           Foreground="#DDD"
+                                           FontWeight="DemiBold"/>
+                                    <Label Content="{Binding UnsavedChangesPrompt}" HorizontalAlignment="Center"
+                                           Padding="0" Margin="0" Visibility="{Binding IsPending_LineChanges, Converter={conv:BoolToVisibilityConverter}, ConverterParameter=true, FallbackValue=Visibility.Hidden}"
+                                           Foreground="#fc7"
+                                           FontSize="{Binding MainViewModel.FontSize_H5, FallbackValue=10}"
+                                           FontWeight="Regular"/>
+                                </StackPanel>
+                                <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Margin="0" Padding="0" FontSize="{Binding MainViewModel.FontSize_H4}"
+                                              HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                                    <WrapPanel x:Name="WPnl_ProdBoms_DataEditRegion" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                               Orientation="Horizontal" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <WrapPanel x:Name="WPnl_ProdBoms_EditLabels" Orientation="Vertical" Width="150" VerticalAlignment="Stretch"
+                                                   VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                            <Label Style="{StaticResource LabelWithIndicator}">
+                                                <Label.Content>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="ProdBomID"/>
+                                                        <Button x:Name="Btn_ProdBoms_prodBomId" Grid.Column="1" Grid.Row="0" Height="18" Tag="Description"
+                                                                Padding="0" Margin="0" BorderThickness="0"
+                                                                Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                            <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Label.Content>
+                                            </Label>
+                                            <Label Style="{StaticResource LabelWithIndicator}" VerticalContentAlignment="Center">
+                                                <Label.Content>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="ProductID"/>
+                                                        <Button x:Name="Btn_ProdBoms_prodId" Grid.Column="1" Grid.Row="0" Height="18" Tag="ItemNbr"
+                                                                Padding="0" Margin="0" BorderThickness="0"
+                                                                Background="Transparent" Click="Btn_rowEdit_Lookup_Click">
+                                                            <Image Width="16" Height="14" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True"  Source="pack://application:,,,/OMPS;component/Images/Binoculars.png" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Label.Content>
+                                            </Label>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="ProductCode"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Qty"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="UofM"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Description"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Status"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="ColorBy"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Type"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="SubType"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Assembled"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Dept"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="WorkCtr"/>
+
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="ListPrice"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="StdNetPrice"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Cost"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Weight"/>
+
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Depth"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Width"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Height"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Length"/>
+                                            <Label Style="{StaticResource LabelWithIndicator}" Content="Color"/>
+                                        </WrapPanel>
+                                        <WrapPanel x:Name="WPnl_ProdBoms_EditInputs" Orientation="Vertical" Width="268" VerticalAlignment="Stretch"
+                                                   VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                                                   DataContext="{Binding CurrentProdBom}">
+                                            <WrapPanel.BindingGroup>
+                                                <BindingGroup Name="BGroup_LineEdits"/>
+                                            </WrapPanel.BindingGroup>
+                                            <TextBox Height="30" Width="267" IsReadOnly="True" Text="{Binding ProdBomId, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" IsReadOnly="True" Text="{Binding ProductId, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Text="{Binding ProductCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Text="{Binding UofM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" x:Name="Txt_RowEdit_ProdBoms__Desc" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Text="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <ComboBox Height="30" Width="267" SelectedValue="{Binding ColorBy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_ProductCatalogDetails, Path=ColorByValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <ComboBox Height="30" Width="267" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_ProductCatalogDetails, Path=TypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <ComboBox Height="30" Width="267" SelectedValue="{Binding SubType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_ProductCatalogDetails, Path=SubTypeValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <ComboBox Height="30" Width="267" SelectedValue="{Binding Assembled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_ProductCatalogDetails, Path=AssembledValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <ComboBox Height="30" Width="267" SelectedValue="{Binding Dept, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_ProductCatalogDetails, Path=DeptValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <ComboBox Height="30" Width="267" SelectedValue="{Binding WorkCtr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding WorkCtr, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=Page_ProductCatalogDetails, Path=WorkCtrValues}" PreviewMouseWheel="ComboBox_PreviewMouseWheel" SelectionChanged="TextBox_TextChanged"  GotFocus="TextBox_GotKeyboardFocus" LostFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Converter={conv:StringToWorkCtrCustom}}"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding QuotedListPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding StdNetPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Depth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Tag="numeric" Text="{Binding Length, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                            <TextBox Height="30" Width="267" Text="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"  GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" PreviewKeyDown="TextBox_PreviewKeyDown" />
+                                        </WrapPanel>
+                                    </WrapPanel>
+                                </ScrollViewer>
+                                <Button x:Name="Btn_ProdBoms_RevertItemLineEdits" Grid.Row="3" Grid.Column="0" Padding="4 1" Margin="4 0 4 0"
+                                        BorderThickness="0" Click="Btn_RevertItemLineEdits_Click"
+                                        IsEnabled="{Binding IsPending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" Height="24"
+                                        Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                        <TextBlock Margin="0 0 2 0" VerticalAlignment="Center"
+                                                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                                   Text="Discard"/>
+                                        <materialDesign:PackIcon Kind="UndoVariant" Foreground="#d0763e"
+                                                                 Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                                 Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="Btn_ProdBoms_AcceptItemLinesEdits" Grid.Row="3" Grid.Column="1" Padding="4 1" Margin="4 0 4 0"
+                                        BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        VerticalContentAlignment="Center" Click="Btn_AcceptItemLineEdits_Click"
+                                        IsEnabled="{Binding IsPending_LineChanges, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                                        Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                        <TextBlock Margin="0 0 2 0" VerticalAlignment="Center"
+                                                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                                   Text="Save"/>
+                                        <materialDesign:PackIcon Kind="FloppyDiscEditOutline" Foreground="#FF7EB750"
+                                                                 Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                                 Height="{Binding MainViewModel.FontSize_H4, FallbackValue=16}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="Btn_ProdBoms_DeleteItemLine" Grid.Row="3" Grid.Column="2" Padding="4 1" Margin="4 0 4 0"
+                                        BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        VerticalContentAlignment="Center" Click="Btn_DeleteItemLine_Click"
+                                        IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=DataGrid_ProdBoms}"
+                                        Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="0 0 2 0" VerticalAlignment="Center"
+                                                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                                   Text="Delete"/>
+                                        <materialDesign:PackIcon Kind="TrashOutline" Foreground="#9f3847"
+                                                                 Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                                 Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.Row="3" Grid.Column="3" x:Name="Btn_ProdBoms_NewItemLine" Padding="4 1" Margin="4 0 4 0"
+                                        BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        VerticalContentAlignment="Center" Click="Btn_NewItemLine_Click"
+                                        IsEnabled="{Binding SelectedItem, Converter={conv:NullToBooleanConverter}, ElementName=DataGrid_ProdBoms}"
+                                        Height="24"  Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="0 0 2 0" VerticalAlignment="Center"
+                                                   FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                                   Text="New"/>
+                                        <materialDesign:PackIcon Kind="AddBold" Foreground="#7dadc8"
+                                                                 Width="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"
+                                                                 Height="{Binding MainViewModel.FontSize_H3, FallbackValue=16}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </materialDesign:ColorZone>
+                    </DockPanel>
                     <DockPanel x:Name="dpnl_ViewsBar" Grid.Row="1" LastChildFill="False" Background="#222">
                         <DockPanel.Style>
                             <Style TargetType="DockPanel">
@@ -420,17 +654,17 @@
                         </DockPanel.Style>
                         <Label Content="Data Grids" Margin="8 0 8 0" Foreground="LightGray"/>
                         <RadioButton x:Name="RadioBtn_DataGridView_ProdBom" Content="Product Bom" Tag="ProdBom"
-                             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                             Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                             Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
-                             VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                             IsChecked="True" Checked="RadioButton_DataGridView_Checked"/>
+                                     FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                     Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                                     Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                                     VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                                     IsChecked="True" Checked="RadioButton_DataGridView_Checked"/>
                         <RadioButton x:Name="RadioBtn_DataGridView_MfgItems" Content="Mfg Items" Tag="MfgItems"
-                             FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
-                             Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
-                             Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
-                             VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                             IsChecked="False" Checked="RadioButton_DataGridView_Checked"/>
+                                     FontSize="{Binding MainViewModel.FontSize_H4, FallbackValue=12}"
+                                     Foreground="{StaticResource MaterialDesign.Brush.Foreground}"
+                                     Style="{StaticResource MaterialDesignToolRadioButton}" Padding="16 0"
+                                     VerticalAlignment="Stretch" VerticalContentAlignment="Center"
+                                     IsChecked="False" Checked="RadioButton_DataGridView_Checked"/>
                     </DockPanel>
                 </Grid>
             </Border>
